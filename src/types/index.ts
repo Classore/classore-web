@@ -20,6 +20,29 @@ export type NonEmptyArray<T> = [T, ...T[]]
 
 export type MustInclude<T, U extends T[]> = [T] extends [ValueOf<U>] ? U : never
 
+export interface HttpResponse<T> {
+	error: string
+	data: T
+	message: string
+	success: boolean
+}
+
+export type HttpError = {
+	response: {
+		data: {
+			error: string
+			errorCode: string
+			message: string
+			status: string
+			success: boolean
+		}
+	}
+}
+
+export interface PaginatedResponse<T> {
+	data: T[]
+}
+
 export type Node = {
 	__typename?: "Node"
 	id: string

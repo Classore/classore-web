@@ -1,6 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-};
+	transpilePackages: ["@untitled-ui/icons-react"],
+	reactStrictMode: true,
+	output: "standalone",
+	images: {
+		remotePatterns: [
+			{
+				protocol: "https",
+				hostname: "**",
+			},
+		],
+	},
+}
 
-export default nextConfig;
+export default nextConfig
