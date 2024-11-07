@@ -1,4 +1,3 @@
-import { Copy03, MessageChatCircle, Share07 } from "@untitled-ui/icons-react"
 import Image from "next/image"
 import React from "react"
 
@@ -17,19 +16,13 @@ import {
 const Page = () => {
 	const [open, setOpen] = React.useState(false)
 
-	const footers = [
-		{ label: "Copy link", icon: Copy03, action: () => {} },
-		{ label: "Invite friends", icon: Share07, action: () => {} },
-		{ label: "Contact us", icon: MessageChatCircle, action: () => {} },
-	]
-
 	return (
 		<>
 			<Seo title="Join the Classore waitlist" />
 			<div className="bg-squiggly bg-right-bottom bg-no-repeat lg:h-screen">
 				<Appbar />
-				<main className="container mx-auto h-auto lg:h-[calc(100vh-187px)]">
-					<div className="grid h-full w-full grid-cols-1 lg:grid-cols-2">
+				<main className="container mx-auto h-auto px-4 lg:h-[calc(100vh-187px)] lg:px-0">
+					<div className="grid h-full w-full grid-cols-1 gap-5 lg:grid-cols-2 lg:gap-0">
 						<div className="flex h-full w-full flex-col justify-center gap-3">
 							<div className="flex w-fit items-center gap-1 rounded-3xl border-white bg-white/60 px-5 py-3">
 								<p className="text-sm">Join over 2500 learners today</p>
@@ -52,11 +45,17 @@ const Page = () => {
 							</div>
 							<div className="flex flex-col gap-3">
 								<div className="flex flex-wrap items-center">
-									<h1 className="text-7xl font-semibold leading-[82px]">Learn Anywhere, Anytime with</h1>
-									<h1 className="text-7xl font-semibold leading-[82px] text-secondary">Classore</h1>
-									<Image src={arrow} alt="arrow" width={82} height={61} className="ml-8" />
+									<h1 className="text-4xl font-semibold leading-[46px] lg:text-7xl lg:leading-[82px]">
+										Learn Anywhere, Anytime with
+									</h1>
+									<h1 className="text-4xl font-semibold leading-[46px] text-secondary lg:text-7xl lg:leading-[82px]">
+										Classore
+									</h1>
+									<div className="relative ml-8 h-[30px] w-[41px] lg:h-[61px] lg:w-[82px]">
+										<Image src={arrow} alt="arrow" fill sizes="" />
+									</div>
 								</div>
-								<p className="w-[381px] text-xl text-neutral-500">
+								<p className="w-full text-neutral-500 lg:w-[381px] lg:text-xl">
 									Learning made easy and fun - don&apos;t miss early access to a new way of learning
 								</p>
 								<Dialog open={open} onOpenChange={setOpen}>
@@ -65,7 +64,7 @@ const Page = () => {
 											Click here to join waitlist
 										</Button>
 									</DialogTrigger>
-									<DialogContent className="w-[500px] p-4">
+									<DialogContent className="w-[90%] rounded-xl p-4 lg:w-[500px]">
 										<DialogTitle hidden>Join the waitlist</DialogTitle>
 										<DialogDescription hidden>Join the waitlist</DialogDescription>
 										<Modal onClose={() => setOpen(false)} />
@@ -84,19 +83,6 @@ const Page = () => {
 								/>
 							</div>
 						</div>
-					</div>
-					<div className="grid h-[95px] w-full grid-cols-2">
-						<div className="flex h-full w-full items-center gap-2">
-							{footers.map(({ action, icon: Icon, label }, index) => (
-								<button
-									key={index}
-									onClick={action}
-									className="flex items-center gap-1 rounded-xl bg-white px-4 py-2">
-									<Icon className="size-5" /> {label}
-								</button>
-							))}
-						</div>
-						<div></div>
 					</div>
 				</main>
 			</div>

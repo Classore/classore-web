@@ -1,5 +1,5 @@
+import { CloseCircle, TickCircle } from "iconsax-react"
 import { useMutation } from "@tanstack/react-query"
-import { TickCircle } from "iconsax-react"
 import { useFormik } from "formik"
 import { toast } from "sonner"
 import React from "react"
@@ -59,7 +59,11 @@ export const Modal = ({ onClose }: Props) => {
 
 	return (
 		<div className="flex w-full flex-col gap-8 rounded-3xl border bg-gradient-to-b from-[#fef0e8] to-transparent p-3">
-			<div className="flex w-full items-center justify-end"></div>
+			<div className="flex w-full items-center justify-end">
+				<button onClick={onClose}>
+					<CloseCircle />
+				</button>
+			</div>
 			<div className="flex w-full flex-col gap-2">
 				<h3 className="text-2xl font-semibold">Join Waitlist</h3>
 				<p className="text-neutral-500">
