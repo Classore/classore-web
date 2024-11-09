@@ -1,14 +1,14 @@
 import { useMutation } from "@tanstack/react-query"
-import { TickCircle } from "iconsax-react"
 import { useFormik } from "formik"
+import { TickCircle } from "iconsax-react"
 import { toast } from "sonner"
-import React from "react"
 
-import { WaitlistDto, WaitlistMutation } from "@/queries"
+import type { WaitlistDto } from "@/queries"
+import { WaitlistMutation } from "@/queries"
+import type { HttpError } from "@/types"
+import { Spinner } from "../shared"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
-import { Spinner } from "../shared"
-import { HttpError } from "@/types"
 
 const roles = ["student", "parent"] as const
 

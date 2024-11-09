@@ -1,12 +1,41 @@
+import Image, { type StaticImageData } from "next/image"
+import Link from "next/link"
 import React from "react"
+
+import { onlineLearning } from "@/assets/illustrations"
+import { classore } from "@/assets/images"
 
 type Screen = "signin" | "signup" | "forgot-password" | "reset-password"
 
-export function AuthLayout({ children }: { children: React.ReactNode; screen: Screen }) {
+// since you are already passing screens, we have auto inject the images and the text in the auth layout based on the screen name
+const authIllustration: Record<Screen, StaticImageData> = {
+	signup: onlineLearning,
+	signin: onlineLearning,
+	"forgot-password": onlineLearning,
+	"reset-password": onlineLearning,
+}
+
+export function AuthLayout({ children, screen }: { children: React.ReactNode; screen: Screen }) {
 	return (
-		<div className="container mx-auto grid h-screen grid-cols-3 overflow-hidden">
-			<div className="h-full"></div>
-			<div className="h-full">{children}</div>
-		</div>
+		<main className="mx-auto grid grid-cols-5 bg-red-500">
+			<aside className="sticky top-0 col-span-2 flex h-dvh flex-col gap-12 self-start bg-primary-100 p-10 pl-20">
+				<Link href="/" className="w-fit">
+					<Image src={classore} alt="classore" width={140} height={32} />
+				</Link>
+
+				<h1 className="font-body text-4xl font-bold text-neutral-500">
+					Learning without limits, right where you are with{" "}
+					<span className="text-secondary-300">Classore</span>
+				</h1>
+
+				<Image
+					src={authIllustration[screen]}
+					alt="online learning illustration"
+					className="absolute -right-11 bottom-0 max-w-md"
+				/>
+			</aside>
+
+			<section className="col-span-3 bg-white px-32 py-10">{children}</section>
+		</main>
 	)
 }

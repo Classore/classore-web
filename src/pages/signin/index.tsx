@@ -1,9 +1,8 @@
-import { ReactFacebookFailureResponse, ReactFacebookLoginInfo } from "react-facebook-login"
-import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props"
 import { useGoogleLogin } from "@react-oauth/google"
-import { toast } from "sonner"
 import Link from "next/link"
-import React from "react"
+import type { ReactFacebookFailureResponse, ReactFacebookLoginInfo } from "react-facebook-login"
+import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props"
+import { toast } from "sonner"
 
 import { Appbar, Footer, Seo } from "@/components/shared"
 import { Button } from "@/components/ui/button"
@@ -43,6 +42,7 @@ const Page = () => {
 					<Button onClick={() => handleGoogleCallback()} className="w-[200px]">
 						Google
 					</Button>
+
 					<FacebookLogin
 						buttonStyle={{ padding: "6px" }}
 						appId={appId}

@@ -5,7 +5,6 @@ import React from "react"
 import { arrow, learn } from "@/assets/illustrations"
 import { Appbar, Seo } from "@/components/shared"
 import { Button } from "@/components/ui/button"
-import { Modal } from "@/components/waitlist"
 import {
 	Dialog,
 	DialogContent,
@@ -13,6 +12,7 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog"
+import { Modal } from "@/components/waitlist"
 
 const Page = () => {
 	const [open, setOpen] = React.useState(false)
@@ -53,7 +53,7 @@ const Page = () => {
 							<div className="flex flex-col gap-3">
 								<div className="flex flex-wrap items-center">
 									<h1 className="text-7xl font-semibold leading-[82px]">Learn Anywhere, Anytime with</h1>
-									<h1 className="text-7xl font-semibold leading-[82px] text-secondary">Classore</h1>
+									<h1 className="text-secondary-300 text-7xl font-semibold leading-[82px]">Classore</h1>
 									<Image src={arrow} alt="arrow" width={82} height={61} className="ml-8" />
 								</div>
 								<p className="w-[381px] text-xl text-neutral-500">
