@@ -28,7 +28,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 					<input
 						type={togglePassword ? "text" : type}
 						className={cn(
-							"text flex w-full rounded-md border border-neutral-200 bg-transparent px-4 py-3 transition-all file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-neutral-950 placeholder:text-neutral-300 focus:border-primary-300 focus:shadow-[0_0_0_2px_rgba(111,66,193,0.1),0px_0px_0px_3px_rgba(111,66,193,0.1)] focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50",
+							"text flex w-full rounded-md border border-neutral-200 bg-transparent px-4 py-3 transition-all file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-neutral-950 placeholder:text-neutral-300 focus:border-primary-300 focus:shadow-primary focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50",
 							className
 						)}
 						ref={ref}

@@ -55,7 +55,7 @@ const Page = () => {
 											<label
 												key={option.id}
 												data-state={state}
-												className="group flex w-full cursor-pointer items-center gap-4 rounded-xl border border-neutral-200 bg-transparent p-4 transition-all data-[state=checked]:border-primary-300 data-[state=checked]:bg-primary-50 data-[state=checked]:shadow-[0_0_0_2px_rgba(111,66,193,0.1),0px_0px_0px_3px_rgba(111,66,193,0.1)] data-[state=unchecked]:hover:bg-neutral-50">
+												className="data-[state=checked]:shadow-primary group flex w-full cursor-pointer items-center gap-4 rounded-xl border border-neutral-200 bg-transparent p-4 transition-all data-[state=checked]:border-primary-300 data-[state=checked]:bg-primary-50 data-[state=unchecked]:hover:bg-neutral-50">
 												<div className="grid size-8 place-content-center rounded bg-neutral-100 group-data-[state=checked]:bg-primary-50 group-data-[state=checked]:text-primary-300">
 													<User01 />
 												</div>

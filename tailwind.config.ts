@@ -75,6 +75,9 @@ const config: Config = {
 			animation: {
 				"caret-blink": "caret-blink 1.25s ease-out infinite",
 			},
+			boxShadow: {
+				primary: "0 0 0 2px rgba(111,66,193,0.1),0px 0px 0px 3px rgba(111,66,193,0.1)",
+			},
 		},
 	},
 	plugins: [require("tailwindcss-animate"), require("@tailwindcss/forms")],
