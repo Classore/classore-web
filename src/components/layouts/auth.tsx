@@ -2,7 +2,7 @@ import Image, { type StaticImageData } from "next/image"
 import Link from "next/link"
 import React from "react"
 
-import { onlineLearning } from "@/assets/illustrations"
+import { onlineLearning, solutionIllustration, testingIllustration } from "@/assets/illustrations"
 import { classore } from "@/assets/images"
 
 type Screen = "signin" | "signup" | "forgot-password" | "reset-password"
@@ -10,9 +10,9 @@ type Screen = "signin" | "signup" | "forgot-password" | "reset-password"
 // since you are already passing screens, we have auto inject the images and the text in the auth layout based on the screen name
 const authIllustration: Record<Screen, StaticImageData> = {
 	signup: onlineLearning,
-	signin: onlineLearning,
-	"forgot-password": onlineLearning,
-	"reset-password": onlineLearning,
+	signin: testingIllustration,
+	"forgot-password": solutionIllustration,
+	"reset-password": solutionIllustration,
 }
 
 export function AuthLayout({ children, screen }: { children: React.ReactNode; screen: Screen }) {

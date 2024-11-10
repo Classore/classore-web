@@ -6,14 +6,12 @@ import { Button } from "@/components/ui/button"
 import { InputOTP, InputOTPSlot } from "@/components/ui/otp-input"
 import Link from "next/link"
 
-// const appId = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID
-
 const Page = () => {
 	return (
 		<>
 			<Seo title="Verify Email" />
 
-			<AuthLayout screen="signup">
+			<AuthLayout screen="forgot-password">
 				<div className="flex max-w-[400px] flex-col gap-8">
 					{/* should convert this to html, but i'm just lazy */}
 					<header className="flex flex-col gap-4">

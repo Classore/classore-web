@@ -5,6 +5,7 @@ import { AuthGraphic } from "@/assets/icons"
 import { Button } from "@/components/ui/button"
 import { User01 } from "@untitled-ui/icons-react"
 import { Field, Form, Formik } from "formik"
+import { useRouter } from "next/router"
 
 const options = [
 	{
@@ -24,6 +25,8 @@ const options = [
 // const appId = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID
 
 const Page = () => {
+	const router = useRouter()
+
 	return (
 		<>
 			<Seo title="Sign up" />
@@ -41,6 +44,7 @@ const Page = () => {
 						}}
 						onSubmit={async (values) => {
 							console.log(values)
+							router.push(`/signup/onboard?picked=${values.picked}`)
 						}}>
 						{({ values }) => (
 							<Form className="flex flex-col gap-7">
@@ -81,7 +85,7 @@ const Page = () => {
 								</div>
 
 								<Button type="submit" className="rounded-md">
-									Continue
+									Next
 								</Button>
 							</Form>
 						)}

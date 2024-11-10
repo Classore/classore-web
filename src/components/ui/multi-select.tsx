@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/command"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { PopoverClose } from "@radix-ui/react-popover"
-import { ChevronDown } from "@untitled-ui/icons-react"
+import { Check, ChevronDown } from "@untitled-ui/icons-react"
 import * as React from "react"
 import { Button } from "./button"
 
@@ -105,9 +105,11 @@ export const MultiSelect = ({ label, placeholder }: MultiSelectProps) => {
 											<span className="flex-1">{framework.label}</span>
 
 											<div
-												className={`absolute right-4 ml-auto flex size-5 items-center justify-center rounded-full border-2 transition-all group-data-[selected='true']:border-primary-300 ${isActive ? "border-primary-300" : "border-neutral-200"}`}>
-												<span
-													className={`size-2.5 rounded-full ${isActive ? "bg-primary-300" : "bg-transparent"}`}
+												className={`absolute right-4 ml-auto flex size-4 items-center justify-center rounded border-2 transition-all group-data-[selected='true']:border-primary-300 ${isActive ? "border-primary-300" : "border-neutral-200"}`}>
+												<Check
+													width={5}
+													height={5}
+													className={`text-xs transition-opacity ${isActive ? "text-primary-300" : "text-transparent"}`}
 												/>
 											</div>
 										</CommandItem>

@@ -10,7 +10,7 @@ import { Lock02 } from "@untitled-ui/icons-react"
 const Page = () => {
 	return (
 		<>
-			<Seo title="Sign up" />
+			<Seo title="Studying For" />
 
 			<AuthLayout screen="signup">
 				<div className="flex max-w-96 flex-col gap-6">
