@@ -25,7 +25,7 @@ export function middleware(req: NextRequest) {
 	}
 
 	// If in test mode, always redirect to the homepage
-	if (isWaitlist && url.pathname !== "/" && url.pathname !== "/claim-points") {
+	if (isWaitlist && url.pathname !== "/") {
 		url.pathname = "/"
 		return redirectResponse(url)
 	}

@@ -26,6 +26,9 @@ importers:
       '@react-oauth/google':
         specifier: ^0.12.1
         version: 0.12.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@remixicons/react':
+        specifier: ^1.0.0
+        version: 1.0.0(react@18.3.1)
       '@tanstack/react-query':
         specifier: ^5.59.15
         version: 5.59.15(react@18.3.1)
@@ -590,6 +593,11 @@ packages:
     peerDependencies:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
+
+  '@remixicons/react@1.0.0':
+    resolution: {integrity: sha512-2QvlgR5myO7wzQduGWD4MYMtxwoHsu/Fq86N3A6DLogXJOctaxb+bLTEH7yysRIPmwO+o6lkadVph/ixasadqQ==}
+    peerDependencies:
+      react: '>= 16'
 
   '@rtsao/scc@1.1.0':
     resolution: {integrity: sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g==}
@@ -2691,6 +2699,10 @@ snapshots:
     dependencies:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
+
+  '@remixicons/react@1.0.0(react@18.3.1)':
+    dependencies:
+      react: 18.3.1
 
   '@rtsao/scc@1.1.0': {}
 
