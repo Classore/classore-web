@@ -22,19 +22,16 @@ export function AuthLayout({ children, screen }: { children: React.ReactNode; sc
 				<Link href="/" className="w-fit">
 					<Image src={classore} alt="classore" width={140} height={32} />
 				</Link>
-
 				<h1 className="font-body text-4xl font-bold text-neutral-500">
 					Learning without limits, right where you are with{" "}
 					<span className="text-secondary-300">Classore</span>
 				</h1>
-
 				<Image
 					src={authIllustration[screen]}
 					alt="online learning illustration"
 					className="absolute -right-11 bottom-0 max-w-md"
 				/>
 			</aside>
-
 			<section className="col-span-3 bg-white px-32 py-6">{children}</section>
 		</main>
 	)

@@ -1,5 +1,8 @@
 // WIP: DO NOT USE (for now at least 😂)
+import { ChevronDown } from "@untitled-ui/icons-react"
+import * as React from "react"
 
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import {
 	Command,
 	CommandEmpty,
@@ -8,9 +11,6 @@ import {
 	CommandItem,
 	CommandList,
 } from "@/components/ui/command"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { ChevronDown } from "@untitled-ui/icons-react"
-import * as React from "react"
 
 const frameworks = [
 	{
@@ -46,6 +46,7 @@ export const Combobox = () => {
 					type="button"
 					role="combobox"
 					aria-expanded={open}
+					aria-controls="framework-list"
 					className="flex items-center justify-between rounded-md border border-neutral-200 bg-white px-4 py-3 transition-all focus:border-primary-300 focus:shadow-primary focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 data-[placeholder]:text-neutral-300 [&>span]:line-clamp-1">
 					{value
 						? frameworks.find((framework) => framework.value === value)?.label
@@ -58,7 +59,7 @@ export const Combobox = () => {
 				<Command className="w-96">
 					<CommandInput placeholder="Search here..." />
 
-					<CommandList>
+					<CommandList id="framework-list">
 						<CommandEmpty>No framework found.</CommandEmpty>
 						<CommandGroup>
 							{frameworks.map((framework) => (

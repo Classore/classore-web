@@ -1,5 +1,6 @@
-import { NextURL } from "next/dist/server/web/next-url"
-import { NextRequest, NextResponse } from "next/server"
+import type { NextURL } from "next/dist/server/web/next-url"
+import type { NextRequest } from "next/server"
+import { NextResponse } from "next/server"
 
 export const config = {
 	matcher: ["/dashboard/:path*", "/signin", "/signup"],

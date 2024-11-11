@@ -1,11 +1,11 @@
 import { AuthLayout } from "@/components/layouts/auth"
 import { Seo } from "@/components/shared"
 
-import { AuthGraphic } from "@/assets/icons"
 import { FieldError } from "@/components/shared/field-error"
 import { SignupStepper } from "@/components/signup-stepper"
-import { Button } from "@/components/ui/button"
 import { User01 } from "@untitled-ui/icons-react"
+import { Button } from "@/components/ui/button"
+import { AuthGraphic } from "@/assets/icons"
 import { Field, Form, Formik } from "formik"
 import { useRouter } from "next/router"
 import * as yup from "yup"
@@ -21,7 +21,7 @@ const options = [
 		id: 2,
 		label: "A Parent / Guardian",
 		slug: "parent",
-		description: "I want to monitor my child’s growth",
+		description: "I want to monitor my child's growth",
 	},
 ]
 
