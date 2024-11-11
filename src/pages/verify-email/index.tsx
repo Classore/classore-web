@@ -12,7 +12,7 @@ const Page = () => {
 			<Seo title="Verify Email" />
 
 			<AuthLayout screen="forgot-password">
-				<div className="flex max-w-[400px] flex-col gap-8">
+				<div className="flex max-w-[400px] flex-col gap-8 pt-20">
 					{/* should convert this to html, but i'm just lazy */}
 					<header className="flex flex-col gap-4">
 						<VerifyEmailGraphic />

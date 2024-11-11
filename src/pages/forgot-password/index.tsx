@@ -15,7 +15,7 @@ const Page = () => {
 			<Seo title="Forgot Password" />
 
 			<AuthLayout screen="forgot-password">
-				<div className="flex max-w-96 flex-col gap-6">
+				<div className="flex max-w-96 flex-col gap-6 pt-20">
 					<button
 						onClick={() => router.back()}
 						type="button"

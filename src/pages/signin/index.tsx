@@ -13,7 +13,7 @@ const Page = () => {
 			<Seo title="Sign up" />
 
 			<AuthLayout screen="signin">
-				<div className="flex max-w-96 flex-col gap-6">
+				<div className="flex max-w-96 flex-col justify-center gap-6 pt-20">
 					<header className="flex flex-col gap-4">
 						{/* should convert this to html, but i'm just lazy */}
 						<AuthGraphic />

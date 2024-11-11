@@ -1,7 +1,6 @@
+import { SuccessGraphic } from "@/assets/icons"
 import { AuthLayout } from "@/components/layouts/auth"
 import { Seo } from "@/components/shared"
-
-import { SuccessGraphic } from "@/assets/icons"
 import { Button } from "@/components/ui/button"
 
 const Page = () => {
@@ -10,7 +9,7 @@ const Page = () => {
 			<Seo title="Success" />
 
 			<AuthLayout screen="signup">
-				<div className="flex max-w-96 flex-col gap-6">
+				<div className="flex max-w-96 flex-col gap-6 pt-20">
 					{/* should convert this to html, but i'm just lazy */}
 					<SuccessGraphic />
 

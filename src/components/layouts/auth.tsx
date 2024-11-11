@@ -35,7 +35,7 @@ export function AuthLayout({ children, screen }: { children: React.ReactNode; sc
 				/>
 			</aside>
 
-			<section className="col-span-3 bg-white px-32 py-10">{children}</section>
+			<section className="col-span-3 bg-white px-32 py-6">{children}</section>
 		</main>
 	)
 }
