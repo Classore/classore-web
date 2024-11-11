@@ -1,4 +1,4 @@
-import { HttpResponse, UserProps } from "@/types"
+import type { HttpResponse, UserProps } from "@/types"
 import { endpoints } from "@/config"
 import { axios } from "@/lib"
 

@@ -20,7 +20,7 @@ jobs:
       node-version: 20
 
    - name: install-deps
-     run: npm install
+     run: npm install --legacy-peer-deps
 
    - name: check code
      run: npm run check-code

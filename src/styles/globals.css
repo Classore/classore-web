@@ -76,6 +76,7 @@ h4,
 h5,
 h6 {
 	font-family: var(--heading);
+	text-wrap: pretty;
 }
 
 a,
@@ -124,6 +125,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	appearance: none;
 }
 
+
 /* link animation */
 .link {
 	width: fit-content;
@@ -142,6 +144,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	-moz-transition: width 0.7s cubic-bezier(0.25, 1, 0.5, 1);
 	-webkit-transition: width 0.7s cubic-bezier(0.25, 1, 0.5, 1);
 }
+
 
 @media (hover: hover) and (pointer: fine) {
 	.link:hover::before {

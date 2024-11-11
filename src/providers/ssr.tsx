@@ -1,4 +1,5 @@
-import React, { PropsWithChildren } from "react"
+import type { PropsWithChildren } from "react"
+import React from "react"
 
 const canUseDOM = Boolean(
 	typeof window !== "undefined" && window?.document && window?.document?.createElement

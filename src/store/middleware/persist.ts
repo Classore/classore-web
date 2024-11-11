@@ -1,5 +1,6 @@
-import { StateCreator, create } from "zustand"
+import type { StateCreator } from "zustand/vanilla"
 import { persist } from "zustand/middleware"
+import { create } from "zustand/react"
 
 import { reportException } from "./report"
 
