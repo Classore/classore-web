@@ -46,7 +46,7 @@ export const Combobox = () => {
 					type="button"
 					role="combobox"
 					aria-expanded={open}
-					className="focus:shadow-primary flex items-center justify-between rounded-md border border-neutral-200 bg-white px-4 py-3 transition-all focus:border-primary-300 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 data-[placeholder]:text-neutral-300 [&>span]:line-clamp-1">
+					className="flex items-center justify-between rounded-md border border-neutral-200 bg-white px-4 py-3 transition-all focus:border-primary-300 focus:shadow-primary focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 data-[placeholder]:text-neutral-300 [&>span]:line-clamp-1">
 					{value
 						? frameworks.find((framework) => framework.value === value)?.label
 						: "Select framework..."}

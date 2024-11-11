@@ -19,7 +19,7 @@ export const Select = ({ children, error, label, labelClassName }: SelectProps) 
 			<SelectPrimitive.Root>
 				<SelectPrimitive.Trigger
 					className={cn(
-						"focus:shadow-primary flex w-full items-center justify-between rounded-md border border-neutral-200 bg-white px-4 py-3 transition-all focus:border-primary-300 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 data-[placeholder]:text-neutral-300 [&>span]:line-clamp-1"
+						"flex w-full items-center justify-between rounded-md border border-neutral-200 bg-white px-4 py-3 transition-all focus:border-primary-300 focus:shadow-primary focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 data-[placeholder]:text-neutral-300 [&>span]:line-clamp-1"
 					)}>
 					<SelectPrimitive.Value placeholder="Theme" className="placeholder:text-neutral-300" />
 					<SelectPrimitive.Icon asChild>
