@@ -1,7 +1,6 @@
-import { CloseCircle, TickCircle } from "iconsax-react"
 import { useMutation } from "@tanstack/react-query"
 import { useFormik } from "formik"
-import { TickCircle } from "iconsax-react"
+import { CloseCircle, TickCircle } from "iconsax-react"
 import { toast } from "sonner"
 
 import type { WaitlistDto } from "@/queries"
