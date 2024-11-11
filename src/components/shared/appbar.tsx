@@ -25,20 +25,22 @@ export const Appbar = () => {
 	return (
 		<nav className="container mx-auto px-4 py-[26px] lg:px-0">
 			<div className="flex w-full items-center justify-between">
-				<Link href="/" className="w-fit">
-					<Image src={classore} alt="classore" width={140} height={32} />
+				<Link href="/" className="relative aspect-[4.4/1] w-[100px] lg:w-[140px]">
+					<Image src={classore} alt="classore" fill sizes="(max-width:1024px)100%" />
 				</Link>
-				<div className="hidden items-center gap-5 lg:flex">
-					<button className="flex items-center gap-2 rounded-xl bg-white px-4 py-2" onClick={copyText}>
-						<Share07 />
+				<div className="flex items-center gap-5">
+					<button
+						className="flex items-center gap-0.5 rounded-xl bg-white px-1 py-1 text-sm lg:gap-2 lg:px-4 lg:py-2 lg:text-base"
+						onClick={copyText}>
+						<Share07 className="size-4 lg:size-6" />
 						Invite Friends
 					</button>
 					<Dialog open={open} onOpenChange={setOpen}>
 						<DialogTrigger asChild>
 							<button
-								className="flex items-center gap-2 rounded-xl bg-white px-4 py-2"
+								className="flex items-center gap-0.5 rounded-xl bg-white px-1 py-1 text-sm lg:gap-2 lg:px-4 lg:py-2 lg:text-base"
 								onClick={() => setOpen(true)}>
-								<MessageChatCircle />
+								<MessageChatCircle className="size-4 lg:size-6" />
 								Contact Us
 							</button>
 						</DialogTrigger>
