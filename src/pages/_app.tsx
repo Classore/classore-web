@@ -1,7 +1,9 @@
 import "@/styles/globals.css"
 import { GoogleOAuthProvider } from "@react-oauth/google"
+import { PostHogProvider } from "posthog-js/react"
 import type { AppProps } from "next/app"
 import { useRouter } from "next/router"
+import posthog from "posthog-js"
 import React from "react"
 
 import { QueryProvider, SSRProvider } from "@/providers"
@@ -22,9 +24,11 @@ export default function App({ Component, pageProps }: AppProps) {
 		<GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
 			<QueryProvider>
 				<SSRProvider>
-					<Component {...pageProps} />
-					<Toaster position="top-right" />
-					<FacebookPixel />
+					<PostHogProvider client={posthog}>
+						<Component {...pageProps} />
+						<Toaster position="top-right" />
+						<FacebookPixel />
+					</PostHogProvider>
 				</SSRProvider>
 			</QueryProvider>
 		</GoogleOAuthProvider>
