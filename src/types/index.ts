@@ -43,6 +43,11 @@ export interface PaginatedResponse<T> {
 	data: T[]
 }
 
+export type PaginatedProps = {
+	limit?: number
+	page?: number
+}
+
 export type Node = {
 	__typename?: "Node"
 	id: string

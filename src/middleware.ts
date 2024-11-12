@@ -1,5 +1,6 @@
-import { NextURL } from "next/dist/server/web/next-url"
-import { NextRequest, NextResponse } from "next/server"
+import type { NextURL } from "next/dist/server/web/next-url"
+import type { NextRequest } from "next/server"
+import { NextResponse } from "next/server"
 
 export const config = {
 	matcher: ["/dashboard/:path*", "/signin", "/signup"],
@@ -11,7 +12,7 @@ export function middleware(req: NextRequest) {
 	requestHeaders.set("x-next-pathname", req.nextUrl.pathname) // Set the new header for pathname
 
 	const hasToken = req.cookies.has("CLASSORE_TOKEN")
-	const isWaitlist = process.env.TESTING === "true"
+	const isWaitlist = process.env.TESTING === "false" // FIXME: change this
 	const url = req.nextUrl.clone() // Clone the URL to modify it
 
 	const isOnDashboard = url.pathname.startsWith("/dashboard")

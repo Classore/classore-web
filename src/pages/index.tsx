@@ -4,7 +4,6 @@ import React from "react"
 import { arrow, learn } from "@/assets/illustrations"
 import { Appbar, Seo } from "@/components/shared"
 import { Button } from "@/components/ui/button"
-import { Modal } from "@/components/waitlist"
 import {
 	Dialog,
 	DialogContent,
@@ -12,6 +11,7 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog"
+import { Modal } from "@/components/waitlist"
 
 const Page = () => {
 	const [open, setOpen] = React.useState(false)
@@ -45,15 +45,9 @@ const Page = () => {
 							</div>
 							<div className="flex flex-col gap-3">
 								<div className="flex flex-wrap items-center">
-									<h1 className="text-4xl font-semibold leading-[46px] lg:text-7xl lg:leading-[82px]">
-										Learn Anywhere, Anytime with
-									</h1>
-									<h1 className="text-4xl font-semibold leading-[46px] text-secondary lg:text-7xl lg:leading-[82px]">
-										Classore
-									</h1>
-									<div className="relative ml-8 h-[30px] w-[41px] lg:h-[61px] lg:w-[82px]">
-										<Image src={arrow} alt="arrow" fill sizes="" />
-									</div>
+									<h1 className="text-7xl font-semibold leading-[82px]">Learn Anywhere, Anytime with</h1>
+									<h1 className="text-7xl font-semibold leading-[82px] text-secondary-300">Classore</h1>
+									<Image src={arrow} alt="arrow" width={82} height={61} className="ml-8" />
 								</div>
 								<p className="w-full text-neutral-500 lg:w-[381px] lg:text-xl">
 									Learning made easy and fun - don&apos;t miss early access to a new way of learning
