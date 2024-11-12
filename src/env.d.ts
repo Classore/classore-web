@@ -20,8 +20,8 @@ declare global {
 			readonly NEXT_PUBLIC_GOOGLE_CLIENT_ID: string
 			readonly NEXT_PUBLIC_GOOGLE_CLIENT_SECRET: string
 			readonly NODE_ENV: "development" | "production" | "test"
-			readonly NEXT_PUBLIC_TESTING: "true" | "false"
-			readonly TESTING: "true" | "false"
+			readonly NEXT_PUBLIC_TESTING: string
+			readonly TESTING: string
 		}
 	}
 }
