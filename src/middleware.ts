@@ -12,7 +12,7 @@ export function middleware(req: NextRequest) {
 	requestHeaders.set("x-next-pathname", req.nextUrl.pathname) // Set the new header for pathname
 
 	const hasToken = req.cookies.has("CLASSORE_TOKEN")
-	const isWaitlist = process.env.TESTING === "false" // FIXME: change this
+	const isWaitlist = process.env.NODE_ENV !== "development" // FIXME: change this
 	const url = req.nextUrl.clone() // Clone the URL to modify it
 
 	const isOnDashboard = url.pathname.startsWith("/dashboard")
@@ -27,6 +27,7 @@ export function middleware(req: NextRequest) {
 
 	// If in test mode, always redirect to the homepage
 	if (isWaitlist && url.pathname !== "/") {
+		console.log(isWaitlist)
 		url.pathname = "/"
 		return redirectResponse(url)
 	}
