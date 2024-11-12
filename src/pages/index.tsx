@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dialog"
 import { Modal } from "@/components/waitlist"
 
-const colors = ["#42f4b5", "#38e365","#b2dd4d","#d34609"]
+const colors = ["#42f4b5", "#38e365", "#b2dd4d", "#d34609"]
 
 const Page = () => {
 	const [open, setOpen] = React.useState(false)
