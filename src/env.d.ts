@@ -2,8 +2,12 @@ export const requiredEnvs = [
 	"API_URL",
 	"NEXT_PUBLIC_API_URL",
 	"NEXT_PUBLIC_FACEBOOK_APP_ID",
+	"NEXT_PUBLIC_FACEBOOK_PIXEL_ID",
 	"NEXT_PUBLIC_GOOGLE_CLIENT_ID",
 	"NEXT_PUBLIC_GOOGLE_CLIENT_SECRET",
+	"NEXT_PUBLIC_GOOGLE_ANALYTICS_ID",
+	"NEXT_PUBLIC_POSTHOG_HOST",
+	"NEXT_PUBLIC_POSTHOG_KEY",
 	"NEXT_PUBLIC_TESTING",
 	"NODE_ENV",
 	"TESTING",
@@ -19,8 +23,10 @@ declare global {
 			readonly NEXT_PUBLIC_FACEBOOK_APP_ID: string
 			readonly NEXT_PUBLIC_GOOGLE_CLIENT_ID: string
 			readonly NEXT_PUBLIC_GOOGLE_CLIENT_SECRET: string
-			readonly NODE_ENV: "development" | "production" | "test"
+			readonly NEXT_PUBLIC_POSTHOG_HOST: string
+			readonly NEXT_PUBLIC_POSTHOG_KEY: string
 			readonly NEXT_PUBLIC_TESTING: string
+			readonly NODE_ENV: "development" | "production" | "test"
 			readonly TESTING: string
 		}
 	}
