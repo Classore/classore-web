@@ -1,4 +1,6 @@
 export * from "./appbar"
+export * from "./facebook-pixel"
+export * from "./field-error"
 export * from "./footer"
 export * from "./seo"
 export * from "./spinner"
