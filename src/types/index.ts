@@ -41,9 +41,17 @@ export type HttpError = {
 
 export interface PaginatedResponse<T> {
 	data: T[]
+	meta: {
+		itemCount: number
+		hasPreviousPage: boolean
+		hasNextPage: boolean
+		page: number
+		pageCount: number
+		take: number
+	}
 }
 
-export type PaginatedProps = {
+export type PaginationProps = {
 	limit?: number
 	page?: number
 }
@@ -52,11 +60,11 @@ export type Node = {
 	__typename?: "Node"
 	id: string
 	createdOn: Date | string
-	deletedBy?: Maybe<string>
-	deletedOn?: Maybe<Date | string>
+	deletedBy: Maybe<string>
+	deletedOn?: Date | string
 	isDeleted?: boolean
-	updatedBy?: Maybe<string>
-	updatedOn?: Maybe<Date | string>
+	updatedBy: Maybe<string>
+	updatedOn?: Date | string
 }
 
 export type UserProps = Node & {
@@ -66,4 +74,21 @@ export type UserProps = Node & {
 	lastName: string
 	password: string
 	username: string
+}
+
+export type CourseProps = Node & {}
+
+export type WaitlistUserProps = {
+	waitlists_createdOn: Date | string
+	waitlists_deletedBy: Maybe<string>
+	waitlists_deletedOn?: Date | string
+	waitlists_email: string
+	waitlists_first_name: string
+	waitlists_id: string
+	waitlists_isDeleted?: boolean
+	waitlists_last_name: string
+	waitlists_phone_number: string
+	waitlists_updateBy: Maybe<string>
+	waitlists_updateOn?: Date | string
+	waitlists_waitlist_type: string
 }
