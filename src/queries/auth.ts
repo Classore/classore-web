@@ -1,6 +1,12 @@
-import type { HttpResponse, UserProps } from "@/types"
 import { endpoints } from "@/config"
 import { axios } from "@/lib"
+import type {
+	HttpResponse,
+	PaginatedResponse,
+	PaginationProps,
+	UserProps,
+	WaitlistUserProps,
+} from "@/types"
 
 export interface WaitlistDto {
 	email: string
@@ -50,8 +56,15 @@ const WaitlistMutation = async (payload: WaitlistDto) => {
 	return axios.post<HttpResponse<null>>(endpoints().waitlist.join, payload).then((res) => res.data)
 }
 
+const GetWaitlistQuery = async (params: PaginationProps) => {
+	return axios
+		.get<HttpResponse<PaginatedResponse<WaitlistUserProps>>>(endpoints().waitlist.get, { params })
+		.then((res) => res.data)
+}
+
 export {
 	ForgotPasswordMutation,
+	GetWaitlistQuery,
 	ResetPasswordMutation,
 	SignInMutation,
 	SignUpMutation,
