@@ -9,12 +9,25 @@ export const dashboard_links = [
 				href: "/dashboard",
 			},
 			{
-				label: "courses",
-				href: "/dashboard/courses",
+				label: "categories",
+				href: "/dashboard/categories",
 			},
 			{
-				label: "computer-based testing",
-				href: "/dashboard/cbt",
+				label: "my courses",
+				href: "/dashboard/my-courses",
+			},
+		],
+	},
+	{
+		label: "me",
+		links: [
+			{
+				label: "messages",
+				href: "/dashboard/messages",
+			},
+			{
+				label: "community forum",
+				href: "/dashboard/community-forum",
 			},
 			{
 				label: "leaderboard",
@@ -25,10 +38,6 @@ export const dashboard_links = [
 	{
 		label: "others",
 		links: [
-			{
-				label: "account",
-				href: "/dashboard/account",
-			},
 			{
 				label: "settings",
 				href: "/dashboard/settings",
