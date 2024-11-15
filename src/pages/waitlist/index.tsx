@@ -8,6 +8,15 @@ import { GetWaitlistQuery } from "@/queries"
 import { exportToXLSX } from "@/lib"
 import { columns } from "@/config"
 
+type User = {
+	ID: string
+	"First Name": string
+	"Last Name": string
+	Email: string
+	Role: string
+	Date: Date | string
+}
+
 const LIMIT = 10
 
 const Page = () => {
@@ -26,11 +35,26 @@ const Page = () => {
 		],
 	})
 
+	const xlsxData: User[] = React.useMemo(() => {
+		if (!waitlist) return []
+		return waitlist.data.data.reduce((acc, user) => {
+			acc.push({
+				ID: user.waitlists_id,
+				"First Name": user.waitlists_first_name,
+				"Last Name": user.waitlists_last_name,
+				Email: user.waitlists_email,
+				Role: user.waitlists_waitlist_type,
+				Date: user.waitlists_createdOn,
+			})
+			return acc
+		}, [] as User[])
+	}, [waitlist])
+
 	if (!data) return <Loading />
 
 	const handleDownload = async () => {
-		if (waitlist) {
-			exportToXLSX(waitlist?.data.data, { filename: "waitlist" })
+		if (xlsxData) {
+			exportToXLSX(xlsxData, { filename: "waitlist" })
 			toast.success("Exported to Excel")
 		}
 	}
