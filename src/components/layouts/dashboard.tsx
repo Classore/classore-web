@@ -3,7 +3,9 @@ import Image from "next/image"
 import Link from "next/link"
 import React from "react"
 
+import meeting from "@/assets/illustrations/meeting.svg"
 import { dashboard_links } from "@/config"
+import { Button } from "../ui/button"
 import { Appbar } from "./appbar"
 import { normalize } from "@/lib"
 
@@ -14,18 +16,18 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
 	return (
 		<div className="flex h-screen w-screen items-center overflow-hidden bg-white">
-			<aside className="flex h-full w-[256px] min-w-[256px] flex-col justify-between border-r border-neutral-300 px-6 py-8">
+			<aside className="flex h-full w-[256px] min-w-[256px] flex-col justify-between border-r border-neutral-300 py-8">
 				<div className="flex w-full flex-col gap-8">
-					<div className="relative h-[30px] w-[135px]">
+					<div className="relative h-[30px] w-[135px] px-6">
 						<Image src="/assets/images/classore.png" alt="classore" fill sizes="(max-width:1024px)100%" />
 					</div>
 					<div className="flex w-full flex-col">
-						<p className="text-xs text-neutral-500">MENU</p>
+						<p className="ml-6 text-xs text-neutral-500">MENU</p>
 						<div className="flex w-full flex-col">
 							{dashboard_links.map(({ label, links }) => (
 								<div
 									key={label}
-									className="my-2 flex w-full flex-col gap-2 border-b border-neutral-300 last:border-b-0">
+									className="flex w-full flex-col gap-2 border-b border-neutral-300 px-6 py-2 last:border-b-0">
 									{links.map(({ href, icon: Icon, name }) => (
 										<Link
 											key={name}
@@ -39,11 +41,30 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 						</div>
 					</div>
 				</div>
-				<div className="w-full"></div>
+				<div className="w-full p-4">
+					<div className="relative h-[145px] w-full overflow-hidden rounded-lg border bg-gradient-to-r from-white to-secondary-100 px-3 py-4">
+						<div className="absolute -bottom-4 -right-4 aspect-square w-[138px]">
+							<Image
+								src={meeting}
+								alt="meeting"
+								fill
+								sizes="(max-width:1024px)100%"
+								className="object-contain"
+							/>
+						</div>
+						<div className="flex h-full w-full flex-col justify-between">
+							<h6 className="text-sm font-medium">Invite</h6>
+							<p className="w-32 text-xs text-neutral-400">Earn 550 points from inviting a friend</p>
+							<Button className="w-fit px-5 py-2" variant="dark">
+								<Link href="/dashboard/courses">Invite</Link>
+							</Button>
+						</div>
+					</div>
+				</div>
 			</aside>
-			<div className="h-full flex-1">
+			<div className="flex h-full max-w-[calc(100vw-256px)] flex-1 flex-col">
 				<Appbar />
-				{children}
+				<div className="flex-1 overflow-y-auto">{children}</div>
 			</div>
 		</div>
 	)

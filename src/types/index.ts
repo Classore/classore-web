@@ -59,11 +59,11 @@ export type PaginationProps = {
 export type Node = {
 	__typename?: "Node"
 	id: string
-	createdOn: Date | string
-	deletedBy: Maybe<string>
+	createdOn?: Date | string
+	deletedBy?: Maybe<string>
 	deletedOn?: Date | string
 	isDeleted?: boolean
-	updatedBy: Maybe<string>
+	updatedBy?: Maybe<string>
 	updatedOn?: Date | string
 }
 
@@ -77,9 +77,35 @@ export type UserProps = Node & {
 	username: string
 }
 
-export type CourseProps = Node & {}
+export type SubjectProps = Node & {
+	__typename?: "Subject"
+	description: string
+	title: string
+}
+
+export type CourseProps = Node & {
+	__typename?: "Course"
+	chapters: number
+	description: string
+	image: string
+	materials: number
+	quiz: number
+	title: string
+}
+
+export type CategoryProps = Node & {
+	__typename?: "Categories"
+	featured: boolean
+	image: string
+	name: string
+	price: number
+	reviews: ReviewProps[]
+	summary: string
+	subjects: CourseProps[]
+}
 
 export type WaitlistUserProps = {
+	__typename?: "Waitlist User"
 	waitlists_createdOn: Date | string
 	waitlists_deletedBy: Maybe<string>
 	waitlists_deletedOn?: Date | string
@@ -93,3 +119,12 @@ export type WaitlistUserProps = {
 	waitlists_updateOn?: Date | string
 	waitlists_waitlist_type: string
 }
+
+export type ChallengeProps = Node & {
+	__typename?: "Challenge"
+	challenges_challenge_name: string
+	challenges_challenge_is_completed: boolean
+	challenges_challenge_points: number
+}
+
+export type ReviewProps = Node & {}
