@@ -71,6 +71,7 @@ export type UserProps = Node & {
 	__typename?: "User"
 	email: string
 	firstName: string
+	image: string
 	lastName: string
 	password: string
 	username: string

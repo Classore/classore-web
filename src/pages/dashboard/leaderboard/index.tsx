@@ -6,9 +6,9 @@ import { Seo } from "@/components/shared"
 const Page = () => {
 	return (
 		<>
-			<Seo title="Dashboard" />
+			<Seo title="Leaderboard" />
 			<DashboardLayout>
-				<div className="px-8 py-6">Dashboard</div>
+				<h1>Leaderboard</h1>
 			</DashboardLayout>
 		</>
 	)
