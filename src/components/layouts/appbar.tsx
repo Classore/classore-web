@@ -2,6 +2,7 @@ import { RiArrowDropDownLine, RiGiftLine, RiNotificationLine } from "@remixicon/
 import Link from "next/link"
 import React from "react"
 
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
@@ -23,11 +24,14 @@ export const Appbar = () => {
 					</Button>
 				</Link>
 				<Separator orientation="vertical" className="h-11 bg-neutral-300" />
-				<Link href="/dashboard">
-					<Button className="size-[46px] rounded-full" size="icon" variant="outline">
-						<RiNotificationLine size={24} />
-					</Button>
-				</Link>
+				<Popover>
+					<PopoverTrigger asChild>
+						<Button className="size-[46px] rounded-full" size="icon" variant="outline">
+							<RiNotificationLine size={24} />
+						</Button>
+					</PopoverTrigger>
+					<PopoverContent className="mr-32 w-[400px] p-4"></PopoverContent>
+				</Popover>
 				<button onClick={() => setOpen(!open)} className="flex items-center gap-2">
 					<Avatar className="size-[46px] bg-black">
 						<AvatarImage src={user?.image} alt={user?.firstName} />

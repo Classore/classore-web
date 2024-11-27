@@ -21,6 +21,7 @@ const config: Config = {
 		},
 		extend: {
 			backgroundImage: {
+				dashboard: "url('/assets/images/dashboard.png')",
 				squiggly: "url('/assets/images/squiggly.png')",
 			},
 			colors: {

@@ -1,10 +1,12 @@
 import { Facebook, Instagram, Twitter, Youtube } from "lucide-react"
 import {
+	RiCalendar2Line,
 	RiGraduationCapLine,
 	RiHome8Line,
 	RiLayoutGridLine,
 	RiMessage3Line,
 	RiSettingsLine,
+	RiSpeedUpLine,
 	RiTeamLine,
 	RiTrophyLine,
 } from "@remixicon/react"
@@ -53,6 +55,16 @@ export const dashboard_links = [
 	{
 		label: "others",
 		links: [
+			{
+				name: "calendar",
+				href: "/dashboard/calendar",
+				icon: RiCalendar2Line,
+			},
+			{
+				name: "test center",
+				href: "/dashboard/test-center",
+				icon: RiSpeedUpLine,
+			},
 			{
 				name: "settings",
 				href: "/dashboard/settings",

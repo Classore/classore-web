@@ -4,11 +4,11 @@ import React from "react"
 import { cn } from "@/lib/utils"
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
-	className?: string
+	wrapperClassName?: string
 }
 
 const Search = React.forwardRef<HTMLInputElement, Props>(
-	({ className, onChange, value, ...props }, ref) => {
+	({ className, onChange, value, wrapperClassName, ...props }, ref) => {
 		const handleCommand = (e: KeyboardEvent) => {
 			if (e.ctrlKey && e.key === "k") {
 				e.preventDefault()
@@ -25,8 +25,8 @@ const Search = React.forwardRef<HTMLInputElement, Props>(
 		return (
 			<div
 				className={cn(
-					"flex h-10 items-center gap-2 rounded border px-2 py-3 focus-within:border-primary-500",
-					className
+					"flex h-[46px] items-center gap-2 rounded border px-2 py-3 focus-within:border-primary-500",
+					wrapperClassName
 				)}>
 				<RiSearchLine className="size-4" />
 				<input
@@ -35,7 +35,7 @@ const Search = React.forwardRef<HTMLInputElement, Props>(
 					id="search"
 					value={value}
 					onChange={onChange}
-					className="flex h-full min-w-60 border-none bg-transparent px-0 outline-none"
+					className={cn("flex h-full min-w-60 border-none bg-transparent px-0 outline-none", className)}
 					{...props}
 				/>
 				<div className="flex h-full items-center rounded border-none bg-neutral-300 px-2 py-1 text-sm">
