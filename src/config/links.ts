@@ -1,20 +1,34 @@
 import { Facebook, Instagram, Twitter, Youtube } from "lucide-react"
+import {
+	RiCalendar2Line,
+	RiGraduationCapLine,
+	RiHome8Line,
+	RiLayoutGridLine,
+	RiMessage3Line,
+	RiSettingsLine,
+	RiSpeedUpLine,
+	RiTeamLine,
+	RiTrophyLine,
+} from "@remixicon/react"
 
 export const dashboard_links = [
 	{
 		label: "main",
 		links: [
 			{
-				label: "dashboard",
+				name: "home",
 				href: "/dashboard",
+				icon: RiHome8Line,
 			},
 			{
-				label: "categories",
+				name: "categories",
 				href: "/dashboard/categories",
+				icon: RiLayoutGridLine,
 			},
 			{
-				label: "my courses",
-				href: "/dashboard/my-courses",
+				name: "my courses",
+				href: "/dashboard/courses",
+				icon: RiGraduationCapLine,
 			},
 		],
 	},
@@ -22,16 +36,19 @@ export const dashboard_links = [
 		label: "me",
 		links: [
 			{
-				label: "messages",
+				name: "messages",
 				href: "/dashboard/messages",
+				icon: RiMessage3Line,
 			},
 			{
-				label: "community forum",
-				href: "/dashboard/community-forum",
+				name: "community forum",
+				href: "/dashboard/community",
+				icon: RiTeamLine,
 			},
 			{
-				label: "leaderboard",
+				name: "leaderboard",
 				href: "/dashboard/leaderboard",
+				icon: RiTrophyLine,
 			},
 		],
 	},
@@ -39,8 +56,19 @@ export const dashboard_links = [
 		label: "others",
 		links: [
 			{
-				label: "settings",
+				name: "calendar",
+				href: "/dashboard/calendar",
+				icon: RiCalendar2Line,
+			},
+			{
+				name: "test center",
+				href: "/dashboard/test-center",
+				icon: RiSpeedUpLine,
+			},
+			{
+				name: "settings",
 				href: "/dashboard/settings",
+				icon: RiSettingsLine,
 			},
 		],
 	},
