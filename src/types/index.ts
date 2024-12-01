@@ -67,6 +67,8 @@ export type Node = {
 	updatedOn?: Date | string
 }
 
+export type FiletypeProps = "doc" | "docx" | "pdf" | "pptx" | "txt"
+
 export type UserProps = Node & {
 	__typename?: "User"
 	email: string
@@ -83,16 +85,6 @@ export type SubjectProps = Node & {
 	title: string
 }
 
-export type CourseProps = Node & {
-	__typename?: "Course"
-	chapters: number
-	description: string
-	image: string
-	materials: number
-	quiz: number
-	title: string
-}
-
 export type CategoryProps = Node & {
 	__typename?: "Categories"
 	featured: boolean
@@ -103,6 +95,67 @@ export type CategoryProps = Node & {
 	summary: string
 	subjects: CourseProps[]
 }
+
+export type CourseProps = Node & {
+	__typename?: "Course"
+	chapters: ChapterProps[]
+	description: string
+	image: string
+	materials: number
+	quiz: number
+	tags: string[]
+	title: string
+}
+
+export type ChapterProps = Node & {
+	__typename?: "Chapter"
+	description: string
+	quizzes: QuizProps[]
+	resources: ResourceProps[]
+	summary: string
+	title: string
+	transcript: TranscriptProps[]
+	isRead: boolean
+}
+
+export type TranscriptProps = Node & {
+	__typename?: "Transcript"
+	duration: number[]
+	summary: string
+	title: string
+}
+
+export type ResourceProps = Node & {
+	__typename?: "Resource"
+	description: string
+	file: FiletypeProps
+	title: string
+	url: string
+}
+
+export type QuizProps = Node & {
+	__typename?: "Quiz"
+	date: Date | string
+	questions: QuestionProps[]
+	score: number
+	title: string
+}
+
+export type QuestionProps = Node & {
+	__typename?: "Question"
+	answers: string[]
+	correct_answer: string
+	question: string
+}
+
+export type ChallengeProps = Node & {
+	__typename?: "Challenge"
+	challenges_challenge_name: string
+	challenges_challenge_is_completed: boolean
+	challenges_challenge_points: number
+}
+
+export type ReviewProps = Node & {}
 
 export type WaitlistUserProps = {
 	__typename?: "Waitlist User"
@@ -119,12 +172,3 @@ export type WaitlistUserProps = {
 	waitlists_updateOn?: Date | string
 	waitlists_waitlist_type: string
 }
-
-export type ChallengeProps = Node & {
-	__typename?: "Challenge"
-	challenges_challenge_name: string
-	challenges_challenge_is_completed: boolean
-	challenges_challenge_points: number
-}
-
-export type ReviewProps = Node & {}
