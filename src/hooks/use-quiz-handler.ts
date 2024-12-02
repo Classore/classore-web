@@ -1,154 +1,100 @@
+import { toast } from "sonner"
 import React from "react"
 
-import type { QuestionProps, QuizProps } from "@/types"
+import type { AnsweredQuestionProps, QuestionProps } from "@/types"
 
-interface QuizState {
-	currentQuestionIndex: number
-	selectedAnswers: Record<string | number, string>
-	skippedQuestions: Set<string | number>
+interface UseQuizProps {
+	questions: QuestionProps[]
+	onSubmit: (answered: AnsweredQuestionProps[]) => void
+	initialQuestion?: number
 }
 
-interface QuizHookResult {
-	currentIndex: number
-	currentQuestion: QuestionProps
-	isAnswered: boolean
-	isFirstQuestion: boolean
-	isLastQuestion: boolean
-	nextQuestion: () => boolean
-	previousQuestion: () => boolean
-	selectAnswer: (answer: string) => void
-	selectQuestion: (index: number) => void
-	skipQuestion: () => void
-	stats: {
-		answered: number
-		unanswered: number
-		skipped: number
-	}
-	totalQuestions: number
-	timeLeft: number
-}
+export const useQuizHandler = ({ questions, onSubmit, initialQuestion = 0 }: UseQuizProps) => {
+	const [answered, setAnswered] = React.useState<AnsweredQuestionProps[]>([])
+	const [current, setCurrent] = React.useState(initialQuestion)
 
-interface QuizConfig {
-	quiz: QuizProps
-	totalTime: number
-}
+	const currentQuestion = questions?.[current]
 
-export const useQuizManager = ({ quiz, totalTime }: QuizConfig): QuizHookResult => {
-	const [timeLeft, setTimeLeft] = React.useState(totalTime)
-	const [quizState, setQuizState] = React.useState<QuizState>({
-		currentQuestionIndex: 0,
-		selectedAnswers: {},
-		skippedQuestions: new Set(),
-	})
-
-	const totalQuestions = React.useMemo(() => quiz.questions.length, [quiz])
-
-	const currentQuestion = React.useMemo(
-		() => quiz.questions[quizState.currentQuestionIndex],
-		[quiz.questions, quizState.currentQuestionIndex]
+	const isAnswered = React.useCallback(
+		(id: string) => !!answered.find((answers) => answers.questionId === id),
+		[answered]
 	)
 
-	React.useEffect(() => {
-		if (timeLeft <= 0) return
-
-		const timerId = setInterval(() => {
-			setTimeLeft((prevTime) => {
-				if (prevTime <= 1) {
-					clearInterval(timerId)
-					return 0
-				}
-				return prevTime - 1
-			})
-		}, 1000)
-
-		return () => clearInterval(timerId)
-	}, [timeLeft])
+	const isAnswer = React.useCallback(
+		(answer: string) =>
+			answered.find((answers) => answers.questionId === currentQuestion.id)?.selectedAnswer === answer,
+		[answered, currentQuestion?.id]
+	)
 
 	const selectAnswer = React.useCallback(
 		(answer: string) => {
-			setQuizState((prev) => ({
-				...prev,
-				selectedAnswers: {
-					...prev.selectedAnswers,
-					[currentQuestion.id]: answer,
-				},
-				skippedQuestions: new Set(prev.skippedQuestions).delete(currentQuestion.id)
-					? prev.skippedQuestions
-					: prev.skippedQuestions,
-			}))
-		},
-		[currentQuestion]
-	)
-
-	const nextQuestion = React.useCallback(() => {
-		if (quizState.currentQuestionIndex < totalQuestions - 1) {
-			setQuizState((prev) => ({
-				...prev,
-				currentQuestionIndex: prev.currentQuestionIndex + 1,
-			}))
-			return true
-		}
-		return false
-	}, [quizState.currentQuestionIndex, totalQuestions])
-
-	const previousQuestion = React.useCallback(() => {
-		if (quizState.currentQuestionIndex > 0) {
-			setQuizState((prev) => ({
-				...prev,
-				currentQuestionIndex: prev.currentQuestionIndex - 1,
-			}))
-			return true
-		}
-		return false
-	}, [quizState.currentQuestionIndex])
-
-	const skipQuestion = React.useCallback(() => {
-		setQuizState((prev) => ({
-			...prev,
-			skippedQuestions: new Set(prev.skippedQuestions).add(currentQuestion.id),
-			currentQuestionIndex:
-				prev.currentQuestionIndex < totalQuestions - 1
-					? prev.currentQuestionIndex + 1
-					: prev.currentQuestionIndex,
-		}))
-	}, [currentQuestion, totalQuestions])
-
-	const selectQuestion = React.useCallback(
-		(index: number) => {
-			if (index >= 0 && index < totalQuestions) {
-				setQuizState((prev) => ({
-					...prev,
-					currentQuestionIndex: index,
-				}))
+			const answeredQuestion = {
+				questionId: currentQuestion.id,
+				selectedAnswer: answer,
 			}
+
+			setAnswered((prev) => {
+				const existingAnswerIndex = prev.findIndex((a) => a.questionId === currentQuestion.id)
+				if (existingAnswerIndex !== -1) {
+					return prev.map((a, i) => (i === existingAnswerIndex ? answeredQuestion : a))
+				}
+				return [...prev, answeredQuestion]
+			})
 		},
-		[totalQuestions]
+		[currentQuestion?.id]
 	)
 
-	const isAnswered = (questionId: string | number) => {
-		return quizState.selectedAnswers[questionId] !== undefined
-	}
+	const handleNavigation = React.useCallback(
+		(direction: "next" | "previous" | "skip") => {
+			if (direction === "next" && !isAnswered(currentQuestion.id)) {
+				toast.error("Please select an answer")
+				return
+			}
+
+			setCurrent((prev) => {
+				if (direction === "previous" && prev > 0) return prev - 1
+				if ((direction === "next" || direction === "skip") && prev < questions.length - 1)
+					return prev + 1
+				return prev
+			})
+		},
+		[currentQuestion?.id, isAnswered, questions?.length]
+	)
+
+	const handleSubmission = React.useCallback(() => {
+		// // Check if current question is answered
+		// if (!isAnswered(currentQuestion.id)) {
+		// 	toast.error("Please select an answer for the current question")
+		// 	return
+		// }
+
+		const unansweredCount = questions.length - answered.length
+		let shouldSubmit = true
+
+		if (unansweredCount > 0) {
+			shouldSubmit = window.confirm(
+				`You have ${unansweredCount} question${
+					unansweredCount > 1 ? "s" : ""
+				} unanswered. Are you sure you want to submit?`
+			)
+		} else {
+			shouldSubmit = window.confirm("Are you sure you want to submit the quiz?")
+		}
+
+		if (shouldSubmit) {
+			onSubmit(answered)
+		}
+	}, [questions?.length, answered, onSubmit])
 
 	return {
-		currentIndex: quizState.currentQuestionIndex,
+		current,
+		setCurrent,
+		answered,
 		currentQuestion,
-		isAnswered: isAnswered(currentQuestion.id),
-		isFirstQuestion: quizState.currentQuestionIndex === 0,
-		isLastQuestion: quizState.currentQuestionIndex === totalQuestions - 1,
-		nextQuestion,
-		previousQuestion,
+		isAnswered,
+		isAnswer,
 		selectAnswer,
-		selectQuestion,
-		skipQuestion,
-		stats: {
-			answered: Object.keys(quizState.selectedAnswers).length,
-			unanswered:
-				totalQuestions -
-				Object.keys(quizState.selectedAnswers).length -
-				quizState.skippedQuestions.size,
-			skipped: quizState.skippedQuestions.size,
-		},
-		totalQuestions,
-		timeLeft,
+		handleNavigation,
+		handleSubmission,
 	}
 }

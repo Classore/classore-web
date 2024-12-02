@@ -148,6 +148,11 @@ export type QuestionProps = Node & {
 	question: string
 }
 
+export type AnsweredQuestionProps = {
+	questionId: string
+	selectedAnswer: string
+}
+
 export type ChallengeProps = Node & {
 	__typename?: "Challenge"
 	challenges_challenge_name: string
