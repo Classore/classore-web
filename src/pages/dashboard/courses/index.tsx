@@ -7,6 +7,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import consultation from "@/assets/illustrations/consultation.svg"
 import { DashboardLayout } from "@/components/layouts"
 import { Button } from "@/components/ui/button"
+import { CourseCard } from "@/components/home"
 import { Seo } from "@/components/shared"
 
 import { categories } from "@/mock"
@@ -53,20 +54,7 @@ const Page = () => {
 							<ScrollArea className="h-[340px]">
 								<div className="flex w-auto items-center gap-4 overflow-x-scroll">
 									{categories[0].subjects.map((subject) => (
-										<Link
-											href="#"
-											key={subject.id}
-											className="aspect-[1.12/1] w-[350px] rounded-lg border p-4 transition-all duration-700 hover:shadow-2xl">
-											<div className="relative aspect-[1.96/1] w-full rounded-lg">
-												<Image
-													src={subject.image}
-													alt="desginer color"
-													fill
-													sizes="(max-width:1024px)100%"
-													className="rounded-lg object-cover"
-												/>
-											</div>
-										</Link>
+										<CourseCard key={subject.id} course={subject} />
 									))}
 								</div>
 								<ScrollBar orientation="horizontal" />
@@ -89,20 +77,7 @@ const Page = () => {
 							<ScrollArea className="h-[340px]">
 								<div className="flex w-auto items-center gap-4 overflow-x-scroll">
 									{categories[4].subjects.map((subject) => (
-										<Link
-											href="#"
-											key={subject.id}
-											className="aspect-[1.12/1] w-[350px] rounded-lg border p-4 transition-all duration-700 hover:shadow-2xl">
-											<div className="relative aspect-[1.96/1] w-full rounded-lg">
-												<Image
-													src={subject.image}
-													alt="desginer color"
-													fill
-													sizes="(max-width:1024px)100%"
-													className="rounded-lg object-cover"
-												/>
-											</div>
-										</Link>
+										<CourseCard key={subject.id} course={subject} />
 									))}
 								</div>
 								<ScrollBar orientation="horizontal" />

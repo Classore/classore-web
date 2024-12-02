@@ -35,7 +35,10 @@ const Search = React.forwardRef<HTMLInputElement, Props>(
 					id="search"
 					value={value}
 					onChange={onChange}
-					className={cn("flex h-full min-w-60 border-none bg-transparent px-0 outline-none", className)}
+					className={cn(
+						"flex h-full min-w-60 border-0 bg-transparent px-0 outline-0 ring-0 focus:border-0 focus:outline-0 focus:ring-0",
+						className
+					)}
 					{...props}
 				/>
 				<div className="flex h-full items-center rounded border-none bg-neutral-300 px-2 py-1 text-sm">

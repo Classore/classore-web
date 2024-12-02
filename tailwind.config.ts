@@ -78,6 +78,7 @@ const config: Config = {
 			},
 			boxShadow: {
 				primary: "0 0 0 2px rgba(111,66,193,0.1),0px 0px 0px 3px rgba(111,66,193,0.1)",
+				neomorphism: "inset 5px 5px 10px #eef0f2, inset -5px -5px 10px #f6f8fa",
 			},
 		},
 	},

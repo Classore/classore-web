@@ -10,7 +10,7 @@ export const challenges: ChallengeProps[] = [
 	{
 		id: "2",
 		challenges_challenge_is_completed: true,
-		challenges_challenge_name: "Complete 3 chapters in English",
+		challenges_challenge_name: "Complete 3 chapters in Mathematics",
 		challenges_challenge_points: 7,
 	},
 	{
@@ -38,9 +38,10 @@ export const categories: CategoryProps[] = [
 				title: "Accounting",
 				description:
 					"Fusce posuere felis sed lacus. Morbi sem mauris, laoreet ut, rhoncus aliquet, pulvinar sed, nisl. Nunc rhoncus dui vel sem.",
-				chapters: 26,
+				chapters: [],
 				materials: 41,
 				quiz: 16,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "6d739f19-c323-4c8f-83e3-9128dd44be32",
@@ -50,9 +51,10 @@ export const categories: CategoryProps[] = [
 				title: "Environmental Science",
 				description:
 					"Maecenas ut massa quis augue luctus tincidunt. Nulla mollis molestie lorem. Quisque ut erat.\n\nCurabitur gravida nisi at nibh. In hac habitasse platea dictumst. Aliquam augue quam, sollicitudin vitae, consectetuer eget, rutrum at, lorem.",
-				chapters: 30,
+				chapters: [],
 				materials: 41,
 				quiz: 15,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "23095c96-d564-4657-9d8d-fe2465d65118",
@@ -62,9 +64,10 @@ export const categories: CategoryProps[] = [
 				title: "Arabic",
 				description:
 					"Maecenas leo odio, condimentum id, luctus nec, molestie sed, justo. Pellentesque viverra pede ac diam. Cras pellentesque volutpat dui.",
-				chapters: 36,
+				chapters: [],
 				materials: 39,
 				quiz: 17,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "d9439b7e-3f40-41e5-83dd-a9a1c07089c5",
@@ -74,9 +77,10 @@ export const categories: CategoryProps[] = [
 				title: "Biology",
 				description:
 					"Proin interdum mauris non ligula pellentesque ultrices. Phasellus id sapien in sapien iaculis congue. Vivamus metus arcu, adipiscing molestie, hendrerit at, vulputate vitae, nisl.\n\nAenean lectus. Pellentesque eget nunc. Donec quis orci eget orci vehicula condimentum.\n\nCurabitur in libero ut massa volutpat convallis. Morbi odio odio, elementum eu, interdum eu, tincidunt in, leo. Maecenas pulvinar lobortis est.",
-				chapters: 37,
+				chapters: [],
 				materials: 47,
 				quiz: 13,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "1093b02d-fa1b-4cef-b78b-5158629d986d",
@@ -86,9 +90,10 @@ export const categories: CategoryProps[] = [
 				title: "History",
 				description:
 					"Vestibulum ac est lacinia nisi venenatis tristique. Fusce congue, diam id ornare imperdiet, sapien urna pretium nisl, ut volutpat sapien arcu sed augue. Aliquam erat volutpat.",
-				chapters: 24,
+				chapters: [],
 				materials: 44,
 				quiz: 20,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "19dcf9e3-af49-4a47-9ff5-64f5eee890a0",
@@ -98,9 +103,10 @@ export const categories: CategoryProps[] = [
 				title: "Biology",
 				description:
 					"Aenean lectus. Pellentesque eget nunc. Donec quis orci eget orci vehicula condimentum.",
-				chapters: 29,
+				chapters: [],
 				materials: 33,
 				quiz: 17,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "0c1985a5-ebe9-4293-bc1c-4690c1d399f1",
@@ -110,9 +116,10 @@ export const categories: CategoryProps[] = [
 				title: "French",
 				description:
 					"Duis bibendum, felis sed interdum venenatis, turpis enim blandit mi, in porttitor pede justo eu massa. Donec dapibus. Duis at velit eu est congue elementum.\n\nIn hac habitasse platea dictumst. Morbi vestibulum, velit id pretium iaculis, diam erat fermentum justo, nec condimentum neque sapien placerat ante. Nulla justo.",
-				chapters: 16,
+				chapters: [],
 				materials: 45,
 				quiz: 11,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "e196e45f-da7c-4c6c-a54d-008fa01196a5",
@@ -122,9 +129,10 @@ export const categories: CategoryProps[] = [
 				title: "Biology",
 				description:
 					"Nullam porttitor lacus at turpis. Donec posuere metus vitae ipsum. Aliquam non mauris.\n\nMorbi non lectus. Aliquam sit amet diam in magna bibendum imperdiet. Nullam orci pede, venenatis non, sodales sed, tincidunt eu, felis.",
-				chapters: 38,
+				chapters: [],
 				materials: 47,
 				quiz: 14,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "a191c1ae-ee1f-428d-9b48-cc290b5d3603",
@@ -134,9 +142,10 @@ export const categories: CategoryProps[] = [
 				title: "English Literature",
 				description:
 					"Maecenas ut massa quis augue luctus tincidunt. Nulla mollis molestie lorem. Quisque ut erat.\n\nCurabitur gravida nisi at nibh. In hac habitasse platea dictumst. Aliquam augue quam, sollicitudin vitae, consectetuer eget, rutrum at, lorem.\n\nInteger tincidunt ante vel ipsum. Praesent blandit lacinia erat. Vestibulum sed magna at nunc commodo placerat.",
-				chapters: 33,
+				chapters: [],
 				materials: 44,
 				quiz: 10,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "33446a70-f81c-40fd-b591-dc45ba77dbe7",
@@ -145,9 +154,617 @@ export const categories: CategoryProps[] = [
 			{
 				title: "Mathematics",
 				description: "Fusce consequat. Nulla nisl. Nunc nisl.",
-				chapters: 15,
+				chapters: [
+					{
+						id: "1",
+						title: "Algebraic Structures and Equations",
+						description:
+							"Advanced algebraic manipulation, solving complex equations, and understanding mathematical structures.",
+						summary:
+							"This chapter explores sophisticated algebraic techniques, including polynomial equations, system of equations, and advanced factorization methods.",
+						transcript: [
+							{
+								id: "1",
+								duration: [0, 15],
+								summary:
+									"Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium reprehenderit sit nobis illum dolorem deserunt earum asperiores accusamus cumque, repellat in, minus eligendi voluptas dolorum laudantium numquam ratione? Ut rem aliquam deleniti, excepturi veritatis ab obcaecati vel quibusdam molestias sit nihil maiores soluta animi facere sunt maxime labore quaerat commodi, cupiditate fugiat. Tenetur a ullam modi, quasi repellendus qui repellat? Eius, consectetur culpa? Atque, fuga vel quis necessitatibus accusantium expedita quos. Ratione commodi velit, minus accusamus cum iusto quasi quod, provident delectus voluptatum, libero eum sint id eius. Earum modi fugit similique est culpa veritatis animi repellat temporibus voluptas architecto!",
+								title: "Introduction",
+							},
+							{
+								id: "2",
+								duration: [15, 30],
+								summary:
+									"Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium reprehenderit sit nobis illum dolorem deserunt earum asperiores accusamus cumque, repellat in, minus eligendi voluptas dolorum laudantium numquam ratione? Ut rem aliquam deleniti, excepturi veritatis ab obcaecati vel quibusdam molestias sit nihil maiores soluta animi facere sunt maxime labore quaerat commodi, cupiditate fugiat. Tenetur a ullam modi, quasi repellendus qui repellat? Eius, consectetur culpa? Atque, fuga vel quis necessitatibus accusantium expedita quos. Ratione commodi velit, minus accusamus cum iusto quasi quod, provident delectus voluptatum, libero eum sint id eius. Earum modi fugit similique est culpa veritatis animi repellat temporibus voluptas architecto!",
+								title: "Algebraic Manipulation",
+							},
+							{
+								id: "3",
+								duration: [30, 45],
+								summary:
+									"Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium reprehenderit sit nobis illum dolorem deserunt earum asperiores accusamus cumque, repellat in, minus eligendi voluptas dolorum laudantium numquam ratione? Ut rem aliquam deleniti, excepturi veritatis ab obcaecati vel quibusdam molestias sit nihil maiores soluta animi facere sunt maxime labore quaerat commodi, cupiditate fugiat. Tenetur a ullam modi, quasi repellendus qui repellat? Eius, consectetur culpa? Atque, fuga vel quis necessitatibus accusantium expedita quos. Ratione commodi velit, minus accusamus cum iusto quasi quod, provident delectus voluptatum, libero eum sint id eius. Earum modi fugit similique est culpa veritatis animi repellat temporibus voluptas architecto!",
+								title: "Equations",
+							},
+							{
+								id: "4",
+								duration: [45, 60],
+								summary:
+									"Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium reprehenderit sit nobis illum dolorem deserunt earum asperiores accusamus cumque, repellat in, minus eligendi voluptas dolorum laudantium numquam ratione? Ut rem aliquam deleniti, excepturi veritatis ab obcaecati vel quibusdam molestias sit nihil maiores soluta animi facere sunt maxime labore quaerat commodi, cupiditate fugiat. Tenetur a ullam modi, quasi repellendus qui repellat? Eius, consectetur culpa? Atque, fuga vel quis necessitatibus accusantium expedita quos. Ratione commodi velit, minus accusamus cum iusto quasi quod, provident delectus voluptatum, libero eum sint id eius. Earum modi fugit similique est culpa veritatis animi repellat temporibus voluptas architecto!",
+								title: "Polynomial Equations",
+							},
+							{
+								id: "5",
+								duration: [60, 75],
+								summary:
+									"Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium reprehenderit sit nobis illum dolorem deserunt earum asperiores accusamus cumque, repellat in, minus eligendi voluptas dolorum laudantium numquam ratione? Ut rem aliquam deleniti, excepturi veritatis ab obcaecati vel quibusdam molestias sit nihil maiores soluta animi facere sunt maxime labore quaerat commodi, cupiditate fugiat. Tenetur a ullam modi, quasi repellendus qui repellat? Eius, consectetur culpa? Atque, fuga vel quis necessitatibus accusantium expedita quos. Ratione commodi velit, minus accusamus cum iusto quasi quod, provident delectus voluptatum, libero eum sint id eius. Earum modi fugit similique est culpa veritatis animi repellat temporibus voluptas architecto!",
+								title: "System of Equations",
+							},
+							{
+								id: "6",
+								duration: [75, 90],
+								summary:
+									"Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium reprehenderit sit nobis illum dolorem deserunt earum asperiores accusamus cumque, repellat in, minus eligendi voluptas dolorum laudantium numquam ratione? Ut rem aliquam deleniti, excepturi veritatis ab obcaecati vel quibusdam molestias sit nihil maiores soluta animi facere sunt maxime labore quaerat commodi, cupiditate fugiat. Tenetur a ullam modi, quasi repellendus qui repellat? Eius, consectetur culpa? Atque, fuga vel quis necessitatibus accusantium expedita quos. Ratione commodi velit, minus accusamus cum iusto quasi quod, provident delectus voluptatum, libero eum sint id eius. Earum modi fugit similique est culpa veritatis animi repellat temporibus voluptas architecto!",
+								title: "Factorization Techniques",
+							},
+							{
+								id: "7",
+								duration: [90, 105],
+								summary:
+									"Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium reprehenderit sit nobis illum dolorem deserunt earum asperiores accusamus cumque, repellat in, minus eligendi voluptas dolorum laudantium numquam ratione? Ut rem aliquam deleniti, excepturi veritatis ab obcaecati vel quibusdam molestias sit nihil maiores soluta animi facere sunt maxime labore quaerat commodi, cupiditate fugiat. Tenetur a ullam modi, quasi repellendus qui repellat? Eius, consectetur culpa? Atque, fuga vel quis necessitatibus accusantium expedita quos. Ratione commodi velit, minus accusamus cum iusto quasi quod, provident delectus voluptatum, libero eum sint id eius. Earum modi fugit similique est culpa veritatis animi repellat temporibus voluptas architecto!",
+								title: "Advanced Applications",
+							},
+							{
+								id: "8",
+								duration: [105, 120],
+								summary:
+									"Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium reprehenderit sit nobis illum dolorem deserunt earum asperiores accusamus cumque, repellat in, minus eligendi voluptas dolorum laudantium numquam ratione? Ut rem aliquam deleniti, excepturi veritatis ab obcaecati vel quibusdam molestias sit nihil maiores soluta animi facere sunt maxime labore quaerat commodi, cupiditate fugiat. Tenetur a ullam modi, quasi repellendus qui repellat? Eius, consectetur culpa? Atque, fuga vel quis necessitatibus accusantium expedita quos. Ratione commodi velit, minus accusamus cum iusto quasi quod, provident delectus voluptatum, libero eum sint id eius. Earum modi fugit similique est culpa veritatis animi repellat temporibus voluptas architecto!",
+								title: "Conclusion",
+							},
+						],
+						quizzes: [
+							{
+								id: "1",
+								date: "2024-10-27T12:05:23Z",
+								questions: [
+									{
+										id: "q1",
+										createdOn: "2024-12-01T10:00:01Z",
+										question: "What is the defining property of a group in abstract algebra?",
+										answers: [
+											"Closure under addition",
+											"Closure under multiplication with an identity element and inverse",
+											"Commutative property for all elements",
+										],
+										correct_answer: "Closure under multiplication with an identity element and inverse",
+									},
+									{
+										id: "q2",
+										createdOn: "2024-12-01T10:00:02Z",
+										question: "In the equation 3x + 5 = 17, what is the value of x?",
+										answers: ["4", "3", "6"],
+										correct_answer: "4",
+									},
+									{
+										id: "q3",
+										createdOn: "2024-12-01T10:00:03Z",
+										question: "What is a ring in abstract algebra?",
+										answers: [
+											"A set with only addition operation",
+											"A set with addition and multiplication operations that satisfy specific axioms",
+											"A set with multiplication operation",
+										],
+										correct_answer:
+											"A set with addition and multiplication operations that satisfy specific axioms",
+									},
+									{
+										id: "q4",
+										createdOn: "2024-12-01T10:00:04Z",
+										question: "What is the difference between a field and a group?",
+										answers: [
+											"A field has both addition and multiplication operations, a group has only one",
+											"A group has only multiplication, a field has addition and multiplication",
+											"There is no difference between a field and a group",
+										],
+										correct_answer:
+											"A field has both addition and multiplication operations, a group has only one",
+									},
+									{
+										id: "q5",
+										createdOn: "2024-12-01T10:00:05Z",
+										question: "Solve the quadratic equation: x² - 4x + 4 = 0",
+										answers: ["2", "4", "2 and 2"],
+										correct_answer: "2",
+									},
+									{
+										id: "q6",
+										createdOn: "2024-12-01T10:00:06Z",
+										question: "What is an abelian group?",
+										answers: [
+											"A group with no inverses",
+											"A group where the operation is commutative",
+											"A group with exactly two elements",
+										],
+										correct_answer: "A group where the operation is commutative",
+									},
+									{
+										id: "q7",
+										createdOn: "2024-12-01T10:00:07Z",
+										question: "In the equation 2(x + 3) = 16, what is x?",
+										answers: ["5", "4", "3"],
+										correct_answer: "5",
+									},
+									{
+										id: "q8",
+										createdOn: "2024-12-01T10:00:08Z",
+										question: "What property must a set have to be considered a vector space?",
+										answers: [
+											"Closure under scalar multiplication",
+											"Only addition operation",
+											"Finite number of elements",
+										],
+										correct_answer: "Closure under scalar multiplication",
+									},
+									{
+										id: "q9",
+										createdOn: "2024-12-01T10:00:09Z",
+										question: "What is the characteristic of a field?",
+										answers: [
+											"The number of elements in the field",
+											"The smallest positive integer n such that n * 1 = 0",
+											"The number of operations in the field",
+										],
+										correct_answer: "The smallest positive integer n such that n * 1 = 0",
+									},
+									{
+										id: "q10",
+										createdOn: "2024-12-01T10:00:10Z",
+										question: "Solve for x: log₂(x) = 3",
+										answers: ["8", "6", "4"],
+										correct_answer: "8",
+									},
+									{
+										id: "q11",
+										createdOn: "2024-12-01T10:00:11Z",
+										question: "What is the difference between a monoid and a group?",
+										answers: [
+											"A monoid does not require inverse elements",
+											"A monoid has no identity element",
+											"A group has more operations",
+										],
+										correct_answer: "A monoid does not require inverse elements",
+									},
+									{
+										id: "q12",
+										createdOn: "2024-12-01T10:00:12Z",
+										question: "In the equation |x - 3| = 5, what are the possible values of x?",
+										answers: ["8 and -2", "6 and 0", "7 and -1"],
+										correct_answer: "8 and -2",
+									},
+									{
+										id: "q13",
+										createdOn: "2024-12-01T10:00:13Z",
+										question: "What is a homomorphism in abstract algebra?",
+										answers: [
+											"A function that preserves the structure between algebraic structures",
+											"A function that creates new algebraic structures",
+											"A function that destroys algebraic structures",
+										],
+										correct_answer: "A function that preserves the structure between algebraic structures",
+									},
+									{
+										id: "q14",
+										createdOn: "2024-12-01T10:00:14Z",
+										question: "Solve the system of equations: x + y = 10, x - y = 2",
+										answers: ["x = 6, y = 4", "x = 5, y = 5", "x = 4, y = 6"],
+										correct_answer: "x = 6, y = 4",
+									},
+									{
+										id: "q15",
+										createdOn: "2024-12-01T10:00:15Z",
+										question: "What defines an ideal in ring theory?",
+										answers: [
+											"A subset that is closed under addition",
+											"A subset that is closed under multiplication",
+											"A subset closed under addition and multiplication by ring elements",
+										],
+										correct_answer: "A subset closed under addition and multiplication by ring elements",
+									},
+									{
+										id: "q16",
+										createdOn: "2024-12-01T10:00:16Z",
+										question: "What is the order of a group element?",
+										answers: [
+											"The number of times the element must be multiplied to get the identity",
+											"The number of elements in the group",
+											"The size of the group",
+										],
+										correct_answer: "The number of times the element must be multiplied to get the identity",
+									},
+									{
+										id: "q17",
+										createdOn: "2024-12-01T10:00:17Z",
+										question: "Solve the exponential equation: 2ˣ = 32",
+										answers: ["5", "4", "6"],
+										correct_answer: "5",
+									},
+									{
+										id: "q18",
+										createdOn: "2024-12-01T10:00:18Z",
+										question: "What is the fundamental theorem of algebra?",
+										answers: [
+											"Every polynomial has a real root",
+											"Every non-constant polynomial has at least one complex root",
+											"All polynomials can be factored completely",
+										],
+										correct_answer: "Every non-constant polynomial has at least one complex root",
+									},
+									{
+										id: "q19",
+										createdOn: "2024-12-01T10:00:19Z",
+										question: "What distinguishes a field from a ring?",
+										answers: [
+											"Rings have no multiplication operation",
+											"Fields have multiplicative inverses for all non-zero elements",
+											"Rings have more complex operations",
+										],
+										correct_answer: "Fields have multiplicative inverses for all non-zero elements",
+									},
+									{
+										id: "q20",
+										createdOn: "2024-12-01T10:00:20Z",
+										question: "Solve: sin(x) = 1/2 in the interval [0, 2π]",
+										answers: ["π/6 and 5π/6", "π/4 and 3π/4", "π/3 and 2π/3"],
+										correct_answer: "π/6 and 5π/6",
+									},
+									{
+										id: "q21",
+										createdOn: "2024-12-01T10:00:21Z",
+										question: "What is a simple group?",
+										answers: [
+											"A group with few elements",
+											"A group with no proper normal subgroups",
+											"A group with only addition operations",
+										],
+										correct_answer: "A group with no proper normal subgroups",
+									},
+									{
+										id: "q22",
+										createdOn: "2024-12-01T10:00:22Z",
+										question: "Solve the inequality: 2x + 3 > 7",
+										answers: ["x > 2", "x < 2", "x ≥ 2"],
+										correct_answer: "x > 2",
+									},
+									{
+										id: "q23",
+										createdOn: "2024-12-01T10:00:23Z",
+										question: "What is a polynomial ring?",
+										answers: [
+											"A ring of polynomials with coefficients from another ring",
+											"A ring with only linear polynomials",
+											"A ring with no polynomial operations",
+										],
+										correct_answer: "A ring of polynomials with coefficients from another ring",
+									},
+									{
+										id: "q24",
+										createdOn: "2024-12-01T10:00:24Z",
+										question: "What does it mean for a group to be cyclic?",
+										answers: [
+											"The group has a circular structure",
+											"The group can be generated by a single element",
+											"The group has no inverse elements",
+										],
+										correct_answer: "The group can be generated by a single element",
+									},
+									{
+										id: "q25",
+										createdOn: "2024-12-01T10:00:25Z",
+										question: "Solve the rational equation: 1/(x-2) = 3/(x+1)",
+										answers: ["x = 5", "x = 3", "x = 7"],
+										correct_answer: "x = 5",
+									},
+									{
+										id: "q26",
+										createdOn: "2024-12-01T10:00:26Z",
+										question: "What is an algebraically closed field?",
+										answers: [
+											"A field with finite elements",
+											"A field where every non-constant polynomial has a root",
+											"A field with only positive elements",
+										],
+										correct_answer: "A field where every non-constant polynomial has a root",
+									},
+									{
+										id: "q27",
+										createdOn: "2024-12-01T10:00:27Z",
+										question: "What is the Fundamental Theorem of Galois Theory about?",
+										answers: [
+											"Relationship between field extensions and group theory",
+											"Classification of all possible algebraic structures",
+											"Proving the existence of polynomial solutions",
+										],
+										correct_answer: "Relationship between field extensions and group theory",
+									},
+									{
+										id: "q28",
+										createdOn: "2024-12-01T10:00:28Z",
+										question: "Solve: log₃(x + 2) = 2",
+										answers: ["7", "9", "5"],
+										correct_answer: "7",
+									},
+									{
+										id: "q29",
+										createdOn: "2024-12-01T10:00:29Z",
+										question: "What defines an integral domain?",
+										answers: [
+											"A ring with no zero divisors",
+											"A ring with only positive elements",
+											"A ring with infinite elements",
+										],
+										correct_answer: "A ring with no zero divisors",
+									},
+									{
+										id: "q30",
+										createdOn: "2024-12-01T10:00:30Z",
+										question: "What is the definition of a perfect field?",
+										answers: [
+											"A field with all elements being perfect squares",
+											"A field where every finite extension is separable",
+											"A field with only perfect cube elements",
+										],
+										correct_answer: "A field where every finite extension is separable",
+									},
+									{
+										id: "q31",
+										createdOn: "2024-12-01T10:00:31Z",
+										question: "Solve the parametric equation: x = 2t, y = t² + 1 when t = 2",
+										answers: ["x = 4, y = 5", "x = 6, y = 7", "x = 2, y = 5"],
+										correct_answer: "x = 4, y = 5",
+									},
+									{
+										id: "q32",
+										createdOn: "2024-12-01T10:00:32Z",
+										question: "What is a principal ideal domain (PID)?",
+										answers: [
+											"A domain where every ideal is generated by a single element",
+											"A domain with only principal elements",
+											"A domain with no ideals",
+										],
+										correct_answer: "A domain where every ideal is generated by a single element",
+									},
+									{
+										id: "q33",
+										createdOn: "2024-12-01T10:00:33Z",
+										question: "What characterizes a separable extension in field theory?",
+										answers: [
+											"All its roots are distinct",
+											"It has only one extension field",
+											"It cannot be extended further",
+										],
+										correct_answer: "All its roots are distinct",
+									},
+									{
+										id: "q34",
+										createdOn: "2024-12-01T10:00:34Z",
+										question: "Solve: sin(x) * cos(x) = 1/2",
+										answers: ["π/4 and 5π/4", "π/3 and 2π/3", "π/6 and 5π/6"],
+										correct_answer: "π/4 and 5π/4",
+									},
+								],
+								title: "",
+								score: 80,
+							},
+						],
+						resources: [
+							{
+								id: "1",
+								description: "",
+								file: "pptx",
+								title: "Algebraic Structures and Equations",
+								url: "https://en.wikipedia.org/wiki/Algebraic_structure",
+							},
+							{
+								id: "2",
+								description: "",
+								file: "docx",
+								title: "Polynomial Equations",
+								url: "https://en.wikipedia.org/wiki/Algebraic_structure",
+							},
+							{
+								id: "3",
+								description: "",
+								file: "pdf",
+								title: "System of Equations",
+								url: "https://en.wikipedia.org/wiki/Algebraic_structure",
+							},
+							{
+								id: "4",
+								description: "",
+								file: "pdf",
+								title: "Factorization Techniques",
+								url: "https://en.wikipedia.org/wiki/Algebraic_structure",
+							},
+							{
+								id: "5",
+								description: "",
+								file: "doc",
+								title: "Advanced Applications",
+								url: "https://en.wikipedia.org/wiki/Algebraic_structure",
+							},
+						],
+						isRead: true,
+					},
+					{
+						id: "2",
+						title: "Trigonometric Functions and Identities",
+						description:
+							"Comprehensive study of trigonometric functions, their properties, and advanced identities.",
+						summary:
+							"Students will master complex trigonometric manipulations, exploring sine, cosine, and tangent functions in depth.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "3",
+						title: "Coordinate Geometry",
+						description:
+							"Advanced exploration of geometric concepts using coordinate systems and analytical approaches.",
+						summary:
+							"This chapter connects algebraic methods with geometric representations, introducing complex analytical techniques.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "4",
+						title: "Calculus: Limits and Continuity",
+						description:
+							"Introduction to fundamental concepts of calculus, focusing on limits and function continuity.",
+						summary:
+							"Students will explore the mathematical foundations of change, understanding how functions behave at critical points.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "5",
+						title: "Derivatives and Their Applications",
+						description:
+							"Advanced study of derivatives, including rate of change, optimization, and mathematical modeling.",
+						summary:
+							"This chapter demonstrates how derivatives can be used to solve real-world problems and understand function behaviors.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "6",
+						title: "Integration Techniques",
+						description:
+							"Comprehensive exploration of integration methods and their practical applications.",
+						summary:
+							"Students will master various integration techniques, understanding how to calculate areas, volumes, and accumulated quantities.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "7",
+						title: "Probability Theory",
+						description:
+							"Advanced probability concepts, including combinatorics, conditional probability, and statistical inference.",
+						summary:
+							"This chapter develops sophisticated understanding of randomness, chance, and mathematical prediction.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "8",
+						title: "Matrices and Linear Transformations",
+						description:
+							"Deep dive into matrix algebra, linear transformations, and their applications in various fields.",
+						summary:
+							"Students will explore how matrices can represent complex mathematical transformations and solve systems of equations.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "9",
+						title: "Vectors in Three-Dimensional Space",
+						description:
+							"Advanced vector algebra, including dot and cross products, and three-dimensional geometric applications.",
+						summary:
+							"This chapter extends vector concepts to three-dimensional space, providing tools for complex spatial analysis.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "10",
+						title: "Exponential and Logarithmic Functions",
+						description:
+							"Comprehensive study of exponential growth, logarithmic properties, and their real-world applications.",
+						summary:
+							"Students will explore the powerful mathematical behaviors of exponential and logarithmic functions.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "11",
+						title: "Complex Numbers",
+						description:
+							"Advanced exploration of complex number systems, including algebraic and geometric interpretations.",
+						summary:
+							"This chapter introduces the mathematical world beyond real numbers, exploring complex number operations.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "12",
+						title: "Statistical Analysis",
+						description:
+							"Advanced statistical methods, including hypothesis testing, regression analysis, and data interpretation.",
+						summary:
+							"Students will develop sophisticated skills in analyzing and interpreting mathematical and statistical data.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "13",
+						title: "Series and Sequences",
+						description:
+							"Comprehensive study of mathematical sequences, series, and their convergence properties.",
+						summary:
+							"This chapter explores the fascinating world of infinite sequences and their mathematical behaviors.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "14",
+						title: "Analytical Geometry of Conic Sections",
+						description:
+							"Advanced study of circles, ellipses, parabolas, and hyperbolas using coordinate geometry.",
+						summary:
+							"Students will explore the mathematical properties of conic sections and their geometric representations.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "15",
+						title: "Mathematical Modeling",
+						description:
+							"Introduction to using mathematical techniques to model real-world phenomena and solve complex problems.",
+						summary:
+							"This chapter demonstrates how mathematical tools can be applied to understand and predict real-world systems.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+				],
 				materials: 45,
 				quiz: 16,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "480327bf-883c-415b-8847-eff976802b5c",
@@ -171,9 +788,10 @@ export const categories: CategoryProps[] = [
 				title: "Computer Science",
 				description:
 					"Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus. In est risus, auctor sed, tristique in, tempus sit amet, sem.\n\nFusce consequat. Nulla nisl. Nunc nisl.\n\nDuis bibendum, felis sed interdum venenatis, turpis enim blandit mi, in porttitor pede justo eu massa. Donec dapibus. Duis at velit eu est congue elementum.",
-				chapters: 24,
+				chapters: [],
 				materials: 39,
 				quiz: 12,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "0fb7dbdd-849a-443c-878d-eec9179c8c0c",
@@ -183,9 +801,10 @@ export const categories: CategoryProps[] = [
 				title: "Geography",
 				description:
 					"Vestibulum quam sapien, varius ut, blandit non, interdum in, ante. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis faucibus accumsan odio. Curabitur convallis.\n\nDuis consequat dui nec nisi volutpat eleifend. Donec ut dolor. Morbi vel lectus in quam fringilla rhoncus.\n\nMauris enim leo, rhoncus sed, vestibulum sit amet, cursus id, turpis. Integer aliquet, massa id lobortis convallis, tortor risus dapibus augue, vel accumsan tellus nisi eu orci. Mauris lacinia sapien quis libero.",
-				chapters: 27,
+				chapters: [],
 				materials: 28,
 				quiz: 20,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "34b162b5-2843-4679-85ec-1ce05b40f9ec",
@@ -195,9 +814,10 @@ export const categories: CategoryProps[] = [
 				title: "Sociology",
 				description:
 					"Praesent id massa id nisl venenatis lacinia. Aenean sit amet justo. Morbi ut odio.\n\nCras mi pede, malesuada in, imperdiet et, commodo vulputate, justo. In blandit ultrices enim. Lorem ipsum dolor sit amet, consectetuer adipiscing elit.\n\nProin interdum mauris non ligula pellentesque ultrices. Phasellus id sapien in sapien iaculis congue. Vivamus metus arcu, adipiscing molestie, hendrerit at, vulputate vitae, nisl.",
-				chapters: 36,
+				chapters: [],
 				materials: 32,
 				quiz: 11,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "21072d35-e590-495c-84e1-8c82f714b584",
@@ -206,9 +826,10 @@ export const categories: CategoryProps[] = [
 			{
 				title: "Art and Design",
 				description: "Fusce consequat. Nulla nisl. Nunc nisl.",
-				chapters: 27,
+				chapters: [],
 				materials: 40,
 				quiz: 11,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "fc153fc7-d5f7-49e0-9ca7-bb4ba979769a",
@@ -218,9 +839,10 @@ export const categories: CategoryProps[] = [
 				title: "Arabic",
 				description:
 					"Sed sagittis. Nam congue, risus semper porta volutpat, quam pede lobortis ligula, sit amet eleifend pede libero quis orci. Nullam molestie nibh in lectus.\n\nPellentesque at nulla. Suspendisse potenti. Cras in purus eu magna vulputate luctus.",
-				chapters: 37,
+				chapters: [],
 				materials: 48,
 				quiz: 10,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "912bd37a-a5a7-4ece-ae63-2de42ceff9e9",
@@ -230,9 +852,10 @@ export const categories: CategoryProps[] = [
 				title: "Music",
 				description:
 					"Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus. In est risus, auctor sed, tristique in, tempus sit amet, sem.\n\nFusce consequat. Nulla nisl. Nunc nisl.",
-				chapters: 21,
+				chapters: [],
 				materials: 36,
 				quiz: 16,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "4cde70ca-1b98-45e9-9d1e-7ad3c219a5b1",
@@ -241,9 +864,10 @@ export const categories: CategoryProps[] = [
 			{
 				title: "Spanish",
 				description: "Suspendisse potenti. In eleifend quam a odio. In hac habitasse platea dictumst.",
-				chapters: 15,
+				chapters: [],
 				materials: 28,
 				quiz: 11,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "aa8c4c5d-9204-42fa-ac5e-9d73dc4824b1",
@@ -253,9 +877,10 @@ export const categories: CategoryProps[] = [
 				title: "French",
 				description:
 					"In sagittis dui vel nisl. Duis ac nibh. Fusce lacus purus, aliquet at, feugiat non, pretium quis, lectus.",
-				chapters: 34,
+				chapters: [],
 				materials: 46,
 				quiz: 18,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "de0f7a7e-4106-4b1b-8238-ae2f58ae9daf",
@@ -292,9 +917,10 @@ export const categories: CategoryProps[] = [
 				title: "Physics",
 				description:
 					"Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Proin risus. Praesent lectus.\n\nVestibulum quam sapien, varius ut, blandit non, interdum in, ante. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis faucibus accumsan odio. Curabitur convallis.\n\nDuis consequat dui nec nisi volutpat eleifend. Donec ut dolor. Morbi vel lectus in quam fringilla rhoncus.",
-				chapters: 26,
+				chapters: [],
 				materials: 33,
 				quiz: 15,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "fbb16fa3-d7d1-4b74-aef3-d221dbc18f67",
@@ -303,9 +929,10 @@ export const categories: CategoryProps[] = [
 			{
 				title: "Home Economics",
 				description: "In congue. Etiam justo. Etiam pretium iaculis justo.",
-				chapters: 34,
+				chapters: [],
 				materials: 26,
 				quiz: 20,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "985da5fa-41ab-472c-ba0d-e251dae3f5aa",
@@ -315,9 +942,10 @@ export const categories: CategoryProps[] = [
 				title: "Art and Design",
 				description:
 					"Duis aliquam convallis nunc. Proin at turpis a pede posuere nonummy. Integer non velit.\n\nDonec diam neque, vestibulum eget, vulputate ut, ultrices vel, augue. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec pharetra, magna vestibulum aliquet ultrices, erat tortor sollicitudin mi, sit amet lobortis sapien sapien non mi. Integer ac neque.",
-				chapters: 34,
+				chapters: [],
 				materials: 32,
 				quiz: 20,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "7ff0d109-68b9-4267-afa8-86b51395efc4",
@@ -327,9 +955,10 @@ export const categories: CategoryProps[] = [
 				title: "German",
 				description:
 					"Curabitur in libero ut massa volutpat convallis. Morbi odio odio, elementum eu, interdum eu, tincidunt in, leo. Maecenas pulvinar lobortis est.",
-				chapters: 29,
+				chapters: [],
 				materials: 35,
 				quiz: 18,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "d45c90d6-5b2c-41ea-9b92-e344b4a0b591",
@@ -353,9 +982,10 @@ export const categories: CategoryProps[] = [
 				title: "Physics",
 				description:
 					"Fusce posuere felis sed lacus. Morbi sem mauris, laoreet ut, rhoncus aliquet, pulvinar sed, nisl. Nunc rhoncus dui vel sem.\n\nSed sagittis. Nam congue, risus semper porta volutpat, quam pede lobortis ligula, sit amet eleifend pede libero quis orci. Nullam molestie nibh in lectus.",
-				chapters: 37,
+				chapters: [],
 				materials: 43,
 				quiz: 18,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "3434d24c-566e-4439-86ca-b3c95b6a1e54",
@@ -365,9 +995,10 @@ export const categories: CategoryProps[] = [
 				title: "Accounting",
 				description:
 					"Curabitur in libero ut massa volutpat convallis. Morbi odio odio, elementum eu, interdum eu, tincidunt in, leo. Maecenas pulvinar lobortis est.",
-				chapters: 38,
+				chapters: [],
 				materials: 45,
 				quiz: 11,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "cab93157-44aa-4c9b-bc97-dff7bc0efbcb",
@@ -377,9 +1008,10 @@ export const categories: CategoryProps[] = [
 				title: "Archaeology",
 				description:
 					"Maecenas ut massa quis augue luctus tincidunt. Nulla mollis molestie lorem. Quisque ut erat.",
-				chapters: 31,
+				chapters: [],
 				materials: 27,
 				quiz: 20,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "df60fef9-599d-4d17-a7fd-1ac53683d482",
@@ -389,9 +1021,10 @@ export const categories: CategoryProps[] = [
 				title: "Music",
 				description:
 					"Phasellus sit amet erat. Nulla tempus. Vivamus in felis eu sapien cursus vestibulum.\n\nProin eu mi. Nulla ac enim. In tempor, turpis nec euismod scelerisque, quam turpis adipiscing lorem, vitae mattis nibh ligula nec sem.",
-				chapters: 27,
+				chapters: [],
 				materials: 44,
 				quiz: 14,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "9a70611e-d4fd-4883-b524-bb504404d777",
@@ -401,9 +1034,10 @@ export const categories: CategoryProps[] = [
 				title: "Business Studies",
 				description:
 					"In sagittis dui vel nisl. Duis ac nibh. Fusce lacus purus, aliquet at, feugiat non, pretium quis, lectus.\n\nSuspendisse potenti. In eleifend quam a odio. In hac habitasse platea dictumst.",
-				chapters: 30,
+				chapters: [],
 				materials: 34,
 				quiz: 19,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "9b2954ff-991b-4930-ba57-065c00ea6c0b",
@@ -413,9 +1047,10 @@ export const categories: CategoryProps[] = [
 				title: "Home Economics",
 				description:
 					"Curabitur in libero ut massa volutpat convallis. Morbi odio odio, elementum eu, interdum eu, tincidunt in, leo. Maecenas pulvinar lobortis est.\n\nPhasellus sit amet erat. Nulla tempus. Vivamus in felis eu sapien cursus vestibulum.\n\nProin eu mi. Nulla ac enim. In tempor, turpis nec euismod scelerisque, quam turpis adipiscing lorem, vitae mattis nibh ligula nec sem.",
-				chapters: 37,
+				chapters: [],
 				materials: 36,
 				quiz: 10,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "33c75e15-1f0d-4850-b908-487f88f4eaeb",
@@ -425,9 +1060,10 @@ export const categories: CategoryProps[] = [
 				title: "Archaeology",
 				description:
 					"Duis bibendum, felis sed interdum venenatis, turpis enim blandit mi, in porttitor pede justo eu massa. Donec dapibus. Duis at velit eu est congue elementum.",
-				chapters: 29,
+				chapters: [],
 				materials: 38,
 				quiz: 11,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "ab552996-cc78-4fb0-8dd3-6cee912f33a9",
@@ -451,9 +1087,10 @@ export const categories: CategoryProps[] = [
 				title: "Home Economics",
 				description:
 					"Pellentesque at nulla. Suspendisse potenti. Cras in purus eu magna vulputate luctus.",
-				chapters: 32,
+				chapters: [],
 				materials: 47,
 				quiz: 19,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "ad983b68-f7e9-480e-91de-0646729e0e4d",
@@ -463,9 +1100,10 @@ export const categories: CategoryProps[] = [
 				title: "Archaeology",
 				description:
 					"Proin eu mi. Nulla ac enim. In tempor, turpis nec euismod scelerisque, quam turpis adipiscing lorem, vitae mattis nibh ligula nec sem.",
-				chapters: 32,
+				chapters: [],
 				materials: 32,
 				quiz: 19,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "5a228b76-d557-4c01-bc50-84e156941483",
@@ -475,9 +1113,10 @@ export const categories: CategoryProps[] = [
 				title: "German",
 				description:
 					"Integer tincidunt ante vel ipsum. Praesent blandit lacinia erat. Vestibulum sed magna at nunc commodo placerat.",
-				chapters: 25,
+				chapters: [],
 				materials: 43,
 				quiz: 20,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "a9857c94-2263-4403-bfb3-04ad2e7ba51f",
@@ -487,9 +1126,10 @@ export const categories: CategoryProps[] = [
 				title: "Biology",
 				description:
 					"Aliquam quis turpis eget elit sodales scelerisque. Mauris sit amet eros. Suspendisse accumsan tortor quis turpis.\n\nSed ante. Vivamus tortor. Duis mattis egestas metus.\n\nAenean fermentum. Donec ut mauris eget massa tempor convallis. Nulla neque libero, convallis eget, eleifend luctus, ultricies eu, nibh.",
-				chapters: 23,
+				chapters: [],
 				materials: 32,
 				quiz: 14,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "21716796-800f-482c-ac8a-437d4e7cf6f0",
@@ -498,9 +1138,10 @@ export const categories: CategoryProps[] = [
 			{
 				title: "Religious Studies",
 				description: "Suspendisse potenti. In eleifend quam a odio. In hac habitasse platea dictumst.",
-				chapters: 15,
+				chapters: [],
 				materials: 44,
 				quiz: 18,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "00483cb7-0ece-4b18-a2d7-8c6d590e4b2c",
@@ -510,9 +1151,10 @@ export const categories: CategoryProps[] = [
 				title: "English Literature",
 				description:
 					"Proin interdum mauris non ligula pellentesque ultrices. Phasellus id sapien in sapien iaculis congue. Vivamus metus arcu, adipiscing molestie, hendrerit at, vulputate vitae, nisl.\n\nAenean lectus. Pellentesque eget nunc. Donec quis orci eget orci vehicula condimentum.",
-				chapters: 29,
+				chapters: [],
 				materials: 25,
 				quiz: 19,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "24e93e5a-923a-4762-ad93-f677a30671b3",
@@ -522,9 +1164,10 @@ export const categories: CategoryProps[] = [
 				title: "Spanish",
 				description:
 					"Phasellus in felis. Donec semper sapien a libero. Nam dui.\n\nProin leo odio, porttitor id, consequat in, consequat ut, nulla. Sed accumsan felis. Ut at dolor quis odio consequat varius.\n\nInteger ac leo. Pellentesque ultrices mattis odio. Donec vitae nisi.",
-				chapters: 35,
+				chapters: [],
 				materials: 50,
 				quiz: 13,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "617421d8-4665-45a3-9194-0392eae4758e",
@@ -534,9 +1177,10 @@ export const categories: CategoryProps[] = [
 				title: "Art and Design",
 				description:
 					"Mauris enim leo, rhoncus sed, vestibulum sit amet, cursus id, turpis. Integer aliquet, massa id lobortis convallis, tortor risus dapibus augue, vel accumsan tellus nisi eu orci. Mauris lacinia sapien quis libero.\n\nNullam sit amet turpis elementum ligula vehicula consequat. Morbi a ipsum. Integer a nibh.\n\nIn quis justo. Maecenas rhoncus aliquam lacus. Morbi quis tortor id nulla ultrices aliquet.",
-				chapters: 32,
+				chapters: [],
 				materials: 35,
 				quiz: 11,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "c51ec9b3-4039-45e7-982d-9b75b6e80c1c",
@@ -546,9 +1190,10 @@ export const categories: CategoryProps[] = [
 				title: "Spanish",
 				description:
 					"Integer tincidunt ante vel ipsum. Praesent blandit lacinia erat. Vestibulum sed magna at nunc commodo placerat.\n\nPraesent blandit. Nam nulla. Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede.\n\nMorbi porttitor lorem id ligula. Suspendisse ornare consequat lectus. In est risus, auctor sed, tristique in, tempus sit amet, sem.",
-				chapters: 22,
+				chapters: [],
 				materials: 43,
 				quiz: 16,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "287cc8c7-0dae-4074-9f67-63594655d85d",
@@ -558,9 +1203,10 @@ export const categories: CategoryProps[] = [
 				title: "Politics",
 				description:
 					"Morbi non lectus. Aliquam sit amet diam in magna bibendum imperdiet. Nullam orci pede, venenatis non, sodales sed, tincidunt eu, felis.",
-				chapters: 27,
+				chapters: [],
 				materials: 29,
 				quiz: 11,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "e15d12e1-cc60-4192-a158-587e66a10997",
@@ -584,9 +1230,10 @@ export const categories: CategoryProps[] = [
 				title: "Spanish",
 				description:
 					"Nulla ut erat id mauris vulputate elementum. Nullam varius. Nulla facilisi.\n\nCras non velit nec nisi vulputate nonummy. Maecenas tincidunt lacus at velit. Vivamus vel nulla eget eros elementum pellentesque.",
-				chapters: 29,
+				chapters: [],
 				materials: 32,
 				quiz: 18,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "16995270-74fc-4ff2-b803-9db1b7cd81a4",
@@ -596,9 +1243,10 @@ export const categories: CategoryProps[] = [
 				title: "English Literature",
 				description:
 					"Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Proin risus. Praesent lectus.\n\nVestibulum quam sapien, varius ut, blandit non, interdum in, ante. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis faucibus accumsan odio. Curabitur convallis.\n\nDuis consequat dui nec nisi volutpat eleifend. Donec ut dolor. Morbi vel lectus in quam fringilla rhoncus.",
-				chapters: 40,
+				chapters: [],
 				materials: 37,
 				quiz: 19,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "c70e7b52-8d44-401e-85c4-dfa7277e19d5",
@@ -608,9 +1256,10 @@ export const categories: CategoryProps[] = [
 				title: "Computer Studies",
 				description:
 					"Nullam porttitor lacus at turpis. Donec posuere metus vitae ipsum. Aliquam non mauris.\n\nMorbi non lectus. Aliquam sit amet diam in magna bibendum imperdiet. Nullam orci pede, venenatis non, sodales sed, tincidunt eu, felis.\n\nFusce posuere felis sed lacus. Morbi sem mauris, laoreet ut, rhoncus aliquet, pulvinar sed, nisl. Nunc rhoncus dui vel sem.",
-				chapters: 35,
+				chapters: [],
 				materials: 28,
 				quiz: 17,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "5f6bd5e9-c8e1-4361-95c9-b7bc10fc2a19",
@@ -620,9 +1269,10 @@ export const categories: CategoryProps[] = [
 				title: "Chemistry",
 				description:
 					"Maecenas ut massa quis augue luctus tincidunt. Nulla mollis molestie lorem. Quisque ut erat.\n\nCurabitur gravida nisi at nibh. In hac habitasse platea dictumst. Aliquam augue quam, sollicitudin vitae, consectetuer eget, rutrum at, lorem.\n\nInteger tincidunt ante vel ipsum. Praesent blandit lacinia erat. Vestibulum sed magna at nunc commodo placerat.",
-				chapters: 28,
+				chapters: [],
 				materials: 38,
 				quiz: 14,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "15f97006-7126-4608-a2a4-94ee0fcc9f9f",
@@ -632,9 +1282,10 @@ export const categories: CategoryProps[] = [
 				title: "Religious Studies",
 				description:
 					"Aliquam quis turpis eget elit sodales scelerisque. Mauris sit amet eros. Suspendisse accumsan tortor quis turpis.\n\nSed ante. Vivamus tortor. Duis mattis egestas metus.",
-				chapters: 36,
+				chapters: [],
 				materials: 42,
 				quiz: 15,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "b95a5d25-7c10-46c4-be6b-ec90b6e3a332",
@@ -644,9 +1295,10 @@ export const categories: CategoryProps[] = [
 				title: "Physics",
 				description:
 					"In sagittis dui vel nisl. Duis ac nibh. Fusce lacus purus, aliquet at, feugiat non, pretium quis, lectus.\n\nSuspendisse potenti. In eleifend quam a odio. In hac habitasse platea dictumst.",
-				chapters: 34,
+				chapters: [],
 				materials: 42,
 				quiz: 19,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "fa4fc9a2-5cbb-40c2-a3a3-4df15c72a236",
@@ -656,9 +1308,10 @@ export const categories: CategoryProps[] = [
 				title: "French",
 				description:
 					"Suspendisse potenti. In eleifend quam a odio. In hac habitasse platea dictumst.\n\nMaecenas ut massa quis augue luctus tincidunt. Nulla mollis molestie lorem. Quisque ut erat.\n\nCurabitur gravida nisi at nibh. In hac habitasse platea dictumst. Aliquam augue quam, sollicitudin vitae, consectetuer eget, rutrum at, lorem.",
-				chapters: 28,
+				chapters: [],
 				materials: 25,
 				quiz: 10,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "f0e47623-3b39-412f-b533-4859703db823",
@@ -668,9 +1321,10 @@ export const categories: CategoryProps[] = [
 				title: "Arabic",
 				description:
 					"Curabitur gravida nisi at nibh. In hac habitasse platea dictumst. Aliquam augue quam, sollicitudin vitae, consectetuer eget, rutrum at, lorem.\n\nInteger tincidunt ante vel ipsum. Praesent blandit lacinia erat. Vestibulum sed magna at nunc commodo placerat.\n\nPraesent blandit. Nam nulla. Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede.",
-				chapters: 37,
+				chapters: [],
 				materials: 35,
 				quiz: 15,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "1bc75ad7-04b9-4369-807f-b56d55d38736",
@@ -680,9 +1334,10 @@ export const categories: CategoryProps[] = [
 				title: "Religious Studies",
 				description:
 					"Pellentesque at nulla. Suspendisse potenti. Cras in purus eu magna vulputate luctus.\n\nCum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vivamus vestibulum sagittis sapien. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.",
-				chapters: 18,
+				chapters: [],
 				materials: 39,
 				quiz: 10,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "3572bb18-52a1-40d7-bdf3-c52f88c32a6c",
@@ -692,9 +1347,10 @@ export const categories: CategoryProps[] = [
 				title: "Physics",
 				description:
 					"Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus. In est risus, auctor sed, tristique in, tempus sit amet, sem.\n\nFusce consequat. Nulla nisl. Nunc nisl.\n\nDuis bibendum, felis sed interdum venenatis, turpis enim blandit mi, in porttitor pede justo eu massa. Donec dapibus. Duis at velit eu est congue elementum.",
-				chapters: 34,
+				chapters: [],
 				materials: 47,
 				quiz: 10,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "8c41e490-d0e4-446f-aa17-78ee04acdd26",
@@ -718,9 +1374,10 @@ export const categories: CategoryProps[] = [
 				title: "Commerce",
 				description:
 					"Sed sagittis. Nam congue, risus semper porta volutpat, quam pede lobortis ligula, sit amet eleifend pede libero quis orci. Nullam molestie nibh in lectus.",
-				chapters: 15,
+				chapters: [],
 				materials: 43,
 				quiz: 16,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "72dfa8a0-f702-4be5-a65b-506c0173ad6b",
@@ -730,9 +1387,10 @@ export const categories: CategoryProps[] = [
 				title: "Commerce",
 				description:
 					"Cras non velit nec nisi vulputate nonummy. Maecenas tincidunt lacus at velit. Vivamus vel nulla eget eros elementum pellentesque.\n\nQuisque porta volutpat erat. Quisque erat eros, viverra eget, congue eget, semper rutrum, nulla. Nunc purus.\n\nPhasellus in felis. Donec semper sapien a libero. Nam dui.",
-				chapters: 34,
+				chapters: [],
 				materials: 37,
 				quiz: 16,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "925163cd-40fb-4f8b-903e-eecb8eb40eb0",
@@ -742,9 +1400,10 @@ export const categories: CategoryProps[] = [
 				title: "French",
 				description:
 					"Mauris enim leo, rhoncus sed, vestibulum sit amet, cursus id, turpis. Integer aliquet, massa id lobortis convallis, tortor risus dapibus augue, vel accumsan tellus nisi eu orci. Mauris lacinia sapien quis libero.\n\nNullam sit amet turpis elementum ligula vehicula consequat. Morbi a ipsum. Integer a nibh.",
-				chapters: 34,
+				chapters: [],
 				materials: 48,
 				quiz: 15,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "56d7ebb1-2005-4fa4-8b6d-0ff5632ba83c",
@@ -754,9 +1413,10 @@ export const categories: CategoryProps[] = [
 				title: "Physics",
 				description:
 					"Duis bibendum. Morbi non quam nec dui luctus rutrum. Nulla tellus.\n\nIn sagittis dui vel nisl. Duis ac nibh. Fusce lacus purus, aliquet at, feugiat non, pretium quis, lectus.",
-				chapters: 27,
+				chapters: [],
 				materials: 29,
 				quiz: 20,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "a32d28a2-a7d4-409a-8a69-edf054b4a97a",
@@ -766,9 +1426,10 @@ export const categories: CategoryProps[] = [
 				title: "Art and Design",
 				description:
 					"Duis aliquam convallis nunc. Proin at turpis a pede posuere nonummy. Integer non velit.\n\nDonec diam neque, vestibulum eget, vulputate ut, ultrices vel, augue. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec pharetra, magna vestibulum aliquet ultrices, erat tortor sollicitudin mi, sit amet lobortis sapien sapien non mi. Integer ac neque.",
-				chapters: 34,
+				chapters: [],
 				materials: 25,
 				quiz: 13,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "800612e4-ec6b-40a3-b3a8-d00dfc9043b2",
@@ -778,9 +1439,10 @@ export const categories: CategoryProps[] = [
 				title: "French",
 				description:
 					"Phasellus sit amet erat. Nulla tempus. Vivamus in felis eu sapien cursus vestibulum.\n\nProin eu mi. Nulla ac enim. In tempor, turpis nec euismod scelerisque, quam turpis adipiscing lorem, vitae mattis nibh ligula nec sem.",
-				chapters: 19,
+				chapters: [],
 				materials: 36,
 				quiz: 10,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "e8a0aab3-8723-4f83-80be-1754f4b4c8ac",
@@ -790,9 +1452,10 @@ export const categories: CategoryProps[] = [
 				title: "Arabic",
 				description:
 					"Nullam sit amet turpis elementum ligula vehicula consequat. Morbi a ipsum. Integer a nibh.\n\nIn quis justo. Maecenas rhoncus aliquam lacus. Morbi quis tortor id nulla ultrices aliquet.\n\nMaecenas leo odio, condimentum id, luctus nec, molestie sed, justo. Pellentesque viverra pede ac diam. Cras pellentesque volutpat dui.",
-				chapters: 38,
+				chapters: [],
 				materials: 29,
 				quiz: 11,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "3cf6a862-34c8-4e24-a4ea-ce3ec2bb7d2b",
@@ -802,9 +1465,10 @@ export const categories: CategoryProps[] = [
 				title: "Chemistry",
 				description:
 					"Praesent blandit. Nam nulla. Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede.",
-				chapters: 37,
+				chapters: [],
 				materials: 29,
 				quiz: 17,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "3630d6f2-759d-4e7d-beab-1ededb6eeb21",
@@ -814,9 +1478,10 @@ export const categories: CategoryProps[] = [
 				title: "Music",
 				description:
 					"Praesent blandit. Nam nulla. Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede.\n\nMorbi porttitor lorem id ligula. Suspendisse ornare consequat lectus. In est risus, auctor sed, tristique in, tempus sit amet, sem.\n\nFusce consequat. Nulla nisl. Nunc nisl.",
-				chapters: 40,
+				chapters: [],
 				materials: 27,
 				quiz: 20,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "0cbd2901-5f97-467d-8712-e3ce05f5b82e",
@@ -826,9 +1491,10 @@ export const categories: CategoryProps[] = [
 				title: "Physics",
 				description:
 					"Praesent blandit. Nam nulla. Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede.",
-				chapters: 23,
+				chapters: [],
 				materials: 35,
 				quiz: 10,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "e0e27a4d-567e-48c9-95c5-7248a48547c8",
@@ -852,9 +1518,10 @@ export const categories: CategoryProps[] = [
 				title: "Media Studies",
 				description:
 					"Praesent blandit. Nam nulla. Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede.\n\nMorbi porttitor lorem id ligula. Suspendisse ornare consequat lectus. In est risus, auctor sed, tristique in, tempus sit amet, sem.\n\nFusce consequat. Nulla nisl. Nunc nisl.",
-				chapters: 26,
+				chapters: [],
 				materials: 48,
 				quiz: 15,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "8937acdf-9000-46fa-990b-87a121a58708",
@@ -864,9 +1531,191 @@ export const categories: CategoryProps[] = [
 				title: "Mathematics",
 				description:
 					"Morbi non lectus. Aliquam sit amet diam in magna bibendum imperdiet. Nullam orci pede, venenatis non, sodales sed, tincidunt eu, felis.\n\nFusce posuere felis sed lacus. Morbi sem mauris, laoreet ut, rhoncus aliquet, pulvinar sed, nisl. Nunc rhoncus dui vel sem.\n\nSed sagittis. Nam congue, risus semper porta volutpat, quam pede lobortis ligula, sit amet eleifend pede libero quis orci. Nullam molestie nibh in lectus.",
-				chapters: 15,
+				chapters: [
+					{
+						id: "1",
+						title: "Algebraic Structures and Equations",
+						description:
+							"Advanced algebraic manipulation, solving complex equations, and understanding mathematical structures.",
+						summary:
+							"This chapter explores sophisticated algebraic techniques, including polynomial equations, system of equations, and advanced factorization methods.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "2",
+						title: "Trigonometric Functions and Identities",
+						description:
+							"Comprehensive study of trigonometric functions, their properties, and advanced identities.",
+						summary:
+							"Students will master complex trigonometric manipulations, exploring sine, cosine, and tangent functions in depth.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "3",
+						title: "Coordinate Geometry",
+						description:
+							"Advanced exploration of geometric concepts using coordinate systems and analytical approaches.",
+						summary:
+							"This chapter connects algebraic methods with geometric representations, introducing complex analytical techniques.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "4",
+						title: "Calculus: Limits and Continuity",
+						description:
+							"Introduction to fundamental concepts of calculus, focusing on limits and function continuity.",
+						summary:
+							"Students will explore the mathematical foundations of change, understanding how functions behave at critical points.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "5",
+						title: "Derivatives and Their Applications",
+						description:
+							"Advanced study of derivatives, including rate of change, optimization, and mathematical modeling.",
+						summary:
+							"This chapter demonstrates how derivatives can be used to solve real-world problems and understand function behaviors.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "6",
+						title: "Integration Techniques",
+						description:
+							"Comprehensive exploration of integration methods and their practical applications.",
+						summary:
+							"Students will master various integration techniques, understanding how to calculate areas, volumes, and accumulated quantities.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "7",
+						title: "Probability Theory",
+						description:
+							"Advanced probability concepts, including combinatorics, conditional probability, and statistical inference.",
+						summary:
+							"This chapter develops sophisticated understanding of randomness, chance, and mathematical prediction.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "8",
+						title: "Matrices and Linear Transformations",
+						description:
+							"Deep dive into matrix algebra, linear transformations, and their applications in various fields.",
+						summary:
+							"Students will explore how matrices can represent complex mathematical transformations and solve systems of equations.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "9",
+						title: "Vectors in Three-Dimensional Space",
+						description:
+							"Advanced vector algebra, including dot and cross products, and three-dimensional geometric applications.",
+						summary:
+							"This chapter extends vector concepts to three-dimensional space, providing tools for complex spatial analysis.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "10",
+						title: "Exponential and Logarithmic Functions",
+						description:
+							"Comprehensive study of exponential growth, logarithmic properties, and their real-world applications.",
+						summary:
+							"Students will explore the powerful mathematical behaviors of exponential and logarithmic functions.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "11",
+						title: "Complex Numbers",
+						description:
+							"Advanced exploration of complex number systems, including algebraic and geometric interpretations.",
+						summary:
+							"This chapter introduces the mathematical world beyond real numbers, exploring complex number operations.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "12",
+						title: "Statistical Analysis",
+						description:
+							"Advanced statistical methods, including hypothesis testing, regression analysis, and data interpretation.",
+						summary:
+							"Students will develop sophisticated skills in analyzing and interpreting mathematical and statistical data.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "13",
+						title: "Series and Sequences",
+						description:
+							"Comprehensive study of mathematical sequences, series, and their convergence properties.",
+						summary:
+							"This chapter explores the fascinating world of infinite sequences and their mathematical behaviors.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "14",
+						title: "Analytical Geometry of Conic Sections",
+						description:
+							"Advanced study of circles, ellipses, parabolas, and hyperbolas using coordinate geometry.",
+						summary:
+							"Students will explore the mathematical properties of conic sections and their geometric representations.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "15",
+						title: "Mathematical Modeling",
+						description:
+							"Introduction to using mathematical techniques to model real-world phenomena and solve complex problems.",
+						summary:
+							"This chapter demonstrates how mathematical tools can be applied to understand and predict real-world systems.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+				],
 				materials: 36,
 				quiz: 19,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "48f7e74f-035c-4581-8309-b9a6687b8f1c",
@@ -876,9 +1725,10 @@ export const categories: CategoryProps[] = [
 				title: "History",
 				description:
 					"Duis aliquam convallis nunc. Proin at turpis a pede posuere nonummy. Integer non velit.\n\nDonec diam neque, vestibulum eget, vulputate ut, ultrices vel, augue. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec pharetra, magna vestibulum aliquet ultrices, erat tortor sollicitudin mi, sit amet lobortis sapien sapien non mi. Integer ac neque.",
-				chapters: 24,
+				chapters: [],
 				materials: 27,
 				quiz: 14,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "175b4c55-0d51-4e46-baf7-20aeec86beff",
@@ -888,9 +1738,10 @@ export const categories: CategoryProps[] = [
 				title: "Media Studies",
 				description:
 					"Quisque porta volutpat erat. Quisque erat eros, viverra eget, congue eget, semper rutrum, nulla. Nunc purus.\n\nPhasellus in felis. Donec semper sapien a libero. Nam dui.\n\nProin leo odio, porttitor id, consequat in, consequat ut, nulla. Sed accumsan felis. Ut at dolor quis odio consequat varius.",
-				chapters: 26,
+				chapters: [],
 				materials: 44,
 				quiz: 15,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "42d5436b-9cff-4a4b-a535-f73bd8b751c1",
@@ -900,9 +1751,10 @@ export const categories: CategoryProps[] = [
 				title: "Computer Studies",
 				description:
 					"Integer ac leo. Pellentesque ultrices mattis odio. Donec vitae nisi.\n\nNam ultrices, libero non mattis pulvinar, nulla pede ullamcorper augue, a suscipit nulla elit ac nulla. Sed vel enim sit amet nunc viverra dapibus. Nulla suscipit ligula in lacus.",
-				chapters: 20,
+				chapters: [],
 				materials: 44,
 				quiz: 15,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "7f6ed718-0a2d-4c46-9742-fcfc73547a94",
@@ -912,9 +1764,10 @@ export const categories: CategoryProps[] = [
 				title: "Computer Science",
 				description:
 					"In hac habitasse platea dictumst. Etiam faucibus cursus urna. Ut tellus.\n\nNulla ut erat id mauris vulputate elementum. Nullam varius. Nulla facilisi.",
-				chapters: 22,
+				chapters: [],
 				materials: 34,
 				quiz: 11,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "97599689-28ef-47ae-abdc-2383622de45d",
@@ -924,9 +1777,10 @@ export const categories: CategoryProps[] = [
 				title: "Arabic",
 				description:
 					"Aenean fermentum. Donec ut mauris eget massa tempor convallis. Nulla neque libero, convallis eget, eleifend luctus, ultricies eu, nibh.\n\nQuisque id justo sit amet sapien dignissim vestibulum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nulla dapibus dolor vel est. Donec odio justo, sollicitudin ut, suscipit a, feugiat et, eros.",
-				chapters: 37,
+				chapters: [],
 				materials: 33,
 				quiz: 13,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "32dc319e-bc4e-49b4-ae09-5139921db308",
@@ -950,9 +1804,10 @@ export const categories: CategoryProps[] = [
 				title: "Archaeology",
 				description:
 					"Praesent blandit. Nam nulla. Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede.\n\nMorbi porttitor lorem id ligula. Suspendisse ornare consequat lectus. In est risus, auctor sed, tristique in, tempus sit amet, sem.",
-				chapters: 34,
+				chapters: [],
 				materials: 41,
 				quiz: 16,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "475fe625-3676-439a-ba65-4eb4e2d14d3f",
@@ -962,9 +1817,10 @@ export const categories: CategoryProps[] = [
 				title: "Arabic",
 				description:
 					"Curabitur at ipsum ac tellus semper interdum. Mauris ullamcorper purus sit amet nulla. Quisque arcu libero, rutrum ac, lobortis vel, dapibus at, diam.",
-				chapters: 28,
+				chapters: [],
 				materials: 25,
 				quiz: 13,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "d0b57f3e-f51f-40df-802c-2940faa5fb9d",
@@ -974,9 +1830,10 @@ export const categories: CategoryProps[] = [
 				title: "History",
 				description:
 					"Curabitur gravida nisi at nibh. In hac habitasse platea dictumst. Aliquam augue quam, sollicitudin vitae, consectetuer eget, rutrum at, lorem.\n\nInteger tincidunt ante vel ipsum. Praesent blandit lacinia erat. Vestibulum sed magna at nunc commodo placerat.",
-				chapters: 40,
+				chapters: [],
 				materials: 38,
 				quiz: 20,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "977f66ac-6f66-42e1-b511-2d7ec29bfbf2",
@@ -986,9 +1843,191 @@ export const categories: CategoryProps[] = [
 				title: "Mathematics",
 				description:
 					"Mauris enim leo, rhoncus sed, vestibulum sit amet, cursus id, turpis. Integer aliquet, massa id lobortis convallis, tortor risus dapibus augue, vel accumsan tellus nisi eu orci. Mauris lacinia sapien quis libero.",
-				chapters: 33,
+				chapters: [
+					{
+						id: "1",
+						title: "Algebraic Structures and Equations",
+						description:
+							"Advanced algebraic manipulation, solving complex equations, and understanding mathematical structures.",
+						summary:
+							"This chapter explores sophisticated algebraic techniques, including polynomial equations, system of equations, and advanced factorization methods.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "2",
+						title: "Trigonometric Functions and Identities",
+						description:
+							"Comprehensive study of trigonometric functions, their properties, and advanced identities.",
+						summary:
+							"Students will master complex trigonometric manipulations, exploring sine, cosine, and tangent functions in depth.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "3",
+						title: "Coordinate Geometry",
+						description:
+							"Advanced exploration of geometric concepts using coordinate systems and analytical approaches.",
+						summary:
+							"This chapter connects algebraic methods with geometric representations, introducing complex analytical techniques.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "4",
+						title: "Calculus: Limits and Continuity",
+						description:
+							"Introduction to fundamental concepts of calculus, focusing on limits and function continuity.",
+						summary:
+							"Students will explore the mathematical foundations of change, understanding how functions behave at critical points.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "5",
+						title: "Derivatives and Their Applications",
+						description:
+							"Advanced study of derivatives, including rate of change, optimization, and mathematical modeling.",
+						summary:
+							"This chapter demonstrates how derivatives can be used to solve real-world problems and understand function behaviors.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "6",
+						title: "Integration Techniques",
+						description:
+							"Comprehensive exploration of integration methods and their practical applications.",
+						summary:
+							"Students will master various integration techniques, understanding how to calculate areas, volumes, and accumulated quantities.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: false,
+					},
+					{
+						id: "7",
+						title: "Probability Theory",
+						description:
+							"Advanced probability concepts, including combinatorics, conditional probability, and statistical inference.",
+						summary:
+							"This chapter develops sophisticated understanding of randomness, chance, and mathematical prediction.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: false,
+					},
+					{
+						id: "8",
+						title: "Matrices and Linear Transformations",
+						description:
+							"Deep dive into matrix algebra, linear transformations, and their applications in various fields.",
+						summary:
+							"Students will explore how matrices can represent complex mathematical transformations and solve systems of equations.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: false,
+					},
+					{
+						id: "9",
+						title: "Vectors in Three-Dimensional Space",
+						description:
+							"Advanced vector algebra, including dot and cross products, and three-dimensional geometric applications.",
+						summary:
+							"This chapter extends vector concepts to three-dimensional space, providing tools for complex spatial analysis.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: false,
+					},
+					{
+						id: "10",
+						title: "Exponential and Logarithmic Functions",
+						description:
+							"Comprehensive study of exponential growth, logarithmic properties, and their real-world applications.",
+						summary:
+							"Students will explore the powerful mathematical behaviors of exponential and logarithmic functions.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: false,
+					},
+					{
+						id: "11",
+						title: "Complex Numbers",
+						description:
+							"Advanced exploration of complex number systems, including algebraic and geometric interpretations.",
+						summary:
+							"This chapter introduces the mathematical world beyond real numbers, exploring complex number operations.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: false,
+					},
+					{
+						id: "12",
+						title: "Statistical Analysis",
+						description:
+							"Advanced statistical methods, including hypothesis testing, regression analysis, and data interpretation.",
+						summary:
+							"Students will develop sophisticated skills in analyzing and interpreting mathematical and statistical data.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: false,
+					},
+					{
+						id: "13",
+						title: "Series and Sequences",
+						description:
+							"Comprehensive study of mathematical sequences, series, and their convergence properties.",
+						summary:
+							"This chapter explores the fascinating world of infinite sequences and their mathematical behaviors.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: false,
+					},
+					{
+						id: "14",
+						title: "Analytical Geometry of Conic Sections",
+						description:
+							"Advanced study of circles, ellipses, parabolas, and hyperbolas using coordinate geometry.",
+						summary:
+							"Students will explore the mathematical properties of conic sections and their geometric representations.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "15",
+						title: "Mathematical Modeling",
+						description:
+							"Introduction to using mathematical techniques to model real-world phenomena and solve complex problems.",
+						summary:
+							"This chapter demonstrates how mathematical tools can be applied to understand and predict real-world systems.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: false,
+					},
+				],
 				materials: 29,
 				quiz: 17,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "42bb87f5-b39f-44c9-b4be-00beb5e97bcc",
@@ -998,9 +2037,10 @@ export const categories: CategoryProps[] = [
 				title: "Art and Design",
 				description:
 					"Fusce posuere felis sed lacus. Morbi sem mauris, laoreet ut, rhoncus aliquet, pulvinar sed, nisl. Nunc rhoncus dui vel sem.\n\nSed sagittis. Nam congue, risus semper porta volutpat, quam pede lobortis ligula, sit amet eleifend pede libero quis orci. Nullam molestie nibh in lectus.",
-				chapters: 27,
+				chapters: [],
 				materials: 43,
 				quiz: 12,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "909b2fbd-8e21-4c52-af91-b119e8c3ef11",
@@ -1016,7 +2056,7 @@ export const categories: CategoryProps[] = [
 		name: "WAEC Exam Prep Bundle",
 		price: 5184.04,
 		reviews: [],
-		featured: true,
+		featured: false,
 		summary:
 			"Duis bibendum. Morbi non quam nec dui luctus rutrum. Nulla tellus.\n\nIn sagittis dui vel nisl. Duis ac nibh. Fusce lacus purus, aliquet at, feugiat non, pretium quis, lectus.\n\nSuspendisse potenti. In eleifend quam a odio. In hac habitasse platea dictumst.",
 		subjects: [
@@ -1024,9 +2064,10 @@ export const categories: CategoryProps[] = [
 				title: "English Literature",
 				description:
 					"Fusce posuere felis sed lacus. Morbi sem mauris, laoreet ut, rhoncus aliquet, pulvinar sed, nisl. Nunc rhoncus dui vel sem.\n\nSed sagittis. Nam congue, risus semper porta volutpat, quam pede lobortis ligula, sit amet eleifend pede libero quis orci. Nullam molestie nibh in lectus.\n\nPellentesque at nulla. Suspendisse potenti. Cras in purus eu magna vulputate luctus.",
-				chapters: 20,
+				chapters: [],
 				materials: 45,
 				quiz: 19,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "20e4438b-f842-4c91-a4bc-eb5dfe9ba4dc",
@@ -1036,9 +2077,10 @@ export const categories: CategoryProps[] = [
 				title: "Biology",
 				description:
 					"Aliquam quis turpis eget elit sodales scelerisque. Mauris sit amet eros. Suspendisse accumsan tortor quis turpis.",
-				chapters: 30,
+				chapters: [],
 				materials: 26,
 				quiz: 12,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "327694de-5d47-40db-bc5b-3ce3482822e9",
@@ -1048,9 +2090,10 @@ export const categories: CategoryProps[] = [
 				title: "Geography",
 				description:
 					"Proin interdum mauris non ligula pellentesque ultrices. Phasellus id sapien in sapien iaculis congue. Vivamus metus arcu, adipiscing molestie, hendrerit at, vulputate vitae, nisl.\n\nAenean lectus. Pellentesque eget nunc. Donec quis orci eget orci vehicula condimentum.\n\nCurabitur in libero ut massa volutpat convallis. Morbi odio odio, elementum eu, interdum eu, tincidunt in, leo. Maecenas pulvinar lobortis est.",
-				chapters: 15,
+				chapters: [],
 				materials: 49,
 				quiz: 14,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "6eac6a59-31a7-40d2-ab62-91bb512f881f",
@@ -1060,9 +2103,10 @@ export const categories: CategoryProps[] = [
 				title: "Art and Design",
 				description:
 					"Donec diam neque, vestibulum eget, vulputate ut, ultrices vel, augue. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec pharetra, magna vestibulum aliquet ultrices, erat tortor sollicitudin mi, sit amet lobortis sapien sapien non mi. Integer ac neque.",
-				chapters: 22,
+				chapters: [],
 				materials: 27,
 				quiz: 11,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "8dccb7f7-b13b-4604-8dc5-2da188c6ef82",
@@ -1072,9 +2116,10 @@ export const categories: CategoryProps[] = [
 				title: "Environmental Science",
 				description:
 					"Nullam porttitor lacus at turpis. Donec posuere metus vitae ipsum. Aliquam non mauris.",
-				chapters: 15,
+				chapters: [],
 				materials: 49,
 				quiz: 14,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "60c9bea2-8d2e-43af-a35d-ce897a07c534",
@@ -1084,9 +2129,10 @@ export const categories: CategoryProps[] = [
 				title: "Business Studies",
 				description:
 					"Aliquam quis turpis eget elit sodales scelerisque. Mauris sit amet eros. Suspendisse accumsan tortor quis turpis.\n\nSed ante. Vivamus tortor. Duis mattis egestas metus.\n\nAenean fermentum. Donec ut mauris eget massa tempor convallis. Nulla neque libero, convallis eget, eleifend luctus, ultricies eu, nibh.",
-				chapters: 16,
+				chapters: [],
 				materials: 26,
 				quiz: 11,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "bd863c1e-3190-47f2-8a9e-984684632789",
@@ -1096,9 +2142,10 @@ export const categories: CategoryProps[] = [
 				title: "Additional Mathematics",
 				description:
 					"Mauris enim leo, rhoncus sed, vestibulum sit amet, cursus id, turpis. Integer aliquet, massa id lobortis convallis, tortor risus dapibus augue, vel accumsan tellus nisi eu orci. Mauris lacinia sapien quis libero.",
-				chapters: 23,
+				chapters: [],
 				materials: 41,
 				quiz: 20,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "4ec01697-4cc7-4553-aeee-bf0cd8572ae5",
@@ -1108,9 +2155,10 @@ export const categories: CategoryProps[] = [
 				title: "Art and Design",
 				description:
 					"Praesent blandit. Nam nulla. Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede.",
-				chapters: 26,
+				chapters: [],
 				materials: 31,
 				quiz: 19,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "b52e5630-091e-46e0-abd7-40260d8e4a5a",
@@ -1120,9 +2168,10 @@ export const categories: CategoryProps[] = [
 				title: "Media Studies",
 				description:
 					"In quis justo. Maecenas rhoncus aliquam lacus. Morbi quis tortor id nulla ultrices aliquet.",
-				chapters: 38,
+				chapters: [],
 				materials: 44,
 				quiz: 10,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "c82b3187-32a6-4982-9c58-9dd7ee7e2ffa",
@@ -1132,9 +2181,10 @@ export const categories: CategoryProps[] = [
 				title: "Art and Design",
 				description:
 					"Proin leo odio, porttitor id, consequat in, consequat ut, nulla. Sed accumsan felis. Ut at dolor quis odio consequat varius.",
-				chapters: 18,
+				chapters: [],
 				materials: 32,
 				quiz: 11,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "00aceacf-d9fd-4356-9eca-c4284e21b3cf",
@@ -1158,9 +2208,10 @@ export const categories: CategoryProps[] = [
 				title: "Home Economics",
 				description:
 					"Proin leo odio, porttitor id, consequat in, consequat ut, nulla. Sed accumsan felis. Ut at dolor quis odio consequat varius.\n\nInteger ac leo. Pellentesque ultrices mattis odio. Donec vitae nisi.\n\nNam ultrices, libero non mattis pulvinar, nulla pede ullamcorper augue, a suscipit nulla elit ac nulla. Sed vel enim sit amet nunc viverra dapibus. Nulla suscipit ligula in lacus.",
-				chapters: 18,
+				chapters: [],
 				materials: 25,
 				quiz: 11,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "b1ae9dcb-1794-48de-aa2d-36127a680dac",
@@ -1170,9 +2221,10 @@ export const categories: CategoryProps[] = [
 				title: "Commerce",
 				description:
 					"Maecenas tristique, est et tempus semper, est quam pharetra magna, ac consequat metus sapien ut nunc. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Mauris viverra diam vitae quam. Suspendisse potenti.\n\nNullam porttitor lacus at turpis. Donec posuere metus vitae ipsum. Aliquam non mauris.",
-				chapters: 21,
+				chapters: [],
 				materials: 31,
 				quiz: 14,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "cfe8989c-a93f-4e51-9b8f-3f2d21ec7f86",
@@ -1196,9 +2248,10 @@ export const categories: CategoryProps[] = [
 				title: "Politics",
 				description:
 					"Fusce posuere felis sed lacus. Morbi sem mauris, laoreet ut, rhoncus aliquet, pulvinar sed, nisl. Nunc rhoncus dui vel sem.",
-				chapters: 32,
+				chapters: [],
 				materials: 28,
 				quiz: 20,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "615d6836-db5b-438a-b6ed-064b568c6ac7",
@@ -1208,9 +2261,10 @@ export const categories: CategoryProps[] = [
 				title: "Spanish",
 				description:
 					"Phasellus sit amet erat. Nulla tempus. Vivamus in felis eu sapien cursus vestibulum.\n\nProin eu mi. Nulla ac enim. In tempor, turpis nec euismod scelerisque, quam turpis adipiscing lorem, vitae mattis nibh ligula nec sem.\n\nDuis aliquam convallis nunc. Proin at turpis a pede posuere nonummy. Integer non velit.",
-				chapters: 28,
+				chapters: [],
 				materials: 37,
 				quiz: 15,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "3a284792-37c3-485a-a679-34353ae89775",
@@ -1234,9 +2288,10 @@ export const categories: CategoryProps[] = [
 				title: "Accounting",
 				description:
 					"Aliquam quis turpis eget elit sodales scelerisque. Mauris sit amet eros. Suspendisse accumsan tortor quis turpis.",
-				chapters: 25,
+				chapters: [],
 				materials: 47,
 				quiz: 12,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "b22551fc-74e7-4116-81e2-1536565fc0d8",
@@ -1246,9 +2301,10 @@ export const categories: CategoryProps[] = [
 				title: "Religious Studies",
 				description:
 					"Duis aliquam convallis nunc. Proin at turpis a pede posuere nonummy. Integer non velit.\n\nDonec diam neque, vestibulum eget, vulputate ut, ultrices vel, augue. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec pharetra, magna vestibulum aliquet ultrices, erat tortor sollicitudin mi, sit amet lobortis sapien sapien non mi. Integer ac neque.\n\nDuis bibendum. Morbi non quam nec dui luctus rutrum. Nulla tellus.",
-				chapters: 20,
+				chapters: [],
 				materials: 29,
 				quiz: 17,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "9ed1ee1e-64f1-4457-a1a0-2a2048791178",
@@ -1258,9 +2314,10 @@ export const categories: CategoryProps[] = [
 				title: "Accounting",
 				description:
 					"Aenean fermentum. Donec ut mauris eget massa tempor convallis. Nulla neque libero, convallis eget, eleifend luctus, ultricies eu, nibh.",
-				chapters: 40,
+				chapters: [],
 				materials: 40,
 				quiz: 19,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "bd8ad0aa-d4b4-46e9-8001-7480bfb74649",
@@ -1269,9 +2326,10 @@ export const categories: CategoryProps[] = [
 			{
 				title: "Physics",
 				description: "Integer ac leo. Pellentesque ultrices mattis odio. Donec vitae nisi.",
-				chapters: 23,
+				chapters: [],
 				materials: 36,
 				quiz: 10,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "73f8090a-e282-42b1-8fc4-89826fa146c6",
@@ -1281,9 +2339,10 @@ export const categories: CategoryProps[] = [
 				title: "Commerce",
 				description:
 					"Praesent blandit. Nam nulla. Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede.\n\nMorbi porttitor lorem id ligula. Suspendisse ornare consequat lectus. In est risus, auctor sed, tristique in, tempus sit amet, sem.",
-				chapters: 15,
+				chapters: [],
 				materials: 50,
 				quiz: 15,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "c8291393-c1af-4119-ae71-894be85c88be",
@@ -1293,9 +2352,191 @@ export const categories: CategoryProps[] = [
 				title: "Mathematics",
 				description:
 					"Cras non velit nec nisi vulputate nonummy. Maecenas tincidunt lacus at velit. Vivamus vel nulla eget eros elementum pellentesque.",
-				chapters: 23,
+				chapters: [
+					{
+						id: "1",
+						title: "Algebraic Structures and Equations",
+						description:
+							"Advanced algebraic manipulation, solving complex equations, and understanding mathematical structures.",
+						summary:
+							"This chapter explores sophisticated algebraic techniques, including polynomial equations, system of equations, and advanced factorization methods.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "2",
+						title: "Trigonometric Functions and Identities",
+						description:
+							"Comprehensive study of trigonometric functions, their properties, and advanced identities.",
+						summary:
+							"Students will master complex trigonometric manipulations, exploring sine, cosine, and tangent functions in depth.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "3",
+						title: "Coordinate Geometry",
+						description:
+							"Advanced exploration of geometric concepts using coordinate systems and analytical approaches.",
+						summary:
+							"This chapter connects algebraic methods with geometric representations, introducing complex analytical techniques.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "4",
+						title: "Calculus: Limits and Continuity",
+						description:
+							"Introduction to fundamental concepts of calculus, focusing on limits and function continuity.",
+						summary:
+							"Students will explore the mathematical foundations of change, understanding how functions behave at critical points.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "5",
+						title: "Derivatives and Their Applications",
+						description:
+							"Advanced study of derivatives, including rate of change, optimization, and mathematical modeling.",
+						summary:
+							"This chapter demonstrates how derivatives can be used to solve real-world problems and understand function behaviors.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "6",
+						title: "Integration Techniques",
+						description:
+							"Comprehensive exploration of integration methods and their practical applications.",
+						summary:
+							"Students will master various integration techniques, understanding how to calculate areas, volumes, and accumulated quantities.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "7",
+						title: "Probability Theory",
+						description:
+							"Advanced probability concepts, including combinatorics, conditional probability, and statistical inference.",
+						summary:
+							"This chapter develops sophisticated understanding of randomness, chance, and mathematical prediction.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "8",
+						title: "Matrices and Linear Transformations",
+						description:
+							"Deep dive into matrix algebra, linear transformations, and their applications in various fields.",
+						summary:
+							"Students will explore how matrices can represent complex mathematical transformations and solve systems of equations.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "9",
+						title: "Vectors in Three-Dimensional Space",
+						description:
+							"Advanced vector algebra, including dot and cross products, and three-dimensional geometric applications.",
+						summary:
+							"This chapter extends vector concepts to three-dimensional space, providing tools for complex spatial analysis.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "10",
+						title: "Exponential and Logarithmic Functions",
+						description:
+							"Comprehensive study of exponential growth, logarithmic properties, and their real-world applications.",
+						summary:
+							"Students will explore the powerful mathematical behaviors of exponential and logarithmic functions.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "11",
+						title: "Complex Numbers",
+						description:
+							"Advanced exploration of complex number systems, including algebraic and geometric interpretations.",
+						summary:
+							"This chapter introduces the mathematical world beyond real numbers, exploring complex number operations.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "12",
+						title: "Statistical Analysis",
+						description:
+							"Advanced statistical methods, including hypothesis testing, regression analysis, and data interpretation.",
+						summary:
+							"Students will develop sophisticated skills in analyzing and interpreting mathematical and statistical data.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "13",
+						title: "Series and Sequences",
+						description:
+							"Comprehensive study of mathematical sequences, series, and their convergence properties.",
+						summary:
+							"This chapter explores the fascinating world of infinite sequences and their mathematical behaviors.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "14",
+						title: "Analytical Geometry of Conic Sections",
+						description:
+							"Advanced study of circles, ellipses, parabolas, and hyperbolas using coordinate geometry.",
+						summary:
+							"Students will explore the mathematical properties of conic sections and their geometric representations.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "15",
+						title: "Mathematical Modeling",
+						description:
+							"Introduction to using mathematical techniques to model real-world phenomena and solve complex problems.",
+						summary:
+							"This chapter demonstrates how mathematical tools can be applied to understand and predict real-world systems.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+				],
 				materials: 50,
 				quiz: 17,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "a76d53cd-8631-4684-ad90-5d751face570",
@@ -1305,9 +2546,10 @@ export const categories: CategoryProps[] = [
 				title: "Accounting",
 				description:
 					"Aliquam quis turpis eget elit sodales scelerisque. Mauris sit amet eros. Suspendisse accumsan tortor quis turpis.",
-				chapters: 28,
+				chapters: [],
 				materials: 50,
 				quiz: 11,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "bdfaf763-c3d5-4528-ade9-f0fa4ae100e0",
@@ -1330,9 +2572,10 @@ export const categories: CategoryProps[] = [
 				title: "Spanish",
 				description:
 					"Praesent id massa id nisl venenatis lacinia. Aenean sit amet justo. Morbi ut odio.\n\nCras mi pede, malesuada in, imperdiet et, commodo vulputate, justo. In blandit ultrices enim. Lorem ipsum dolor sit amet, consectetuer adipiscing elit.",
-				chapters: 40,
+				chapters: [],
 				materials: 37,
 				quiz: 11,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "7cc1e34b-faf6-431a-9f26-f0503560ffe6",
@@ -1342,9 +2585,10 @@ export const categories: CategoryProps[] = [
 				title: "Music",
 				description:
 					"Vestibulum ac est lacinia nisi venenatis tristique. Fusce congue, diam id ornare imperdiet, sapien urna pretium nisl, ut volutpat sapien arcu sed augue. Aliquam erat volutpat.",
-				chapters: 29,
+				chapters: [],
 				materials: 50,
 				quiz: 20,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "9396dc4f-f4a9-488a-aa61-e5c7673cda2f",
@@ -1354,9 +2598,10 @@ export const categories: CategoryProps[] = [
 				title: "Philosophy",
 				description:
 					"Curabitur in libero ut massa volutpat convallis. Morbi odio odio, elementum eu, interdum eu, tincidunt in, leo. Maecenas pulvinar lobortis est.\n\nPhasellus sit amet erat. Nulla tempus. Vivamus in felis eu sapien cursus vestibulum.",
-				chapters: 31,
+				chapters: [],
 				materials: 29,
 				quiz: 15,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "632ca3c8-4a78-44d8-a745-e88293d2a3ce",
@@ -1366,9 +2611,10 @@ export const categories: CategoryProps[] = [
 				title: "Sociology",
 				description:
 					"Maecenas tristique, est et tempus semper, est quam pharetra magna, ac consequat metus sapien ut nunc. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Mauris viverra diam vitae quam. Suspendisse potenti.",
-				chapters: 23,
+				chapters: [],
 				materials: 38,
 				quiz: 10,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "e3b0edf1-8ac9-44ad-aad3-d51cb8f9a337",
@@ -1378,9 +2624,10 @@ export const categories: CategoryProps[] = [
 				title: "Archaeology",
 				description:
 					"Praesent id massa id nisl venenatis lacinia. Aenean sit amet justo. Morbi ut odio.\n\nCras mi pede, malesuada in, imperdiet et, commodo vulputate, justo. In blandit ultrices enim. Lorem ipsum dolor sit amet, consectetuer adipiscing elit.",
-				chapters: 34,
+				chapters: [],
 				materials: 38,
 				quiz: 12,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "37f06314-6ee6-4a8e-80eb-0463f3ddbeb0",
@@ -1390,9 +2637,10 @@ export const categories: CategoryProps[] = [
 				title: "English Literature",
 				description:
 					"Fusce posuere felis sed lacus. Morbi sem mauris, laoreet ut, rhoncus aliquet, pulvinar sed, nisl. Nunc rhoncus dui vel sem.\n\nSed sagittis. Nam congue, risus semper porta volutpat, quam pede lobortis ligula, sit amet eleifend pede libero quis orci. Nullam molestie nibh in lectus.\n\nPellentesque at nulla. Suspendisse potenti. Cras in purus eu magna vulputate luctus.",
-				chapters: 39,
+				chapters: [],
 				materials: 31,
 				quiz: 17,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "1cf231a8-19db-4b40-93dd-c959921e5613",
@@ -1402,9 +2650,10 @@ export const categories: CategoryProps[] = [
 				title: "Arabic",
 				description:
 					"Praesent blandit. Nam nulla. Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede.\n\nMorbi porttitor lorem id ligula. Suspendisse ornare consequat lectus. In est risus, auctor sed, tristique in, tempus sit amet, sem.\n\nFusce consequat. Nulla nisl. Nunc nisl.",
-				chapters: 38,
+				chapters: [],
 				materials: 39,
 				quiz: 13,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "7e0e0d18-ecb2-4bc9-9b31-326089f62a38",
@@ -1428,9 +2677,10 @@ export const categories: CategoryProps[] = [
 				title: "Spanish",
 				description:
 					"Aliquam quis turpis eget elit sodales scelerisque. Mauris sit amet eros. Suspendisse accumsan tortor quis turpis.",
-				chapters: 21,
+				chapters: [],
 				materials: 49,
 				quiz: 15,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "b104d21e-5b47-4184-b45f-b9a48b96755d",
@@ -1440,9 +2690,10 @@ export const categories: CategoryProps[] = [
 				title: "German",
 				description:
 					"In quis justo. Maecenas rhoncus aliquam lacus. Morbi quis tortor id nulla ultrices aliquet.\n\nMaecenas leo odio, condimentum id, luctus nec, molestie sed, justo. Pellentesque viverra pede ac diam. Cras pellentesque volutpat dui.",
-				chapters: 19,
+				chapters: [],
 				materials: 50,
 				quiz: 20,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "67663b27-9636-421b-b469-2e04059ed665",
@@ -1452,9 +2703,10 @@ export const categories: CategoryProps[] = [
 				title: "English Literature",
 				description:
 					"Proin leo odio, porttitor id, consequat in, consequat ut, nulla. Sed accumsan felis. Ut at dolor quis odio consequat varius.\n\nInteger ac leo. Pellentesque ultrices mattis odio. Donec vitae nisi.",
-				chapters: 31,
+				chapters: [],
 				materials: 37,
 				quiz: 13,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "6af7f554-5d01-423d-9a3b-e3b947b10330",
@@ -1464,9 +2716,10 @@ export const categories: CategoryProps[] = [
 				title: "Geography",
 				description:
 					"Pellentesque at nulla. Suspendisse potenti. Cras in purus eu magna vulputate luctus.\n\nCum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vivamus vestibulum sagittis sapien. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.",
-				chapters: 40,
+				chapters: [],
 				materials: 25,
 				quiz: 14,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "27a48a17-0335-40c9-81f8-b39aed5100be",
@@ -1490,9 +2743,10 @@ export const categories: CategoryProps[] = [
 				title: "Chemistry",
 				description:
 					"Fusce posuere felis sed lacus. Morbi sem mauris, laoreet ut, rhoncus aliquet, pulvinar sed, nisl. Nunc rhoncus dui vel sem.\n\nSed sagittis. Nam congue, risus semper porta volutpat, quam pede lobortis ligula, sit amet eleifend pede libero quis orci. Nullam molestie nibh in lectus.\n\nPellentesque at nulla. Suspendisse potenti. Cras in purus eu magna vulputate luctus.",
-				chapters: 34,
+				chapters: [],
 				materials: 37,
 				quiz: 13,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "5d148704-6787-438a-b2bf-b674118fec85",
@@ -1502,9 +2756,10 @@ export const categories: CategoryProps[] = [
 				title: "Commerce",
 				description:
 					"Quisque id justo sit amet sapien dignissim vestibulum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nulla dapibus dolor vel est. Donec odio justo, sollicitudin ut, suscipit a, feugiat et, eros.\n\nVestibulum ac est lacinia nisi venenatis tristique. Fusce congue, diam id ornare imperdiet, sapien urna pretium nisl, ut volutpat sapien arcu sed augue. Aliquam erat volutpat.\n\nIn congue. Etiam justo. Etiam pretium iaculis justo.",
-				chapters: 24,
+				chapters: [],
 				materials: 41,
 				quiz: 19,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "6cc8be1f-a843-44eb-b9fc-fe9d1c169897",
@@ -1514,9 +2769,10 @@ export const categories: CategoryProps[] = [
 				title: "Computer Studies",
 				description:
 					"Praesent id massa id nisl venenatis lacinia. Aenean sit amet justo. Morbi ut odio.",
-				chapters: 28,
+				chapters: [],
 				materials: 33,
 				quiz: 10,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "7a0668d6-bc93-47b6-b3f6-5d8e5b6fde4f",
@@ -1526,9 +2782,191 @@ export const categories: CategoryProps[] = [
 				title: "Mathematics",
 				description:
 					"Donec diam neque, vestibulum eget, vulputate ut, ultrices vel, augue. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec pharetra, magna vestibulum aliquet ultrices, erat tortor sollicitudin mi, sit amet lobortis sapien sapien non mi. Integer ac neque.\n\nDuis bibendum. Morbi non quam nec dui luctus rutrum. Nulla tellus.",
-				chapters: 18,
+				chapters: [
+					{
+						id: "1",
+						title: "Algebraic Structures and Equations",
+						description:
+							"Advanced algebraic manipulation, solving complex equations, and understanding mathematical structures.",
+						summary:
+							"This chapter explores sophisticated algebraic techniques, including polynomial equations, system of equations, and advanced factorization methods.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "2",
+						title: "Trigonometric Functions and Identities",
+						description:
+							"Comprehensive study of trigonometric functions, their properties, and advanced identities.",
+						summary:
+							"Students will master complex trigonometric manipulations, exploring sine, cosine, and tangent functions in depth.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "3",
+						title: "Coordinate Geometry",
+						description:
+							"Advanced exploration of geometric concepts using coordinate systems and analytical approaches.",
+						summary:
+							"This chapter connects algebraic methods with geometric representations, introducing complex analytical techniques.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "4",
+						title: "Calculus: Limits and Continuity",
+						description:
+							"Introduction to fundamental concepts of calculus, focusing on limits and function continuity.",
+						summary:
+							"Students will explore the mathematical foundations of change, understanding how functions behave at critical points.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "5",
+						title: "Derivatives and Their Applications",
+						description:
+							"Advanced study of derivatives, including rate of change, optimization, and mathematical modeling.",
+						summary:
+							"This chapter demonstrates how derivatives can be used to solve real-world problems and understand function behaviors.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "6",
+						title: "Integration Techniques",
+						description:
+							"Comprehensive exploration of integration methods and their practical applications.",
+						summary:
+							"Students will master various integration techniques, understanding how to calculate areas, volumes, and accumulated quantities.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "7",
+						title: "Probability Theory",
+						description:
+							"Advanced probability concepts, including combinatorics, conditional probability, and statistical inference.",
+						summary:
+							"This chapter develops sophisticated understanding of randomness, chance, and mathematical prediction.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "8",
+						title: "Matrices and Linear Transformations",
+						description:
+							"Deep dive into matrix algebra, linear transformations, and their applications in various fields.",
+						summary:
+							"Students will explore how matrices can represent complex mathematical transformations and solve systems of equations.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "9",
+						title: "Vectors in Three-Dimensional Space",
+						description:
+							"Advanced vector algebra, including dot and cross products, and three-dimensional geometric applications.",
+						summary:
+							"This chapter extends vector concepts to three-dimensional space, providing tools for complex spatial analysis.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "10",
+						title: "Exponential and Logarithmic Functions",
+						description:
+							"Comprehensive study of exponential growth, logarithmic properties, and their real-world applications.",
+						summary:
+							"Students will explore the powerful mathematical behaviors of exponential and logarithmic functions.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "11",
+						title: "Complex Numbers",
+						description:
+							"Advanced exploration of complex number systems, including algebraic and geometric interpretations.",
+						summary:
+							"This chapter introduces the mathematical world beyond real numbers, exploring complex number operations.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "12",
+						title: "Statistical Analysis",
+						description:
+							"Advanced statistical methods, including hypothesis testing, regression analysis, and data interpretation.",
+						summary:
+							"Students will develop sophisticated skills in analyzing and interpreting mathematical and statistical data.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "13",
+						title: "Series and Sequences",
+						description:
+							"Comprehensive study of mathematical sequences, series, and their convergence properties.",
+						summary:
+							"This chapter explores the fascinating world of infinite sequences and their mathematical behaviors.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "14",
+						title: "Analytical Geometry of Conic Sections",
+						description:
+							"Advanced study of circles, ellipses, parabolas, and hyperbolas using coordinate geometry.",
+						summary:
+							"Students will explore the mathematical properties of conic sections and their geometric representations.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+					{
+						id: "15",
+						title: "Mathematical Modeling",
+						description:
+							"Introduction to using mathematical techniques to model real-world phenomena and solve complex problems.",
+						summary:
+							"This chapter demonstrates how mathematical tools can be applied to understand and predict real-world systems.",
+						transcript: [],
+						quizzes: [],
+						resources: [],
+						isRead: true,
+					},
+				],
 				materials: 34,
 				quiz: 13,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "27a266be-f3b0-44b2-80b4-c89e8c6fa438",
@@ -1538,9 +2976,10 @@ export const categories: CategoryProps[] = [
 				title: "Spanish",
 				description:
 					"In hac habitasse platea dictumst. Morbi vestibulum, velit id pretium iaculis, diam erat fermentum justo, nec condimentum neque sapien placerat ante. Nulla justo.",
-				chapters: 29,
+				chapters: [],
 				materials: 31,
 				quiz: 14,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "e9940723-dc6d-474a-9775-3e16678f7511",
@@ -1550,9 +2989,10 @@ export const categories: CategoryProps[] = [
 				title: "Business Studies",
 				description:
 					"Integer ac leo. Pellentesque ultrices mattis odio. Donec vitae nisi.\n\nNam ultrices, libero non mattis pulvinar, nulla pede ullamcorper augue, a suscipit nulla elit ac nulla. Sed vel enim sit amet nunc viverra dapibus. Nulla suscipit ligula in lacus.\n\nCurabitur at ipsum ac tellus semper interdum. Mauris ullamcorper purus sit amet nulla. Quisque arcu libero, rutrum ac, lobortis vel, dapibus at, diam.",
-				chapters: 39,
+				chapters: [],
 				materials: 42,
 				quiz: 20,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "0378a68c-8c3c-49af-876e-e35adc90941a",
@@ -1562,9 +3002,10 @@ export const categories: CategoryProps[] = [
 				title: "English Literature",
 				description:
 					"Vestibulum ac est lacinia nisi venenatis tristique. Fusce congue, diam id ornare imperdiet, sapien urna pretium nisl, ut volutpat sapien arcu sed augue. Aliquam erat volutpat.\n\nIn congue. Etiam justo. Etiam pretium iaculis justo.",
-				chapters: 27,
+				chapters: [],
 				materials: 43,
 				quiz: 13,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "8d7d5cef-9f85-4050-b216-6b76adc9eb2d",
@@ -1574,9 +3015,10 @@ export const categories: CategoryProps[] = [
 				title: "Spanish",
 				description:
 					"Mauris enim leo, rhoncus sed, vestibulum sit amet, cursus id, turpis. Integer aliquet, massa id lobortis convallis, tortor risus dapibus augue, vel accumsan tellus nisi eu orci. Mauris lacinia sapien quis libero.\n\nNullam sit amet turpis elementum ligula vehicula consequat. Morbi a ipsum. Integer a nibh.\n\nIn quis justo. Maecenas rhoncus aliquam lacus. Morbi quis tortor id nulla ultrices aliquet.",
-				chapters: 31,
+				chapters: [],
 				materials: 26,
 				quiz: 14,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "53c157eb-6642-4ab2-b76e-a1af8c265f04",
@@ -1600,9 +3042,10 @@ export const categories: CategoryProps[] = [
 				title: "Additional Mathematics",
 				description:
 					"In congue. Etiam justo. Etiam pretium iaculis justo.\n\nIn hac habitasse platea dictumst. Etiam faucibus cursus urna. Ut tellus.",
-				chapters: 32,
+				chapters: [],
 				materials: 25,
 				quiz: 10,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "91709bd7-b962-4496-b5e2-1507d87f0ea8",
@@ -1626,9 +3069,10 @@ export const categories: CategoryProps[] = [
 				title: "Religious Studies",
 				description:
 					"Cras mi pede, malesuada in, imperdiet et, commodo vulputate, justo. In blandit ultrices enim. Lorem ipsum dolor sit amet, consectetuer adipiscing elit.\n\nProin interdum mauris non ligula pellentesque ultrices. Phasellus id sapien in sapien iaculis congue. Vivamus metus arcu, adipiscing molestie, hendrerit at, vulputate vitae, nisl.",
-				chapters: 29,
+				chapters: [],
 				materials: 30,
 				quiz: 17,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "903f0c6c-929b-453b-aa17-dd45fac401be",
@@ -1638,9 +3082,10 @@ export const categories: CategoryProps[] = [
 				title: "Home Economics",
 				description:
 					"Duis bibendum, felis sed interdum venenatis, turpis enim blandit mi, in porttitor pede justo eu massa. Donec dapibus. Duis at velit eu est congue elementum.",
-				chapters: 27,
+				chapters: [],
 				materials: 41,
 				quiz: 17,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "6afdbc81-0aae-4db3-abf2-5419a5f95108",
@@ -1650,9 +3095,10 @@ export const categories: CategoryProps[] = [
 				title: "Additional Mathematics",
 				description:
 					"Nullam porttitor lacus at turpis. Donec posuere metus vitae ipsum. Aliquam non mauris.\n\nMorbi non lectus. Aliquam sit amet diam in magna bibendum imperdiet. Nullam orci pede, venenatis non, sodales sed, tincidunt eu, felis.",
-				chapters: 28,
+				chapters: [],
 				materials: 33,
 				quiz: 18,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "bca1a927-869e-48ea-9d12-bbcc3c0e6401",
@@ -1662,9 +3108,10 @@ export const categories: CategoryProps[] = [
 				title: "English Language",
 				description:
 					"Aenean fermentum. Donec ut mauris eget massa tempor convallis. Nulla neque libero, convallis eget, eleifend luctus, ultricies eu, nibh.\n\nQuisque id justo sit amet sapien dignissim vestibulum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nulla dapibus dolor vel est. Donec odio justo, sollicitudin ut, suscipit a, feugiat et, eros.",
-				chapters: 40,
+				chapters: [],
 				materials: 46,
 				quiz: 11,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "dd22ed2a-21fe-497d-b54c-d7b21b68ec81",
@@ -1688,9 +3135,10 @@ export const categories: CategoryProps[] = [
 				title: "English Language",
 				description:
 					"Maecenas tristique, est et tempus semper, est quam pharetra magna, ac consequat metus sapien ut nunc. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Mauris viverra diam vitae quam. Suspendisse potenti.\n\nNullam porttitor lacus at turpis. Donec posuere metus vitae ipsum. Aliquam non mauris.",
-				chapters: 27,
+				chapters: [],
 				materials: 26,
 				quiz: 18,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "9a3561ee-69e2-4437-9edc-5f2251716b06",
@@ -1700,9 +3148,10 @@ export const categories: CategoryProps[] = [
 				title: "English Literature",
 				description:
 					"In quis justo. Maecenas rhoncus aliquam lacus. Morbi quis tortor id nulla ultrices aliquet.\n\nMaecenas leo odio, condimentum id, luctus nec, molestie sed, justo. Pellentesque viverra pede ac diam. Cras pellentesque volutpat dui.",
-				chapters: 18,
+				chapters: [],
 				materials: 36,
 				quiz: 16,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "a5a93d07-32dd-4de8-a34e-3f4c781d74d9",
@@ -1712,9 +3161,10 @@ export const categories: CategoryProps[] = [
 				title: "Art and Design",
 				description:
 					"Quisque porta volutpat erat. Quisque erat eros, viverra eget, congue eget, semper rutrum, nulla. Nunc purus.\n\nPhasellus in felis. Donec semper sapien a libero. Nam dui.\n\nProin leo odio, porttitor id, consequat in, consequat ut, nulla. Sed accumsan felis. Ut at dolor quis odio consequat varius.",
-				chapters: 34,
+				chapters: [],
 				materials: 47,
 				quiz: 14,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "1aa2b894-334e-4d47-85fa-854076b4c167",
@@ -1724,9 +3174,10 @@ export const categories: CategoryProps[] = [
 				title: "Philosophy",
 				description:
 					"Sed sagittis. Nam congue, risus semper porta volutpat, quam pede lobortis ligula, sit amet eleifend pede libero quis orci. Nullam molestie nibh in lectus.\n\nPellentesque at nulla. Suspendisse potenti. Cras in purus eu magna vulputate luctus.\n\nCum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vivamus vestibulum sagittis sapien. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.",
-				chapters: 18,
+				chapters: [],
 				materials: 31,
 				quiz: 18,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "dd78746a-26d6-4f38-b58e-dc148b5b3626",
@@ -1736,9 +3187,10 @@ export const categories: CategoryProps[] = [
 				title: "Additional Mathematics",
 				description:
 					"In hac habitasse platea dictumst. Morbi vestibulum, velit id pretium iaculis, diam erat fermentum justo, nec condimentum neque sapien placerat ante. Nulla justo.\n\nAliquam quis turpis eget elit sodales scelerisque. Mauris sit amet eros. Suspendisse accumsan tortor quis turpis.",
-				chapters: 21,
+				chapters: [],
 				materials: 44,
 				quiz: 16,
+				tags: [],
 				image:
 					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 				id: "45a36ee6-cde9-4678-8e6c-f834d5b6bcd6",

@@ -1,2 +1,7 @@
 export * from "./card"
+export * from "./chapter-list"
+export * from "./course-card"
 export * from "./overview"
+export * from "./quiz-history"
+export * from "./resources"
+export * from "./transcript"
