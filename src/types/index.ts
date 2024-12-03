@@ -79,6 +79,10 @@ export type UserProps = Node & {
 	username: string
 }
 
+export type AdminProps = Node & {
+	__typename?: "Admin"
+}
+
 export type SubjectProps = Node & {
 	__typename?: "Subject"
 	description: string
@@ -153,6 +157,37 @@ export type AnsweredQuestionProps = {
 	selectedAnswer: string
 }
 
+export type MessageProps = Node & {
+	__typename?: "Message"
+	content: string
+	timestamp: number
+	type: "media" | "system" | "text"
+	userId: string
+	edited?: boolean
+	reactions?: Record<string, number>
+}
+
+export type ChannelProps = Node & {
+	__typename?: "Channel"
+	color: string
+	description?: string
+	isGeneral?: boolean
+	locked: boolean
+	messages: MessageProps[]
+	name: string
+	participants: UserProps[]
+	type: "audio" | "text"
+}
+
+export type CommunityProps = Node & {
+	__typename?: "Community"
+	admins: string[]
+	channels: ChannelProps[]
+	description: string
+	name: string
+	members: UserProps[]
+}
+
 export type ChallengeProps = Node & {
 	__typename?: "Challenge"
 	challenges_challenge_name: string
@@ -160,7 +195,15 @@ export type ChallengeProps = Node & {
 	challenges_challenge_points: number
 }
 
-export type ReviewProps = Node & {}
+export type EventProps = Node & {
+	__typename?: "Event"
+}
+
+export type ReviewProps = Node & {
+	__typename?: "Review"
+	title: string
+	date: (Date | string)[]
+}
 
 export type WaitlistUserProps = {
 	__typename?: "Waitlist User"

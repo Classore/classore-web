@@ -110,7 +110,7 @@ const Page = () => {
 										Quit
 									</Button>
 								</DialogTrigger>
-								<DialogContent>
+								<DialogContent className="w-[400px]">
 									<div className="flex w-full items-center justify-end">
 										<button onClick={() => setDialogOpen(false)}>
 											<RiCloseLine size={24} />
@@ -185,7 +185,7 @@ const Page = () => {
 											<DialogTrigger asChild>
 												<Button className="max-w-[115px]">Submit</Button>
 											</DialogTrigger>
-											<DialogContent>
+											<DialogContent className="w-[400px]">
 												<div className="flex w-full items-center justify-end">
 													<button onClick={() => setIsOpen(false)}>
 														<RiCloseLine size={24} />
