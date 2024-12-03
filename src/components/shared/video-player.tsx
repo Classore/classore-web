@@ -195,7 +195,7 @@ export const VideoPlayer = ({ src }: Props) => {
 						<RiPlayLargeFill className="text-white" size={64} />
 					</button>
 				)}
-				{(showControls || !isPlaying) && (
+				{(showControls || !isPlaying) && !isLoading && (
 					<div className="absolute inset-0 flex items-center justify-center bg-black/30 transition-colors hover:bg-black/50">
 						<button onClick={togglePlay} className="transition-transform hover:scale-110">
 							{isPlaying ? (

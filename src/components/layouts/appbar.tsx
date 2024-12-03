@@ -15,7 +15,7 @@ export const Appbar = () => {
 	const { user } = useUserStore()
 
 	return (
-		<nav className="flex h-24 w-full items-center justify-between px-8">
+		<nav className="flex h-24 w-full items-center justify-between border-b px-8">
 			<Search />
 			<div className="flex items-center gap-x-3">
 				<Link href="/dashboard">

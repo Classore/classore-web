@@ -1,6 +1,5 @@
 import { useRouter } from "next/router"
 import Image from "next/image"
-import { toast } from "sonner"
 import React from "react"
 import {
 	RiArrowDropDownLine,
@@ -11,6 +10,7 @@ import {
 } from "@remixicon/react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { usePreventNavigation, useQuizHandler } from "@/hooks"
 import { Button } from "@/components/ui/button"
 import { useUserStore } from "@/store/z-store"
 import { Seo } from "@/components/shared"
@@ -30,59 +30,40 @@ const items = [
 	{ label: "unanswered", color: "var(--neutral-400)" },
 ]
 
-type AnsweredQuestion = {
-	questionId: string
-	selectedAnswer: string
-}
-
 const Page = () => {
-	const [answered, setAnswered] = React.useState<AnsweredQuestion[]>([])
 	const [dialogOpen, setDialogOpen] = React.useState(false)
-	const [current, setCurrent] = React.useState(0)
+	const [isOpen, setIsOpen] = React.useState(false)
 	const [open, setOpen] = React.useState(false)
 	const { user } = useUserStore()
 	const router = useRouter()
 	const { id } = router.query
 
-	const quizzes = categories[0].subjects[9].chapters[0].quizzes
+	const quizzes = categories[0]?.subjects[9]?.chapters[0]?.quizzes
 	const quiz = quizzes.find((quiz) => quiz.id === String(id))!
 	const questions = quiz?.questions
 
-	const currentQuestion = questions?.[current]
-
-	const isAnswered = (id: string) => !!answered.find((answers) => answers.questionId === id)
-
-	const isAnswer = (answer: string) =>
-		answered.find((answers) => answers.questionId === currentQuestion.id)?.selectedAnswer === answer
-
-	const handleNext = () => {
-		if (!isAnswered(currentQuestion.id)) {
-			toast.error("Please select an answer")
-			return
-		}
-		if (current < questions.length - 1) {
-			setCurrent(current + 1)
-		}
+	const handleQuit = () => {
+		router.push("/dashboard/courses")
 	}
 
-	const handlePrevious = () => {
-		if (current > 1) {
-			setCurrent(current - 1)
-		}
-	}
+	const {
+		current,
+		currentQuestion,
+		handleNavigation,
+		handleSubmission,
+		isAnswer,
+		isAnswered,
+		selectAnswer,
+		setCurrent,
+	} = useQuizHandler({
+		questions,
+		onSubmit: (answered) => {
+			console.log(answered)
+			router.push("/dashboard/courses")
+		},
+	})
 
-	const handleSkip = () => {
-		if (current < questions.length - 1) {
-			setCurrent(current + 1)
-		}
-	}
-	const selectAnswer = (answer: string) => {
-		const answeredQuestion = {
-			questionId: currentQuestion.id,
-			selectedAnswer: answer,
-		}
-		setAnswered((prev) => [...prev, answeredQuestion])
-	}
+	usePreventNavigation(true, `/dashboard/courses/`)
 
 	return (
 		<>
@@ -129,20 +110,32 @@ const Page = () => {
 										Quit
 									</Button>
 								</DialogTrigger>
-								<DialogContent>
+								<DialogContent className="w-[400px]">
 									<div className="flex w-full items-center justify-end">
 										<button onClick={() => setDialogOpen(false)}>
 											<RiCloseLine size={24} />
 										</button>
 									</div>
-									<div>
+									<div className="flex w-full flex-col gap-4">
 										<DialogTitle className="text-2xl font-bold">Quit?</DialogTitle>
 										<DialogDescription hidden></DialogDescription>
+										<div className="w-full rounded-lg bg-neutral-100 p-4 text-sm text-neutral-400">
+											Are you sure you want to quit your quiz now? Please note that you will lose an attempt by
+											quitting.
+										</div>
+										<div className="flex w-full items-center justify-end gap-4">
+											<Button className="max-w-[115px]" onClick={() => setDialogOpen(false)} variant="outline">
+												Cancel
+											</Button>
+											<Button className="w-fit" onClick={handleQuit}>
+												I understand, Quit
+											</Button>
+										</div>
 									</div>
 								</DialogContent>
 							</Dialog>
 						</div>
-						<div className="col-span-2 flex h-fit w-full flex-col gap-4 rounded-lg border bg-gradient-to-b from-primary-100 from-5% via-white via-35% to-white to-95% p-5">
+						<div className="col-span-2 flex h-fit w-full flex-col gap-4 rounded-lg border bg-gradient-to-b from-primary-100 from-0% via-white via-15% to-white to-100% p-5">
 							<div className="flex w-full items-center justify-between">
 								<div className="flex items-center gap-1 text-neutral-400">
 									<RiQuestionLine />
@@ -177,14 +170,49 @@ const Page = () => {
 								</div>
 							</div>
 							<div className="flex w-full items-center justify-between">
-								<Button onClick={handleSkip} className="w-fit" variant="text">
+								<Button onClick={() => handleNavigation("skip")} className="max-w-[115px]" variant="text">
 									Skip Question
 								</Button>
 								<div className="flex items-center gap-4">
-									<Button onClick={handlePrevious} variant="outline">
+									<Button
+										className="max-w-[115px]"
+										onClick={() => handleNavigation("previous")}
+										variant="outline">
 										Previous
 									</Button>
-									<Button onClick={handleNext}>Next</Button>
+									{questions?.length - 1 === current ? (
+										<Dialog open={isOpen} onOpenChange={setIsOpen}>
+											<DialogTrigger asChild>
+												<Button className="max-w-[115px]">Submit</Button>
+											</DialogTrigger>
+											<DialogContent className="w-[400px]">
+												<div className="flex w-full items-center justify-end">
+													<button onClick={() => setIsOpen(false)}>
+														<RiCloseLine size={24} />
+													</button>
+												</div>
+												<div className="flex w-full flex-col gap-4">
+													<DialogTitle className="text-2xl font-bold">Submit Quiz</DialogTitle>
+													<DialogDescription hidden></DialogDescription>
+													<div className="w-full rounded-lg bg-neutral-100 p-4 text-sm text-neutral-400">
+														Are you sure you want to submit your quiz now?
+													</div>
+													<div className="flex w-full items-center justify-end gap-4">
+														<Button className="max-w-[115px]" onClick={() => setIsOpen(false)} variant="outline">
+															Cancel
+														</Button>
+														<Button className="max-w-[115px]" onClick={handleSubmission}>
+															Yes, Submit
+														</Button>
+													</div>
+												</div>
+											</DialogContent>
+										</Dialog>
+									) : (
+										<Button className="max-w-[115px]" onClick={() => handleNavigation("next")}>
+											Next
+										</Button>
+									)}
 								</div>
 							</div>
 						</div>
