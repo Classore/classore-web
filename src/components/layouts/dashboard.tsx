@@ -32,7 +32,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 										<Link
 											key={name}
 											href={href}
-											className={`flex items-center gap-2 rounded px-3 py-2 text-sm capitalize hover:bg-primary-300/25 ${isOnRoute(href) ? "border border-primary-500 font-bold text-primary-500" : "font-medium text-neutral-500"}`}>
+											className={`flex items-center gap-2 rounded px-3 py-2 text-sm capitalize ${isOnRoute(href) ? "shadow-stable border border-primary-500 font-bold text-primary-500 shadow-primary-300" : "font-medium text-neutral-500 hover:bg-primary-300/25"}`}>
 											<Icon /> {name}
 										</Link>
 									))}
