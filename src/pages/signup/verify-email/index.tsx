@@ -1,21 +1,44 @@
 import { AuthLayout } from "@/components/layouts/auth"
 import { Seo } from "@/components/shared"
 
-import { InputOTP, InputOTPSlot } from "@/components/ui/otp-input"
-import { SignupStepper } from "@/components/signup-stepper"
 import { VerifyEmailGraphic } from "@/assets/icons"
+import { SignupStepper } from "@/components/signup-stepper"
 import { Button } from "@/components/ui/button"
+import { OTPInput } from "@/components/ui/input-otp"
+import { yupResolver } from "@hookform/resolvers/yup"
 import Link from "next/link"
+import { useForm } from "react-hook-form"
+import * as yup from "yup"
 
-// const appId = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID
+const pageSchema = yup.object().shape({
+	verification_code: yup
+		.string()
+		.required("Please enter your verification code")
+		.matches(/^[0-9]+$/, "Must be only digits")
+		.min(6, "Verification code must be 6 digits")
+		.max(6, "Verification code must be 6 digits"),
+})
+type FormValues = yup.InferType<typeof pageSchema>
 
 const Page = () => {
+	const { control, handleSubmit } = useForm<FormValues>({
+		defaultValues: {
+			verification_code: "",
+		},
+		resolver: yupResolver(pageSchema),
+	})
+
+	const onSubmit = (values: FormValues) => {
+		console.log("values", values)
+	}
+
 	return (
 		<>
 			<Seo title="Verify Email" />
 			<AuthLayout screen="signup">
 				<div className="flex max-w-[400px] flex-col gap-20">
 					<SignupStepper />
+
 					<div className="flex flex-col gap-6">
 						<header className="flex flex-col gap-4">
 							<VerifyEmailGraphic />
@@ -27,15 +50,10 @@ const Page = () => {
 								</p>
 							</div>
 						</header>
-						<form className="flex flex-col gap-6 font-body font-normal">
-							<InputOTP maxLength={6}>
-								<InputOTPSlot index={0} />
-								<InputOTPSlot index={1} />
-								<InputOTPSlot index={2} />
-								<InputOTPSlot index={3} />
-								<InputOTPSlot index={4} />
-								<InputOTPSlot index={5} />
-							</InputOTP>
+
+						<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6 font-body font-normal">
+							<OTPInput control={control} name="verification_code" />
+
 							<div className="col-span-full flex flex-col gap-2">
 								<Button type="submit">Verify</Button>
 								<p className="text-center text-sm text-neutral-500">

@@ -4,12 +4,31 @@ import { Seo } from "@/components/shared"
 import { ForgotPasswordGraphic } from "@/assets/icons"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { yupResolver } from "@hookform/resolvers/yup"
 import { ChevronLeft } from "@untitled-ui/icons-react"
 import { useRouter } from "next/router"
+import { useForm } from "react-hook-form"
+import * as yup from "yup"
 // const appId = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID
+
+const pageSchema = yup.object().shape({
+	email: yup.string().required("Please enter your email address").email("Invalid email address"),
+})
+type FormValues = yup.InferType<typeof pageSchema>
 
 const Page = () => {
 	const router = useRouter()
+	const { control, handleSubmit } = useForm<FormValues>({
+		defaultValues: {
+			email: "",
+		},
+		resolver: yupResolver(pageSchema),
+	})
+
+	const onSubmit = (values: FormValues) => {
+		console.log("values", values)
+	}
+
 	return (
 		<>
 			<Seo title="Forgot Password" />
@@ -31,12 +50,14 @@ const Page = () => {
 						<h2 className="font-body text-2xl font-bold text-neutral-900">Forgot Password</h2>
 					</header>
 
-					<form className="flex flex-col gap-4 font-body font-normal">
+					<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 font-body font-normal">
 						<Input
 							type="email"
 							label="Email Address"
 							placeholder="name@email.com"
 							className="col-span-full"
+							control={control}
+							name="email"
 						/>
 
 						<div className="mt-2 flex flex-col gap-2">

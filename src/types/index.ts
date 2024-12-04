@@ -61,9 +61,17 @@ export type Node = {
 
 export type UserProps = Node & {
 	__typename?: "User"
+	first_name: string
+	last_name: string
 	email: string
-	firstName: string
-	lastName: string
 	password: string
-	username: string
+	access_token: string
+	referral_code: string
+	profile_image: string
+	is_verified: boolean
+	chosen_study_plan: boolean
+	user_type: string
+	wallet_id: string
+	sign_up_channel: string
+	isBlocked: boolean
 }

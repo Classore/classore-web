@@ -4,12 +4,49 @@ import { Seo } from "@/components/shared"
 import { ForgotPasswordGraphic } from "@/assets/icons"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { passwordRules } from "@/config"
+import { yupResolver } from "@hookform/resolvers/yup"
 import { ChevronLeft } from "@untitled-ui/icons-react"
 import { useRouter } from "next/router"
+import { useForm } from "react-hook-form"
+import * as yup from "yup"
 // const appId = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID
+
+const pageSchema = yup.object().shape({
+	password: yup
+		.string()
+		.required("Please enter your password")
+		.min(6, "Password must be at least 8 characters")
+		.matches(
+			passwordRules,
+			"Password must contain at least 1 uppercase letter, 1 lowercase letter and 1 number"
+		),
+	confirm_password: yup
+		.string()
+		.required("Please confirm your password")
+		.min(6, "Confirm password must be at least 8 characters")
+		.matches(
+			passwordRules,
+			"Confirm password must contain at least 1 uppercase letter, 1 lowercase letter and 1 number"
+		)
+		.oneOf([yup.ref("password")], "Passwords must match"),
+})
+type FormValues = yup.InferType<typeof pageSchema>
 
 const Page = () => {
 	const router = useRouter()
+	const { control, handleSubmit } = useForm<FormValues>({
+		defaultValues: {
+			password: "",
+			confirm_password: "",
+		},
+		resolver: yupResolver(pageSchema),
+	})
+
+	const onSubmit = (values: FormValues) => {
+		console.log("values", values)
+	}
+
 	return (
 		<>
 			<Seo title="Forgot Password" />
@@ -25,18 +62,19 @@ const Page = () => {
 					</button>
 
 					<header className="flex flex-col gap-4">
-						{/* should convert this to html, but i'm just lazy */}
 						<ForgotPasswordGraphic />
 
 						<h2 className="font-body text-2xl font-bold text-neutral-900">Reset your Password</h2>
 					</header>
 
-					<form className="flex flex-col gap-4 font-body font-normal">
+					<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 font-body font-normal">
 						<Input
 							type="password"
 							label="Password"
 							placeholder="***************"
 							className="col-span-full"
+							control={control}
+							name="password"
 						/>
 
 						<Input
@@ -44,6 +82,8 @@ const Page = () => {
 							label="Confirm Password"
 							placeholder="***************"
 							className="col-span-full"
+							control={control}
+							name="confirm_password"
 						/>
 
 						<div className="mt-2 flex flex-col gap-2">

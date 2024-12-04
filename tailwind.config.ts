@@ -77,6 +77,7 @@ const config: Config = {
 			},
 			boxShadow: {
 				primary: "0 0 0 2px rgba(111,66,193,0.1),0px 0px 0px 3px rgba(111,66,193,0.1)",
+				// error: "0 0 0 2px rgba(220,38,38,0.1),0px 0px 0px 3px rgba(220,38,38,0.1)",
 			},
 		},
 	},

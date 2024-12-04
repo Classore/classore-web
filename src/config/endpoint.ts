@@ -1,8 +1,8 @@
 export const endpoints = (id?: string) => {
 	const auth = {
 		signup: "/auth/signup",
-		signin: "/auth/signin",
-	}
+		signin: "/auth/login",
+	} as const
 
 	const courses = {
 		get_all: "/courses",

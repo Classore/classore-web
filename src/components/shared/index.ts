@@ -1,4 +1,5 @@
 export * from "./appbar"
+export * from "./error-message"
 export * from "./footer"
 export * from "./seo"
 export * from "./spinner"

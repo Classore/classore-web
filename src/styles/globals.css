@@ -58,7 +58,7 @@ body {
 	background: #f2edf7;
 	color: var(--neutral-900);
 	overflow-x: hidden;
-	user-select: none;
+	/* user-select: none; */
 	width: 100%;
 	transition: colors 0.75s cubic-bezier(0.215, 0.61, 0.355, 1);
 	-webkit-transition: colors 0.75s cubic-bezier(0.215, 0.61, 0.355, 1);
@@ -144,7 +144,6 @@ input[type="search"]::-webkit-search-results-decoration {
 	-moz-transition: width 0.7s cubic-bezier(0.25, 1, 0.5, 1);
 	-webkit-transition: width 0.7s cubic-bezier(0.25, 1, 0.5, 1);
 }
-
 
 @media (hover: hover) and (pointer: fine) {
 	.link:hover::before {

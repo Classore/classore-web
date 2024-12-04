@@ -1,6 +1,6 @@
-import type { HttpResponse, UserProps } from "@/types"
 import { endpoints } from "@/config"
 import { axios } from "@/lib"
+import type { HttpResponse, UserProps } from "@/types"
 
 export interface WaitlistDto {
 	email: string
@@ -31,11 +31,13 @@ export interface ResetPasswordDto {
 }
 
 const SignInMutation = async (payload: SignInDto) => {
-	return axios.post<HttpResponse<UserProps>>("/auth/signin", payload).then((res) => res.data)
+	return axios
+		.post<HttpResponse<UserProps>>(endpoints().auth.signin, payload)
+		.then((res) => res.data)
 }
 
 const SignUpMutation = async (payload: SignUpDto) => {
-	return axios.post<HttpResponse<UserProps>>("/auth/signup", payload).then((res) => res.data)
+	return axios.post<HttpResponse<UserProps>>("/auth/login", payload).then((res) => res.data)
 }
 
 const ForgotPasswordMutation = async (email: string) => {
