@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=Geist:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+@import "~stream-chat-react/dist/css/v2/index.css";
 
 @tailwind base;
 @tailwind components;
@@ -170,4 +171,25 @@ input[type="search"]::-webkit-search-results-decoration {
 		right: auto;
 		width: 100%;
 	}
+}
+
+/* StreamChat Customizations */
+.str-chat__channel-header {
+	height: 76px;
+	background: #fff;
+	padding: 18px 32px;
+	border-bottom: 1px solid #e2e4e9;
+}
+
+.str-chat__avatar {
+	border-radius: 10px;
+}
+
+.str-chat__list,
+.str-chat__empty-channel {
+	background: #f6f8fa;
+}
+
+.str-chat__empty-channel-text {
+	font-size: 14px;
 }

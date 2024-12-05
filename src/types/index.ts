@@ -81,6 +81,13 @@ export type UserProps = Node & {
 
 export type AdminProps = Node & {
 	__typename?: "Admin"
+	email: string
+	firstName: string
+	image: string
+	lastName: string
+	password: string
+	username: string
+	role: "ADMIN" | "SUPER_ADMIN" | "SUB_TEACHER" | "TEACHER"
 }
 
 export type SubjectProps = Node & {
@@ -188,6 +195,14 @@ export type CommunityProps = Node & {
 	members: UserProps[]
 }
 
+export type LeaderboardProps = Node & {
+	__typename?: "Leaderboard"
+	quiz: number
+	referrals: number
+	streak: number
+	userId: string
+}
+
 export type ChallengeProps = Node & {
 	__typename?: "Challenge"
 	challenges_challenge_name: string
@@ -197,12 +212,20 @@ export type ChallengeProps = Node & {
 
 export type EventProps = Node & {
 	__typename?: "Event"
+	date: (Date | string)[]
+	title: string
+	participants: string[]
 }
 
 export type ReviewProps = Node & {
 	__typename?: "Review"
+	rating: number
+}
+
+export type NotificationProps = Node & {
+	content: string
+	read: boolean
 	title: string
-	date: (Date | string)[]
 }
 
 export type WaitlistUserProps = {
