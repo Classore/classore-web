@@ -6,13 +6,10 @@ import { DashboardLayout } from "@/components/layouts"
 import { Seo } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { useUserStore } from "@/store/z-store"
-import Cookies from "js-cookie"
-import { useRouter } from "next/router"
 
 import { challenges } from "@/mock"
 
 const Page = () => {
-	const router = useRouter()
 	const { user } = useUserStore()
 
 	const [] = useQueries({ queries: [] })
@@ -21,17 +18,6 @@ const Page = () => {
 		<>
 			<Seo title="Dashboard" />
 			<DashboardLayout>
-				<h1>Welcome to your dashboard</h1>
-
-				<button
-					type="button"
-					onClick={() => {
-						localStorage.removeItem("CLASSORE_USER")
-						Cookies.remove("CLASSORE_TOKEN")
-						router.replace("/signin")
-					}}>
-					Sign out
-				</button>
 				<div className="flex w-full flex-col gap-6 px-8 py-6">
 					<div className="flex w-full items-center justify-between gap-[177px] rounded-2xl bg-dashboard bg-cover bg-center bg-no-repeat px-10 py-[52px] text-white">
 						<div className="flex min-w-[323px] flex-col gap-2">

@@ -1,13 +1,13 @@
-import { useRouter } from "next/router"
 import Image from "next/image"
 import Link from "next/link"
+import { useRouter } from "next/router"
 import React from "react"
 
 import meeting from "@/assets/illustrations/meeting.svg"
 import { dashboard_links } from "@/config"
+import { normalize } from "@/lib"
 import { Button } from "../ui/button"
 import { Appbar } from "./appbar"
-import { normalize } from "@/lib"
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
 	const router = useRouter()
@@ -32,7 +32,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 										<Link
 											key={name}
 											href={href}
-											className={`flex items-center gap-2 rounded px-3 py-2 text-sm capitalize ${isOnRoute(href) ? "border border-primary-500 font-bold text-primary-500 shadow-stable shadow-primary-300" : "font-medium text-neutral-500 hover:bg-primary-300/25"}`}>
+											className={`flex items-center gap-2 rounded px-3 py-2 text-sm capitalize ${isOnRoute(href) ? "border border-primary-500 font-bold text-primary-500 shadow-primary transition-all" : "font-medium text-neutral-500 hover:bg-primary-300/25"}`}>
 											<Icon /> {name}
 										</Link>
 									))}
@@ -41,6 +41,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 						</div>
 					</div>
 				</div>
+
 				<div className="w-full p-4">
 					<div className="relative h-[145px] w-full overflow-hidden rounded-lg border bg-gradient-to-r from-white to-secondary-100 px-3 py-4">
 						<div className="absolute -bottom-4 -right-4 aspect-square w-[138px]">

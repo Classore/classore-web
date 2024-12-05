@@ -22,7 +22,6 @@ export function middleware(req: NextRequest) {
 	const requestHeaders = new Headers(req.headers) // Init new request headers
 	requestHeaders.set("x-next-pathname", req.nextUrl.pathname) // Set the new header for pathname
 
-	const isWaitlist = process.env.NODE_ENV !== "development"
 	const hasToken = req.cookies.has("CLASSORE_TOKEN")
 	const url = req.nextUrl.clone() // Clone the URL to modify it
 
@@ -35,16 +34,16 @@ export function middleware(req: NextRequest) {
 		return response
 	}
 
-	// If in test mode, always redirect to the homepage
-	if (isWaitlist && url.pathname !== "/") {
-		url.pathname = "/"
-		return redirectResponse(url)
-	}
+	// // If in test mode, always redirect to the homepage
+	// if (isWaitlist && url.pathname !== "/") {
+	// 	url.pathname = "/"
+	// 	return redirectResponse(url)
+	// }
 
 	// If user is not logged in and is on dashboard, redirect to signin
 	if (!hasToken && isOnDashboard) {
 		url.pathname = "/signin"
-		// return redirectResponse(url)
+		return redirectResponse(url)
 	}
 
 	// If user is logged in and is on signin or signup, redirect to dashboard

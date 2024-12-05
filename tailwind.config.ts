@@ -25,8 +25,6 @@ const config: Config = {
 				squiggly: "url('/assets/images/squiggly.png')",
 			},
 			colors: {
-				// primary: "#6f42c1",
-				// secondary: "#f67f36",
 				error: "#E33629",
 				neutral: {
 					0: "#ffffff",
@@ -80,7 +78,6 @@ const config: Config = {
 				neomorphism: "inset 5px 5px 10px #eef0f2, inset -5px -5px 10px #f6f8fa",
 				primary: "0 0 0 2px rgba(111,66,193,0.1),0px 0px 0px 3px rgba(111,66,193,0.1)",
 				// error: "0 0 0 2px rgba(220,38,38,0.1),0px 0px 0px 3px rgba(220,38,38,0.1)",
-				stable: "0px 0px 3px 3px",
 			},
 		},
 	},

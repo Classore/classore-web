@@ -6,6 +6,7 @@ import posthog from "posthog-js"
 import { PostHogProvider } from "posthog-js/react"
 import React from "react"
 
+import { FacebookPixel } from "@/components/shared"
 import { Toaster } from "@/components/ui/sonner"
 import { analytics } from "@/lib"
 import { QueryProvider, SSRProvider } from "@/providers"
@@ -23,12 +24,10 @@ export default function App({ Component, pageProps }: AppProps) {
 		<GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
 			<QueryProvider>
 				<SSRProvider>
-					<Component {...pageProps} />
-
-					<Toaster position="top-right" richColors theme="light" closeButton />
 					<PostHogProvider client={posthog}>
 						<Component {...pageProps} />
-						<Toaster position="top-right" />
+						<Toaster position="top-right" richColors theme="light" closeButton />
+						<FacebookPixel />
 					</PostHogProvider>
 				</SSRProvider>
 			</QueryProvider>
