@@ -1,5 +1,6 @@
 export * from "./appbar"
 export * from "./avatar-group"
+export * from "./backdrop"
 export * from "./data-table"
 export * from "./facebook-pixel"
 export * from "./field-error"
