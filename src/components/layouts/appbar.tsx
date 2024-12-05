@@ -39,14 +39,14 @@ export const Appbar = () => {
 					</Popover>
 					<button onClick={() => setOpen(!open)} className="flex items-center gap-2">
 						<Avatar className="size-[46px] bg-black">
-							<AvatarImage src={user?.image} alt={user?.firstName} />
+							<AvatarImage src={user?.image} alt={user?.first_name} />
 							<AvatarFallback className="text-white">
-								{getInitials(`${user?.firstName} ${user?.lastName}`)}
+								{getInitials(`${user?.first_name} ${user?.lastName}`)}
 							</AvatarFallback>
 						</Avatar>
 						<div className="flex flex-col">
 							<p className="">
-								{user?.firstName} {user?.lastName}
+								{user?.first_name} {user?.lastName}
 							</p>
 							<p className="text-xs text-neutral-400">{user?.email}</p>
 						</div>

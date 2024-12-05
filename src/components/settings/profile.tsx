@@ -10,7 +10,7 @@ import { Input } from "../ui/input"
 const initialValues = {
 	bio: "",
 	email: "",
-	firstName: "",
+	first_name: "",
 	image: "",
 	lastName: "",
 	dateOfBirth: "",
@@ -70,8 +70,8 @@ const Profile = () => {
 				</div>
 			</div>
 			<div className="grid w-full grid-cols-2 gap-2 border-b py-5">
-				<Input type="text" name="firstName" label="First Name" control={control} />
-				<Input type="text" name="firstName" label="Last Name" control={control} />
+				<Input type="text" name="first_name" label="First Name" control={control} />
+				<Input type="text" name="first_name" label="Last Name" control={control} />
 			</div>
 
 			<div className="w-full border-b py-5">

@@ -89,7 +89,7 @@ const ChatComponent = ({ user }: Props) => {
 			await newClient.connectUser(
 				{
 					id: user.id,
-					name: `User ${user.firstName}`,
+					name: `User ${user.first_name}`,
 				},
 				token
 			)
@@ -98,7 +98,7 @@ const ChatComponent = ({ user }: Props) => {
 		} catch (error) {
 			console.error("Chat initialization error:", error)
 		}
-	}, [user.id, user.firstName])
+	}, [user.id, user.first_name])
 
 	React.useEffect(() => {
 		initializeChat()
@@ -168,7 +168,7 @@ const UserList: React.FC<UserListProps> = React.memo(
 
 					const formattedPredefinedUsers = predefinedUsers!.map((user) => ({
 						id: user.id,
-						name: user.firstName,
+						name: user.first_name,
 					}))
 
 					const combinedUsers = [

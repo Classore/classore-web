@@ -38,7 +38,7 @@ const ChannelsComponent = ({ user }: Props) => {
 				const { token } = await response.json()
 
 				const client = StreamChat.getInstance(process.env.NEXT_PUBLIC_GETSTREAM_API_KEY)
-				await client.connectUser({ id: user.id, name: user.firstName }, token)
+				await client.connectUser({ id: user.id, name: user.first_name }, token)
 				const channel = client.channel("messaging", "general", {
 					name: "General Channel",
 					members: [user.id],
@@ -59,7 +59,7 @@ const ChannelsComponent = ({ user }: Props) => {
 				client.disconnectUser()
 			}
 		}
-	}, [client, user.firstName, user.id])
+	}, [client, user.first_name, user.id])
 
 	if (!client || !channel) return <Loading />
 
