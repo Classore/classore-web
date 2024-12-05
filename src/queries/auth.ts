@@ -16,18 +16,22 @@ export interface SignInDto {
 }
 
 export interface SignUpDto {
-	email: string
 	first_name: string
 	last_name: string
+	email: string
+	sign_up_channel: "DEFAULT" | "GOOGLE"
 	password: string
+	user_type: "STUDENT" | "PARENT"
 	referral_code: string
-	role: "STUDENT" | "PARENT"
 }
 
 export interface ResetPasswordDto {
-	email: string
-	password: string
-	token: string
+	otp: string
+	new_password: string
+}
+
+type ForgotPasswordDto = {
+	email_or_phone_number: string
 }
 
 const SignInMutation = async (payload: SignInDto) => {
@@ -36,16 +40,37 @@ const SignInMutation = async (payload: SignInDto) => {
 		.then((res) => res.data)
 }
 
+interface SignupProps {
+	user_details: UserProps
+}
 const SignUpMutation = async (payload: SignUpDto) => {
-	return axios.post<HttpResponse<UserProps>>("/auth/login", payload).then((res) => res.data)
+	return axios
+		.post<HttpResponse<SignupProps>>(endpoints().auth.signup, payload)
+		.then((res) => res.data)
+}
+type VerifyEmailDto = {
+	verification_code: string
+}
+const VerifyEmailMutation = async (payload: VerifyEmailDto) => {
+	return axios
+		.post<HttpResponse<UserProps>>(endpoints().auth.verify, payload)
+		.then((res) => res.data)
 }
 
-const ForgotPasswordMutation = async (email: string) => {
-	return axios.post<HttpResponse<null>>("/auth/forgot-password", { email }).then((res) => res.data)
+const ResendVerificationCodeMutation = async () => {
+	return axios.get<HttpResponse<UserProps>>(endpoints().auth.resend_code).then((res) => res.data)
+}
+
+const ForgotPasswordMutation = async (payload: ForgotPasswordDto) => {
+	return axios
+		.post<HttpResponse<null>>(endpoints().auth.forgot_password, payload)
+		.then((res) => res.data)
 }
 
 const ResetPasswordMutation = async (payload: ResetPasswordDto) => {
-	return axios.post<HttpResponse<null>>("/auth/reset-password", payload).then((res) => res.data)
+	return axios
+		.put<HttpResponse<null>>(endpoints().auth.reset_password, payload)
+		.then((res) => res.data)
 }
 
 const WaitlistMutation = async (payload: WaitlistDto) => {
@@ -54,8 +79,11 @@ const WaitlistMutation = async (payload: WaitlistDto) => {
 
 export {
 	ForgotPasswordMutation,
+	ResendVerificationCodeMutation,
 	ResetPasswordMutation,
 	SignInMutation,
 	SignUpMutation,
+	VerifyEmailMutation,
 	WaitlistMutation,
 }
+

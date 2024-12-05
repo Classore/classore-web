@@ -3,9 +3,20 @@ import type { NextRequest } from "next/server"
 import { NextResponse } from "next/server"
 
 export const config = {
-	matcher: ["/dashboard/:path*", "/signin", "/signup"],
+	matcher: ["/dashboard/:path*", "/signin", "/signup", "/forgot-password", "/reset-password"],
 	name: "auth-middleware",
 }
+
+const authPathnames = [
+	"/signin",
+	"/forgot-password",
+	"/reset-password",
+	"/signup",
+	"/signup/success",
+	"/signup/onboard",
+	"/signup/verify",
+	"/signup/studying-for",
+]
 
 export function middleware(req: NextRequest) {
 	const requestHeaders = new Headers(req.headers) // Init new request headers
@@ -16,8 +27,7 @@ export function middleware(req: NextRequest) {
 	const url = req.nextUrl.clone() // Clone the URL to modify it
 
 	const isOnDashboard = url.pathname.startsWith("/dashboard")
-	const isOnSignIn = url.pathname === "/signin"
-	const isOnSignUp = url.pathname === "/signup"
+	const isOnAuth = authPathnames.includes(url.pathname)
 
 	const redirectResponse = (url: string | NextURL) => {
 		const response = NextResponse.redirect(url)
@@ -27,7 +37,6 @@ export function middleware(req: NextRequest) {
 
 	// If in test mode, always redirect to the homepage
 	if (isWaitlist && url.pathname !== "/") {
-		console.log(isWaitlist)
 		url.pathname = "/"
 		return redirectResponse(url)
 	}
@@ -39,7 +48,7 @@ export function middleware(req: NextRequest) {
 	}
 
 	// If user is logged in and is on signin or signup, redirect to dashboard
-	if (hasToken && (isOnSignIn || isOnSignUp)) {
+	if (hasToken && isOnAuth) {
 		url.pathname = "/dashboard"
 		return redirectResponse(url)
 	}

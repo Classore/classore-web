@@ -1,14 +1,21 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { AuthLayout } from "@/components/layouts/auth"
-import { Seo } from "@/components/shared"
+import { ErrorMessage, Seo, Spinner } from "@/components/shared"
+import Cookies from "js-cookie"
 
 import { GoogleIcon, UserDetailsGraphic } from "@/assets/icons"
 import { SignupStepper } from "@/components/signup-stepper"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { passwordRules } from "@/config"
+import { SignUpMutation } from "@/queries"
 import { yupResolver } from "@hookform/resolvers/yup"
+import { useMutation } from "@tanstack/react-query"
+import { jwtDecode } from "jwt-decode"
 import Link from "next/link"
+import { useRouter } from "next/router"
 import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 import * as yup from "yup"
 
 // const appId = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID
@@ -32,6 +39,7 @@ const onboardSchema = yup.object().shape({
 type OnboardFormValues = yup.InferType<typeof onboardSchema>
 
 const Page = () => {
+	const router = useRouter()
 	const {
 		control,
 		register,
@@ -49,8 +57,45 @@ const Page = () => {
 		},
 	})
 
+	const { isPending, mutate } = useMutation({
+		mutationKey: ["signup"],
+		mutationFn: (values: OnboardFormValues) => {
+			const { accept_terms, ...rest } = values
+
+			return SignUpMutation({
+				...rest,
+				sign_up_channel: "DEFAULT",
+				// @ts-expect-error nil
+				user_type: String(router.query?.register_as).toUpperCase() ?? "STUDENT",
+				referral_code: rest.referral_code ?? "",
+			})
+		},
+		onSuccess: (data) => {
+			toast.success("Sign up successful!", {
+				description: "Please check your email to verify your account",
+			})
+
+			const { access_token, password, ...rest } = data.data.user_details
+
+			const decoded = jwtDecode(access_token)
+			localStorage.setItem("CLASSORE_USER", JSON.stringify(rest))
+			Cookies.set("CLASSORE_TOKEN", access_token, {
+				expires: decoded?.exp ? new Date(decoded?.exp * 1000) : new Date(Date.now() + 7 * 24 * 60 * 60), // 7 days,
+				sameSite: "lax",
+				secure: process.env.NODE_ENV === "production",
+			})
+			router.push({
+				pathname: "/signup/verify-email",
+				query: {
+					email: encodeURIComponent(data.data.user_details.email),
+					register_as: router.query?.register_as,
+					step: "2",
+				},
+			})
+		},
+	})
 	const onSubmit = (values: OnboardFormValues) => {
-		console.log(values)
+		mutate(values)
 	}
 
 	return (
@@ -100,18 +145,24 @@ const Page = () => {
 								name="referral_code"
 							/>
 
-							<label className="col-span-full flex items-center gap-3 font-body text-sm font-normal">
-								<input
-									{...register("accept_terms")}
-									type="checkbox"
-									aria-invalid={errors.accept_terms ? "true" : "false"}
-									className="size-5 rounded border border-neutral-200 text-primary-300 aria-[invalid=true]:border-[1.3px] aria-[invalid=true]:border-red-600"
-								/>
-								<p>I agree to the terms and conditions</p>
-							</label>
+							<div className="col-span-full flex flex-col gap-1.5">
+								<label className="flex items-center gap-3 font-body text-sm font-normal">
+									<input
+										{...register("accept_terms")}
+										type="checkbox"
+										aria-invalid={errors.accept_terms ? "true" : "false"}
+										className="size-5 rounded border border-neutral-200 text-primary-300 aria-[invalid=true]:border-[1.3px] aria-[invalid=true]:border-red-600"
+									/>
+									<p>I agree to the terms and conditions</p>
+								</label>
+
+								{errors.accept_terms ? <ErrorMessage message={errors.accept_terms.message} /> : null}
+							</div>
 
 							<div className="col-span-full flex flex-col gap-2">
-								<Button type="submit">Sign up</Button>
+								<Button type="submit" disabled={isPending}>
+									{isPending ? <Spinner /> : "Sign up"}
+								</Button>
 								<p className="text-center text-neutral-500">
 									Already have an account?{" "}
 									<Link href="/signin" className="font-medium text-secondary-300 hover:underline">

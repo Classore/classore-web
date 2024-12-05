@@ -2,6 +2,11 @@ export const endpoints = (id?: string) => {
 	const auth = {
 		signup: "/auth/signup",
 		signin: "/auth/login",
+		verify: "/auth/signup/verify",
+		resend_code: "/auth/signup/resend-verification-code",
+		forgot_password: "/auth/forgot-password",
+		reset_password: "/auth/reset-password",
+		profile: "/auth/profile",
 	} as const
 
 	const courses = {
@@ -12,9 +17,17 @@ export const endpoints = (id?: string) => {
 		delete: `/courses/${id}`,
 	}
 
+	const school = {
+		get_exams: "/school/exams/fetch-exams",
+		get_exam_bundles: "/school/exams/fetch-exam-bundles",
+		get_subjects: "/school/subject/fetch-all",
+		get_classes: "/school/subject/fetch-classes",
+		create_study_timeline: "/school/exams/create-study-timeline",
+	} as const
+
 	const waitlist = {
 		join: `/mail/join-waitlist`,
 	}
 
-	return { auth, courses, waitlist }
+	return { auth, courses, school, waitlist }
 }

@@ -1,14 +1,17 @@
 import { AuthLayout } from "@/components/layouts/auth"
-import { Seo } from "@/components/shared"
+import { Seo, Spinner } from "@/components/shared"
 
 import { ForgotPasswordGraphic } from "@/assets/icons"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { passwordRules } from "@/config"
+import { ResetPasswordMutation } from "@/queries"
 import { yupResolver } from "@hookform/resolvers/yup"
+import { useMutation } from "@tanstack/react-query"
 import { ChevronLeft } from "@untitled-ui/icons-react"
 import { useRouter } from "next/router"
 import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 import * as yup from "yup"
 // const appId = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID
 
@@ -43,8 +46,23 @@ const Page = () => {
 		resolver: yupResolver(pageSchema),
 	})
 
+	const { isPending, mutate } = useMutation({
+		mutationKey: ["login"],
+		mutationFn: (value: FormValues) =>
+			ResetPasswordMutation({
+				otp: JSON.parse(sessionStorage.getItem("temp_classore") as string).verification_code,
+				new_password: value.password,
+			}),
+		onSuccess: () => {
+			sessionStorage.removeItem("temp_classore")
+			toast.success("Password reset successful!", {
+				description: "You can now sign in with your new password",
+			})
+			router.replace("/signin")
+		},
+	})
 	const onSubmit = (values: FormValues) => {
-		console.log("values", values)
+		mutate(values)
 	}
 
 	return (
@@ -87,7 +105,9 @@ const Page = () => {
 						/>
 
 						<div className="mt-2 flex flex-col gap-2">
-							<Button type="submit">Reset Password</Button>
+							<Button type="submit" disabled={isPending}>
+								{isPending ? <Spinner /> : "Reset Password"}
+							</Button>
 						</div>
 					</form>
 				</div>

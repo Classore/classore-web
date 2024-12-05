@@ -1,18 +1,24 @@
 import { AuthLayout } from "@/components/layouts/auth"
-import { Seo } from "@/components/shared"
+import { Seo, Spinner } from "@/components/shared"
 
 import { ForgotPasswordGraphic } from "@/assets/icons"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { ForgotPasswordMutation } from "@/queries"
 import { yupResolver } from "@hookform/resolvers/yup"
+import { useMutation } from "@tanstack/react-query"
 import { ChevronLeft } from "@untitled-ui/icons-react"
 import { useRouter } from "next/router"
 import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 import * as yup from "yup"
 // const appId = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID
 
 const pageSchema = yup.object().shape({
-	email: yup.string().required("Please enter your email address").email("Invalid email address"),
+	email_or_phone_number: yup
+		.string()
+		.required("Please enter your email address")
+		.email("Invalid email address"),
 })
 type FormValues = yup.InferType<typeof pageSchema>
 
@@ -20,13 +26,28 @@ const Page = () => {
 	const router = useRouter()
 	const { control, handleSubmit } = useForm<FormValues>({
 		defaultValues: {
-			email: "",
+			email_or_phone_number: "",
 		},
 		resolver: yupResolver(pageSchema),
 	})
 
+	const { isPending, mutate } = useMutation({
+		mutationKey: ["login"],
+		mutationFn: (value: FormValues) => ForgotPasswordMutation(value),
+		onSuccess: (data, variable) => {
+			toast.success("OTP sent successfully!", {
+				description: "Please check your email to verify your account",
+			})
+			router.push({
+				pathname: "/forgot-password/verify-email",
+				query: {
+					email: decodeURIComponent(variable.email_or_phone_number),
+				},
+			})
+		},
+	})
 	const onSubmit = (values: FormValues) => {
-		console.log("values", values)
+		mutate(values)
 	}
 
 	return (
@@ -57,15 +78,13 @@ const Page = () => {
 							placeholder="name@email.com"
 							className="col-span-full"
 							control={control}
-							name="email"
+							name="email_or_phone_number"
 						/>
 
 						<div className="mt-2 flex flex-col gap-2">
-							<Button type="submit">Next</Button>
-
-							{/* <Button type="button" variant="link">
-								Cancel
-							</Button> */}
+							<Button type="submit" disabled={isPending}>
+								{isPending ? <Spinner /> : "Next"}
+							</Button>
 						</div>
 					</form>
 				</div>

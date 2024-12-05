@@ -41,7 +41,13 @@ const Page = () => {
 	})
 
 	const onSubmit = (value: FormValues) => {
-		router.push(`/signup/onboard?registered_as=${value.register_as}`)
+		router.push({
+			pathname: "/signup/onboard",
+			query: {
+				register_as: value.register_as,
+				step: "2",
+			},
+		})
 	}
 
 	return (

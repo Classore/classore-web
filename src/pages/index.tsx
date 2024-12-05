@@ -3,6 +3,7 @@ import Image from "next/image"
 import { arrow, learn } from "@/assets/illustrations"
 import { Appbar, Seo } from "@/components/shared"
 import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 const Page = () => {
 	return (
@@ -41,8 +42,8 @@ const Page = () => {
 								<p className="w-full text-neutral-500 lg:w-[381px] lg:text-xl">
 									Learning made easy and fun - don&apos;t miss early access to a new way of learning
 								</p>
-								<Button className="w-fit" size="lg">
-									Click here to join waitlist
+								<Button className="w-fit" asChild>
+									<Link href="/signup?step=1">Join the waitlist</Link>
 								</Button>
 							</div>
 						</div>

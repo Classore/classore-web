@@ -1,13 +1,19 @@
 import { AuthLayout } from "@/components/layouts/auth"
-import { Seo } from "@/components/shared"
+import { Seo, Spinner } from "@/components/shared"
 
 import { VerifyEmailGraphic } from "@/assets/icons"
 import { SignupStepper } from "@/components/signup-stepper"
 import { Button } from "@/components/ui/button"
-import { OTPInput } from "@/components/ui/input-otp"
+import { OTPInput } from "@/components/ui/otp-input"
+import { useCountDown } from "@/hooks/use-countdown"
+import { formatEmail } from "@/lib"
+import { ResendVerificationCodeMutation, VerifyEmailMutation } from "@/queries"
 import { yupResolver } from "@hookform/resolvers/yup"
-import Link from "next/link"
+import { useMutation } from "@tanstack/react-query"
+import type { GetServerSideProps, InferGetServerSidePropsType } from "next"
+import { useRouter } from "next/router"
 import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 import * as yup from "yup"
 
 const pageSchema = yup.object().shape({
@@ -15,26 +21,75 @@ const pageSchema = yup.object().shape({
 		.string()
 		.required("Please enter your verification code")
 		.matches(/^[0-9]+$/, "Must be only digits")
-		.min(6, "Verification code must be 6 digits")
-		.max(6, "Verification code must be 6 digits"),
+		.min(4, "Verification code must be 4 digits")
+		.max(4, "Verification code must be 4 digits"),
 })
 type FormValues = yup.InferType<typeof pageSchema>
 
-const Page = () => {
-	const { control, handleSubmit } = useForm<FormValues>({
+// this help resolves the flash before next calls useRouter
+export const getServerSideProps = (async (req) => {
+	const email = req.query.email ?? ""
+
+	return {
+		props: {
+			email: typeof email === "string" ? formatEmail(decodeURIComponent(email)) : "",
+		},
+	}
+}) satisfies GetServerSideProps<{ email: string }>
+
+const Page = ({ email }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+	const router = useRouter()
+	const { counter, reset } = useCountDown({ total: 60, ms: 1000 })
+	const { control, handleSubmit, setError } = useForm<FormValues>({
 		defaultValues: {
 			verification_code: "",
 		},
 		resolver: yupResolver(pageSchema),
 	})
 
+	const resendCode = useMutation({
+		mutationKey: ["resend-verification-code"],
+		mutationFn: ResendVerificationCodeMutation,
+		onSettled: () => {
+			reset()
+		},
+	})
+
+	const { isPending, mutate } = useMutation({
+		mutationKey: ["verify-email"],
+		mutationFn: (value: FormValues) => VerifyEmailMutation(value),
+		onError: (error) => {
+			setError("verification_code", { message: error.response?.data.message })
+		},
+		onSuccess: (data) => {
+			toast.success(data.message)
+			if (data.data.user_type === "PARENT") {
+				router.push({
+					pathname: "/signup/success",
+					query: {
+						register_as: router.query?.register_as,
+					},
+				})
+				return
+			}
+
+			router.push({
+				pathname: "/signup/studying-for",
+				query: {
+					step: "4",
+					register_as: router.query?.register_as,
+				},
+			})
+		},
+	})
 	const onSubmit = (values: FormValues) => {
-		console.log("values", values)
+		mutate(values)
 	}
 
 	return (
 		<>
 			<Seo title="Verify Email" />
+
 			<AuthLayout screen="signup">
 				<div className="flex max-w-[400px] flex-col gap-20">
 					<SignupStepper />
@@ -45,8 +100,7 @@ const Page = () => {
 							<div>
 								<h2 className="font-body text-2xl font-bold text-neutral-900">Verify your email address</h2>
 								<p className="pt-1 text-sm text-neutral-500">
-									A 6 digit code has been sent to{" "}
-									<span className="font-bold text-neutral-900">arow******.gmail.com</span>
+									A 4 digit code has been sent to <span className="font-bold text-neutral-900">{email}</span>
 								</p>
 							</div>
 						</header>
@@ -55,13 +109,28 @@ const Page = () => {
 							<OTPInput control={control} name="verification_code" />
 
 							<div className="col-span-full flex flex-col gap-2">
-								<Button type="submit">Verify</Button>
-								<p className="text-center text-sm text-neutral-500">
-									Didn’t receive a mail?{" "}
-									<Link href="/login" className="font-medium text-secondary-300 hover:underline">
-										Resend
-									</Link>
-								</p>
+								<Button type="submit" disabled={isPending || resendCode.isPending}>
+									{isPending ? <Spinner /> : "Verify"}
+								</Button>
+
+								<div className="flex items-center justify-center gap-2">
+									<p className="text-center text-sm text-neutral-500">Didn’t receive a mail? </p>
+
+									{counter ? (
+										<span className="text-center text-sm">
+											Resend in <span className="font-black text-secondary-300">{counter}s</span>
+										</span>
+									) : (
+										<Button
+											disabled={resendCode.isPending || isPending}
+											onClick={() => resendCode.mutate()}
+											type="button"
+											variant="link"
+											className="w-fit px-1 text-sm font-medium text-secondary-300 shadow-none hover:underline">
+											{resendCode.isPending ? "Resending..." : "Resend"}
+										</Button>
+									)}
+								</div>
 							</div>
 						</form>
 					</div>
