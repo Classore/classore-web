@@ -27,6 +27,7 @@ export const endpoints = (id?: string) => {
 
 	const waitlist = {
 		join: `/mail/join-waitlist`,
+		get: `/mail/fetch-waitlist`,
 	}
 
 	return { auth, courses, school, waitlist }

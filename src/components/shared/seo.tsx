@@ -17,12 +17,12 @@ interface SeoProps {
 
 export function Seo({
 	title = "",
-	description = "Discover and book unique accommodations in Nigeria on Spaceet. From cozy apartments to luxurious villas, find the perfect stay for your next adventure. Experience hospitality and create unforgettable memories.",
+	description = "Classore is a cutting-edge e-learning platform for personalized learning and exam preparation",
 	siteName = "Classore",
 	canonical = APP_URL,
 	ogImage = DEFAULT_OG_IMAGE,
 	ogType = "website",
-	twitterHandle = "SpaceetHq",
+	twitterHandle = "classore",
 	noIndex = false,
 }: SeoProps) {
 	const router = useRouter()

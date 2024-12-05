@@ -5,6 +5,8 @@ import { Appbar, Seo } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 
+const colors = ["#42f4b5", "#38e365", "#b2dd4d", "#d34609"]
+
 const Page = () => {
 	return (
 		<>
@@ -17,11 +19,11 @@ const Page = () => {
 							<div className="flex w-fit items-center gap-1 rounded-3xl border-white bg-white/60 px-5 py-3">
 								<p className="text-sm">Join over 2500 learners today</p>
 								<div className="flex items-center">
-									{[...Array(4)].map((_, index) => (
+									{colors.map((color, index) => (
 										<div
 											key={index}
-											style={{ backgroundColor: `#${Math.floor(Math.random() * 16777215).toString(16)}` }}
-											className={`relative size-6 rounded-full border-2 border-white ${index > 0 ? "-ml-1" : ""}`}>
+											style={{ backgroundColor: color }}
+											className={`relative size-7 rounded-full border-2 border-white ${index > 0 ? "-ml-1" : ""}`}>
 											<Image
 												src={`/assets/images/avatar-${index}.png`}
 												alt={`avatar ${index}`}

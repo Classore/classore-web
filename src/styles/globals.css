@@ -1,4 +1,5 @@
-@import url("https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=Geist:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+@import "~stream-chat-react/dist/css/v2/index.css";
 
 @tailwind base;
 @tailwind components;
@@ -14,10 +15,9 @@
 	/* Fonts */
 	--heading: "Figtree", sans-serif;
 	--body: "Inter", sans-serif;
+	--geist: "Geist", sans-serif;
 
 	/* Colors */
-	--primary: #6f42c1;
-	--secondary: #f67f36;
 	--neutral-0: #ffffff;
 	--neutral-100: #f6f8fa;
 	--neutral-200: #e2e4e9;
@@ -28,6 +28,26 @@
 	--neutral-700: #20232d;
 	--neutral-800: #14161a;
 	--neutral-900: #0a0d14;
+	--primary-50: #f1ecf9;
+	--primary-100: #e9e4f7;
+	--primary-200: #d3c4ec;
+	--primary-300: #6f42c1;
+	--primary-400: #643bae;
+	--primary-500: #5a359a;
+	--primary-600: #533291;
+	--primary-700: #432874;
+	--primary-800: #321e57;
+	--primary-900: #281745;
+	--secondary-50: #fef3eb;
+	--secondary-100: #feede2;
+	--secondary-200: #fcd7c1;
+	--secondary-300: #f67f36;
+	--secondary-400: #de7231;
+	--secondary-500: #c5672b;
+	--secondary-600: #b95f29;
+	--secondary-700: #944d1f;
+	--secondary-800: #6f3a17;
+	--secondary-900: #562c12;
 	--foreground: transparent;
 	--background: transparent;
 }
@@ -46,6 +66,7 @@
 	box-sizing: border-box;
 	margin: 0;
 	padding: 0;
+	font-family: var(--geist);
 	/* Removes scrollbar on Firefox */
 	scrollbar-width: none;
 }
@@ -75,7 +96,7 @@ h3,
 h4,
 h5,
 h6 {
-	font-family: var(--heading);
+	font-family: var(--geist);
 	text-wrap: pretty;
 }
 
@@ -84,7 +105,7 @@ p,
 button,
 label,
 span {
-	font-family: var(--body);
+	font-family: var(--geist);
 }
 
 button,
@@ -125,7 +146,6 @@ input[type="search"]::-webkit-search-results-decoration {
 	appearance: none;
 }
 
-
 /* link animation */
 .link {
 	width: fit-content;
@@ -151,4 +171,25 @@ input[type="search"]::-webkit-search-results-decoration {
 		right: auto;
 		width: 100%;
 	}
+}
+
+/* StreamChat Customizations */
+.str-chat__channel-header {
+	height: 76px;
+	background: #fff;
+	padding: 18px 32px;
+	border-bottom: 1px solid #e2e4e9;
+}
+
+.str-chat__avatar {
+	border-radius: 10px;
+}
+
+.str-chat__list,
+.str-chat__empty-channel {
+	background: #f6f8fa;
+}
+
+.str-chat__empty-channel-text {
+	font-size: 14px;
 }
