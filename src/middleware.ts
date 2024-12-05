@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server"
 import { NextResponse } from "next/server"
 
 export const config = {
-	matcher: ["/dashboard/:path*", "/signin", "/signup", "/forgot-password", "/reset-password"],
+	matcher: ["/dashboard/:path*", "/signin", "/signup", "/forgot-password/:path*"],
 	name: "auth-middleware",
 }
 
@@ -22,6 +22,7 @@ export function middleware(req: NextRequest) {
 	const requestHeaders = new Headers(req.headers) // Init new request headers
 	requestHeaders.set("x-next-pathname", req.nextUrl.pathname) // Set the new header for pathname
 
+	const isWaitlist = process.env.NODE_ENV !== "development"
 	const hasToken = req.cookies.has("CLASSORE_TOKEN")
 	const url = req.nextUrl.clone() // Clone the URL to modify it
 
