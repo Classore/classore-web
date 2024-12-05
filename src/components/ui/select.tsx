@@ -3,25 +3,55 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 import { ChevronDown } from "@untitled-ui/icons-react"
+import { useController, type Control, type FieldValues, type Path } from "react-hook-form"
+import { ErrorMessage } from "../shared"
 
-type SelectProps = {
-	children: React.ReactNode
-	error?: string
+interface SelectProps<T extends FieldValues>
+	extends React.PropsWithChildren,
+		React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger> {
+	name: Path<T>
+	control: Control<T>
+	className?: string
 	label?: string
+	placeholder?: string
 	labelClassName?: string
 }
 
-export const Select = ({ children, error, label, labelClassName }: SelectProps) => {
+export const Select = <T extends FieldValues>({
+	children,
+	label,
+	labelClassName,
+	name,
+	control,
+	placeholder,
+	className,
+	...rest
+}: SelectProps<T>) => {
+	const {
+		field: { value, onChange, ref },
+		fieldState: { error },
+	} = useController({
+		name,
+		control,
+	})
+
 	return (
 		<label className="flex flex-col gap-1.5 font-body">
-			<p className={cn("ext-sm text-neutral-400 dark:text-neutral-50", labelClassName)}>{label}</p>
+			<p className={cn("text-sm text-neutral-400", labelClassName)}>{label}</p>
 
-			<SelectPrimitive.Root>
+			<SelectPrimitive.Root value={value} onValueChange={onChange}>
 				<SelectPrimitive.Trigger
+					ref={ref}
+					data-invalid={error ? "true" : "false"}
 					className={cn(
-						"flex w-full items-center justify-between rounded-md border border-neutral-200 bg-white px-4 py-3 transition-all focus:border-primary-300 focus:shadow-primary focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 data-[placeholder]:text-neutral-300 [&>span]:line-clamp-1"
-					)}>
-					<SelectPrimitive.Value placeholder="Theme" className="placeholder:text-neutral-300" />
+						"flex w-full items-center justify-between rounded-md border border-neutral-200 bg-white px-4 py-3 capitalize transition-all focus:border-primary-300 focus:shadow-primary focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 data-[invalid=true]:border-red-600 data-[invalid=true]:bg-[rgba(227,54,41,0.11)] data-[placeholder=true]:normal-case data-[placeholder]:text-neutral-300 [&>span]:line-clamp-1",
+						className
+					)}
+					{...rest}>
+					<SelectPrimitive.Value
+						placeholder={placeholder ?? "Select a value"}
+						// className="placeholder:normal-case placeholder:text-neutral-300"
+					/>
 					<SelectPrimitive.Icon asChild>
 						<ChevronDown className="text-neutral-400" />
 					</SelectPrimitive.Icon>
@@ -38,7 +68,7 @@ export const Select = ({ children, error, label, labelClassName }: SelectProps) 
 				</SelectPrimitive.Portal>
 			</SelectPrimitive.Root>
 
-			{error && <p className="text-xs text-error">{error}</p>}
+			{error ? <ErrorMessage message={error.message} /> : null}
 		</label>
 	)
 }
@@ -50,7 +80,7 @@ export const SelectItem = React.forwardRef<
 	<SelectPrimitive.Item
 		ref={ref}
 		className={cn(
-			"group relative flex w-full cursor-pointer select-none items-center border-b border-b-neutral-200 px-5 py-4 font-body text-sm text-neutral-700 outline-none transition-all last-of-type:border-b-0 data-[disabled]:pointer-events-none data-[highlighted]:border-l-2 data-[highlighted]:border-l-primary-300 data-[highlighted]:bg-primary-50 data-[disabled]:opacity-50",
+			"group relative flex w-full cursor-pointer select-none items-center border-b border-b-neutral-200 px-5 py-4 font-body text-sm capitalize text-neutral-700 outline-none transition-all last-of-type:border-b-0 data-[disabled]:pointer-events-none data-[highlighted]:border-l-2 data-[highlighted]:border-l-primary-300 data-[highlighted]:bg-primary-50 data-[disabled]:opacity-50",
 			className
 		)}
 		{...props}>

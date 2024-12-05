@@ -1,12 +1,11 @@
 import { useQueries } from "@tanstack/react-query"
 import Link from "next/link"
-import React from "react"
 
 import { Challenge, Leaderboard, Learning } from "@/components/home"
 import { DashboardLayout } from "@/components/layouts"
+import { Seo } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { useUserStore } from "@/store/z-store"
-import { Seo } from "@/components/shared"
 
 import { challenges } from "@/mock"
 

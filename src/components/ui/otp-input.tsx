@@ -1,48 +1,52 @@
-"use client"
+import { OTPInput as InputOTP } from "input-otp"
+import { useController, type Control, type FieldValues, type Path } from "react-hook-form"
+import { ErrorMessage } from "../shared"
 
-import { OTPInput, OTPInputContext } from "input-otp"
-import * as React from "react"
+interface OTPInputProps<T extends FieldValues> {
+	control: Control<T>
+	name: Path<T>
+}
 
-import { cn } from "@/lib/utils"
-
-const InputOTP = React.forwardRef<
-	React.ElementRef<typeof OTPInput>,
-	React.ComponentPropsWithoutRef<typeof OTPInput>
->(({ className, containerClassName, ...props }, ref) => (
-	<OTPInput
-		ref={ref}
-		containerClassName={cn("flex gap-2 has-[:disabled]:opacity-50", containerClassName)}
-		className={cn("disabled:cursor-not-allowed", className)}
-		{...props}
-	/>
-))
-InputOTP.displayName = "InputOTP"
-
-const InputOTPSlot = React.forwardRef<
-	React.ElementRef<"div">,
-	React.ComponentPropsWithoutRef<"div"> & { index: number }
->(({ index, className, ...props }, ref) => {
-	const inputOTPContext = React.useContext(OTPInputContext)
-	const { char, hasFakeCaret, isActive } = inputOTPContext.slots[index]
+export const OTPInput = <T extends FieldValues>({ control, name, ...props }: OTPInputProps<T>) => {
+	const {
+		fieldState: { error },
+		field,
+	} = useController({
+		name,
+		control,
+	})
 
 	return (
-		<div
-			ref={ref}
-			className={cn(
-				"relative flex size-[60px] flex-1 items-center justify-center rounded-lg bg-[rgba(241,236,249,0.5)] text-base font-medium text-primary-300 transition-all",
-				isActive && "ring-primary-300ß z-10 shadow-primary ring-1",
-				className
-			)}
-			{...props}>
-			{char}
-			{hasFakeCaret && (
-				<div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-					<div className="h-4 w-px animate-caret-blink bg-foreground duration-1000" />
-				</div>
-			)}
+		<div className="flex flex-col gap-1.5 font-body">
+			<InputOTP
+				maxLength={4}
+				containerClassName="flex gap-2 has-[:disabled]:opacity-50"
+				className="disabled:cursor-not-allowed"
+				render={({ slots }) => (
+					<>
+						{slots.map((slot, index) => (
+							<div
+								key={index}
+								data-active={slot.isActive ? "true" : "false"}
+								data-invalid={error ? "true" : "false"}
+								className="relative flex size-[60px] items-center justify-center rounded-lg bg-[rgba(241,236,249,0.5)] text-base font-medium text-primary-300 transition-all data-[active=true]:z-10 data-[invalid=true]:border-[1.3px] data-[invalid=true]:border-red-600 data-[invalid=true]:bg-[rgba(227,54,41,0.11)] data-[invalid=true]:text-[#E33629] data-[active=true]:shadow-primary data-[active=true]:ring-1 data-[active=true]:ring-primary-300">
+								{slot.char ?? slot.placeholderChar}
+
+								{/* fake caret */}
+								{slot.hasFakeCaret && (
+									<div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+										<div className="h-4 w-px animate-caret-blink bg-primary-300 duration-1000" />
+									</div>
+								)}
+							</div>
+						))}
+					</>
+				)}
+				{...field}
+				{...props}
+			/>
+
+			{error ? <ErrorMessage message={error.message} /> : null}
 		</div>
 	)
-})
-InputOTPSlot.displayName = "InputOTPSlot"
-
-export { InputOTP, InputOTPSlot }
+}

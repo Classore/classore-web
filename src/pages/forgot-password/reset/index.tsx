@@ -4,7 +4,8 @@ import { Seo, Spinner } from "@/components/shared"
 import { ForgotPasswordGraphic } from "@/assets/icons"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { ForgotPasswordMutation } from "@/queries"
+import { passwordRules } from "@/config"
+import { ResetPasswordMutation } from "@/queries"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { useMutation } from "@tanstack/react-query"
 import { ChevronLeft } from "@untitled-ui/icons-react"
@@ -15,10 +16,23 @@ import * as yup from "yup"
 // const appId = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID
 
 const pageSchema = yup.object().shape({
-	email_or_phone_number: yup
+	password: yup
 		.string()
-		.required("Please enter your email address")
-		.email("Invalid email address"),
+		.required("Please enter your password")
+		.min(6, "Password must be at least 8 characters")
+		.matches(
+			passwordRules,
+			"Password must contain at least 1 uppercase letter, 1 lowercase letter and 1 number"
+		),
+	confirm_password: yup
+		.string()
+		.required("Please confirm your password")
+		.min(6, "Confirm password must be at least 8 characters")
+		.matches(
+			passwordRules,
+			"Confirm password must contain at least 1 uppercase letter, 1 lowercase letter and 1 number"
+		)
+		.oneOf([yup.ref("password")], "Passwords must match"),
 })
 type FormValues = yup.InferType<typeof pageSchema>
 
@@ -26,24 +40,25 @@ const Page = () => {
 	const router = useRouter()
 	const { control, handleSubmit } = useForm<FormValues>({
 		defaultValues: {
-			email_or_phone_number: "",
+			password: "",
+			confirm_password: "",
 		},
 		resolver: yupResolver(pageSchema),
 	})
 
 	const { isPending, mutate } = useMutation({
 		mutationKey: ["login"],
-		mutationFn: (value: FormValues) => ForgotPasswordMutation(value),
-		onSuccess: (data, variable) => {
-			toast.success("OTP sent successfully!", {
-				description: "Please check your email to verify your account",
+		mutationFn: (value: FormValues) =>
+			ResetPasswordMutation({
+				otp: JSON.parse(sessionStorage.getItem("temp_classore") as string).verification_code,
+				new_password: value.password,
+			}),
+		onSuccess: () => {
+			sessionStorage.removeItem("temp_classore")
+			toast.success("Password reset successful!", {
+				description: "You can now sign in with your new password",
 			})
-			router.push({
-				pathname: "/forgot-password/verify-email",
-				query: {
-					email: decodeURIComponent(variable.email_or_phone_number),
-				},
-			})
+			router.replace("/signin")
 		},
 	})
 	const onSubmit = (values: FormValues) => {
@@ -54,7 +69,7 @@ const Page = () => {
 		<>
 			<Seo title="Forgot Password" />
 
-			<AuthLayout screen="forgot-password">
+			<AuthLayout screen="reset-password">
 				<div className="flex max-w-96 flex-col gap-6 pt-20">
 					<button
 						onClick={() => router.back()}
@@ -65,25 +80,33 @@ const Page = () => {
 					</button>
 
 					<header className="flex flex-col gap-4">
-						{/* should convert this to html, but i'm just lazy */}
 						<ForgotPasswordGraphic />
 
-						<h2 className="font-body text-2xl font-bold text-neutral-900">Forgot Password</h2>
+						<h2 className="font-body text-2xl font-bold text-neutral-900">Reset your Password</h2>
 					</header>
 
 					<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 font-body font-normal">
 						<Input
-							type="email"
-							label="Email Address"
-							placeholder="name@email.com"
+							type="password"
+							label="Password"
+							placeholder="***************"
 							className="col-span-full"
 							control={control}
-							name="email_or_phone_number"
+							name="password"
+						/>
+
+						<Input
+							type="password"
+							label="Confirm Password"
+							placeholder="***************"
+							className="col-span-full"
+							control={control}
+							name="confirm_password"
 						/>
 
 						<div className="mt-2 flex flex-col gap-2">
 							<Button type="submit" disabled={isPending}>
-								{isPending ? <Spinner /> : "Next"}
+								{isPending ? <Spinner /> : "Reset Password"}
 							</Button>
 						</div>
 					</form>
