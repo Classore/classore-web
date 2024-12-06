@@ -3,14 +3,17 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import React from "react"
 import { toast } from "sonner"
 
-const cacheTime = 1000 * 60 // 1 minute
+const staleTime = 1000 * 60 // 1 minute
 
 export const queryClient = new QueryClient({
 	defaultOptions: {
 		queries: {
-			staleTime: cacheTime,
-			refetchOnWindowFocus: false,
-			refetchOnMount: false,
+			staleTime,
+			refetchOnWindowFocus: true,
+			refetchOnMount: true,
+			refetchOnConnect: true,
+			retry: true,
+			retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 3000),
 		},
 		mutations: {
 			// This is a global error handler and can be can be overridden by each Mutation "onError". You can change this later to use Mutation Cache (which means this the global error will be called regardless of each Mutation onError), but for now this will do

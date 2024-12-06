@@ -44,8 +44,8 @@ export const Appbar = () => {
 								{getInitials(`${user?.first_name} ${user?.last_name}`)}
 							</AvatarFallback>
 						</Avatar>
-						<div className="flex flex-col">
-							<p className="">
+						<div className="flex flex-col items-start">
+							<p className="capitalize">
 								{user?.first_name} {user?.last_name}
 							</p>
 							<p className="text-xs text-neutral-400">{user?.email}</p>
