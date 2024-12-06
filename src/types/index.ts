@@ -74,9 +74,7 @@ export type UserProps = Node & {
 	first_name: string
 	last_name: string
 	email: string
-	firstName: string
 	image: string
-	lastName: string
 	password: string
 	access_token: string
 	referral_code: string
@@ -92,11 +90,10 @@ export type UserProps = Node & {
 export type AdminProps = Node & {
 	__typename?: "Admin"
 	email: string
-	firstName: string
+	first_name: string
 	image: string
-	lastName: string
+	last_name: string
 	password: string
-	username: string
 	role: "ADMIN" | "SUPER_ADMIN" | "SUB_TEACHER" | "TEACHER"
 }
 
