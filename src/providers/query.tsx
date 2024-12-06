@@ -11,7 +11,7 @@ export const queryClient = new QueryClient({
 			staleTime,
 			refetchOnWindowFocus: true,
 			refetchOnMount: true,
-			refetchOnConnect: true,
+			refetchOnReconnect: true,
 			retry: true,
 			retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 3000),
 		},
