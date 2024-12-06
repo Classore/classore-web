@@ -84,12 +84,12 @@ const Page = () => {
 							<Avatar className="size-[46px] bg-black">
 								<AvatarImage src={user?.image} alt={user?.first_name} />
 								<AvatarFallback className="text-white">
-									{getInitials(`${user?.first_name} ${user?.lastName}`)}
+									{getInitials(`${user?.first_name} ${user?.last_name}`)}
 								</AvatarFallback>
 							</Avatar>
 							<div className="flex flex-col">
 								<p className="">
-									{user?.first_name} {user?.lastName}
+									{user?.first_name} {user?.last_name}
 								</p>
 								<p className="text-xs text-neutral-400">{user?.email}</p>
 							</div>

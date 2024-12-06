@@ -12,7 +12,7 @@ const initialValues = {
 	email: "",
 	first_name: "",
 	image: "",
-	lastName: "",
+	last_name: "",
 	dateOfBirth: "",
 }
 
