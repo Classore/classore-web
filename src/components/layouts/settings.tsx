@@ -10,14 +10,17 @@ import {
 	RiUserAddLine,
 } from "@remixicon/react"
 
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import Notification from "@/components/settings/notification"
 import Security from "@/components/settings/security"
 import Profile from "@/components/settings/profile"
 import Points from "@/components/settings/points"
 import { ScrollArea } from "../ui/scroll-area"
+import { useUserStore } from "@/store/z-store"
 import { useFileHandler } from "@/hooks"
 import { Button } from "../ui/button"
 import { TabPanel } from "../shared"
+import { getInitials } from "@/lib"
 
 interface Props {
 	onClose: () => void
@@ -57,6 +60,7 @@ const tabs: TabList[] = [
 export const Settings = ({ onClose }: Props) => {
 	const [current, setCurrent] = React.useState<TabNames>("profile")
 	const [backgroundImage, setBackgroundImage] = React.useState("")
+	const { user } = useUserStore()
 
 	const { handleClick, handleFileChange, inputRef } = useFileHandler({
 		onFilesChange: (files) => {
@@ -106,10 +110,17 @@ export const Settings = ({ onClose }: Props) => {
 					</div>
 					<div className="-mt-[60px] flex w-full items-start justify-between px-5">
 						<div className="flex items-center gap-4">
-							<div className="relative size-[120px] rounded-full bg-primary-500"></div>
+							<Avatar className="size-[120px] bg-primary-500">
+								<AvatarImage src="" />
+								<AvatarFallback className="text-5xl font-semibold text-white">
+									{getInitials(`${user?.first_name} ${user?.last_name}`)}
+								</AvatarFallback>
+							</Avatar>
 							<div className="flex min-w-36 translate-y-6 flex-col gap-1">
-								<h6 className="font-bold capitalize">pablo clueless</h6>
-								<h6 className="text-sm text-neutral-400">smsnmicheal@gmail.com</h6>
+								<h6 className="font-bold capitalize">
+									{user?.first_name} {user?.last_name}
+								</h6>
+								<h6 className="text-sm text-neutral-400">{user?.email}</h6>
 							</div>
 						</div>
 						<Button onClick={handleClick} className="w-fit p-2 text-sm" variant="primary">
