@@ -1,5 +1,4 @@
 import { RiArrowDropDownLine, RiGiftLine, RiNotificationLine } from "@remixicon/react"
-import Link from "next/link"
 import React from "react"
 
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
@@ -22,12 +21,10 @@ export const Appbar = () => {
 			</Backdrop>
 			<nav className="flex h-24 w-full items-center justify-between border-b px-8">
 				<Search />
-				<div className="flex items-center gap-x-3">
-					<Link href="/dashboard">
-						<Button variant="outline">
-							<RiGiftLine size={24} /> Claim Points
-						</Button>
-					</Link>
+				<div className="flex w-fit items-center gap-x-3">
+					<Button className="w-fit" variant="outline">
+						<RiGiftLine size={24} /> Claim Points
+					</Button>
 					<Separator orientation="vertical" className="h-11 bg-neutral-300" />
 					<Popover>
 						<PopoverTrigger asChild>
@@ -45,15 +42,12 @@ export const Appbar = () => {
 							</AvatarFallback>
 						</Avatar>
 						<div className="flex flex-col items-start">
-							<p className="capitalize">
+							<p className="font-medium capitalize">
 								{user?.first_name} {user?.last_name}
 							</p>
 							<p className="text-xs text-neutral-400">{user?.email}</p>
 						</div>
-						<RiArrowDropDownLine
-							size={24}
-							className={`transition-transform ${open ? "rotate-180" : ""}`}
-						/>
+						<RiArrowDropDownLine size={24} />
 					</button>
 				</div>
 			</nav>

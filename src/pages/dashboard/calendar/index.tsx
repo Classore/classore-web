@@ -176,7 +176,7 @@ const Page = () => {
 													<HoverCard key={`${event.id}-${eventIndex}`}>
 														<HoverCardTrigger
 															className={`group relative flex min-h-9 items-center truncate px-1 py-0.5 text-xs ${eventStatusColors[event.status]} ${isMultiDay ? "rounded-none" : "rounded"} ${isFirstDay ? "ml-2 rounded-l border-l-2" : "-ml-1"} ${isLastDay ? "rounded-r" : "pr-0"} ${!isFirstDay && !isLastDay && isMultiDay ? "pl-0" : ""} `}>
-															<div className="flex w-full items-center gap-2 truncate">
+															<div className="flex w-full cursor-pointer items-center gap-2 truncate">
 																{isFirstDay && (
 																	<>
 																		<RiCalendarEventLine className="mr-1 size-4 text-inherit" />

@@ -2,12 +2,15 @@ import type { VariantProps } from "class-variance-authority"
 import { RiLoaderLine } from "@remixicon/react"
 import { cva } from "class-variance-authority"
 import { useRouter } from "next/router"
+import Image from "next/image"
 import React from "react"
 
+import logo from "@/assets/images/logo.png"
 import { cn } from "@/lib/utils"
 
 interface Props extends VariantProps<typeof loaderVariants> {
 	className?: string
+	loader?: "image" | "spinner"
 }
 
 const loaderVariants = cva("animate-spin", {
@@ -79,13 +82,26 @@ export const Loader = () => {
 	return loading ? <Loading /> : null
 }
 
-export const Loading = React.memo(({ className, size, variant }: Props) => {
+export const Loading = React.memo(({ className, loader = "image", size, variant }: Props) => {
 	return (
 		<div
 			aria-label="loading"
 			role="spinbutton"
 			className="grid h-full w-full place-items-center bg-white">
-			<RiLoaderLine className={cn(loaderVariants({ size, variant }), className)} />
+			{loader === "image" ? (
+				<div className={cn("relative aspect-square size-7", className, size)}>
+					<Image
+						src={logo}
+						alt="classore"
+						fill
+						sizes="(max-width:1024px)100%"
+						className="object-contain"
+						priority
+					/>
+				</div>
+			) : (
+				<RiLoaderLine className={cn(loaderVariants({ size, variant }), className)} />
+			)}
 		</div>
 	)
 })
