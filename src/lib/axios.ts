@@ -1,5 +1,5 @@
-import Cookies from "js-cookie"
 import axios from "axios"
+import Cookies from "js-cookie"
 
 const createInstance = () => {
 	const instance = axios.create({
@@ -8,7 +8,8 @@ const createInstance = () => {
 
 	instance.interceptors.request.use(
 		(config) => {
-			const token = Cookies.get("SPACEET_TOKEN")
+			const token = Cookies.get("CLASSORE_TOKEN")
+
 			if (token) {
 				config.headers.Authorization = `Bearer ${token}`
 			}

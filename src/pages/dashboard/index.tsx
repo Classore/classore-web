@@ -1,12 +1,11 @@
 import { useQueries } from "@tanstack/react-query"
 import Link from "next/link"
-import React from "react"
 
 import { Challenge, Leaderboard, Learning } from "@/components/home"
 import { DashboardLayout } from "@/components/layouts"
+import { Seo } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { useUserStore } from "@/store/z-store"
-import { Seo } from "@/components/shared"
 
 import { challenges } from "@/mock"
 
@@ -22,7 +21,7 @@ const Page = () => {
 				<div className="flex w-full flex-col gap-6 px-8 py-6">
 					<div className="flex w-full items-center justify-between gap-[177px] rounded-2xl bg-dashboard bg-cover bg-center bg-no-repeat px-10 py-[52px] text-white">
 						<div className="flex min-w-[323px] flex-col gap-2">
-							<h1 className="font-medium capitalize lg:text-[32px]">Good Morning, {user?.firstName}</h1>
+							<h1 className="font-medium capitalize lg:text-[32px]">Good Morning, {user?.first_name}</h1>
 							<p className="">
 								Welcome to your dashboard-let&apos;s make progress today. Check your latest achievements,
 								track ongoing courses, and take on new challenges to keep learning strong!

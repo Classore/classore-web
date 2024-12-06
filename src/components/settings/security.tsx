@@ -1,9 +1,11 @@
 import React from "react"
 
+import { useForm } from "react-hook-form"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 
 const Security = () => {
+	const { control } = useForm({})
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault()
 	}
@@ -12,24 +14,15 @@ const Security = () => {
 		<form
 			onSubmit={handleSubmit}
 			className="flex h-full w-full flex-col justify-between gap-5 border-b border-t py-5">
-			<div className="space-y-1">
-				<label htmlFor="currentPassword" className="text-sm text-neutral-400">
-					Current Password
-				</label>
-				<Input type="password" name="currentPassword" />
-			</div>
-			<div className="space-y-1">
-				<label htmlFor="newPassword" className="text-sm text-neutral-400">
-					New Password
-				</label>
-				<Input type="password" name="newPassword" />
-			</div>
-			<div className="space-y-1">
-				<label htmlFor="confirmPassword" className="text-sm text-neutral-400">
-					Re-enter New Password
-				</label>
-				<Input type="password" name="confirmPassword" />
-			</div>
+			<Input type="password" name="current_password" label="Current Password" control={control} />
+			<Input type="password" name="new_password" label="New Password" control={control} />
+			<Input
+				type="password"
+				name="confirm_new_password"
+				label="Confirm New Password"
+				control={control}
+			/>
+
 			<div className="flex w-full items-center justify-between pt-10">
 				<Button
 					type="button"

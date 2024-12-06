@@ -1,22 +1,26 @@
 import { RiDeleteBin6Line, RiImageLine } from "@remixicon/react"
 import React from "react"
 
-import { Avatar, AvatarImage } from "../ui/avatar"
 import { useFileHandler } from "@/hooks"
+import { useForm } from "react-hook-form"
+import { Avatar, AvatarImage } from "../ui/avatar"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 
 const initialValues = {
 	bio: "",
 	email: "",
-	firstName: "",
+	first_name: "",
 	image: "",
-	lastName: "",
+	last_name: "",
 	dateOfBirth: "",
 }
 
 const Profile = () => {
 	const [values, setValues] = React.useState(initialValues)
+	const { control } = useForm({
+		defaultValues: initialValues,
+	})
 
 	const { handleClick, handleFileChange, inputRef } = useFileHandler({
 		onFilesChange: (files) => {
@@ -66,34 +70,15 @@ const Profile = () => {
 				</div>
 			</div>
 			<div className="grid w-full grid-cols-2 gap-2 border-b py-5">
-				<div className="space-y-2">
-					<label htmlFor="firstName" className="text-sm text-neutral-400">
-						First Name
-					</label>
-					<Input name="firstName" />
-				</div>
-				<div className="space-y-2">
-					<label htmlFor="lastName" className="text-sm text-neutral-400">
-						Last Name
-					</label>
-					<Input name="lastName" />
-				</div>
+				<Input type="text" name="first_name" label="First Name" control={control} />
+				<Input type="text" name="first_name" label="Last Name" control={control} />
+			</div>
+
+			<div className="w-full border-b py-5">
+				<Input type="email" name="email" label="Email address" control={control} />
 			</div>
 			<div className="w-full border-b py-5">
-				<div className="space-y-2">
-					<label htmlFor="email" className="text-sm text-neutral-400">
-						Email Address
-					</label>
-					<Input type="email" name="email" />
-				</div>
-			</div>
-			<div className="w-full border-b py-5">
-				<div className="space-y-2">
-					<label htmlFor="dateOfBirth" className="text-sm text-neutral-400">
-						Date of Birth
-					</label>
-					<Input type="date" name="dateOfBirth" />
-				</div>
+				<Input type="date" name="dateOfBirth" label="Date of Birth" control={control} />
 			</div>
 			<div className="w-full border-b py-5">
 				<div className="space-y-2">
