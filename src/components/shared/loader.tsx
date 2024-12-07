@@ -89,7 +89,7 @@ export const Loading = React.memo(({ className, loader = "image", size, variant 
 			role="spinbutton"
 			className="grid h-full w-full place-items-center bg-white">
 			{loader === "image" ? (
-				<div className={cn("relative aspect-square size-7", className, size)}>
+				<div className={cn("relative aspect-square size-7 animate-pulse", className, size)}>
 					<Image
 						src={logo}
 						alt="classore"
