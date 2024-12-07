@@ -1,22 +1,25 @@
 import { RiDeleteBin6Line, RiImageLine } from "@remixicon/react"
 import React from "react"
 
-import { useFileHandler } from "@/hooks"
-import { useForm } from "react-hook-form"
 import { Avatar, AvatarImage } from "../ui/avatar"
+import { useUserStore } from "@/store/z-store"
+import { useForm } from "react-hook-form"
+import { useFileHandler } from "@/hooks"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 
-const initialValues = {
-	bio: "",
-	email: "",
-	first_name: "",
-	image: "",
-	last_name: "",
-	dateOfBirth: "",
-}
-
 const Profile = () => {
+	const { user } = useUserStore()
+
+	const initialValues = {
+		bio: "",
+		email: user?.email ?? "",
+		first_name: user?.first_name ?? "",
+		image: "",
+		last_name: user?.last_name ?? "",
+		date_of_birth: "",
+	}
+
 	const [values, setValues] = React.useState(initialValues)
 	const { control } = useForm({
 		defaultValues: initialValues,
@@ -78,7 +81,7 @@ const Profile = () => {
 				<Input type="email" name="email" label="Email address" control={control} />
 			</div>
 			<div className="w-full border-b py-5">
-				<Input type="date" name="dateOfBirth" label="Date of Birth" control={control} />
+				<Input type="date" name="date_of_birth" label="Date of Birth" control={control} />
 			</div>
 			<div className="w-full border-b py-5">
 				<div className="space-y-2">

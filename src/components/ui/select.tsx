@@ -1,10 +1,10 @@
 import * as SelectPrimitive from "@radix-ui/react-select"
+import { ChevronDown } from "@untitled-ui/icons-react"
 import * as React from "react"
 
-import { cn } from "@/lib/utils"
-import { ChevronDown } from "@untitled-ui/icons-react"
 import { useController, type Control, type FieldValues, type Path } from "react-hook-form"
 import { ErrorMessage } from "../shared"
+import { cn } from "@/lib/utils"
 
 interface SelectProps<T extends FieldValues>
 	extends React.PropsWithChildren,
