@@ -250,3 +250,16 @@ export type WaitlistUserProps = {
 	waitlists_updateOn?: Date | string
 	waitlists_waitlist_type: string
 }
+
+export type UserMetricProps = {
+	__typename?: "User Metric"
+	icon: React.JSX.Element
+	label: string
+	value: string | number
+}
+
+export type UserChartProps = {
+	__typename?: "User Chart"
+	date: string
+	time_spent: number
+}

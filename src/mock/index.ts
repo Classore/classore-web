@@ -5,6 +5,7 @@ import type {
 	EventProps,
 	LeaderboardProps,
 	NotificationProps,
+	UserChartProps,
 } from "@/types"
 
 export const challenges: ChallengeProps[] = [
@@ -4154,4 +4155,14 @@ export const notifications: NotificationProps[] = [
 		read: false,
 		createdOn: "2024-03-15T16:20:35Z",
 	},
+]
+
+export const timeChart: UserChartProps[] = [
+	{ date: "Monday", time_spent: 7400 },
+	{ date: "Tuesday", time_spent: 7200 },
+	{ date: "Wednesday", time_spent: 2700 },
+	{ date: "Thursday", time_spent: 13500 },
+	{ date: "Friday", time_spent: 5400 },
+	{ date: "Saturday", time_spent: 6300 },
+	{ date: "Sunday", time_spent: 6300 },
 ]
