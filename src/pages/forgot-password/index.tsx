@@ -32,7 +32,7 @@ const Page = () => {
 	})
 
 	const { isPending, mutate } = useMutation({
-		mutationKey: ["login"],
+		mutationKey: ["forgot-password"],
 		mutationFn: (value: FormValues) => ForgotPasswordMutation(value),
 		onSuccess: (_data, variable) => {
 			toast.success("OTP sent successfully!", {

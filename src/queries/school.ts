@@ -96,7 +96,7 @@ export const useGetClasses = () => {
 	})
 }
 
-// <-- GET CLASSES -->
+// <-- CREATE STUDY TIMELINE -->
 type StudyTimelinePayload = {
 	exam_type: string
 	chosen_bundle: string

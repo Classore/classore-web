@@ -89,9 +89,14 @@ const GetWaitlistQuery = async (params: PaginationProps) => {
 		.then((res) => res.data)
 }
 
+const GoogleAuthMutation = async () => {
+	return axios.get<HttpResponse<null>>(endpoints().auth.google_auth).then((res) => res.data)
+}
+
 export {
 	ForgotPasswordMutation,
 	GetWaitlistQuery,
+	GoogleAuthMutation,
 	ResendVerificationCodeMutation,
 	ResetPasswordMutation,
 	SignInMutation,
@@ -99,3 +104,4 @@ export {
 	VerifyEmailMutation,
 	WaitlistMutation,
 }
+

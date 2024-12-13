@@ -20,23 +20,41 @@ const Page = () => {
 					<h2 className="font-body text-2xl font-bold -tracking-wide text-neutral-900">Success 🎉</h2>
 
 					{router.query.register_as === "student" && (
-						<p className="font-heading text-sm text-neutral-500">
-							Your payment for <strong className="text-neutral-900">“JAMB Exam Prep Bundle”</strong> was
-							successful
-						</p>
+						<>
+							<p className="font-heading text-sm text-neutral-500">
+								Your payment for <strong className="text-neutral-900">“JAMB Exam Prep Bundle”</strong> was
+								successful
+							</p>
+
+							<Button asChild>
+								<Link href="/dashboard" replace>
+									Go to Dashboard
+								</Link>
+							</Button>
+						</>
 					)}
 
 					{router.query.register_as === "parent" && (
-						<p className="font-heading text-sm text-neutral-500">
-							You have successfully opened a parent account. Monitor your ward’s progress with Classore
-						</p>
-					)}
+						<>
+							<p className="text-balance font-heading text-sm text-neutral-500">
+								You have successfully opened a parent account. Monitor your ward’s progress with Classore
+							</p>
 
-					<Button asChild>
-						<Link href="/dashboard" replace>
-							Go to Dashboard
-						</Link>
-					</Button>
+							<div className="flex flex-col gap-2">
+								<Button asChild>
+									<Link href="/signup/add-ward" replace>
+										Add My Ward
+									</Link>
+								</Button>
+
+								<Button asChild variant="link" className="text-secondary-300">
+									<Link href="/dashboard" replace>
+										Go to Dashboard
+									</Link>
+								</Button>
+							</div>
+						</>
+					)}
 				</div>
 			</AuthLayout>
 		</>

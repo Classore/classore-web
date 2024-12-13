@@ -7,6 +7,7 @@ export const endpoints = (id?: string) => {
 		forgot_password: "/auth/forgot-password",
 		reset_password: "/auth/reset-password",
 		profile: "/auth/profile",
+		google_auth: "/auth/google",
 	} as const
 
 	const courses = {

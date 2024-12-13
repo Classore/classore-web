@@ -1,18 +1,18 @@
 import { yupResolver } from "@hookform/resolvers/yup"
 import { useMutation } from "@tanstack/react-query"
-import { useForm } from "react-hook-form"
-import { useRouter } from "next/router"
 import Link from "next/link"
+import { useRouter } from "next/router"
+import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import * as yup from "yup"
 
-import { AuthGraphic, GoogleIcon } from "@/assets/icons"
+import { AuthGraphic } from "@/assets/icons"
 import { AuthLayout } from "@/components/layouts/auth"
-import { Seo, Spinner } from "@/components/shared"
+import { GoogleAuth, Seo, Spinner } from "@/components/shared"
 import { Button } from "@/components/ui/button"
-import { useUserStore } from "@/store/z-store"
 import { Input } from "@/components/ui/input"
 import { SignInMutation } from "@/queries"
+import { useUserStore } from "@/store/z-store"
 
 // const appId = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID
 
@@ -33,7 +33,6 @@ const Page = () => {
 		resolver: yupResolver(loginSchema),
 	})
 
-	// No need for "onError" and "onSuccess" callbacks here since we already handle that globally.
 	const { isPending, mutate } = useMutation({
 		mutationKey: ["login"],
 		mutationFn: (values: LoginFormValues) => SignInMutation(values),
@@ -111,10 +110,8 @@ const Page = () => {
 						<p className="relative text-center text-sm before:absolute before:left-0 before:top-1/2 before:h-[1px] before:w-5/12 before:-translate-y-1/2 before:bg-[linear-gradient(90deg,_#FFFFFF_0%,_#D0D5DD_100%)] after:absolute after:right-0 after:top-1/2 after:h-[1px] after:w-5/12 after:-translate-y-1/2 after:bg-[linear-gradient(90deg,_#D0D5DD_0%,_#ffffff_100%)]">
 							Or
 						</p>
-						<Button type="button" variant="ghost" className="font-normal">
-							<GoogleIcon />
-							Continue with Google
-						</Button>
+
+						<GoogleAuth />
 					</div>
 				</div>
 			</AuthLayout>

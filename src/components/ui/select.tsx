@@ -2,9 +2,9 @@ import * as SelectPrimitive from "@radix-ui/react-select"
 import { ChevronDown } from "@untitled-ui/icons-react"
 import * as React from "react"
 
+import { cn } from "@/lib/utils"
 import { useController, type Control, type FieldValues, type Path } from "react-hook-form"
 import { ErrorMessage } from "../shared"
-import { cn } from "@/lib/utils"
 
 interface SelectProps<T extends FieldValues>
 	extends React.PropsWithChildren,
@@ -15,6 +15,7 @@ interface SelectProps<T extends FieldValues>
 	label?: string
 	placeholder?: string
 	labelClassName?: string
+	wrapperClassName?: string
 }
 
 export const Select = <T extends FieldValues>({
@@ -25,6 +26,7 @@ export const Select = <T extends FieldValues>({
 	control,
 	placeholder,
 	className,
+	wrapperClassName,
 	...rest
 }: SelectProps<T>) => {
 	const {
@@ -36,7 +38,7 @@ export const Select = <T extends FieldValues>({
 	})
 
 	return (
-		<label className="flex flex-col gap-1.5 font-body">
+		<label className={cn("flex flex-col gap-1.5 font-body", wrapperClassName)}>
 			<p className={cn("text-sm text-neutral-400", labelClassName)}>{label}</p>
 
 			<SelectPrimitive.Root value={value} onValueChange={onChange}>

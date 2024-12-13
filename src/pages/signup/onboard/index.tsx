@@ -101,14 +101,17 @@ const Page = () => {
 	return (
 		<>
 			<Seo title="Sign up" />
+
 			<AuthLayout screen="signup">
 				<div className="flex max-w-[400px] flex-col gap-20">
 					<SignupStepper />
+
 					<div className="flex flex-col gap-6">
 						<header className="flex flex-col gap-4">
 							<UserDetailsGraphic />
 							<h2 className="font-body text-2xl font-bold text-neutral-900">Let’s get you onboard</h2>
 						</header>
+
 						<form
 							onSubmit={handleSubmit(onSubmit)}
 							className="grid grid-cols-2 gap-6 font-body font-normal">

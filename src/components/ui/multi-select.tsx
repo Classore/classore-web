@@ -7,6 +7,7 @@ import {
 	CommandList,
 } from "@/components/ui/command"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { cn } from "@/lib"
 import { PopoverClose } from "@radix-ui/react-popover"
 import { Check, ChevronDown } from "@untitled-ui/icons-react"
 import * as React from "react"
@@ -27,6 +28,7 @@ type MultiSelectProps<T extends FieldValues> = {
 	name: Path<T>
 	control: Control<T>
 	placeholder?: string
+	className?: string
 }
 
 export const MultiSelect = <T extends FieldValues>({
@@ -35,6 +37,7 @@ export const MultiSelect = <T extends FieldValues>({
 	options,
 	name,
 	control,
+	className,
 }: MultiSelectProps<T>) => {
 	const inputRef = React.useRef<HTMLInputElement>(null)
 	const [openCombobox, setOpenCombobox] = React.useState(false)
@@ -72,7 +75,7 @@ export const MultiSelect = <T extends FieldValues>({
 	}, [selectedValues, onChange])
 
 	return (
-		<label className="flex flex-col gap-1.5 font-body">
+		<label className={cn("flex flex-col gap-1.5 font-body", className)}>
 			<div className="flex items-center justify-between gap-2 text-neutral-400">
 				<p className="text-sm">{label}</p>
 				<p className="text-xs">{selectedValues.length} selected</p>
@@ -99,7 +102,7 @@ export const MultiSelect = <T extends FieldValues>({
 
 				<PopoverContent className="w-full p-0">
 					<Command loop className="min-w-[var(--radix-popover-trigger-width)]">
-						<CommandInput ref={inputRef} placeholder="Search framework..." />
+						<CommandInput ref={inputRef} placeholder="Search subjects..." />
 
 						<CommandList>
 							<CommandEmpty>No value(s) found...</CommandEmpty>
