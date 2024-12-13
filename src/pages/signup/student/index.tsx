@@ -65,8 +65,7 @@ const Page = () => {
 			return SignUpMutation({
 				...rest,
 				sign_up_channel: "DEFAULT",
-				// @ts-expect-error nil
-				user_type: String(router.query?.register_as).toUpperCase() ?? "STUDENT",
+				user_type: "STUDENT",
 				referral_code: rest.referral_code ?? "",
 			})
 		},
@@ -85,11 +84,10 @@ const Page = () => {
 				secure: process.env.NODE_ENV === "production",
 			})
 			router.push({
-				pathname: "/signup/verify-email",
+				pathname: "/signup/student/verify-email",
 				query: {
 					email: encodeURIComponent(data.data.user_details.email),
-					register_as: router.query?.register_as,
-					step: "2",
+					step: "3",
 				},
 			})
 		},

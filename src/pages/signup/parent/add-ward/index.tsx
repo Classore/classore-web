@@ -8,10 +8,12 @@ import { MultiSelect } from "@/components/ui/multi-select"
 import { Select, SelectItem } from "@/components/ui/select"
 import { formatCurrency } from "@/lib"
 import { useGetExamBundles, useGetExams, useGetSubjects } from "@/queries/school"
+import { yupResolver } from "@hookform/resolvers/yup"
 import { Lock02 } from "@untitled-ui/icons-react"
 import { Trash } from "iconsax-react"
 import { Plus } from "lucide-react"
 import { useFieldArray, useForm } from "react-hook-form"
+import * as yup from "yup"
 
 const initialValue = {
 	first_name: "",
@@ -22,8 +24,31 @@ const initialValue = {
 	subjects: [],
 }
 
+const schema = yup.object().shape({
+	wards: yup
+		.array()
+		.of(
+			yup.object().shape({
+				first_name: yup.string().required("Please enter your first name"),
+				last_name: yup.string().required("Please enter your last name"),
+				email: yup.string().required("Please enter your email address").email("Invalid email address"),
+				exam_type: yup.string().required("Please select an exam type"),
+				chosen_bundle: yup.string().required("Please select a prep bundle"),
+				subjects: yup
+					.array()
+					.of(yup.string().required("Please select an option"))
+					.min(1, "Please select at least one subject")
+					.required(),
+			})
+		)
+		.required("Please add at least one ward"),
+})
+
+type FormValues = yup.InferType<typeof schema>
+
 const Page = () => {
-	const { control, handleSubmit } = useForm({
+	const { control, handleSubmit } = useForm<FormValues>({
+		resolver: yupResolver(schema),
 		defaultValues: {
 			wards: [initialValue],
 		},
@@ -44,7 +69,7 @@ const Page = () => {
 			value: subject.subject_id,
 		})) ?? []
 
-	const onSubmit = (data: any) => {
+	const onSubmit = (data: FormValues) => {
 		console.log("data", data)
 	}
 

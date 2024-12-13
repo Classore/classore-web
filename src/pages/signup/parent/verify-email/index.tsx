@@ -63,23 +63,7 @@ const Page = ({ email }: InferGetServerSidePropsType<typeof getServerSideProps>)
 		},
 		onSuccess: (data) => {
 			toast.success(data.message)
-			if (data.data.user_type === "PARENT") {
-				router.push({
-					pathname: "/signup/success",
-					query: {
-						register_as: router.query?.register_as,
-					},
-				})
-				return
-			}
-
-			router.push({
-				pathname: "/signup/studying-for",
-				query: {
-					step: "4",
-					register_as: router.query?.register_as,
-				},
-			})
+			router.push("/signup/parent/success")
 		},
 	})
 	const onSubmit = (values: FormValues) => {
