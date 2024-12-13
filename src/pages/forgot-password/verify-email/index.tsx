@@ -1,4 +1,5 @@
 import { VerifyEmailGraphic } from "@/assets/icons"
+import { classore } from "@/assets/images"
 import { AuthLayout } from "@/components/layouts/auth"
 import { Seo, Spinner } from "@/components/shared"
 import { Button } from "@/components/ui/button"
@@ -10,6 +11,8 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import { useMutation } from "@tanstack/react-query"
 import { ChevronLeft } from "lucide-react"
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next"
+import Image from "next/image"
+import Link from "next/link"
 import { useRouter } from "next/router"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -70,54 +73,60 @@ const Page = ({ email }: InferGetServerSidePropsType<typeof getServerSideProps>)
 			<Seo title="Verify Email" />
 
 			<AuthLayout screen="forgot-password">
-				<div className="flex max-w-[400px] flex-col gap-8 pt-20">
-					<button
-						onClick={() => router.back()}
-						type="button"
-						className="mb-8 flex w-fit items-center gap-1 rounded-lg border border-neutral-200 bg-neutral-100 px-2 py-1 text-sm text-neutral-700 transition-colors hover:bg-neutral-200">
-						<ChevronLeft width={16} />
-						<span>Back</span>
-					</button>
+				<div className="flex max-w-96 flex-col gap-10 font-body lg:gap-20">
+					<Link href="/" className="w-fit lg:hidden">
+						<Image src={classore} alt="classore" width={120} height={25} />
+					</Link>
 
-					<header className="flex flex-col gap-4">
-						<VerifyEmailGraphic />
+					<div className="flex flex-col gap-8 pt-10 lg:pt-20">
+						<button
+							onClick={() => router.back()}
+							type="button"
+							className="mb-8 flex w-fit items-center gap-1 rounded-lg border border-neutral-200 bg-neutral-100 px-2 py-1 text-sm text-neutral-700 transition-colors hover:bg-neutral-200">
+							<ChevronLeft width={16} />
+							<span>Back</span>
+						</button>
 
-						<div>
-							<h2 className="font-body text-2xl font-bold text-neutral-900">Verify your email address</h2>
-							<p className="pt-1 text-sm text-neutral-500">
-								A 4 digit code has been sent to <span className="font-bold text-neutral-900">{email}</span>
-							</p>
-						</div>
-					</header>
+						<header className="flex flex-col gap-4">
+							<VerifyEmailGraphic />
 
-					<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6 font-body font-normal">
-						<OTPInput control={control} name="verification_code" />
-
-						<div className="col-span-full flex flex-col gap-2">
-							<Button type="submit" disabled={isPending}>
-								{isPending ? <Spinner /> : "Verify"}
-							</Button>
-
-							<div className="flex items-center justify-center gap-2">
-								<p className="text-center text-sm text-neutral-500">Didn’t receive a mail? </p>
-
-								{counter ? (
-									<span className="text-center text-sm">
-										Resend in <span className="font-black text-secondary-300">{counter}s</span>
-									</span>
-								) : (
-									<Button
-										disabled={isPending}
-										onClick={() => mutate()}
-										type="button"
-										variant="link"
-										className="w-fit px-1 text-sm font-medium text-secondary-300 shadow-none hover:underline">
-										{isPending ? "Resending..." : "Resend"}
-									</Button>
-								)}
+							<div>
+								<h2 className="font-body text-2xl font-bold text-neutral-900">Verify your email address</h2>
+								<p className="pt-1 text-sm text-neutral-500">
+									A 4 digit code has been sent to <span className="font-bold text-neutral-900">{email}</span>
+								</p>
 							</div>
-						</div>
-					</form>
+						</header>
+
+						<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6 font-body font-normal">
+							<OTPInput control={control} name="verification_code" />
+
+							<div className="col-span-full flex flex-col gap-2">
+								<Button type="submit" disabled={isPending}>
+									{isPending ? <Spinner /> : "Verify"}
+								</Button>
+
+								<div className="flex items-center justify-center gap-2">
+									<p className="text-center text-sm text-neutral-500">Didn’t receive a mail? </p>
+
+									{counter ? (
+										<span className="text-center text-sm">
+											Resend in <span className="font-black text-secondary-300">{counter}s</span>
+										</span>
+									) : (
+										<Button
+											disabled={isPending}
+											onClick={() => mutate()}
+											type="button"
+											variant="link"
+											className="w-fit px-1 text-sm font-medium text-secondary-300 shadow-none hover:underline">
+											{isPending ? "Resending..." : "Resend"}
+										</Button>
+									)}
+								</div>
+							</div>
+						</form>
+					</div>
 				</div>
 			</AuthLayout>
 		</>

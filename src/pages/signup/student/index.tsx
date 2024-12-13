@@ -101,7 +101,7 @@ const Page = () => {
 			<Seo title="Sign up" />
 
 			<AuthLayout screen="signup">
-				<div className="flex max-w-[400px] flex-col gap-20">
+				<div className="flex max-w-[400px] flex-col gap-10 lg:gap-20">
 					<SignupStepper />
 
 					<div className="flex flex-col gap-6">
@@ -112,7 +112,7 @@ const Page = () => {
 
 						<form
 							onSubmit={handleSubmit(onSubmit)}
-							className="grid grid-cols-2 gap-6 font-body font-normal">
+							className="grid grid-cols-2 gap-x-3 gap-y-6 font-body font-normal lg:gap-6">
 							<Input
 								type="text"
 								label="First Name"

@@ -78,7 +78,7 @@ const Page = () => {
 			<Seo title="Add Ward" />
 
 			<AuthLayout screen="signup">
-				<div className="flex max-w-[400px] flex-col gap-20">
+				<div className="flex max-w-[400px] flex-col gap-10 lg:gap-20">
 					<SignupStepper />
 
 					<div className="flex flex-col gap-6">
@@ -97,7 +97,7 @@ const Page = () => {
 							<ul>
 								{fields.map((field, index) => (
 									<li
-										className="grid grid-cols-2 gap-6 border-b border-b-neutral-200 py-8 font-body font-normal first-of-type:pt-0"
+										className="grid grid-cols-2 gap-x-3 gap-y-6 border-b border-b-neutral-200 py-8 font-body font-normal first-of-type:pt-0 lg:gap-6"
 										key={field.id}>
 										{index >= 1 ? (
 											<div className="col-span-full flex items-center justify-between gap-1">

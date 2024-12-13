@@ -17,8 +17,8 @@ const authIllustration: Record<Screen, StaticImageData> = {
 
 export function AuthLayout({ children, screen }: { children: React.ReactNode; screen: Screen }) {
 	return (
-		<main className="mx-auto grid grid-cols-5 bg-red-500">
-			<aside className="sticky top-0 col-span-2 flex h-dvh flex-col gap-12 self-start bg-primary-100 p-10 pl-20">
+		<main className="mx-auto flex flex-col bg-red-500 lg:grid lg:grid-cols-5">
+			<aside className="sticky top-0 col-span-2 hidden h-dvh flex-col gap-12 self-start bg-primary-100 p-10 pl-20 lg:flex">
 				<Link href="/" className="w-fit">
 					<Image src={classore} alt="classore" width={140} height={32} />
 				</Link>
@@ -32,7 +32,10 @@ export function AuthLayout({ children, screen }: { children: React.ReactNode; sc
 					className="absolute -right-11 bottom-0 max-w-md"
 				/>
 			</aside>
-			<section className="col-span-3 bg-white px-32 py-6">{children}</section>
+
+			<section className="col-span-3 min-h-dvh bg-white px-6 py-10 lg:px-32 lg:py-6">
+				{children}
+			</section>
 		</main>
 	)
 }

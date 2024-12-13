@@ -107,7 +107,7 @@ const Page = () => {
 			<Seo title="Studying For" />
 
 			<AuthLayout screen="signup">
-				<div className="flex max-w-96 flex-col gap-20">
+				<div className="flex max-w-96 flex-col gap-10 lg:gap-20">
 					<SignupStepper />
 					<div className="flex flex-col gap-6">
 						<header className="flex flex-col gap-4">

@@ -54,7 +54,7 @@ const Page = () => {
 			<Seo title="Sign up" />
 
 			<AuthLayout screen="signup">
-				<div className="flex max-w-96 flex-col gap-20 font-body">
+				<div className="flex max-w-96 flex-col gap-10 font-body lg:gap-20">
 					<SignupStepper />
 
 					<div className="flex flex-col gap-6">

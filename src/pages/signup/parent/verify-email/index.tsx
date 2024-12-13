@@ -75,7 +75,7 @@ const Page = ({ email }: InferGetServerSidePropsType<typeof getServerSideProps>)
 			<Seo title="Verify Email" />
 
 			<AuthLayout screen="signup">
-				<div className="flex max-w-[400px] flex-col gap-20">
+				<div className="flex max-w-[400px] flex-col gap-10 lg:gap-20">
 					<SignupStepper />
 
 					<div className="flex flex-col gap-6">
