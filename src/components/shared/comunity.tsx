@@ -43,6 +43,7 @@ const ChannelsComponent = ({ user }: Props) => {
 					name: "General Channel",
 					members: [user.id],
 				})
+				await channel.create()
 				await channel.watch()
 
 				setClient(client)
@@ -127,23 +128,6 @@ const ChannelList = ({ currentChannel, client, userId, onChannelSelect }: Channe
 			fetchChannels()
 		}
 	}, [client, userId])
-
-	// const handleCreateChannel = async (channelName: string) => {
-	// 	try {
-	// 		const channel = client.channel("messaging", channelName, {
-	// 			name: channelName,
-	// 			members: [userId],
-	// 		})
-
-	// 		await channel.create()
-	// 		await channel.watch()
-
-	// 		setChannels((prevChannels) => [...prevChannels, channel])
-	// 		onChannelSelect(channel)
-	// 	} catch (error) {
-	// 		console.error("Error creating channel:", error)
-	// 	}
-	// }
 
 	if (loading) return <Loading />
 
