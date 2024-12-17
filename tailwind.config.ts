@@ -70,9 +70,14 @@ const config: Config = {
 					"0%,70%,100%": { opacity: "1" },
 					"20%,50%": { opacity: "0" },
 				},
+				scale: {
+					"0%, 50%, 100%": { scale: "1", opacity: "1" },
+					"25%, 75%": { scale: "0.75", opacity: "0.5" },
+				},
 			},
 			animation: {
 				"caret-blink": "caret-blink 1.25s ease-out infinite",
+				scale: "scale 2500ms ease-in-out infinite",
 			},
 			boxShadow: {
 				neomorphism: "inset 5px 5px 10px #eef0f2, inset -5px -5px 10px #f6f8fa",

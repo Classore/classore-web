@@ -1,3 +1,4 @@
+import { useRouter } from "next/router"
 import dynamic from "next/dynamic"
 import React from "react"
 
@@ -11,6 +12,8 @@ const ChatComponent = dynamic(() => import("@/components/shared/chat-component")
 
 const Page = () => {
 	const { user } = useUserStore()
+	const router = useRouter()
+	const { otherUserId } = router.query
 
 	if (!user) return <Loading />
 
@@ -18,7 +21,7 @@ const Page = () => {
 		<>
 			<Seo title="Messages" />
 			<DashboardLayout>
-				<ChatComponent user={user} />
+				<ChatComponent user={user} initialOtherUserId={String(otherUserId)} />
 			</DashboardLayout>
 		</>
 	)

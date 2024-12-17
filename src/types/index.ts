@@ -205,7 +205,6 @@ export type CommunityProps = Node & {
 export type LeaderboardProps = Node & {
 	__typename?: "Leaderboard"
 	quiz: number
-	referrals: number
 	streak: number
 	userId: string
 }

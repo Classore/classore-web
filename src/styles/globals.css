@@ -176,6 +176,7 @@ input[type="search"]::-webkit-search-results-decoration {
 /* StreamChat Customizations */
 .str-chat__channel-header {
 	height: 76px;
+	min-height: 76px;
 	background: #fff;
 	padding: 18px 32px;
 	border-bottom: 1px solid #e2e4e9;
