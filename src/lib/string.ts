@@ -167,3 +167,9 @@ export const getAverageRating = (reviews: ReviewProps[]) => {
 	}
 	return averageRating.toFixed(1)
 }
+
+export const paginate = <T>(data: T[], page: number, limit: number): T[] => {
+	const start = (page - 1) * limit
+	const end = start + limit
+	return data.slice(start, end)
+}

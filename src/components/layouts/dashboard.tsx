@@ -15,7 +15,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 	const isOnRoute = (href: string) => normalize(router.pathname) === href
 
 	return (
-		<div className="flex h-screen w-screen items-center overflow-hidden bg-white">
+		<div className="flex h-screen w-screen select-none items-center overflow-hidden bg-white">
 			<aside className="flex h-full w-[256px] min-w-[256px] flex-col justify-between border-r border-neutral-300 py-8">
 				<div className="flex w-full flex-col gap-8">
 					<div className="relative h-[30px] w-[135px] px-6">
