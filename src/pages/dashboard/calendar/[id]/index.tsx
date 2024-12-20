@@ -27,8 +27,11 @@ const Page = () => {
 	const { id } = router.query
 	const scrollContainerRef = React.useRef<HTMLDivElement>(null)
 
-	const current = new Date()
-	current.setDate(Number(id))
+	const current = React.useMemo(() => {
+		const date = new Date()
+		date.setDate(Number(id))
+		return date
+	}, [id])
 
 	React.useEffect(() => {
 		// Scroll to current time on load
