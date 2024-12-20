@@ -25,13 +25,15 @@ interface UserListProps {
 	onSelectUser: (userId: string) => void
 	selectedUserId: string | null
 	predefinedUsers?: AdminProps[]
+	onStartNewChat?: () => void
 }
 
 interface Props {
 	user: UserProps
+	initialOtherUserId?: string
 }
 
-const ChatComponent = ({ user }: Props) => {
+const ChatComponent = ({ user, initialOtherUserId }: Props) => {
 	const [selectedUserId, setSelectedUserId] = React.useState<string | null>(null)
 	const [channel, setChannel] = React.useState<StreamChannel | null>(null)
 	const [client, setClient] = React.useState<StreamChat | null>(null)
@@ -95,10 +97,14 @@ const ChatComponent = ({ user }: Props) => {
 			)
 
 			setClient(newClient)
+
+			if (initialOtherUserId && initialOtherUserId !== "") {
+				await createDirectChannel(initialOtherUserId)
+			}
 		} catch (error) {
 			console.error("Chat initialization error:", error)
 		}
-	}, [user.id, user.first_name])
+	}, [user.id, user.first_name, initialOtherUserId, createDirectChannel])
 
 	React.useEffect(() => {
 		initializeChat()
@@ -109,6 +115,10 @@ const ChatComponent = ({ user }: Props) => {
 			}
 		}
 	}, [client, initializeChat])
+
+	const handleStartNewChat = React.useCallback(() => {
+		console.log("open new chat")
+	}, [])
 
 	if (!client || !channel) return <Loading />
 
@@ -121,6 +131,7 @@ const ChatComponent = ({ user }: Props) => {
 						currentUserId={user.id}
 						onSelectUser={createDirectChannel}
 						selectedUserId={selectedUserId}
+						onStartNewChat={handleStartNewChat}
 					/>
 				</div>
 				<div className="h-full flex-1">
@@ -136,7 +147,7 @@ const ChatComponent = ({ user }: Props) => {
 							</Channel>
 						</div>
 					) : (
-						<Loading />
+						<div className="h-full w-full border border-red-500"></div>
 					)}
 				</div>
 			</Chat>
@@ -145,7 +156,7 @@ const ChatComponent = ({ user }: Props) => {
 }
 
 const UserList: React.FC<UserListProps> = React.memo(
-	({ client, currentUserId, onSelectUser, predefinedUsers = [] }) => {
+	({ client, currentUserId, onSelectUser, onStartNewChat, predefinedUsers = [] }) => {
 		const [users, setUsers] = React.useState<User[]>([])
 		const [loading, setLoading] = React.useState(true)
 
@@ -195,14 +206,30 @@ const UserList: React.FC<UserListProps> = React.memo(
 
 		return (
 			<div className="flex h-full w-full flex-col gap-4 overflow-y-auto">
-				<h2>Direct Messages</h2>
-				<div className="flex w-full flex-col gap-2">
-					{users.map((user) => (
-						<li key={user.id} onClick={() => onSelectUser(user.id)} className="user-item">
-							{user.name}
-						</li>
-					))}
+				<div className="flex items-center justify-between">
+					<h2>Direct Messages</h2>
+					{users.length === 0 && onStartNewChat && (
+						<button
+							onClick={onStartNewChat}
+							className="rounded bg-blue-500 px-3 py-1 text-white hover:bg-blue-600">
+							Start New Chat
+						</button>
+					)}
 				</div>
+				{users.length > 0 ? (
+					<div className="flex w-full flex-col gap-2">
+						{users.map((user) => (
+							<li
+								key={user.id}
+								onClick={() => onSelectUser(user.id)}
+								className="user-item cursor-pointer rounded p-2 hover:bg-gray-100">
+								{user.name}
+							</li>
+						))}
+					</div>
+				) : (
+					<p className="text-center text-gray-500">No chats available</p>
+				)}
 			</div>
 		)
 	}

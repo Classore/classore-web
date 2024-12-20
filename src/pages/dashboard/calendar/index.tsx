@@ -6,6 +6,8 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/h
 import { DashboardLayout } from "@/components/layouts"
 import { AvatarGroup, Seo } from "@/components/shared"
 import { Button } from "@/components/ui/button"
+import { DayView } from "@/components/calendar"
+import { EventStatusColor } from "@/config"
 import type { EventProps } from "@/types"
 
 import { events } from "@/mock"
@@ -22,6 +24,7 @@ type DayProps = {
 const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
 const Page = () => {
+	const [selected, setSelected] = React.useState<DayEventProps[] | null>(null)
 	const [current, setCurrent] = React.useState(new Date())
 
 	const getEventStatus = React.useCallback((event: EventProps) => {
@@ -44,7 +47,6 @@ const Page = () => {
 
 	const processedEvents = React.useMemo(() => {
 		const monthEvents: Record<string, EventProps[]> = {}
-
 		events.forEach((event) => {
 			event.date.forEach((dateItem) => {
 				const eventDate = new Date(dateItem)
@@ -107,13 +109,6 @@ const Page = () => {
 		return lastDate.getDate() === currentDate
 	}
 
-	const eventStatusColors = {
-		past: "bg-neutral-200 text-neutral-700 border-neutral-700",
-		upcoming: "bg-blue-100 text-blue-700 border-blue-700",
-		current: "bg-green-100 text-green-700 border-green-700",
-		live: "bg-red-100 text-red-700 border-red-700",
-	} as const
-
 	const images = (count: number) => {
 		const created = Array(count).map(
 			() =>
@@ -126,6 +121,9 @@ const Page = () => {
 		<>
 			<Seo title="Calendar" />
 			<DashboardLayout>
+				{selected !== null && (
+					<DayView day={current} dayEvents={selected} onClose={() => setSelected(null)} />
+				)}
 				<div className="flex h-full w-full flex-col gap-2 px-8 py-4">
 					<div className="flex h-[69px] w-full items-center justify-between">
 						<button
@@ -162,9 +160,17 @@ const Page = () => {
 								return (
 									<div
 										key={index}
-										className={`flex aspect-[1.08/1] w-full flex-col border-b ${index % 7 === 6 ? "" : "border-r"} ${isToday ? "font-semibold" : "text-neutral-500"}`}>
-										<div className="flex w-full items-center justify-end px-3 pt-3 text-sm">
-											{dayItem.day}
+										className={`flex aspect-[1.08/1] w-full flex-col overflow-hidden border-b ${index % 7 === 6 ? "" : "border-r"} ${isToday ? "font-semibold" : "text-neutral-500"}`}>
+										<div
+											className={`flex w-full items-center px-3 pt-3 ${dayItem.events.length < 1 ? "justify-end" : "justify-between"}`}>
+											{dayItem.events.length && (
+												<button
+													onClick={() => setSelected(dayItem.events)}
+													className="flex items-center gap-1 text-xs underline">
+													{dayItem.events.length < 2 ? "View Event" : "View Events"} ({dayItem.events.length})
+												</button>
+											)}
+											<p className="text-sm">{dayItem.day}</p>
 										</div>
 										<div className="mt-1 flex flex-col gap-1 overflow-y-auto">
 											{dayItem.events.map((event, eventIndex) => {
@@ -175,7 +181,7 @@ const Page = () => {
 												return (
 													<HoverCard key={`${event.id}-${eventIndex}`}>
 														<HoverCardTrigger
-															className={`group relative flex min-h-9 items-center truncate px-1 py-0.5 text-xs ${eventStatusColors[event.status]} ${isMultiDay ? "rounded-none" : "rounded"} ${isFirstDay ? "ml-2 rounded-l border-l-2" : "-ml-1"} ${isLastDay ? "rounded-r" : "pr-0"} ${!isFirstDay && !isLastDay && isMultiDay ? "pl-0" : ""} `}>
+															className={`group relative flex min-h-9 items-center truncate px-1 py-0.5 text-xs ${EventStatusColor[event.status]} ${isMultiDay ? "rounded-none" : "rounded"} ${isFirstDay ? "ml-2 rounded-l border-l-2" : "-ml-1"} ${isLastDay ? "rounded-r" : "pr-0"} ${!isFirstDay && !isLastDay && isMultiDay ? "pl-0" : ""} `}>
 															<div className="flex w-full cursor-pointer items-center gap-2 truncate">
 																{isFirstDay && (
 																	<>
