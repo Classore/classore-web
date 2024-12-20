@@ -15,8 +15,8 @@ import { Button } from "@/components/ui/button"
 import { useUserStore } from "@/store/z-store"
 import { Input } from "@/components/ui/input"
 import { SignInMutation } from "@/queries"
+import { axios, capitalize } from "@/lib"
 import { endpoints } from "@/config"
-import { axios } from "@/lib"
 
 // const appId = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID
 
@@ -41,25 +41,13 @@ const Page = () => {
 		scope: "email profile",
 		onSuccess: async (response) => {
 			try {
-				await axios
-					.get<HttpResponse<UserProps>>(
-						`${endpoints().auth.google_signin}?access_token=${response.access_token}`
-					)
-					.then(({ data }) => {
-						const { access_token } = data.data
-						signIn(data.data, access_token)
-						toast.success(`Welcome ${data.data.first_name}`)
-						router.push("/dashboard")
-					})
-					.catch((error) => {
-						let message = ""
-						if (error instanceof Error) {
-							message = error.message
-						} else {
-							message = error.response.data.message
-						}
-						toast.error(message || "An error occurred")
-					})
+				const { data } = await axios.get<HttpResponse<UserProps>>(
+					`${endpoints().auth.google_signin}?access_token=${response.access_token}`
+				)
+				const { access_token } = data.data
+				signIn(data.data, access_token)
+				toast.success(`Welcome ${capitalize(data.data.first_name)}`)
+				router.push("/dashboard")
 			} catch (error) {
 				const { response } = error as unknown as HttpError
 				const { message } = response.data
