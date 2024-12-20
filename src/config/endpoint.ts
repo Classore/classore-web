@@ -2,7 +2,7 @@ export const endpoints = (id?: string) => {
 	const auth = {
 		signup: "/auth/signup",
 		signin: "/auth/login",
-		google_signin: "/auth/google",
+		google_signin: "/auth/google/callback",
 		verify: "/auth/signup/verify",
 		resend_code: "/auth/signup/resend-verification-code",
 		forgot_password: "/auth/forgot-password",

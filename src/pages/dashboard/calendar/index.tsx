@@ -1,13 +1,13 @@
 import { RiArrowLeftSLine, RiCalendarEventLine } from "@remixicon/react"
 import { addMonths, format, subMonths } from "date-fns"
+import Link from "next/link"
 import React from "react"
 
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import { DashboardLayout } from "@/components/layouts"
 import { AvatarGroup, Seo } from "@/components/shared"
 import { Button } from "@/components/ui/button"
-import { DayView } from "@/components/calendar"
-import { EventStatusColor } from "@/config"
+// import { DayView } from "@/components/calendar"
 import type { EventProps } from "@/types"
 
 import { events } from "@/mock"
@@ -21,10 +21,15 @@ type DayProps = {
 	events: DayEventProps[]
 }
 
+const EventStatusColor: Record<DayEventProps["status"], string> = {
+	past: "bg-neutral-200 text-neutral-700 border-neutral-700",
+	upcoming: "bg-blue-100 text-blue-700 border-blue-700",
+	current: "bg-green-100 text-green-700 border-green-700",
+}
+
 const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
 const Page = () => {
-	const [selected, setSelected] = React.useState<DayEventProps[] | null>(null)
 	const [current, setCurrent] = React.useState(new Date())
 
 	const getEventStatus = React.useCallback((event: EventProps) => {
@@ -121,9 +126,6 @@ const Page = () => {
 		<>
 			<Seo title="Calendar" />
 			<DashboardLayout>
-				{selected !== null && (
-					<DayView day={current} dayEvents={selected} onClose={() => setSelected(null)} />
-				)}
 				<div className="flex h-full w-full flex-col gap-2 px-8 py-4">
 					<div className="flex h-[69px] w-full items-center justify-between">
 						<button
@@ -164,11 +166,11 @@ const Page = () => {
 										<div
 											className={`flex w-full items-center px-3 pt-3 ${dayItem.events.length < 1 ? "justify-end" : "justify-between"}`}>
 											{dayItem.events.length && (
-												<button
-													onClick={() => setSelected(dayItem.events)}
-													className="flex items-center gap-1 text-xs underline">
+												<Link
+													href={`/dashboard/calendar/${dayItem.day}`}
+													className="link flex items-center gap-1 text-xs">
 													{dayItem.events.length < 2 ? "View Event" : "View Events"} ({dayItem.events.length})
-												</button>
+												</Link>
 											)}
 											<p className="text-sm">{dayItem.day}</p>
 										</div>

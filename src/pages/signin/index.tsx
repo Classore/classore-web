@@ -6,8 +6,8 @@ import { useRouter } from "next/router"
 import { toast } from "sonner"
 import Link from "next/link"
 import * as yup from "yup"
-import axios from "axios"
 
+import type { HttpError, HttpResponse, UserProps } from "@/types"
 import { AuthGraphic, GoogleIcon } from "@/assets/icons"
 import { AuthLayout } from "@/components/layouts/auth"
 import { Seo, Spinner } from "@/components/shared"
@@ -15,8 +15,8 @@ import { Button } from "@/components/ui/button"
 import { useUserStore } from "@/store/z-store"
 import { Input } from "@/components/ui/input"
 import { SignInMutation } from "@/queries"
-import type { HttpError } from "@/types"
 import { endpoints } from "@/config"
+import { axios } from "@/lib"
 
 // const appId = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID
 
@@ -41,17 +41,25 @@ const Page = () => {
 		scope: "email profile",
 		onSuccess: async (response) => {
 			try {
-				const { data } = await axios.get(
-					`${endpoints().auth.google_signin}?access_token=${response.access_token}`
-				)
-				const { user, access_token } = data
-				signIn(user, access_token)
-				toast.success(`Welcome ${user.name}`)
-				if (!user.onboarded) {
-					router.push("/dashboard/onboarding")
-				} else {
-					router.push("/dashboard")
-				}
+				await axios
+					.get<HttpResponse<UserProps>>(
+						`${endpoints().auth.google_signin}?access_token=${response.access_token}`
+					)
+					.then(({ data }) => {
+						const { access_token } = data.data
+						signIn(data.data, access_token)
+						toast.success(`Welcome ${data.data.first_name}`)
+						router.push("/dashboard")
+					})
+					.catch((error) => {
+						let message = ""
+						if (error instanceof Error) {
+							message = error.message
+						} else {
+							message = error.response.data.message
+						}
+						toast.error(message || "An error occurred")
+					})
 			} catch (error) {
 				const { response } = error as unknown as HttpError
 				const { message } = response.data

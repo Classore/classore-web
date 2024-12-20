@@ -1,9 +1,9 @@
-import React from 'react'
+import React from "react"
 
 export const QuizComponent = () => {
-  return (
-    <div className="">
-      <div className=""></div>
-    </div>
-  )
+	return (
+		<div className="">
+			<div className=""></div>
+		</div>
+	)
 }
