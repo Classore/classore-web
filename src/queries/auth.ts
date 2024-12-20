@@ -46,6 +46,12 @@ const SignInMutation = async (payload: SignInDto) => {
 		.then((res) => res.data)
 }
 
+const GoogleSignInQuery = async (access_token: string) => {
+	return axios
+		.post<HttpResponse<UserProps>>(endpoints().auth.google_signin, { access_token })
+		.then((res) => res.data)
+}
+
 interface SignupProps {
 	user_details: UserProps
 }
@@ -92,6 +98,7 @@ const GetWaitlistQuery = async (params: PaginationProps) => {
 export {
 	ForgotPasswordMutation,
 	GetWaitlistQuery,
+	GoogleSignInQuery,
 	ResendVerificationCodeMutation,
 	ResetPasswordMutation,
 	SignInMutation,

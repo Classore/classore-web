@@ -1,10 +1,12 @@
 import { yupResolver } from "@hookform/resolvers/yup"
+import { useGoogleLogin } from "@react-oauth/google"
 import { useMutation } from "@tanstack/react-query"
 import { useForm } from "react-hook-form"
 import { useRouter } from "next/router"
-import Link from "next/link"
 import { toast } from "sonner"
+import Link from "next/link"
 import * as yup from "yup"
+import axios from "axios"
 
 import { AuthGraphic, GoogleIcon } from "@/assets/icons"
 import { AuthLayout } from "@/components/layouts/auth"
@@ -13,6 +15,8 @@ import { Button } from "@/components/ui/button"
 import { useUserStore } from "@/store/z-store"
 import { Input } from "@/components/ui/input"
 import { SignInMutation } from "@/queries"
+import type { HttpError } from "@/types"
+import { endpoints } from "@/config"
 
 // const appId = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID
 
@@ -31,6 +35,32 @@ const Page = () => {
 			password: "",
 		},
 		resolver: yupResolver(loginSchema),
+	})
+
+	const login = useGoogleLogin({
+		scope: "email profile",
+		onSuccess: async (response) => {
+			try {
+				const { data } = await axios.get(
+					`${endpoints().auth.google_signin}?access_token=${response.access_token}`
+				)
+				const { user, access_token } = data
+				signIn(user, access_token)
+				toast.success(`Welcome ${user.name}`)
+				if (!user.onboarded) {
+					router.push("/dashboard/onboarding")
+				} else {
+					router.push("/dashboard")
+				}
+			} catch (error) {
+				const { response } = error as unknown as HttpError
+				const { message } = response.data
+				toast.error(message ?? "An error occurred")
+			}
+		},
+		onError: (error) => {
+			toast.error(error.error_description)
+		},
 	})
 
 	// No need for "onError" and "onSuccess" callbacks here since we already handle that globally.
@@ -57,7 +87,6 @@ const Page = () => {
 						<AuthGraphic />
 						<h2 className="font-body text-2xl font-bold text-neutral-900">Welcome Back</h2>
 					</header>
-
 					<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 font-body font-normal">
 						<Input
 							type="email"
@@ -76,7 +105,6 @@ const Page = () => {
 								control={control}
 								name="password"
 							/>
-
 							<div className="flex items-center justify-between gap-1 text-sm">
 								<label className="col-span-full flex items-center gap-3 font-normal">
 									<input
@@ -92,12 +120,10 @@ const Page = () => {
 								</Link>
 							</div>
 						</div>
-
 						<div className="mt-2 flex flex-col gap-2">
 							<Button type="submit" disabled={isPending}>
 								{isPending ? <Spinner /> : "Sign In"}
 							</Button>
-
 							<p className="text-center text-neutral-500">
 								New user?{" "}
 								<Link href="/signup?step=1" className="font-medium text-secondary-300 hover:underline">
@@ -106,12 +132,11 @@ const Page = () => {
 							</p>
 						</div>
 					</form>
-
 					<div className="flex flex-col gap-4">
 						<p className="relative text-center text-sm before:absolute before:left-0 before:top-1/2 before:h-[1px] before:w-5/12 before:-translate-y-1/2 before:bg-[linear-gradient(90deg,_#FFFFFF_0%,_#D0D5DD_100%)] after:absolute after:right-0 after:top-1/2 after:h-[1px] after:w-5/12 after:-translate-y-1/2 after:bg-[linear-gradient(90deg,_#D0D5DD_0%,_#ffffff_100%)]">
 							Or
 						</p>
-						<Button type="button" variant="ghost" className="font-normal">
+						<Button type="button" variant="ghost" className="font-normal" onClick={() => login()}>
 							<GoogleIcon />
 							Continue with Google
 						</Button>

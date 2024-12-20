@@ -7,7 +7,6 @@ import {
 	RiFlashlightLine,
 	RiFullscreenExitLine,
 	RiFullscreenLine,
-	RiUserAddLine,
 } from "@remixicon/react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -25,7 +24,7 @@ import { Select, SelectItem } from "@/components/ui/select"
 
 import { leaderboard, timeChart } from "@/mock"
 
-const filters = ["all", "quiz", "referrals", "streak"] as const
+const filters = ["all", "quiz", "streak"] as const
 type Filters = (typeof filters)[number]
 
 const timeFilters = [
@@ -90,12 +89,8 @@ const Page = () => {
 		}))
 	}, [])
 
-	const filtered = React.useMemo(() => {
-		return overall.sort((a, b) => b[filter] - a[filter])
-	}, [filter, overall])
-
 	const handleLoadMore = () => {
-		setVisible((prev) => Math.min(prev + 10, filtered.length))
+		setVisible((prev) => Math.min(prev + 10, overall.length))
 	}
 
 	const background = (index: number) => {
@@ -109,11 +104,6 @@ const Page = () => {
 		{
 			icon: <Trophy01 />,
 			label: "Ranking",
-			value: "N/A",
-		},
-		{
-			icon: <RiUserAddLine />,
-			label: "Referrals",
 			value: "N/A",
 		},
 		{
@@ -182,7 +172,7 @@ const Page = () => {
 						</div>
 						<div className="flex w-full items-start gap-6">
 							<div className="flex-1 rounded-lg border">
-								{filtered.slice(0, visible).map((user, index) => (
+								{overall.slice(0, visible).map((user, index) => (
 									<div key={index} className="flex w-full items-center gap-4 border-b">
 										<div
 											className={`grid w-full gap-4 rounded-md px-3 py-4 transition-all ${background(index)} ${screen === "maximize" ? "grid-cols-5" : "grid-cols-3"}`}>
@@ -194,12 +184,6 @@ const Page = () => {
 														<p className="text-sm font-bold">{user.userId}</p>
 														<p className="text-xs text-neutral-400">Lagos</p>
 													</div>
-												</div>
-											</div>
-											<div className={`w-full items-center ${screen === "minimize" ? "hidden" : "flex"}`}>
-												<div className="flex w-fit items-center gap-1 rounded-lg border-2 bg-white px-3 py-[6px] text-sm text-neutral-500">
-													<RiUserAddLine size={16} />
-													{user.referrals} Referrals
 												</div>
 											</div>
 											<div className={`w-full items-center ${screen === "minimize" ? "hidden" : "flex"}`}>
@@ -219,7 +203,7 @@ const Page = () => {
 								))}
 								<div className="flex h-[72px] w-full items-center justify-center">
 									<button onClick={handleLoadMore} className="flex items-center gap-4 text-primary-500">
-										{visible < filtered.length ? "View more" : "No more to load"}
+										{visible < overall.length ? "View more" : "No more to load"}
 										<RiArrowDropDownLine />
 									</button>
 								</div>
