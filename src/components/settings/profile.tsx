@@ -4,6 +4,7 @@ import React from "react"
 import { Avatar, AvatarImage } from "../ui/avatar"
 import { useUserStore } from "@/store/z-store"
 import { useForm } from "react-hook-form"
+import { Textarea } from "../ui/textarea"
 import { useFileHandler } from "@/hooks"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
@@ -73,10 +74,21 @@ const Profile = () => {
 				</div>
 			</div>
 			<div className="grid w-full grid-cols-2 gap-2 border-b py-5">
-				<Input type="text" name="first_name" label="First Name" control={control} />
-				<Input type="text" name="first_name" label="Last Name" control={control} />
+				<Input
+					type="text"
+					name="first_name"
+					label="First Name"
+					className="capitalize"
+					control={control}
+				/>
+				<Input
+					type="text"
+					name="last_name"
+					label="Last Name"
+					className="capitalize"
+					control={control}
+				/>
 			</div>
-
 			<div className="w-full border-b py-5">
 				<Input type="email" name="email" label="Email address" control={control} />
 			</div>
@@ -84,11 +96,7 @@ const Profile = () => {
 				<Input type="date" name="date_of_birth" label="Date of Birth" control={control} />
 			</div>
 			<div className="w-full border-b py-5">
-				<div className="space-y-2">
-					<label htmlFor="bio" className="text-sm text-neutral-400">
-						Describe Yourself
-					</label>
-				</div>
+				<Textarea control={control} name="bio" label="Decribe Yourself" />
 			</div>
 			<div className="flex w-full items-center justify-between pt-10">
 				<Button
