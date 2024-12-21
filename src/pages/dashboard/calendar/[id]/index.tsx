@@ -28,8 +28,11 @@ const Page = () => {
 	const scrollContainerRef = React.useRef<HTMLDivElement>(null)
 
 	const current = React.useMemo(() => {
+		if (!id || typeof id !== "string") return new Date()
 		const date = new Date()
-		date.setDate(Number(id))
+		const dayNum = parseInt(id)
+		if (isNaN(dayNum)) return new Date()
+		date.setDate(dayNum)
 		return date
 	}, [id])
 
