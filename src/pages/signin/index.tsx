@@ -1,5 +1,5 @@
+import { type CredentialResponse, GoogleLogin } from "@react-oauth/google"
 import { yupResolver } from "@hookform/resolvers/yup"
-import { useGoogleLogin } from "@react-oauth/google"
 import { useMutation } from "@tanstack/react-query"
 import { useForm } from "react-hook-form"
 import { useRouter } from "next/router"
@@ -8,17 +8,15 @@ import Link from "next/link"
 import * as yup from "yup"
 
 import type { HttpError, HttpResponse, UserProps } from "@/types"
-import { AuthGraphic, GoogleIcon } from "@/assets/icons"
 import { AuthLayout } from "@/components/layouts/auth"
 import { Seo, Spinner } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { useUserStore } from "@/store/z-store"
 import { Input } from "@/components/ui/input"
+import { AuthGraphic } from "@/assets/icons"
 import { SignInMutation } from "@/queries"
 import { axios, capitalize } from "@/lib"
 import { endpoints } from "@/config"
-
-// const appId = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID
 
 const loginSchema = yup.object().shape({
 	email: yup.string().required("Please enter your email address").email("Invalid email address"),
@@ -37,27 +35,29 @@ const Page = () => {
 		resolver: yupResolver(loginSchema),
 	})
 
-	const login = useGoogleLogin({
-		scope: "email profile",
-		onSuccess: async (response) => {
-			try {
-				const { data } = await axios.get<HttpResponse<UserProps>>(
-					`${endpoints().auth.google_signin}?access_token=${response.access_token}`
-				)
-				const { access_token } = data.data
-				signIn(data.data, access_token)
-				toast.success(`Welcome ${capitalize(data.data.first_name)}`)
-				router.push("/dashboard")
-			} catch (error) {
-				const { response } = error as unknown as HttpError
-				const { message } = response.data
-				toast.error(message ?? "An error occurred")
-			}
-		},
-		onError: (error) => {
-			toast.error(error.error_description)
-		},
-	})
+	const onSuccess = async ({ credential }: CredentialResponse) => {
+		try {
+			const { data } = await axios.get<HttpResponse<UserProps>>(
+				`${endpoints().auth.google_signin}?access_token=${credential}`
+			)
+			console.log(data)
+			const { access_token } = data.data
+			signIn(data.data, access_token)
+			toast.success(`Welcome ${capitalize(data.data.first_name)}`)
+			router.push("/dashboard")
+		} catch (error: unknown) {
+			const {
+				response: {
+					data: { message },
+				},
+			} = error as HttpError
+			toast.error(message ?? "An error occurred")
+		}
+	}
+
+	const onError = () => {
+		console.error("An error occurred")
+	}
 
 	// No need for "onError" and "onSuccess" callbacks here since we already handle that globally.
 	const { isPending, mutate } = useMutation({
@@ -132,10 +132,14 @@ const Page = () => {
 						<p className="relative text-center text-sm before:absolute before:left-0 before:top-1/2 before:h-[1px] before:w-5/12 before:-translate-y-1/2 before:bg-[linear-gradient(90deg,_#FFFFFF_0%,_#D0D5DD_100%)] after:absolute after:right-0 after:top-1/2 after:h-[1px] after:w-5/12 after:-translate-y-1/2 after:bg-[linear-gradient(90deg,_#D0D5DD_0%,_#ffffff_100%)]">
 							Or
 						</p>
-						<Button type="button" variant="ghost" className="font-normal" onClick={() => login()}>
-							<GoogleIcon />
-							Continue with Google
-						</Button>
+						<GoogleLogin
+							onSuccess={onSuccess}
+							onError={onError}
+							context="signin"
+							text="continue_with"
+							logo_alignment="center"
+							size="large"
+						/>
 					</div>
 				</div>
 			</AuthLayout>
