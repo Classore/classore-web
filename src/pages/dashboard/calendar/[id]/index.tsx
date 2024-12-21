@@ -27,8 +27,14 @@ const Page = () => {
 	const { id } = router.query
 	const scrollContainerRef = React.useRef<HTMLDivElement>(null)
 
-	const current = new Date()
-	current.setDate(Number(id))
+	const current = React.useMemo(() => {
+		if (!id || typeof id !== "string") return new Date()
+		const date = new Date()
+		const dayNum = parseInt(id)
+		if (isNaN(dayNum)) return new Date()
+		date.setDate(dayNum)
+		return date
+	}, [id])
 
 	React.useEffect(() => {
 		// Scroll to current time on load
@@ -104,7 +110,7 @@ const Page = () => {
 		}
 
 		return days
-	}, [getEventStatus, id, processedEvents])
+	}, [current, getEventStatus, id, processedEvents])
 
 	const dayItems = calendarDays.find((dayItem) => dayItem.day === Number(id))
 

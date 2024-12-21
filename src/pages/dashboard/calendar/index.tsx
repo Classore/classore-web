@@ -7,7 +7,6 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/h
 import { DashboardLayout } from "@/components/layouts"
 import { AvatarGroup, Seo } from "@/components/shared"
 import { Button } from "@/components/ui/button"
-// import { DayView } from "@/components/calendar"
 import type { EventProps } from "@/types"
 
 import { events } from "@/mock"
