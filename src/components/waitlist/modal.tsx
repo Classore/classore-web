@@ -9,6 +9,7 @@ import type { HttpError } from "@/types"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import { Spinner } from "../shared"
+import { event } from "@/lib"
 
 const roles = ["student", "parent"] as const
 interface Props {
@@ -28,6 +29,7 @@ export const Modal = ({ onClose }: Props) => {
 		mutationKey: ["waitlist"],
 		onSuccess: (data) => {
 			toast.success(data.message)
+			event("CompleteRegistration", { content_name: "Joined waitlist" })
 			onClose()
 		},
 		onError: (error: HttpError) => {
@@ -36,13 +38,15 @@ export const Modal = ({ onClose }: Props) => {
 		},
 	})
 
-	const { control, getValues, handleSubmit } = useForm<WaitlistDto>({
+	const { control, handleSubmit, setValue, watch } = useForm<WaitlistDto>({
 		defaultValues,
 	})
 
 	const onSubmit = (values: WaitlistDto) => {
 		mutateAsync(values)
 	}
+
+	const selectedRole = watch("waitlist_type")
 
 	return (
 		<div className="flex w-full flex-col gap-8 rounded-3xl border bg-gradient-to-b from-[#fef0e8] to-transparent p-3">
@@ -61,13 +65,13 @@ export const Modal = ({ onClose }: Props) => {
 							<button
 								key={role}
 								type="button"
-								onClick={() => {}}
-								className={`flex w-full items-center justify-between rounded-full border px-4 py-5 capitalize transition-colors ${role === getValues("waitlist_type").toLowerCase() ? "border-primary" : "border-neutral-300"}`}>
+								onClick={() => setValue("waitlist_type", role)}
+								className={`flex w-full items-center justify-between rounded-full border px-4 py-5 capitalize transition-colors ${role === selectedRole.toLowerCase() ? "border-primary-400" : "border-neutral-300"}`}>
 								{role}
 								<TickCircle
 									size={20}
 									variant="Linear"
-									className={`transition-colors ${role === getValues("waitlist_type").toLowerCase() ? "fill-primary text-white" : "text-neutral-500 opacity-50"}`}
+									className={`transition-colors ${role === selectedRole.toLowerCase() ? "fill-primary-400 text-white" : "text-neutral-500 opacity-50"}`}
 								/>
 							</button>
 						))}

@@ -110,7 +110,7 @@ const Page = () => {
 		}
 
 		return days
-	}, [current, getEventStatus, id, processedEvents])
+	}, [current, getEventStatus, processedEvents])
 
 	const dayItems = calendarDays.find((dayItem) => dayItem.day === Number(id))
 

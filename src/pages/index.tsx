@@ -5,6 +5,7 @@ import { arrow, learn } from "@/assets/illustrations"
 import { Appbar, Seo } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { Modal } from "@/components/waitlist"
+import { event } from "@/lib"
 import {
 	Dialog,
 	DialogContent,
@@ -56,7 +57,13 @@ const Page = () => {
 								</p>
 								<Dialog open={open} onOpenChange={setOpen}>
 									<DialogTrigger asChild>
-										<Button className="w-fit" size="lg" onClick={() => setOpen(true)}>
+										<Button
+											className="w-fit"
+											size="lg"
+											onClick={() => {
+												setOpen(true)
+												event("Lead", { content_name: "Open waitlist pop-up" })
+											}}>
 											Click here to join waitlist
 										</Button>
 									</DialogTrigger>
