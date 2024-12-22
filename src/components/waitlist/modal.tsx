@@ -9,6 +9,7 @@ import type { HttpError } from "@/types"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import { Spinner } from "../shared"
+import { event } from "@/lib"
 
 const roles = ["student", "parent"] as const
 interface Props {
@@ -28,6 +29,7 @@ export const Modal = ({ onClose }: Props) => {
 		mutationKey: ["waitlist"],
 		onSuccess: (data) => {
 			toast.success(data.message)
+			event("CompleteRegistration", { content_name: "Joined waitlist" })
 			onClose()
 		},
 		onError: (error: HttpError) => {

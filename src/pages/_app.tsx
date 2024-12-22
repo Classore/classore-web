@@ -6,16 +6,19 @@ import posthog from "posthog-js"
 import { PostHogProvider } from "posthog-js/react"
 import React from "react"
 
+import { QueryProvider, SSRProvider } from "@/providers"
 import { FacebookPixel } from "@/components/shared"
 import { Toaster } from "@/components/ui/sonner"
-import { analytics } from "@/lib"
-import { QueryProvider, SSRProvider } from "@/providers"
+import { analytics, pageview } from "@/lib"
 
 export default function App({ Component, pageProps }: AppProps) {
 	const router = useRouter()
 
 	React.useEffect(() => {
-		const handleRouteChange = (url: string) => analytics.pageView(url)
+		const handleRouteChange = (url: string) => {
+			analytics.pageView(url)
+			pageview()
+		}
 		router.events.on("routeChangeComplete", handleRouteChange)
 		return () => router.events.off("routeChangeComplete", handleRouteChange)
 	}, [router.events])
