@@ -1,3 +1,5 @@
+import type { ReviewProps } from "@/types"
+
 export const capitalize = (value: string) => {
 	return value.charAt(0).toUpperCase() + value.slice(1)
 }
@@ -155,4 +157,19 @@ export function generateUniqueNames(count: number): string[] {
 	}
 
 	return Array.from(uniqueNames)
+}
+
+export const getAverageRating = (reviews: ReviewProps[]) => {
+	const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0)
+	const averageRating = totalRating / reviews.length
+	if (isNaN(averageRating)) {
+		return "0.0"
+	}
+	return averageRating.toFixed(1)
+}
+
+export const paginate = <T>(data: T[], page: number, limit: number): T[] => {
+	const start = (page - 1) * limit
+	const end = start + limit
+	return data.slice(start, end)
 }

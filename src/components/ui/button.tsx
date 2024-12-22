@@ -21,6 +21,7 @@ const buttonVariants = cva(
 				dark: "bg-neutral-950 text-neutral-50 hover:bg-neutral-900",
 				text: "bg-transparent text-secondary-400 hover:bg-neutral-50",
 				cmd: "bg-[#f6f8fa] text-black hover:bg-[#f6f8fa]/75",
+				special: "bg-primary-100 text-primary-400 hover:bg-primary-100",
 			},
 			size: {
 				default: "px-4 py-2.5",
@@ -28,6 +29,7 @@ const buttonVariants = cva(
 				lg: "h-[60px] rounded-full px-6",
 				icon: "h-10 w-10",
 				cmd: "px-3 py-2 text-sm w-fit",
+				special: "px-3 py-1 text-sm font-normal rounded w-fit",
 			},
 		},
 		defaultVariants: {

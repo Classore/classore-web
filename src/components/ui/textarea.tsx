@@ -1,21 +1,52 @@
 import * as React from "react"
 
+import { useController, type Control, type FieldValues, type Path } from "react-hook-form"
+import { ErrorMessage } from "../shared"
 import { cn } from "@/lib/utils"
 
-const Textarea = React.forwardRef<HTMLTextAreaElement, React.ComponentProps<"textarea">>(
-	({ className, ...props }, ref) => {
-		return (
-			<textarea
-				className={cn(
-					"flex min-h-[80px] w-full rounded-md border border-neutral-200 bg-white px-3 py-2 text-base ring-offset-white placeholder:text-neutral-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-800 dark:bg-neutral-950 dark:ring-offset-neutral-950 dark:placeholder:text-neutral-400 dark:focus-visible:ring-neutral-300 md:text-sm",
-					className
-				)}
-				ref={ref}
-				{...props}
-			/>
-		)
-	}
-)
-Textarea.displayName = "Textarea"
+interface TextareaProps<T extends FieldValues>
+	extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+	label: string
+	labelClassName?: string
+	control: Control<T>
+	name: Path<T>
+}
+
+const Textarea = <T extends FieldValues>({
+	className,
+	label,
+	labelClassName,
+	control,
+	name,
+	...props
+}: TextareaProps<T>) => {
+	const {
+		fieldState: { error },
+		field,
+	} = useController({
+		name,
+		control,
+	})
+	return (
+		<div className={cn("flex flex-col gap-1.5 font-body", className)}>
+			<label id={name} className={cn("text-sm text-neutral-400", labelClassName)}>
+				{label}
+			</label>
+			<div className="relative">
+				<textarea
+					aria-invalid={error ? "true" : "false"}
+					data-invalid={error ? "true" : "false"}
+					className={cn(
+						"text flex min-h-[150px] w-full rounded-md border border-neutral-200 bg-transparent px-4 py-3 transition-all file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-neutral-950 placeholder:text-neutral-300 focus:border-primary-300 focus:shadow-primary focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 data-[invalid=true]:border-red-600 data-[invalid=true]:bg-[rgba(227,54,41,0.11)]",
+						className
+					)}
+					{...field}
+					{...props}></textarea>
+			</div>
+
+			{error ? <ErrorMessage message={error.message} /> : null}
+		</div>
+	)
+}
 
 export { Textarea }

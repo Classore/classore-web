@@ -15,8 +15,9 @@ import {
 	RiThumbUpLine,
 } from "@remixicon/react"
 
-import { ChapterList, QuizHistory, Resources, Transcript } from "@/components/home"
 import { AvatarGroup, Seo, Progress, TabPanel, VideoPlayer } from "@/components/shared"
+import { ChapterList, QuizHistory, Resources, Transcript } from "@/components/home"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import blockchain from "@/assets/illustrations/blockchain.svg"
 import { DashboardLayout } from "@/components/layouts"
 import trophy from "@/assets/illustrations/trophy.svg"
@@ -275,7 +276,7 @@ const Page = () => {
 							</div>
 							<div className="flex w-full items-center justify-between gap-3 rounded-lg border p-4">
 								<div className="flex max-w-[75%] flex-col gap-3">
-									<p className="text-sm font-bold capitalize">Join {course.title} Community Forum</p>
+									<p className="text-sm capitalize">Join {course.title} Community Forum</p>
 									<AvatarGroup images={images} />
 								</div>
 								<Dialog open={open} onOpenChange={setOpen}>
@@ -310,7 +311,24 @@ const Page = () => {
 								</Dialog>
 							</div>
 							<div className="flex w-full flex-col gap-3 rounded-lg border p-4">
-								<p className="text-sm font-bold">Tags</p>
+								<p className="text-sm">Course Instructor</p>
+								<div className="flex w-full items-center justify-between">
+									<div className="flex items-center gap-1">
+										<Avatar className="size-8 rounded-lg">
+											<AvatarImage src="" alt="" className="rounded-lg object-cover" />
+											<AvatarFallback className="rounded-lg bg-primary-100 text-primary-400">
+												JA
+											</AvatarFallback>
+										</Avatar>
+										<p className="text-sm font-semibold">John Arowoka</p>
+									</div>
+									<Button size="special" variant="special">
+										Send Message
+									</Button>
+								</div>
+							</div>
+							<div className="flex w-full flex-col gap-3 rounded-lg border p-4">
+								<p className="text-sm">Tags</p>
 							</div>
 						</div>
 					</div>

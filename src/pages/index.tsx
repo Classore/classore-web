@@ -1,13 +1,24 @@
 import Image from "next/image"
+import React from "react"
 
 import { arrow, learn } from "@/assets/illustrations"
 import { Appbar, Seo } from "@/components/shared"
 import { Button } from "@/components/ui/button"
-import Link from "next/link"
+import { Modal } from "@/components/waitlist"
+import { event } from "@/lib"
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogTitle,
+	DialogTrigger,
+} from "@/components/ui/dialog"
 
 const colors = ["#42f4b5", "#38e365", "#b2dd4d", "#d34609"]
 
 const Page = () => {
+	const [open, setOpen] = React.useState(false)
+
 	return (
 		<>
 			<Seo title="Join the Classore waitlist" />
@@ -44,9 +55,24 @@ const Page = () => {
 								<p className="w-full text-neutral-500 lg:w-[381px] lg:text-xl">
 									Learning made easy and fun - don&apos;t miss early access to a new way of learning
 								</p>
-								<Button className="w-fit" asChild>
-									<Link href="/signup?step=1">Join the waitlist</Link>
-								</Button>
+								<Dialog open={open} onOpenChange={setOpen}>
+									<DialogTrigger asChild>
+										<Button
+											className="w-fit"
+											size="lg"
+											onClick={() => {
+												setOpen(true)
+												event("Lead", { content_name: "Open waitlist pop-up" })
+											}}>
+											Click here to join waitlist
+										</Button>
+									</DialogTrigger>
+									<DialogContent className="w-[90%] rounded-xl p-4 lg:w-[500px]">
+										<DialogTitle hidden>Join the waitlist</DialogTitle>
+										<DialogDescription hidden>Join the waitlist</DialogDescription>
+										<Modal onClose={() => setOpen(false)} />
+									</DialogContent>
+								</Dialog>
 							</div>
 						</div>
 						<div className="grid h-full w-full place-items-center">
