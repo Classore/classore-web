@@ -13,7 +13,7 @@ type FacebookPixelOptions = {
 	content_category?: string
 	value?: number
 	currency?: string
-	[key: string]: any
+	[key: string]: string | number | boolean | Object | undefined | null
 }
 
 declare global {
