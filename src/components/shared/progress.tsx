@@ -44,6 +44,7 @@ const Progress = ({
 						strokeLinecap="butt"
 					/>
 				</svg>
+
 				<div
 					style={{ width: `${size - thickness}px` }}
 					className="absolute left-1/2 top-1/2 grid aspect-square -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white font-bold shadow-2xl">
