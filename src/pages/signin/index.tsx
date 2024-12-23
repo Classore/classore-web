@@ -59,7 +59,6 @@ const Page = () => {
 		console.error("An error occurred")
 	}
 
-	// No need for "onError" and "onSuccess" callbacks here since we already handle that globally.
 	const { isPending, mutate } = useMutation({
 		mutationKey: ["login"],
 		mutationFn: (values: LoginFormValues) => SignInMutation(values),

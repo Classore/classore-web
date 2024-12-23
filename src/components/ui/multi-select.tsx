@@ -29,6 +29,7 @@ type MultiSelectProps<T extends FieldValues> = {
 	control: Control<T>
 	placeholder?: string
 	className?: string
+	info?: string
 }
 
 export const MultiSelect = <T extends FieldValues>({
@@ -38,6 +39,7 @@ export const MultiSelect = <T extends FieldValues>({
 	name,
 	control,
 	className,
+	info,
 }: MultiSelectProps<T>) => {
 	const inputRef = React.useRef<HTMLInputElement>(null)
 	const [openCombobox, setOpenCombobox] = React.useState(false)
@@ -69,16 +71,11 @@ export const MultiSelect = <T extends FieldValues>({
 		setOpenCombobox(value)
 	}
 
-	// FIXME: This causes re-renders. Is there a better way?
-	React.useEffect(() => {
-		onChange(selectedValues.map(({ value }) => value))
-	}, [selectedValues, onChange])
-
 	return (
 		<label className={cn("flex flex-col gap-1.5 font-body", className)}>
 			<div className="flex items-center justify-between gap-2 text-neutral-400">
 				<p className="text-sm">{label}</p>
-				<p className="text-xs">{selectedValues.length} selected</p>
+				<p className="text-xs">{info ? info : `${selectedValues.length} selected`}</p>
 			</div>
 
 			<Popover open={openCombobox} onOpenChange={onComboboxOpenChange}>
@@ -106,9 +103,9 @@ export const MultiSelect = <T extends FieldValues>({
 
 						<CommandList>
 							<CommandEmpty>No value(s) found...</CommandEmpty>
-							<CommandGroup>
+							<CommandGroup className="pb-16">
 								{options.map((option) => {
-									const isActive = selectedValues.includes(option)
+									const isSelected = selectedValues.includes(option)
 
 									return (
 										<CommandItem
@@ -118,7 +115,7 @@ export const MultiSelect = <T extends FieldValues>({
 											<span className="flex-1 capitalize">{option.label}</span>
 
 											<Check
-												className={`transition-opacity ${isActive ? "text-primary-300" : "text-transparent"}`}
+												className={`transition-opacity ${isSelected ? "text-primary-300" : "text-transparent"}`}
 											/>
 										</CommandItem>
 									)
@@ -126,8 +123,9 @@ export const MultiSelect = <T extends FieldValues>({
 							</CommandGroup>
 
 							<PopoverClose asChild>
-								<div className="sticky bg-white px-4 py-3">
+								<div className="fixed bottom-0 left-0 w-full bg-white px-4 py-3">
 									<Button
+										onClick={() => onChange(selectedValues.map((l) => l.value))}
 										className="bg-primary-50 text-sm text-primary-300 hover:bg-primary-100"
 										type="button"
 										variant="ghost">

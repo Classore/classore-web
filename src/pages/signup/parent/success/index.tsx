@@ -26,7 +26,7 @@ const Page = () => {
 						<h2 className="font-body text-2xl font-bold -tracking-wide text-neutral-900">Success 🎉</h2>
 
 						<p className="font-heading text-sm text-neutral-500">
-							You have successfully opened a parent account. Monitor your ward’s progress with Classore
+							You have successfully opened a parent account. Monitor your ward’s progress with Classore.
 						</p>
 
 						<div className="flex flex-col gap-2">

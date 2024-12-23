@@ -74,20 +74,27 @@ const Page = () => {
 		},
 	})
 
-	const chosen_bundle = useWatch({
+	const form = useWatch({
 		control,
-		name: "chosen_bundle",
 	})
 
 	const { data: bundles } = useGetExamBundles()
 	const { data: exams } = useGetExams()
 	const { data: subjects } = useGetSubjects()
 
+	// filters
+	const examBundles = bundles?.filter(
+		(bundle) => bundle.examinationbundle_examination === form.exam_type
+	)
+	const bundleSubjects = subjects?.filter(
+		(subject) => subject.subject_examination_bundle === form.chosen_bundle
+	)
+
 	const bundle_amount =
-		bundles?.find((b) => b.examinationbundle_id === chosen_bundle)?.examinationbundle_amount ?? 0
+		bundles?.find((b) => b.examinationbundle_id === form.chosen_bundle)?.examinationbundle_amount ?? 0
 
 	const options =
-		subjects?.map((subject) => ({
+		bundleSubjects?.map((subject) => ({
 			label: subject.subject_name,
 			value: subject.subject_id,
 		})) ?? []
@@ -125,7 +132,7 @@ const Page = () => {
 							</Select>
 
 							<Select label="Select prep bundle" control={control} name="chosen_bundle">
-								{bundles?.map((bundle) => (
+								{examBundles?.map((bundle) => (
 									<SelectItem key={bundle.examinationbundle_id} value={bundle.examinationbundle_id}>
 										{bundle.examinationbundle_name} Exam Prep Bundle (
 										{formatCurrency(bundle.examinationbundle_amount)})

@@ -1,6 +1,7 @@
 import { endpoints } from "@/config"
 import { axios } from "@/lib"
 import type {
+	AddWardsProps,
 	HttpResponse,
 	PaginatedResponse,
 	PaginationProps,
@@ -85,6 +86,20 @@ const ResetPasswordMutation = async (payload: ResetPasswordDto) => {
 		.then((res) => res.data)
 }
 
+type AddWardsDto = Array<{
+	first_name: string
+	last_name: string
+	email: string
+	examination: string
+	examination_bundle: string
+	subjects: Array<string>
+}>
+const AddWardsMutation = async (payload: AddWardsDto) => {
+	return axios
+		.post<HttpResponse<AddWardsProps>>(endpoints().auth.add_wards, payload)
+		.then((res) => res.data)
+}
+
 const WaitlistMutation = async (payload: WaitlistDto) => {
 	return axios.post<HttpResponse<null>>(endpoints().waitlist.join, payload).then((res) => res.data)
 }
@@ -95,11 +110,8 @@ const GetWaitlistQuery = async (params: PaginationProps) => {
 		.then((res) => res.data)
 }
 
-const GoogleAuthMutation = async () => {
-	return axios.get<HttpResponse<null>>(endpoints().auth.google_auth).then((res) => res.data)
-}
-
 export {
+	AddWardsMutation,
 	ForgotPasswordMutation,
 	GetWaitlistQuery,
 	GoogleSignInQuery,
@@ -110,3 +122,4 @@ export {
 	VerifyEmailMutation,
 	WaitlistMutation,
 }
+

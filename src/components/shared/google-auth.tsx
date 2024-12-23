@@ -1,18 +1,17 @@
 import { GoogleIcon } from "@/assets/icons"
-import { GoogleAuthMutation } from "@/queries"
-import { useMutation } from "@tanstack/react-query"
 import { Button } from "../ui/button"
 import { Spinner } from "./spinner"
 
+const isPending = false
 export const GoogleAuth = () => {
-	const { isPending, mutate } = useMutation({
-		mutationKey: ["google-auth"],
-		mutationFn: GoogleAuthMutation,
-	})
+	// const { isPending, mutate } = useMutation({
+	// 	mutationKey: ["google-auth"],
+	// 	mutationFn: GoogleAuthMutation,
+	// })
 
 	return (
 		<Button
-			onClick={() => mutate()}
+			// onClick={() => mutate()}
 			type="button"
 			variant="ghost"
 			className="font-normal"

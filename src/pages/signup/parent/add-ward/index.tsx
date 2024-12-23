@@ -1,26 +1,29 @@
 import { UserDetailsGraphic } from "@/assets/icons"
 import { AuthLayout } from "@/components/layouts/auth"
-import { Seo } from "@/components/shared"
+import { Seo, Spinner } from "@/components/shared"
 import { SignupStepper } from "@/components/signup-stepper"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { MultiSelect } from "@/components/ui/multi-select"
 import { Select, SelectItem } from "@/components/ui/select"
 import { formatCurrency } from "@/lib"
+import { AddWardsMutation } from "@/queries"
 import { useGetExamBundles, useGetExams, useGetSubjects } from "@/queries/school"
 import { yupResolver } from "@hookform/resolvers/yup"
+import { useMutation } from "@tanstack/react-query"
 import { Lock02 } from "@untitled-ui/icons-react"
 import { Trash } from "iconsax-react"
 import { Plus } from "lucide-react"
-import { useFieldArray, useForm } from "react-hook-form"
+import * as React from "react"
+import { useFieldArray, useForm, useWatch } from "react-hook-form"
 import * as yup from "yup"
 
 const initialValue = {
 	first_name: "",
 	last_name: "",
 	email: "",
-	exam_type: "",
-	chosen_bundle: "",
+	examination: "",
+	examination_bundle: "",
 	subjects: [],
 }
 
@@ -32,8 +35,8 @@ const schema = yup.object().shape({
 				first_name: yup.string().required("Please enter your first name"),
 				last_name: yup.string().required("Please enter your last name"),
 				email: yup.string().required("Please enter your email address").email("Invalid email address"),
-				exam_type: yup.string().required("Please select an exam type"),
-				chosen_bundle: yup.string().required("Please select a prep bundle"),
+				examination: yup.string().required("Please select an exam type"),
+				examination_bundle: yup.string().required("Please select a prep bundle"),
 				subjects: yup
 					.array()
 					.of(yup.string().required("Please select an option"))
@@ -47,6 +50,7 @@ const schema = yup.object().shape({
 type FormValues = yup.InferType<typeof schema>
 
 const Page = () => {
+	const [open, setOpen] = React.useState(false)
 	const { control, handleSubmit } = useForm<FormValues>({
 		resolver: yupResolver(schema),
 		defaultValues: {
@@ -57,25 +61,65 @@ const Page = () => {
 	const { fields, append, remove } = useFieldArray({
 		control,
 		name: "wards",
+		shouldUnregister: true,
+	})
+
+	const form = useWatch({
+		control,
 	})
 
 	const { data: bundles } = useGetExamBundles()
 	const { data: exams } = useGetExams()
 	const { data: subjects } = useGetSubjects()
 
-	const options =
-		subjects?.map((subject) => ({
-			label: subject.subject_name,
-			value: subject.subject_id,
-		})) ?? []
+	// filters
+	const examBundles = (index: number) => {
+		return bundles?.filter(
+			(bundle) => bundle.examinationbundle_examination === form.wards?.at(index)?.examination
+		)
+	}
+	const bundleSubjects = (index: number) => {
+		return (
+			subjects
+				?.filter(
+					(subject) => subject.subject_examination_bundle === form.wards?.at(index)?.examination_bundle
+				)
+				.map((subject) => ({
+					label: subject.subject_name,
+					value: subject.subject_id,
+				})) ?? []
+		)
+	}
 
+	/*
+		- get all selected bundles ids from form.ward and their amount. add everything together
+	*/
+	const bundleAmount = React.useCallback(() => {
+		let amount = 0
+		form.wards?.forEach((ward) => {
+			const exam_bundle = bundles?.find(
+				(bundle) => bundle.examinationbundle_id === ward.examination_bundle
+			)
+			amount += exam_bundle?.examinationbundle_amount ?? 0
+		})
+		return amount
+	}, [bundles, form.wards])
+
+	const { isPending, mutate } = useMutation({
+		mutationKey: ["add-ward"],
+		mutationFn: (values: FormValues) => AddWardsMutation(values.wards),
+		onSuccess: (data) => {
+			setOpen(true)
+			window.open(data.data.payment_link_data.authorization_url, "_self")
+		},
+	})
 	const onSubmit = (data: FormValues) => {
-		console.log("data", data)
+		mutate(data)
 	}
 
 	return (
 		<>
-			<Seo title="Add Ward" />
+			<Seo title="Add Ward" noIndex />
 
 			<AuthLayout screen="signup">
 				<div className="flex max-w-[400px] flex-col gap-10 lg:gap-20">
@@ -139,7 +183,7 @@ const Page = () => {
 											label="What is He/She studying for"
 											wrapperClassName="col-span-full"
 											control={control}
-											name={`wards.${index}.exam_type`}>
+											name={`wards.${index}.examination`}>
 											{exams?.map((exam) => (
 												<SelectItem key={exam.examination_id} value={exam.examination_id}>
 													{exam.examination_name}
@@ -151,8 +195,8 @@ const Page = () => {
 											label="Select Prep Bundle"
 											control={control}
 											wrapperClassName="col-span-full"
-											name={`wards.${index}.chosen_bundle`}>
-											{bundles?.map((bundle) => (
+											name={`wards.${index}.examination_bundle`}>
+											{examBundles(index)?.map((bundle) => (
 												<SelectItem key={bundle.examinationbundle_id} value={bundle.examinationbundle_id}>
 													{bundle.examinationbundle_name} Exam Prep Bundle (
 													{formatCurrency(bundle.examinationbundle_amount)})
@@ -163,10 +207,11 @@ const Page = () => {
 										<MultiSelect
 											control={control}
 											name={`wards.${index}.subjects`}
-											label="Select subjects"
+											label="Select Subjects"
 											placeholder="Select subjects..."
 											className="col-span-full"
-											options={options}
+											options={bundleSubjects(index) ?? []}
+											info="0/5 subjects selected"
 										/>
 									</li>
 								))}
@@ -182,7 +227,9 @@ const Page = () => {
 								</button>
 
 								<div className="col-span-full flex flex-col gap-2">
-									<Button type="submit">Pay NGN 4,999</Button>
+									<Button type="submit" disabled={isPending}>
+										{isPending ? <Spinner /> : `Pay ${formatCurrency(Number(bundleAmount()) ?? 0)}`}
+									</Button>
 									<div className="flex items-center gap-1.5 self-center text-neutral-500">
 										<Lock02 width={18} />
 										<p className="text-center text-sm">Payment secured by Paystack</p>
@@ -193,6 +240,15 @@ const Page = () => {
 					</div>
 				</div>
 			</AuthLayout>
+
+			{open ? (
+				<div className="fixed left-0 top-0 z-50 flex h-screen w-screen items-center justify-center gap-2 bg-black/50">
+					<div className="grid max-w-xs place-items-center gap-4 rounded-md bg-white p-10 text-center text-sm text-neutral-600">
+						<Spinner variant="primary" size="md" />
+						<p className="leading-tight">Please wait while we redirect you to the payment page...</p>
+					</div>
+				</div>
+			) : null}
 		</>
 	)
 }
