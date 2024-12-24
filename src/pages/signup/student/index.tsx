@@ -1,17 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { AuthLayout } from "@/components/layouts/auth"
 import { ErrorMessage, Seo, Spinner } from "@/components/shared"
-import Cookies from "js-cookie"
 
 import { GoogleIcon, UserDetailsGraphic } from "@/assets/icons"
 import { SignupStepper } from "@/components/signup-stepper"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { passwordRules } from "@/config"
+import { setToken } from "@/lib/cookies"
 import { SignUpMutation } from "@/queries"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { useMutation } from "@tanstack/react-query"
-import { jwtDecode } from "jwt-decode"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { useForm } from "react-hook-form"
@@ -76,13 +75,9 @@ const Page = () => {
 
 			const { access_token, password, ...rest } = data.data.user_details
 
-			const decoded = jwtDecode(access_token)
+			setToken(access_token)
 			localStorage.setItem("CLASSORE_USER", JSON.stringify(rest))
-			Cookies.set("CLASSORE_TOKEN", access_token, {
-				expires: decoded?.exp ? new Date(decoded?.exp * 1000) : new Date(Date.now() + 7 * 24 * 60 * 60), // 7 days,
-				sameSite: "lax",
-				secure: process.env.NODE_ENV === "production",
-			})
+
 			router.push({
 				pathname: "/signup/student/verify-email",
 				query: {

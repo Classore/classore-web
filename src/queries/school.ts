@@ -123,8 +123,10 @@ export const useCreateStudyTimeline = () => {
 	return useMutation({
 		mutationKey: ["create-study-timeline"],
 		mutationFn: createStudyTimeline,
-		onSuccess: (data) => {
-			toast.success(data.message)
+		onSuccess: () => {
+			toast.success("Your study timeline has been created!", {
+				description: "You will be redirected to the payment page",
+			})
 		},
 	})
 }

@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { endpoints } from "@/config"
 import { axios, capitalize } from "@/lib"
+import { setToken } from "@/lib/cookies"
 import { SignInMutation } from "@/queries"
 import { useUserStore } from "@/store/z-store"
 import type { HttpError, HttpResponse, UserProps } from "@/types"
@@ -64,11 +65,44 @@ const Page = () => {
 		mutationFn: (values: LoginFormValues) => SignInMutation(values),
 		onSuccess: (data) => {
 			const { access_token } = data.data
+
+			setToken(access_token)
+			const isStudent = data.data.user_type === "STUDENT"
+
+			if (!data.data.is_verified) {
+				toast.success("Verify your email to complete registration", {
+					description: "Please check your email to verify your account",
+				})
+
+				router.push({
+					pathname: isStudent ? "/signup/student/verify-email" : "/signup/parent/verify-email",
+					query: {
+						email: encodeURIComponent(data.data.email.trim()),
+						step: "3",
+					},
+				})
+				return
+			}
+
+			if (!data.data.chosen_study_plan && isStudent) {
+				toast.success("Choose your study plan", {
+					description: "Please choose your study plan to complete registration",
+				})
+				router.push({
+					pathname: "/signup/student/studying-for",
+					query: {
+						step: "4",
+					},
+				})
+				return
+			}
+
 			signIn(data.data, access_token)
 			toast.success("Login successful!")
 			router.replace("/dashboard")
 		},
 	})
+
 	const onSubmit = (values: LoginFormValues) => {
 		mutate(values)
 	}
@@ -82,6 +116,7 @@ const Page = () => {
 						<AuthGraphic />
 						<h2 className="font-body text-2xl font-bold text-neutral-900">Welcome Back</h2>
 					</header>
+
 					<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 font-body font-normal">
 						<Input
 							type="email"
@@ -91,15 +126,17 @@ const Page = () => {
 							control={control}
 							name="email"
 						/>
+
 						<div className="flex flex-col gap-4">
 							<Input
-								type="email"
-								label="Email Address"
-								placeholder="name@email.com"
+								type="password"
+								label="Password"
+								placeholder="***************"
 								className="col-span-full"
 								control={control}
-								name="email"
+								name="password"
 							/>
+
 							<div className="flex items-center justify-between gap-1 text-sm">
 								<label className="col-span-full flex items-center gap-3 font-normal">
 									<input
