@@ -1,8 +1,10 @@
+import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
 import { TickCircle } from "iconsax-react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import React from "react"
+import { z } from "zod"
 
 import { type WaitlistDto, WaitlistMutation } from "@/queries"
 import type { HttpError } from "@/types"
@@ -33,17 +35,44 @@ export const Modal = ({ onClose }: Props) => {
 			onClose()
 		},
 		onError: (error: HttpError) => {
+			let msg = ""
 			const { message } = error.response.data
-			toast.error(message)
+			if (Array.isArray(message)) {
+				msg = message[0]
+			} else {
+				msg = message
+			}
+			toast.error(msg ?? "Soemthing went wrong!")
 		},
 	})
 
-	const { control, handleSubmit, setValue, watch } = useForm<WaitlistDto>({
+	const {
+		control,
+		formState: { errors },
+		handleSubmit,
+		setValue,
+		watch,
+	} = useForm<WaitlistDto>({
 		defaultValues,
+		mode: "onBlur",
+		criteriaMode: "all",
+		resolver: zodResolver(
+			z.object({
+				email: z.string().email().nonempty("Email is required"),
+				first_name: z.string().nonempty("First name is required"),
+				last_name: z.string().nonempty("Last name is required"),
+				phone_number: z.string().nonempty("Phone number is required"),
+				waitlist_type: z.string().nonempty("Role is required!"),
+			})
+		),
 	})
 
 	const onSubmit = (values: WaitlistDto) => {
-		mutateAsync(values)
+		const payload = {
+			...values,
+			waitlist_type: values.waitlist_type.toUpperCase(),
+		}
+		mutateAsync(payload)
 	}
 
 	const selectedRole = watch("waitlist_type")
@@ -76,6 +105,9 @@ export const Modal = ({ onClose }: Props) => {
 							</button>
 						))}
 					</div>
+					{errors.waitlist_type && (
+						<p className="text-sm text-red-500">{errors.waitlist_type.message}</p>
+					)}
 				</div>
 				<div className="grid w-full grid-cols-2 gap-2">
 					<div className="flex w-full flex-col gap-3">
