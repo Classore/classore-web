@@ -32,7 +32,7 @@ export type HttpError = {
 		data: {
 			error: string
 			errorCode: string
-			message: string
+			message: string | string[]
 			status: string
 			success: boolean
 		}
