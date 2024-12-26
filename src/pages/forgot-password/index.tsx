@@ -6,7 +6,7 @@ import { ForgotPasswordGraphic } from "@/assets/icons"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ForgotPasswordMutation } from "@/queries"
-import { yupResolver } from "@hookform/resolvers/yup"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
 import { ChevronLeft } from "@untitled-ui/icons-react"
 import Image from "next/image"
@@ -14,16 +14,18 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
-import * as yup from "yup"
+import * as z from "zod"
 // const appId = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID
 
-const pageSchema = yup.object().shape({
-	email_or_phone_number: yup
+const pageSchema = z.object({
+	email_or_phone_number: z
 		.string()
-		.required("Please enter your email address")
-		.email("Invalid email address"),
+		.min(1, { message: "Please enter your email" })
+		.email({ message: "Please enter a valid email" })
+		.trim(),
 })
-type FormValues = yup.InferType<typeof pageSchema>
+
+type FormValues = z.infer<typeof pageSchema>
 
 const Page = () => {
 	const router = useRouter()
@@ -31,7 +33,7 @@ const Page = () => {
 		defaultValues: {
 			email_or_phone_number: "",
 		},
-		resolver: yupResolver(pageSchema),
+		resolver: zodResolver(pageSchema),
 	})
 
 	const { isPending, mutate } = useMutation({

@@ -86,7 +86,7 @@ export const MultiSelect = <T extends FieldValues>({
 						aria-expanded={openCombobox}
 						data-placeholder={selectedValues.length === 0}
 						data-invalid={error ? "true" : "false"}
-						className="flex w-full items-center justify-between rounded-md border border-neutral-200 bg-white px-4 py-3 capitalize text-neutral-900 transition-all focus:border-primary-300 focus:shadow-primary focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 data-[invalid=true]:border-red-600 data-[invalid=true]:bg-[rgba(227,54,41,0.11)] data-[placeholder=true]:text-neutral-300 [&>span]:line-clamp-1 [&>span]:truncate">
+						className="flex w-full items-center justify-between rounded-md border border-neutral-200 bg-white px-4 py-3 capitalize text-neutral-900 transition-all focus:border-primary-300 focus:shadow-primary focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 data-[invalid=true]:border-red-600 data-[invalid=true]:bg-error/5 data-[placeholder=true]:text-neutral-300 [&>span]:line-clamp-1 [&>span]:truncate">
 						<span>
 							{selectedValues.length
 								? selectedValues.map(({ label }) => label).join(", ")

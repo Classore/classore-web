@@ -7,7 +7,7 @@ import { OTPInput } from "@/components/ui/otp-input"
 import { useCountDown } from "@/hooks/use-countdown"
 import { formatEmail } from "@/lib"
 import { ForgotPasswordMutation } from "@/queries"
-import { yupResolver } from "@hookform/resolvers/yup"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
 import { ChevronLeft } from "lucide-react"
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next"
@@ -16,18 +16,19 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
-import * as yup from "yup"
+import * as z from "zod"
 
-const pageSchema = yup.object().shape({
-	verification_code: yup
+const pageSchema = z.object({
+	verification_code: z
 		.string()
-		.required("Please enter your verification code")
-		.matches(/^[0-9]+$/, "Must be only digits")
-		.min(4, "Verification code must be 4 digits")
-		.max(4, "Verification code must be 4 digits"),
+		.min(1, { message: "Please enter your verification code" })
+		.regex(/^[0-9]+$/, { message: "Must be only digits" })
+		.min(4, { message: "Verification code must be 4 digits" })
+		.max(4, { message: "Verification code must be 4 digits" })
+		.trim(),
 })
 
-type FormValues = yup.InferType<typeof pageSchema>
+type FormValues = z.infer<typeof pageSchema>
 
 export const getServerSideProps = (async (req) => {
 	const email = req.query.email ?? ""
@@ -46,7 +47,7 @@ const Page = ({ email }: InferGetServerSidePropsType<typeof getServerSideProps>)
 		defaultValues: {
 			verification_code: "",
 		},
-		resolver: yupResolver(pageSchema),
+		resolver: zodResolver(pageSchema),
 	})
 
 	const { isPending, mutate } = useMutation({

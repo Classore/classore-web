@@ -9,14 +9,14 @@ import { Select, SelectItem } from "@/components/ui/select"
 import { formatCurrency } from "@/lib"
 import { AddWardsMutation } from "@/queries"
 import { useGetExamBundles, useGetExams, useGetSubjects } from "@/queries/school"
-import { yupResolver } from "@hookform/resolvers/yup"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
 import { Lock02 } from "@untitled-ui/icons-react"
 import { Trash } from "iconsax-react"
 import { Plus } from "lucide-react"
 import * as React from "react"
 import { useFieldArray, useForm, useWatch } from "react-hook-form"
-import * as yup from "yup"
+import * as z from "zod"
 
 const initialValue = {
 	first_name: "",
@@ -27,32 +27,27 @@ const initialValue = {
 	subjects: [],
 }
 
-const schema = yup.object().shape({
-	wards: yup
-		.array()
-		.of(
-			yup.object().shape({
-				first_name: yup.string().required("Please enter your first name"),
-				last_name: yup.string().required("Please enter your last name"),
-				email: yup.string().required("Please enter your email address").email("Invalid email address"),
-				examination: yup.string().required("Please select an exam type"),
-				examination_bundle: yup.string().required("Please select a prep bundle"),
-				subjects: yup
-					.array()
-					.of(yup.string().required("Please select an option"))
-					.min(1, "Please select at least one subject")
-					.required(),
-			})
-		)
-		.required("Please add at least one ward"),
+const schema = z.object({
+	wards: z.array(
+		z.object({
+			first_name: z.string().min(1, "Please enter your first name"),
+			last_name: z.string().min(1, "Please enter your last name"),
+			email: z.string().min(1, "Please enter your email address").email("Invalid email address"),
+			examination: z.string().min(1, "Please select an exam type"),
+			examination_bundle: z.string().min(1, "Please select a prep bundle"),
+			subjects: z
+				.array(z.string().min(1, "Please select an option"))
+				.min(1, "Please select at least one subject"),
+		})
+	),
 })
 
-type FormValues = yup.InferType<typeof schema>
+type FormValues = z.infer<typeof schema>
 
 const Page = () => {
 	const [open, setOpen] = React.useState(false)
 	const { control, handleSubmit } = useForm<FormValues>({
-		resolver: yupResolver(schema),
+		resolver: zodResolver(schema),
 		defaultValues: {
 			wards: [initialValue],
 		},

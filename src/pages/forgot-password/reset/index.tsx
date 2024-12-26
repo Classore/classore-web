@@ -5,9 +5,8 @@ import { ForgotPasswordGraphic } from "@/assets/icons"
 import { classore } from "@/assets/images"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { passwordRules } from "@/config"
 import { ResetPasswordMutation } from "@/queries"
-import { yupResolver } from "@hookform/resolvers/yup"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
 import { ChevronLeft } from "@untitled-ui/icons-react"
 import Image from "next/image"
@@ -15,29 +14,61 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
-import * as yup from "yup"
+import * as z from "zod"
 // const appId = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID
 
-const pageSchema = yup.object().shape({
-	password: yup
-		.string()
-		.required("Please enter your password")
-		.min(6, "Password must be at least 8 characters")
-		.matches(
-			passwordRules,
-			"Password must contain at least 1 uppercase letter, 1 lowercase letter and 1 number"
-		),
-	confirm_password: yup
-		.string()
-		.required("Please confirm your password")
-		.min(6, "Confirm password must be at least 8 characters")
-		.matches(
-			passwordRules,
-			"Confirm password must contain at least 1 uppercase letter, 1 lowercase letter and 1 number"
-		)
-		.oneOf([yup.ref("password")], "Passwords must match"),
-})
-type FormValues = yup.InferType<typeof pageSchema>
+const pageSchema = z
+	.object({
+		password: z
+			.string()
+			.min(1, { message: "Please enter your password" })
+			.min(8, {
+				message: "Password cannot be less than 8 characters",
+			})
+			.max(30, { message: "Password cannot be more than 30 characters" })
+			.regex(/(?=.*[A-Z])/, {
+				message: "Must contain at least one uppercase character",
+			})
+			.regex(/(?=.*[a-z])/, {
+				message: "Must contain at least one lowercase character",
+			})
+			.regex(/(?=.*\d)/, {
+				message: "Must contain at least one number",
+			})
+			.regex(/^(?=.*?[#?_!@$%^*-])/, {
+				message: "Must contain at least one special character",
+			}),
+		confirm_password: z
+			.string()
+			.min(1, { message: "Please enter your password again" })
+			.min(8, {
+				message: "Password cannot be less than 8 characters",
+			})
+			.max(30, { message: "Password cannot be more than 30 characters" })
+			.regex(/(?=.*[A-Z])/, {
+				message: "Must contain at least one uppercase character",
+			})
+			.regex(/(?=.*[a-z])/, {
+				message: "Must contain at least one lowercase character",
+			})
+			.regex(/(?=.*\d)/, {
+				message: "Must contain at least one number",
+			})
+			.regex(/^(?=.*?[#?_!@$%^*-])/, {
+				message: "Must contain at least one special character",
+			}),
+	})
+	.superRefine(({ password, confirm_password }, ctx) => {
+		if (password !== confirm_password) {
+			ctx.addIssue({
+				code: "custom",
+				message: "Passwords do not match",
+				path: ["confirm_password"],
+			})
+		}
+	})
+
+type FormValues = z.infer<typeof pageSchema>
 
 const Page = () => {
 	const router = useRouter()
@@ -46,7 +77,7 @@ const Page = () => {
 			password: "",
 			confirm_password: "",
 		},
-		resolver: yupResolver(pageSchema),
+		resolver: zodResolver(pageSchema),
 	})
 
 	const { isPending, mutate } = useMutation({

@@ -46,7 +46,7 @@ export const Select = <T extends FieldValues>({
 					ref={ref}
 					data-invalid={error ? "true" : "false"}
 					className={cn(
-						"flex w-full items-center justify-between rounded-md border border-neutral-200 bg-white px-4 py-3 capitalize transition-all focus:border-primary-300 focus:shadow-primary focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 data-[invalid=true]:border-red-600 data-[invalid=true]:bg-[rgba(227,54,41,0.11)] data-[placeholder=true]:normal-case data-[placeholder]:text-neutral-300 [&>span]:line-clamp-1",
+						"flex w-full items-center justify-between rounded-md border border-neutral-200 bg-white px-4 py-3 capitalize transition-all focus:border-primary-300 focus:shadow-primary focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 data-[invalid=true]:border-red-600 data-[invalid=true]:bg-error/5 data-[placeholder=true]:normal-case data-[placeholder]:text-neutral-300 [&>span]:line-clamp-1",
 						className
 					)}
 					{...rest}>

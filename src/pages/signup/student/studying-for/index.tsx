@@ -16,25 +16,35 @@ import {
 	useGetExams,
 	useGetSubjects,
 } from "@/queries/school"
-import { yupResolver } from "@hookform/resolvers/yup"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { dehydrate, QueryClient } from "@tanstack/react-query"
 import { Lock02 } from "@untitled-ui/icons-react"
 import type { GetStaticProps } from "next"
 import * as React from "react"
 import { useForm, useWatch } from "react-hook-form"
-import * as yup from "yup"
+import * as z from "zod"
 
-const studyingForSchema = yup.object().shape({
-	exam_type: yup.string().required("Please select an exam type"),
-	chosen_bundle: yup.string().required("Please select a prep bundle"),
-	subjects: yup
-		.array()
-		.of(yup.string().required("Please select an option"))
-		.min(1, "Please select at least one subject")
-		.required(),
+const studyingForSchema = z.object({
+	exam_type: z
+		.string({
+			required_error: "Please select an option",
+		})
+		.min(1, { message: "Please select an option" }),
+	subjects: z
+		.array(
+			z.string({
+				required_error: "Please select at least one subject",
+			})
+		)
+		.nonempty({ message: "Please select at least one subject" }),
+	chosen_bundle: z
+		.string({
+			required_error: "Please select an option",
+		})
+		.min(1, { message: "Please select an option" }),
 })
 
-type StudyingForFormValues = yup.InferType<typeof studyingForSchema>
+type StudyingForFormValues = z.infer<typeof studyingForSchema>
 
 export const getStaticProps = (async () => {
 	const queryClient = new QueryClient()
@@ -66,7 +76,7 @@ export const getStaticProps = (async () => {
 const Page = () => {
 	const [open, setOpen] = React.useState(false)
 	const { control, handleSubmit } = useForm<StudyingForFormValues>({
-		resolver: yupResolver(studyingForSchema),
+		resolver: zodResolver(studyingForSchema),
 		defaultValues: {
 			exam_type: "",
 			chosen_bundle: "",
