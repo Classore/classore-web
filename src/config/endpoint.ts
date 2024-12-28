@@ -8,6 +8,8 @@ export const endpoints = (id?: string) => {
 		forgot_password: "/auth/forgot-password",
 		reset_password: "/auth/reset-password",
 		profile: "/auth/profile",
+		google_auth: "/auth/google",
+		add_wards: "/auth/add-my-wards",
 	} as const
 
 	const courses = {

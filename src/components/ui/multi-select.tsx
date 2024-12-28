@@ -7,6 +7,7 @@ import {
 	CommandList,
 } from "@/components/ui/command"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { cn } from "@/lib"
 import { PopoverClose } from "@radix-ui/react-popover"
 import { Check, ChevronDown } from "@untitled-ui/icons-react"
 import * as React from "react"
@@ -27,6 +28,8 @@ type MultiSelectProps<T extends FieldValues> = {
 	name: Path<T>
 	control: Control<T>
 	placeholder?: string
+	className?: string
+	info?: string
 }
 
 export const MultiSelect = <T extends FieldValues>({
@@ -35,6 +38,8 @@ export const MultiSelect = <T extends FieldValues>({
 	options,
 	name,
 	control,
+	className,
+	info,
 }: MultiSelectProps<T>) => {
 	const inputRef = React.useRef<HTMLInputElement>(null)
 	const [openCombobox, setOpenCombobox] = React.useState(false)
@@ -66,16 +71,11 @@ export const MultiSelect = <T extends FieldValues>({
 		setOpenCombobox(value)
 	}
 
-	// FIXME: This causes re-renders. Is there a better way?
-	React.useEffect(() => {
-		onChange(selectedValues.map(({ value }) => value))
-	}, [selectedValues, onChange])
-
 	return (
-		<label className="flex flex-col gap-1.5 font-body">
+		<label className={cn("flex flex-col gap-1.5 font-body", className)}>
 			<div className="flex items-center justify-between gap-2 text-neutral-400">
 				<p className="text-sm">{label}</p>
-				<p className="text-xs">{selectedValues.length} selected</p>
+				<p className="text-xs">{info ? info : `${selectedValues.length} selected`}</p>
 			</div>
 
 			<Popover open={openCombobox} onOpenChange={onComboboxOpenChange}>
@@ -86,7 +86,7 @@ export const MultiSelect = <T extends FieldValues>({
 						aria-expanded={openCombobox}
 						data-placeholder={selectedValues.length === 0}
 						data-invalid={error ? "true" : "false"}
-						className="flex w-full items-center justify-between rounded-md border border-neutral-200 bg-white px-4 py-3 capitalize text-neutral-900 transition-all focus:border-primary-300 focus:shadow-primary focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 data-[invalid=true]:border-red-600 data-[invalid=true]:bg-[rgba(227,54,41,0.11)] data-[placeholder=true]:text-neutral-300 [&>span]:line-clamp-1 [&>span]:truncate">
+						className="flex w-full items-center justify-between rounded-md border border-neutral-200 bg-white px-4 py-3 capitalize text-neutral-900 transition-all focus:border-primary-300 focus:shadow-primary focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 data-[invalid=true]:border-red-600 data-[invalid=true]:bg-error/5 data-[placeholder=true]:text-neutral-300 [&>span]:line-clamp-1 [&>span]:truncate">
 						<span>
 							{selectedValues.length
 								? selectedValues.map(({ label }) => label).join(", ")
@@ -99,13 +99,13 @@ export const MultiSelect = <T extends FieldValues>({
 
 				<PopoverContent className="w-full p-0">
 					<Command loop className="min-w-[var(--radix-popover-trigger-width)]">
-						<CommandInput ref={inputRef} placeholder="Search framework..." />
+						<CommandInput ref={inputRef} placeholder="Search subjects..." />
 
 						<CommandList>
 							<CommandEmpty>No value(s) found...</CommandEmpty>
-							<CommandGroup>
+							<CommandGroup className="pb-16">
 								{options.map((option) => {
-									const isActive = selectedValues.includes(option)
+									const isSelected = selectedValues.includes(option)
 
 									return (
 										<CommandItem
@@ -115,7 +115,7 @@ export const MultiSelect = <T extends FieldValues>({
 											<span className="flex-1 capitalize">{option.label}</span>
 
 											<Check
-												className={`transition-opacity ${isActive ? "text-primary-300" : "text-transparent"}`}
+												className={`transition-opacity ${isSelected ? "text-primary-300" : "text-transparent"}`}
 											/>
 										</CommandItem>
 									)
@@ -123,8 +123,9 @@ export const MultiSelect = <T extends FieldValues>({
 							</CommandGroup>
 
 							<PopoverClose asChild>
-								<div className="sticky bg-white px-4 py-3">
+								<div className="fixed bottom-0 left-0 w-full bg-white px-4 py-3">
 									<Button
+										onClick={() => onChange(selectedValues.map((l) => l.value))}
 										className="bg-primary-50 text-sm text-primary-300 hover:bg-primary-100"
 										type="button"
 										variant="ghost">

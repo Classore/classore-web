@@ -4,11 +4,11 @@ import { ErrorMessage, Seo } from "@/components/shared"
 import { AuthGraphic } from "@/assets/icons"
 import { SignupStepper } from "@/components/signup-stepper"
 import { Button } from "@/components/ui/button"
-import { yupResolver } from "@hookform/resolvers/yup"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { User01 } from "@untitled-ui/icons-react"
 import { useRouter } from "next/router"
 import { Controller, useForm } from "react-hook-form"
-import * as yup from "yup"
+import * as z from "zod"
 
 const options = [
 	{
@@ -25,11 +25,11 @@ const options = [
 	},
 ]
 
-const signupSchema = yup.object().shape({
-	register_as: yup.string().required("Please select an option to register as"),
+const signupSchema = z.object({
+	register_as: z.string().min(1, "Please select an option to register as"),
 })
 
-type FormValues = yup.InferType<typeof signupSchema>
+type FormValues = z.infer<typeof signupSchema>
 
 const Page = () => {
 	const router = useRouter()
@@ -37,14 +37,13 @@ const Page = () => {
 		defaultValues: {
 			register_as: "",
 		},
-		resolver: yupResolver(signupSchema),
+		resolver: zodResolver(signupSchema),
 	})
 
 	const onSubmit = (value: FormValues) => {
 		router.push({
-			pathname: "/signup/onboard",
+			pathname: `/signup/${value.register_as}`,
 			query: {
-				register_as: value.register_as,
 				step: "2",
 			},
 		})
@@ -55,7 +54,7 @@ const Page = () => {
 			<Seo title="Sign up" />
 
 			<AuthLayout screen="signup">
-				<div className="flex max-w-96 flex-col gap-20 font-body">
+				<div className="flex max-w-96 flex-col gap-10 font-body lg:gap-20">
 					<SignupStepper />
 
 					<div className="flex flex-col gap-6">

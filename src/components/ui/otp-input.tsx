@@ -29,7 +29,7 @@ export const OTPInput = <T extends FieldValues>({ control, name, ...props }: OTP
 								key={index}
 								data-active={slot.isActive ? "true" : "false"}
 								data-invalid={error ? "true" : "false"}
-								className="relative flex size-[60px] items-center justify-center rounded-lg bg-[rgba(241,236,249,0.5)] text-base font-medium text-primary-300 transition-all data-[active=true]:z-10 data-[invalid=true]:border-[1.3px] data-[invalid=true]:border-red-600 data-[invalid=true]:bg-[rgba(227,54,41,0.11)] data-[invalid=true]:text-[#E33629] data-[active=true]:shadow-primary data-[active=true]:ring-1 data-[active=true]:ring-primary-300">
+								className="relative flex size-[60px] items-center justify-center rounded-lg bg-[rgba(241,236,249,0.5)] text-base font-medium text-primary-300 transition-all data-[active=true]:z-10 data-[invalid=true]:border-[1.3px] data-[invalid=true]:border-red-600 data-[invalid=true]:bg-error/5 data-[invalid=true]:text-[#E33629] data-[active=true]:shadow-primary data-[active=true]:ring-1 data-[active=true]:ring-primary-300">
 								{slot.char ?? slot.placeholderChar}
 
 								{/* fake caret */}

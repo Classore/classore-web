@@ -8,23 +8,25 @@ import { OTPInput } from "@/components/ui/otp-input"
 import { useCountDown } from "@/hooks/use-countdown"
 import { formatEmail } from "@/lib"
 import { ResendVerificationCodeMutation, VerifyEmailMutation } from "@/queries"
-import { yupResolver } from "@hookform/resolvers/yup"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next"
 import { useRouter } from "next/router"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
-import * as yup from "yup"
+import * as z from "zod"
 
-const pageSchema = yup.object().shape({
-	verification_code: yup
+const pageSchema = z.object({
+	verification_code: z
 		.string()
-		.required("Please enter your verification code")
-		.matches(/^[0-9]+$/, "Must be only digits")
-		.min(4, "Verification code must be 4 digits")
-		.max(4, "Verification code must be 4 digits"),
+		.min(1, { message: "Please enter your verification code" })
+		.regex(/^[0-9]+$/, { message: "Must be only digits" })
+		.min(4, { message: "Verification code must be 4 digits" })
+		.max(4, { message: "Verification code must be 4 digits" })
+		.trim(),
 })
-type FormValues = yup.InferType<typeof pageSchema>
+
+type FormValues = z.infer<typeof pageSchema>
 
 // this help resolves the flash before next calls useRouter
 export const getServerSideProps = (async (req) => {
@@ -44,7 +46,7 @@ const Page = ({ email }: InferGetServerSidePropsType<typeof getServerSideProps>)
 		defaultValues: {
 			verification_code: "",
 		},
-		resolver: yupResolver(pageSchema),
+		resolver: zodResolver(pageSchema),
 	})
 
 	const resendCode = useMutation({
@@ -63,21 +65,11 @@ const Page = ({ email }: InferGetServerSidePropsType<typeof getServerSideProps>)
 		},
 		onSuccess: (data) => {
 			toast.success(data.message)
-			if (data.data.user_type === "PARENT") {
-				router.push({
-					pathname: "/signup/success",
-					query: {
-						register_as: router.query?.register_as,
-					},
-				})
-				return
-			}
 
 			router.push({
-				pathname: "/signup/studying-for",
+				pathname: "/signup/student/studying-for",
 				query: {
 					step: "4",
-					register_as: router.query?.register_as,
 				},
 			})
 		},
@@ -91,7 +83,7 @@ const Page = ({ email }: InferGetServerSidePropsType<typeof getServerSideProps>)
 			<Seo title="Verify Email" />
 
 			<AuthLayout screen="signup">
-				<div className="flex max-w-[400px] flex-col gap-20">
+				<div className="flex max-w-[400px] flex-col gap-10 lg:gap-20">
 					<SignupStepper />
 
 					<div className="flex flex-col gap-6">

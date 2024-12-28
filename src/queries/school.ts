@@ -36,6 +36,9 @@ type ExamBundlesResp = PaginatedResponse<{
 	examinationbundle_amount: number
 	examinationbundle_start_date: string
 	examinationbundle_end_date: string
+	examination_name: string
+	examinationbundle_examination: string
+	subject_count: number
 }>
 const getExamBundles = async () => {
 	return axios
@@ -58,6 +61,8 @@ type SubjectsResp = PaginatedResponse<{
 	subject_id: string
 	subject_name: string
 	subject_class: string
+	subject_examination: string
+	subject_examination_bundle: string
 }>
 const getSubjects = async () => {
 	return axios
@@ -96,7 +101,7 @@ export const useGetClasses = () => {
 	})
 }
 
-// <-- GET CLASSES -->
+// <-- CREATE STUDY TIMELINE -->
 type StudyTimelinePayload = {
 	exam_type: string
 	chosen_bundle: string
@@ -118,8 +123,10 @@ export const useCreateStudyTimeline = () => {
 	return useMutation({
 		mutationKey: ["create-study-timeline"],
 		mutationFn: createStudyTimeline,
-		onSuccess: (data) => {
-			toast.success(data.message)
+		onSuccess: () => {
+			toast.success("Your study timeline has been created!", {
+				description: "You will be redirected to the payment page",
+			})
 		},
 	})
 }
