@@ -1,42 +1,56 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { AuthLayout } from "@/components/layouts/auth"
 import { ErrorMessage, Seo, Spinner } from "@/components/shared"
-import Cookies from "js-cookie"
 
 import { GoogleIcon, UserDetailsGraphic } from "@/assets/icons"
 import { SignupStepper } from "@/components/signup-stepper"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { passwordRules } from "@/config"
+import { setToken } from "@/lib/cookies"
 import { SignUpMutation } from "@/queries"
-import { yupResolver } from "@hookform/resolvers/yup"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
-import { jwtDecode } from "jwt-decode"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
-import * as yup from "yup"
+import * as z from "zod"
 
-// const appId = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID
-
-const onboardSchema = yup.object().shape({
-	first_name: yup.string().required("Please enter your first name"),
-	last_name: yup.string().required("Please enter your last name"),
-	email: yup.string().required("Please enter your email address").email("Invalid email address"),
-	password: yup
+const onboardSchema = z.object({
+	first_name: z.string().min(1, { message: "Please enter your first name" }).trim(),
+	last_name: z.string().min(1, { message: "Please enter your last name" }).trim(),
+	email: z
 		.string()
-		.required("Please enter your password")
-		.min(6, "Password must be at least 8 characters")
-		.matches(
-			passwordRules,
-			"Password must contain at least 1 uppercase letter, 1 lowercase letter and 1 number"
-		),
-	referral_code: yup.string(),
-	accept_terms: yup.boolean().oneOf([true], "You must accept the terms and conditions"),
+		.min(1, { message: "Please enter your email address" })
+		.email("Please enter a valid email")
+		.trim(),
+	password: z
+		.string()
+		.min(1, { message: "Please enter your password" })
+		.min(8, {
+			message: "Password cannot be less than 8 characters",
+		})
+		.max(30, { message: "Password cannot be more than 30 characters" })
+		.regex(/(?=.*[A-Z])/, {
+			message: "Must contain at least one uppercase character",
+		})
+		.regex(/(?=.*[a-z])/, {
+			message: "Must contain at least one lowercase character",
+		})
+		.regex(/(?=.*\d)/, {
+			message: "Must contain at least one number",
+		})
+		.regex(/^(?=.*?[#?_!@$%^*-])/, {
+			message: "Must contain at least one special character",
+		})
+		.trim(),
+	referral_code: z.string().trim().optional(),
+	accept_terms: z.literal(true, {
+		errorMap: () => ({ message: "You must accept the terms & conditions" }),
+	}),
 })
 
-type OnboardFormValues = yup.InferType<typeof onboardSchema>
+type OnboardFormValues = z.infer<typeof onboardSchema>
 
 const Page = () => {
 	const router = useRouter()
@@ -46,7 +60,7 @@ const Page = () => {
 		handleSubmit,
 		formState: { errors },
 	} = useForm<OnboardFormValues>({
-		resolver: yupResolver(onboardSchema),
+		resolver: zodResolver(onboardSchema),
 		defaultValues: {
 			first_name: "",
 			last_name: "",
@@ -65,8 +79,7 @@ const Page = () => {
 			return SignUpMutation({
 				...rest,
 				sign_up_channel: "DEFAULT",
-				// @ts-expect-error nil
-				user_type: String(router.query?.register_as).toUpperCase() ?? "STUDENT",
+				user_type: "PARENT",
 				referral_code: rest.referral_code ?? "",
 			})
 		},
@@ -77,19 +90,13 @@ const Page = () => {
 
 			const { access_token, password, ...rest } = data.data.user_details
 
-			const decoded = jwtDecode(access_token)
+			setToken(access_token)
 			localStorage.setItem("CLASSORE_USER", JSON.stringify(rest))
-			Cookies.set("CLASSORE_TOKEN", access_token, {
-				expires: decoded?.exp ? new Date(decoded?.exp * 1000) : new Date(Date.now() + 7 * 24 * 60 * 60), // 7 days,
-				sameSite: "lax",
-				secure: process.env.NODE_ENV === "production",
-			})
 			router.push({
-				pathname: "/signup/verify-email",
+				pathname: "/signup/parent/verify-email",
 				query: {
 					email: encodeURIComponent(data.data.user_details.email),
-					register_as: router.query?.register_as,
-					step: "2",
+					step: "3",
 				},
 			})
 		},
@@ -101,17 +108,20 @@ const Page = () => {
 	return (
 		<>
 			<Seo title="Sign up" />
+
 			<AuthLayout screen="signup">
-				<div className="flex max-w-[400px] flex-col gap-20">
+				<div className="flex max-w-[400px] flex-col gap-10 lg:gap-20">
 					<SignupStepper />
+
 					<div className="flex flex-col gap-6">
 						<header className="flex flex-col gap-4">
 							<UserDetailsGraphic />
 							<h2 className="font-body text-2xl font-bold text-neutral-900">Let’s get you onboard</h2>
 						</header>
+
 						<form
 							onSubmit={handleSubmit(onSubmit)}
-							className="grid grid-cols-2 gap-6 font-body font-normal">
+							className="grid grid-cols-2 gap-x-3 gap-y-6 font-body font-normal lg:gap-6">
 							<Input
 								type="text"
 								label="First Name"

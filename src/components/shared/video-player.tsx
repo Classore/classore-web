@@ -1,5 +1,3 @@
-import { LoaderCircle } from "lucide-react"
-import React from "react"
 import {
 	RiFullscreenExitLine,
 	RiFullscreenLine,
@@ -9,6 +7,8 @@ import {
 	RiVolumeMuteLine,
 	RiVolumeUpLine,
 } from "@remixicon/react"
+import { LoaderCircle } from "lucide-react"
+import React from "react"
 
 import { formatTime } from "@/lib"
 
@@ -139,6 +139,7 @@ export const VideoPlayer = ({ src }: Props) => {
 		if (controlsTimeoutRef.current) {
 			clearTimeout(controlsTimeoutRef.current)
 		}
+
 		controlsTimeoutRef.current = setTimeout(() => {
 			setShowControls(false)
 		}, 3000)
@@ -171,6 +172,7 @@ export const VideoPlayer = ({ src }: Props) => {
 		<div
 			ref={container}
 			onMouseMove={handleMouseMove}
+			// onMouseOver={() => console.log("hi")}
 			onMouseLeave={() => setShowControls(false)}
 			className="relative grid size-full place-items-center rounded-lg bg-black">
 			<div onContextMenu={preventContextMenu} className="relative size-full rounded-lg">
@@ -227,6 +229,7 @@ export const VideoPlayer = ({ src }: Props) => {
 							<button onClick={togglePictureInPicture} className="transition-all duration-500">
 								<RiPictureInPictureLine size={20} />
 							</button>
+
 							<button onClick={toggleFullscreen} className="transition-all duration-500">
 								{isFullscreen ? <RiFullscreenExitLine size={20} /> : <RiFullscreenLine size={20} />}
 							</button>

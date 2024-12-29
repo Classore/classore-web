@@ -3,10 +3,10 @@ import { addMonths, format, subMonths } from "date-fns"
 import Link from "next/link"
 import React from "react"
 
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import { DashboardLayout } from "@/components/layouts"
 import { AvatarGroup, Seo } from "@/components/shared"
 import { Button } from "@/components/ui/button"
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import type { EventProps } from "@/types"
 
 import { events } from "@/mock"
@@ -123,9 +123,10 @@ const Page = () => {
 
 	return (
 		<>
-			<Seo title="Calendar" />
+			<Seo title="Calendar" noIndex />
+
 			<DashboardLayout>
-				<div className="flex h-full w-full flex-col gap-2 px-8 py-4">
+				<div className="flex h-full w-full flex-col gap-8 px-8 py-4">
 					<div className="flex h-[69px] w-full items-center justify-between">
 						<button
 							onClick={goToPreviousMonth}
@@ -141,16 +142,18 @@ const Page = () => {
 							<RiArrowLeftSLine className="size-4 rotate-180" />
 						</button>
 					</div>
+
 					<div className="flex w-full flex-col border">
 						<div className="grid w-full grid-cols-7 border-b">
 							{daysOfWeek.map((day, index) => (
 								<div
 									key={index}
-									className={`flex h-[49px] w-full items-center justify-center border-r text-sm last:border-r-0 ${day.toLowerCase() === format(new Date(), "EEEE").toLowerCase() ? "bg-primary-100 font-semibold text-primary-500" : "text-neutral-500"}`}>
+									className="flex h-[49px] w-full items-center justify-center border-r text-sm text-neutral-400 last:border-r-0">
 									{day}
 								</div>
 							))}
 						</div>
+
 						<div className="grid w-full grid-cols-7">
 							{calendarDays.map((dayItem, index) => {
 								const isToday =
@@ -161,18 +164,23 @@ const Page = () => {
 								return (
 									<div
 										key={index}
-										className={`flex aspect-[1.08/1] w-full flex-col overflow-hidden border-b ${index % 7 === 6 ? "" : "border-r"} ${isToday ? "font-semibold" : "text-neutral-500"}`}>
+										className={`flex aspect-[1.08/1] w-full flex-col overflow-hidden border-b ${index % 7 === 6 ? "" : "border-r"} ${isToday ? "bg-neutral-100 font-semibold" : "text-neutral-500"}`}>
 										<div
 											className={`flex w-full items-center px-3 pt-3 ${dayItem.events.length < 1 ? "justify-end" : "justify-between"}`}>
-											{dayItem.events.length && (
+											{dayItem.events.length ? (
 												<Link
 													href={`/dashboard/calendar/${dayItem.day}`}
 													className="link flex items-center gap-1 text-xs">
 													{dayItem.events.length < 2 ? "View Event" : "View Events"} ({dayItem.events.length})
 												</Link>
-											)}
-											<p className="text-sm">{dayItem.day}</p>
+											) : null}
+
+											<p
+												className={`rounded px-1.5 py-1 text-sm ${isToday ? "bg-primary-300 text-white" : "bg-transparent text-neutral-400"}`}>
+												{dayItem.day ? (String(dayItem.day).padStart(2, "0") ?? " ") : ""}
+											</p>
 										</div>
+
 										<div className="mt-1 flex flex-col gap-1 overflow-y-auto">
 											{dayItem.events.map((event, eventIndex) => {
 												const isFirstDay = isFirstDayOfEvent(event, dayItem.day!)
@@ -182,12 +190,13 @@ const Page = () => {
 												return (
 													<HoverCard key={`${event.id}-${eventIndex}`}>
 														<HoverCardTrigger
-															className={`group relative flex min-h-9 items-center truncate px-1 py-0.5 text-xs ${EventStatusColor[event.status]} ${isMultiDay ? "rounded-none" : "rounded"} ${isFirstDay ? "ml-2 rounded-l border-l-2" : "-ml-1"} ${isLastDay ? "rounded-r" : "pr-0"} ${!isFirstDay && !isLastDay && isMultiDay ? "pl-0" : ""} `}>
-															<div className="flex w-full cursor-pointer items-center gap-2 truncate">
+															className={`group relative flex min-h-14 items-center truncate px-1 py-0.5 text-xs ${EventStatusColor[event.status]} ${isMultiDay ? "rounded-none" : "rounded"} ${isFirstDay ? "ml-2 rounded-l border-l-2" : "-ml-1"} ${isLastDay ? "rounded-r" : "pr-0"} ${!isFirstDay && !isLastDay && isMultiDay ? "pl-0" : ""} `}>
+															<div className="flex w-full cursor-pointer items-center gap-2">
 																{isFirstDay && (
 																	<>
-																		<RiCalendarEventLine className="mr-1 size-4 text-inherit" />
-																		<div className="flex flex-col pl-1">
+																		<RiCalendarEventLine className="ml-1 size-4 text-inherit" />
+
+																		<div className="absolute left-7 z-50 flex flex-1 flex-col pl-1">
 																			<span className={`truncate font-medium ${!isFirstDay ? "pl-1" : ""}`}>
 																				{event.title}
 																			</span>
@@ -198,6 +207,7 @@ const Page = () => {
 																		</div>
 																	</>
 																)}
+
 																{event.status === "current" && (
 																	<div className="animate-pulse rounded-full bg-red-500 px-2 py-0.5 text-[10px] font-medium text-red-100">
 																		Live
@@ -205,6 +215,7 @@ const Page = () => {
 																)}
 															</div>
 														</HoverCardTrigger>
+
 														<HoverCardContent className="flex flex-col gap-2 text-wrap">
 															<p className="text-lg font-medium">{event.title}</p>
 															<div className="flex flex-col gap-1">

@@ -16,25 +16,35 @@ import {
 	useGetExams,
 	useGetSubjects,
 } from "@/queries/school"
-import { yupResolver } from "@hookform/resolvers/yup"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { dehydrate, QueryClient } from "@tanstack/react-query"
 import { Lock02 } from "@untitled-ui/icons-react"
 import type { GetStaticProps } from "next"
 import * as React from "react"
 import { useForm, useWatch } from "react-hook-form"
-import * as yup from "yup"
+import * as z from "zod"
 
-const studyingForSchema = yup.object().shape({
-	exam_type: yup.string().required("Please select an exam type"),
-	chosen_bundle: yup.string().required("Please select a prep bundle"),
-	subjects: yup
-		.array()
-		.of(yup.string().required("Please select an option"))
-		.min(1, "Please select at least one subject")
-		.required(),
+const studyingForSchema = z.object({
+	exam_type: z
+		.string({
+			required_error: "Please select an option",
+		})
+		.min(1, { message: "Please select an option" }),
+	subjects: z
+		.array(
+			z.string({
+				required_error: "Please select at least one subject",
+			})
+		)
+		.nonempty({ message: "Please select at least one subject" }),
+	chosen_bundle: z
+		.string({
+			required_error: "Please select an option",
+		})
+		.min(1, { message: "Please select an option" }),
 })
 
-type StudyingForFormValues = yup.InferType<typeof studyingForSchema>
+type StudyingForFormValues = z.infer<typeof studyingForSchema>
 
 export const getStaticProps = (async () => {
 	const queryClient = new QueryClient()
@@ -66,7 +76,7 @@ export const getStaticProps = (async () => {
 const Page = () => {
 	const [open, setOpen] = React.useState(false)
 	const { control, handleSubmit } = useForm<StudyingForFormValues>({
-		resolver: yupResolver(studyingForSchema),
+		resolver: zodResolver(studyingForSchema),
 		defaultValues: {
 			exam_type: "",
 			chosen_bundle: "",
@@ -74,20 +84,27 @@ const Page = () => {
 		},
 	})
 
-	const chosen_bundle = useWatch({
+	const form = useWatch({
 		control,
-		name: "chosen_bundle",
 	})
 
 	const { data: bundles } = useGetExamBundles()
 	const { data: exams } = useGetExams()
 	const { data: subjects } = useGetSubjects()
 
+	// filters
+	const examBundles = bundles?.filter(
+		(bundle) => bundle.examinationbundle_examination === form.exam_type
+	)
+	const bundleSubjects = subjects?.filter(
+		(subject) => subject.subject_examination_bundle === form.chosen_bundle
+	)
+
 	const bundle_amount =
-		bundles?.find((b) => b.examinationbundle_id === chosen_bundle)?.examinationbundle_amount ?? 0
+		bundles?.find((b) => b.examinationbundle_id === form.chosen_bundle)?.examinationbundle_amount ?? 0
 
 	const options =
-		subjects?.map((subject) => ({
+		bundleSubjects?.map((subject) => ({
 			label: subject.subject_name,
 			value: subject.subject_id,
 		})) ?? []
@@ -107,7 +124,7 @@ const Page = () => {
 			<Seo title="Studying For" />
 
 			<AuthLayout screen="signup">
-				<div className="flex max-w-96 flex-col gap-20">
+				<div className="flex max-w-96 flex-col gap-10 lg:gap-20">
 					<SignupStepper />
 					<div className="flex flex-col gap-6">
 						<header className="flex flex-col gap-4">
@@ -125,7 +142,7 @@ const Page = () => {
 							</Select>
 
 							<Select label="Select prep bundle" control={control} name="chosen_bundle">
-								{bundles?.map((bundle) => (
+								{examBundles?.map((bundle) => (
 									<SelectItem key={bundle.examinationbundle_id} value={bundle.examinationbundle_id}>
 										{bundle.examinationbundle_name} Exam Prep Bundle (
 										{formatCurrency(bundle.examinationbundle_amount)})

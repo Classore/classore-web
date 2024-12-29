@@ -262,3 +262,48 @@ export type UserChartProps = {
 	date: string
 	time_spent: number
 }
+
+export type AddWardsProps = {
+	wards: Array<{
+		first_name: string
+		last_name: string
+		email: string
+		password: string
+		parent: string
+		isDeleted: boolean
+		isBlocked: boolean
+		profile_image: string
+		wallet_id: string
+		// my_wards: Array<any>
+		id: string
+		createdOn: string
+		updatedOn: string
+		is_verified: boolean
+		chosen_study_plan: boolean
+		user_type: string
+		sign_up_channel: string
+		student_timeline: {
+			user_id: string
+			exam_type: string
+			chosen_bundle: string
+			subjects: Array<string>
+			end_date: string
+			updatedBy: string
+			deletedBy: string
+			isDeleted: boolean
+			isBlocked: boolean
+			id: string
+			createdOn: string
+			updatedOn: string
+			deletedOn: string
+			status: string
+			is_paid: boolean
+		}
+	}>
+	total_amount: number
+	payment_link_data: {
+		authorization_url: string
+		access_code: string
+		reference: string
+	}
+}

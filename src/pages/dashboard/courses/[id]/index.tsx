@@ -1,11 +1,7 @@
-import { useRouter } from "next/router"
-import Image from "next/image"
-import Link from "next/link"
-import React from "react"
 import {
+	RiArrowDropDownLine,
 	RiArrowLeftSLine,
 	RiArrowRightSLine,
-	RiArrowDropDownLine,
 	RiCloseLine,
 	RiFolderVideoLine,
 	RiLock2Line,
@@ -14,15 +10,18 @@ import {
 	RiThumbDownLine,
 	RiThumbUpLine,
 } from "@remixicon/react"
+import Image from "next/image"
+import Link from "next/link"
+import { useRouter } from "next/router"
+import React from "react"
 
-import { AvatarGroup, Seo, Progress, TabPanel, VideoPlayer } from "@/components/shared"
-import { ChapterList, QuizHistory, Resources, Transcript } from "@/components/home"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import blockchain from "@/assets/illustrations/blockchain.svg"
-import { DashboardLayout } from "@/components/layouts"
 import trophy from "@/assets/illustrations/trophy.svg"
+import { ChapterList, QuizHistory, Resources, Transcript } from "@/components/home"
+import { DashboardLayout } from "@/components/layouts"
+import { AvatarGroup, Progress, Seo, TabPanel, VideoPlayer } from "@/components/shared"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import type { ChapterProps } from "@/types"
 import {
 	Dialog,
 	DialogContent,
@@ -30,6 +29,7 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog"
+import type { ChapterProps } from "@/types"
 
 import { categories } from "@/mock"
 

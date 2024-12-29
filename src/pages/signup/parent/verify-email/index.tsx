@@ -1,18 +1,16 @@
-import { VerifyEmailGraphic } from "@/assets/icons"
-import { classore } from "@/assets/images"
 import { AuthLayout } from "@/components/layouts/auth"
 import { Seo, Spinner } from "@/components/shared"
+
+import { VerifyEmailGraphic } from "@/assets/icons"
+import { SignupStepper } from "@/components/signup-stepper"
 import { Button } from "@/components/ui/button"
 import { OTPInput } from "@/components/ui/otp-input"
 import { useCountDown } from "@/hooks/use-countdown"
 import { formatEmail } from "@/lib"
-import { ForgotPasswordMutation } from "@/queries"
+import { ResendVerificationCodeMutation, VerifyEmailMutation } from "@/queries"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
-import { ChevronLeft } from "lucide-react"
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next"
-import Image from "next/image"
-import Link from "next/link"
 import { useRouter } from "next/router"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -30,6 +28,7 @@ const pageSchema = z.object({
 
 type FormValues = z.infer<typeof pageSchema>
 
+// this help resolves the flash before next calls useRouter
 export const getServerSideProps = (async (req) => {
 	const email = req.query.email ?? ""
 
@@ -43,54 +42,47 @@ export const getServerSideProps = (async (req) => {
 const Page = ({ email }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 	const router = useRouter()
 	const { counter, reset } = useCountDown({ total: 60, ms: 1000 })
-	const { control, handleSubmit } = useForm<FormValues>({
+	const { control, handleSubmit, setError } = useForm<FormValues>({
 		defaultValues: {
 			verification_code: "",
 		},
 		resolver: zodResolver(pageSchema),
 	})
 
-	const { isPending, mutate } = useMutation({
-		mutationKey: ["login"],
-		mutationFn: () =>
-			ForgotPasswordMutation({
-				email_or_phone_number: email,
-			}),
-		onSuccess: () => {
-			toast.success("OTP resent successfully!", {
-				description: "Please check your email to verify your account",
-			})
+	const resendCode = useMutation({
+		mutationKey: ["resend-verification-code"],
+		mutationFn: ResendVerificationCodeMutation,
+		onSettled: () => {
 			reset()
 		},
 	})
 
+	const { isPending, mutate } = useMutation({
+		mutationKey: ["verify-email"],
+		mutationFn: (value: FormValues) => VerifyEmailMutation(value),
+		onError: (error) => {
+			setError("verification_code", { message: error.response?.data.message })
+		},
+		onSuccess: (data) => {
+			toast.success(data.message)
+			router.push("/signup/parent/success")
+		},
+	})
 	const onSubmit = (values: FormValues) => {
-		sessionStorage.setItem("temp_classore", JSON.stringify(values))
-		router.push("/forgot-password/reset")
+		mutate(values)
 	}
 
 	return (
 		<>
 			<Seo title="Verify Email" />
 
-			<AuthLayout screen="forgot-password">
-				<div className="flex max-w-96 flex-col gap-10 font-body lg:gap-20">
-					<Link href="/" className="w-fit lg:hidden">
-						<Image src={classore} alt="classore" width={120} height={25} />
-					</Link>
+			<AuthLayout screen="signup">
+				<div className="flex max-w-[400px] flex-col gap-10 lg:gap-20">
+					<SignupStepper />
 
-					<div className="flex flex-col gap-8 pt-10 lg:pt-20">
-						<button
-							onClick={() => router.back()}
-							type="button"
-							className="mb-8 flex w-fit items-center gap-1 rounded-lg border border-neutral-200 bg-neutral-100 px-2 py-1 text-sm text-neutral-700 transition-colors hover:bg-neutral-200">
-							<ChevronLeft width={16} />
-							<span>Back</span>
-						</button>
-
+					<div className="flex flex-col gap-6">
 						<header className="flex flex-col gap-4">
 							<VerifyEmailGraphic />
-
 							<div>
 								<h2 className="font-body text-2xl font-bold text-neutral-900">Verify your email address</h2>
 								<p className="pt-1 text-sm text-neutral-500">
@@ -103,7 +95,7 @@ const Page = ({ email }: InferGetServerSidePropsType<typeof getServerSideProps>)
 							<OTPInput control={control} name="verification_code" />
 
 							<div className="col-span-full flex flex-col gap-2">
-								<Button type="submit" disabled={isPending}>
+								<Button type="submit" disabled={isPending || resendCode.isPending}>
 									{isPending ? <Spinner /> : "Verify"}
 								</Button>
 
@@ -116,12 +108,12 @@ const Page = ({ email }: InferGetServerSidePropsType<typeof getServerSideProps>)
 										</span>
 									) : (
 										<Button
-											disabled={isPending}
-											onClick={() => mutate()}
+											disabled={resendCode.isPending || isPending}
+											onClick={() => resendCode.mutate()}
 											type="button"
 											variant="link"
 											className="w-fit px-1 text-sm font-medium text-secondary-300 shadow-none hover:underline">
-											{isPending ? "Resending..." : "Resend"}
+											{resendCode.isPending ? "Resending..." : "Resend"}
 										</Button>
 									)}
 								</div>

@@ -12,10 +12,12 @@ const authPathnames = [
 	"/forgot-password",
 	"/reset-password",
 	"/signup",
-	"/signup/success",
-	"/signup/onboard",
-	"/signup/verify",
-	"/signup/studying-for",
+	"/signup/student",
+	"/signup/student/verify-email",
+	"/signup/student/studying-for",
+	"/signup/parent",
+	"/signup/parent/verify-email",
+	"/signup/parent/add-ward",
 ]
 
 export function middleware(req: NextRequest) {

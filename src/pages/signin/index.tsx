@@ -1,28 +1,35 @@
-import { type CredentialResponse, GoogleLogin } from "@react-oauth/google"
-import { yupResolver } from "@hookform/resolvers/yup"
+import { useGoogleLogin } from "@react-oauth/google"
 import { useMutation } from "@tanstack/react-query"
-import { useForm } from "react-hook-form"
-import { useRouter } from "next/router"
-import { toast } from "sonner"
 import Link from "next/link"
-import * as yup from "yup"
+import { useRouter } from "next/router"
+import { useForm } from "react-hook-form"
+import { toast } from "sonner"
+import * as z from "zod"
 
-import type { HttpError, HttpResponse, UserProps } from "@/types"
+import { AuthGraphic, GoogleIcon } from "@/assets/icons"
 import { AuthLayout } from "@/components/layouts/auth"
 import { Seo, Spinner } from "@/components/shared"
 import { Button } from "@/components/ui/button"
-import { useUserStore } from "@/store/z-store"
 import { Input } from "@/components/ui/input"
-import { AuthGraphic } from "@/assets/icons"
-import { SignInMutation } from "@/queries"
-import { axios, capitalize } from "@/lib"
 import { endpoints } from "@/config"
+import { axios, capitalize } from "@/lib"
+import { setToken } from "@/lib/cookies"
+import { SignInMutation } from "@/queries"
+import { useUserStore } from "@/store/z-store"
+import type { HttpError, HttpResponse, UserProps } from "@/types"
+import { zodResolver } from "@hookform/resolvers/zod"
 
-const loginSchema = yup.object().shape({
-	email: yup.string().required("Please enter your email address").email("Invalid email address"),
-	password: yup.string().required("Please enter your password"),
+const loginSchema = z.object({
+	email: z
+		.string()
+		.min(1, { message: "Please enter your email address" })
+		.email({ message: "Please enter a valid email" })
+		.trim(),
+	password: z.string().min(1, { message: "Please enter your password" }).trim(),
+	// remember_me: z.boolean().optional(),
 })
-type LoginFormValues = yup.InferType<typeof loginSchema>
+
+type LoginFormValues = z.infer<typeof loginSchema>
 
 const Page = () => {
 	const { signIn } = useUserStore()
@@ -31,45 +38,80 @@ const Page = () => {
 		defaultValues: {
 			email: "",
 			password: "",
+			// remember_me: false,
 		},
-		resolver: yupResolver(loginSchema),
+		resolver: zodResolver(loginSchema),
 	})
 
-	const onSuccess = async ({ credential }: CredentialResponse) => {
-		try {
-			const { data } = await axios.get<HttpResponse<UserProps>>(
-				`${endpoints().auth.google_signin}?access_token=${credential}`
-			)
-			console.log(data)
-			const { access_token } = data.data
-			signIn(data.data, access_token)
-			toast.success(`Welcome ${capitalize(data.data.first_name)}`)
-			router.push("/dashboard")
-		} catch (error: unknown) {
-			const {
-				response: {
-					data: { message },
-				},
-			} = error as HttpError
-			toast.error(message ?? "An error occurred")
-		}
-	}
+	const loginWithGoogle = useGoogleLogin({
+		scope: "openid email profile",
+		onSuccess: async (credential) => {
+			try {
+				const { data } = await axios.get<HttpResponse<UserProps>>(
+					`${endpoints().auth.google_signin}?access_token=${credential.access_token}`
+				)
 
-	const onError = () => {
-		console.error("An error occurred")
-	}
+				const { access_token } = data.data
+				signIn(data.data, access_token)
+				toast.success(`Welcome ${capitalize(data.data.first_name)}`)
+				router.push("/dashboard")
+			} catch (error: unknown) {
+				const {
+					response: {
+						data: { message },
+					},
+				} = error as HttpError
+				toast.error(message ?? "An error occurred")
+			}
+		},
+		onError: (error) => {
+			console.error("An error occurred", error)
+		},
+	})
 
-	// No need for "onError" and "onSuccess" callbacks here since we already handle that globally.
 	const { isPending, mutate } = useMutation({
 		mutationKey: ["login"],
 		mutationFn: (values: LoginFormValues) => SignInMutation(values),
 		onSuccess: (data) => {
 			const { access_token } = data.data
+
+			setToken(access_token)
+			const isStudent = data.data.user_type === "STUDENT"
+
+			if (!data.data.is_verified) {
+				toast.success("Verify your email to complete registration", {
+					description: "Please check your email to verify your account",
+				})
+
+				router.push({
+					pathname: isStudent ? "/signup/student/verify-email" : "/signup/parent/verify-email",
+					query: {
+						email: encodeURIComponent(data.data.email.trim()),
+						step: "3",
+					},
+				})
+				return
+			}
+
+			if (!data.data.chosen_study_plan && isStudent) {
+				toast.success("Choose your study plan", {
+					description: "Please choose your study plan to complete registration",
+				})
+				router.push({
+					pathname: "/signup/student/studying-for",
+					query: {
+						step: "4",
+					},
+				})
+				return
+			}
+
 			signIn(data.data, access_token)
 			toast.success("Login successful!")
 			router.replace("/dashboard")
 		},
 	})
+
 	const onSubmit = (values: LoginFormValues) => {
 		mutate(values)
 	}
@@ -83,6 +125,7 @@ const Page = () => {
 						<AuthGraphic />
 						<h2 className="font-body text-2xl font-bold text-neutral-900">Welcome Back</h2>
 					</header>
+
 					<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 font-body font-normal">
 						<Input
 							type="email"
@@ -92,6 +135,7 @@ const Page = () => {
 							control={control}
 							name="email"
 						/>
+
 						<div className="flex flex-col gap-4">
 							<Input
 								type="password"
@@ -101,6 +145,7 @@ const Page = () => {
 								control={control}
 								name="password"
 							/>
+
 							<div className="flex items-center justify-between gap-1 text-sm">
 								<label className="col-span-full flex items-center gap-3 font-normal">
 									<input
@@ -128,18 +173,20 @@ const Page = () => {
 							</p>
 						</div>
 					</form>
+
 					<div className="flex flex-col gap-4">
 						<p className="relative text-center text-sm before:absolute before:left-0 before:top-1/2 before:h-[1px] before:w-5/12 before:-translate-y-1/2 before:bg-[linear-gradient(90deg,_#FFFFFF_0%,_#D0D5DD_100%)] after:absolute after:right-0 after:top-1/2 after:h-[1px] after:w-5/12 after:-translate-y-1/2 after:bg-[linear-gradient(90deg,_#D0D5DD_0%,_#ffffff_100%)]">
 							Or
 						</p>
-						<GoogleLogin
-							onSuccess={onSuccess}
-							onError={onError}
-							context="signin"
-							text="continue_with"
-							logo_alignment="center"
-							size="large"
-						/>
+
+						<Button
+							type="button"
+							variant="ghost"
+							className="font-normal"
+							onClick={() => loginWithGoogle()}>
+							<GoogleIcon />
+							Sign in with Google
+						</Button>
 					</div>
 				</div>
 			</AuthLayout>
