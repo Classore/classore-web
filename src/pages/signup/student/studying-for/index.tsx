@@ -2,19 +2,15 @@ import { AuthLayout } from "@/components/layouts/auth"
 import { Seo, Spinner } from "@/components/shared"
 
 import { StudyingGraphic } from "@/assets/icons"
+import { CheckoutModal } from "@/components/modals"
 import { SignupStepper } from "@/components/signup-stepper"
 import { Button } from "@/components/ui/button"
 import { MultiSelect } from "@/components/ui/multi-select"
 import { Select, SelectItem } from "@/components/ui/select"
 import { formatCurrency } from "@/lib"
-import {
-	useCreateStudyTimeline,
-	useGetExamBundles,
-	useGetExams,
-	useGetSubjects,
-} from "@/queries/school"
+import { useGetExamBundles, useGetExams, useGetSubjects, useVetStudyPack } from "@/queries/school"
+import { useMiscStore } from "@/store/z-store/misc"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Lock02 } from "@untitled-ui/icons-react"
 import * as React from "react"
 import { useForm, useWatch } from "react-hook-form"
 import * as z from "zod"
@@ -44,6 +40,8 @@ const studyingForSchema = z.object({
 type StudyingForFormValues = z.infer<typeof studyingForSchema>
 
 const Page = () => {
+	const setMiscStore = useMiscStore((state) => state.setMisc)
+
 	const [open, setOpen] = React.useState(false)
 	const { control, handleSubmit, resetField } = useForm<StudyingForFormValues>({
 		resolver: zodResolver(studyingForSchema),
@@ -79,15 +77,20 @@ const Page = () => {
 		(b) => b.examinationbundle_id === form.chosen_bundle
 	)?.examinationbundle_max_subjects
 
-	const bundle_amount =
-		bundles?.find((b) => b.examinationbundle_id === form.chosen_bundle)?.examinationbundle_amount ?? 0
-
-	const { isPending, mutate } = useCreateStudyTimeline()
+	const { isPending, mutate } = useVetStudyPack()
 	const onSubmit = (values: StudyingForFormValues) => {
-		mutate(values, {
+		const payload = {
+			chosen_bundle: values.chosen_bundle,
+			subject_length: values.subjects.length,
+		}
+		mutate(payload, {
 			onSuccess: (data) => {
+				const payload = {
+					...values,
+					...data.data,
+				}
+				setMiscStore(payload)
 				setOpen(true)
-				window.open(data.data.payment_link.authorization_url, "_self")
 			},
 		})
 	}
@@ -137,28 +140,17 @@ const Page = () => {
 								maxSelectable={maxBundleSubject ?? 0}
 							/>
 
-							<div className="col-span-full flex flex-col gap-2">
+							<div className="col-span-full">
 								<Button type="submit" disabled={isPending}>
-									{isPending ? <Spinner /> : `Pay ${formatCurrency(Number(bundle_amount) ?? 0)}`}
+									{isPending ? <Spinner /> : `Continue`}
 								</Button>
-								<div className="flex items-center gap-1.5 self-center text-neutral-500">
-									<Lock02 width={18} />
-									<p className="text-center text-sm">Payment secured by Paystack</p>
-								</div>
 							</div>
 						</form>
 					</div>
 				</div>
 			</AuthLayout>
 
-			{open ? (
-				<div className="fixed left-0 top-0 z-50 flex h-screen w-screen items-center justify-center gap-2 bg-black/50">
-					<div className="grid max-w-xs place-items-center gap-4 rounded-md bg-white p-10 text-center text-sm text-neutral-600">
-						<Spinner variant="primary" size="md" />
-						<p className="leading-tight">Please wait while we redirect you to the payment page...</p>
-					</div>
-				</div>
-			) : null}
+			<CheckoutModal open={open} setOpen={setOpen} />
 		</>
 	)
 }

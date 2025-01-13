@@ -26,6 +26,7 @@ export const endpoints = (id?: string) => {
 		get_subjects: "/school/subject/fetch-all",
 		get_classes: "/school/subject/fetch-classes",
 		create_study_timeline: "/school/exams/create-study-timeline",
+		vet_study_pack: "/school/exams/vet-study-pack-options",
 	} as const
 
 	const waitlist = {
