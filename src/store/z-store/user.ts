@@ -28,6 +28,8 @@ const useUserStore = createPersistMiddleware<UserStore>("classore-user", (set) =
 	},
 	signOut: () => {
 		set(() => ({ user: null }))
+		localStorage.removeItem("classore-user")
+		localStorage.removeItem("CLASSORE_USER")
 		Cookies.remove("CLASSORE_TOKEN")
 	},
 }))
