@@ -8,18 +8,13 @@ import { MultiSelect } from "@/components/ui/multi-select"
 import { Select, SelectItem } from "@/components/ui/select"
 import { formatCurrency } from "@/lib"
 import {
-	getExamBundlesQueryOptions,
-	getExamsQueryOptions,
-	getSubjectsQueryOptions,
 	useCreateStudyTimeline,
 	useGetExamBundles,
 	useGetExams,
 	useGetSubjects,
 } from "@/queries/school"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { dehydrate, QueryClient } from "@tanstack/react-query"
 import { Lock02 } from "@untitled-ui/icons-react"
-import type { GetStaticProps } from "next"
 import * as React from "react"
 import { useForm, useWatch } from "react-hook-form"
 import * as z from "zod"
@@ -30,52 +25,27 @@ const studyingForSchema = z.object({
 			required_error: "Please select an option",
 		})
 		.min(1, { message: "Please select an option" }),
-	subjects: z
-		.array(
-			z.string({
-				required_error: "Please select at least one subject",
-			})
-		)
-		.nonempty({ message: "Please select at least one subject" }),
 	chosen_bundle: z
 		.string({
 			required_error: "Please select an option",
 		})
 		.min(1, { message: "Please select an option" }),
+	subjects: z
+		.string({
+			required_error: "Please select at least one subject",
+			invalid_type_error: "Please select at least one subject",
+		})
+		.min(1, { message: "Please select at least one subject" })
+		.transform((value) => {
+			return value.split(", ")
+		}),
 })
 
 type StudyingForFormValues = z.infer<typeof studyingForSchema>
 
-export const getStaticProps = (async () => {
-	const queryClient = new QueryClient()
-
-	let dehydratedState = {}
-
-	try {
-		await Promise.allSettled([
-			queryClient.ensureQueryData(getExamsQueryOptions),
-			queryClient.ensureQueryData(getExamBundlesQueryOptions),
-			queryClient.ensureQueryData(getSubjectsQueryOptions),
-		])
-
-		dehydratedState = dehydrate(queryClient)
-		queryClient.clear()
-	} catch {
-		return {
-			props: {},
-		}
-	}
-
-	return {
-		props: {
-			dehydratedState,
-		},
-	}
-}) satisfies GetStaticProps
-
 const Page = () => {
 	const [open, setOpen] = React.useState(false)
-	const { control, handleSubmit } = useForm<StudyingForFormValues>({
+	const { control, handleSubmit, resetField } = useForm<StudyingForFormValues>({
 		resolver: zodResolver(studyingForSchema),
 		defaultValues: {
 			exam_type: "",
@@ -96,18 +66,21 @@ const Page = () => {
 	const examBundles = bundles?.filter(
 		(bundle) => bundle.examinationbundle_examination === form.exam_type
 	)
-	const bundleSubjects = subjects?.filter(
-		(subject) => subject.subject_examination_bundle === form.chosen_bundle
-	)
+
+	// MAYBE: might memorize this to avoid unnecessary re-filtering this
+	const bundleSubjects = subjects
+		?.filter((subject) => subject.subject_examination_bundle === form.chosen_bundle)
+		?.map((subject) => ({
+			label: subject.subject_name,
+			value: subject.subject_id,
+		}))
+
+	const maxBundleSubject = bundles?.find(
+		(b) => b.examinationbundle_id === form.chosen_bundle
+	)?.examinationbundle_max_subjects
 
 	const bundle_amount =
 		bundles?.find((b) => b.examinationbundle_id === form.chosen_bundle)?.examinationbundle_amount ?? 0
-
-	const options =
-		bundleSubjects?.map((subject) => ({
-			label: subject.subject_name,
-			value: subject.subject_id,
-		})) ?? []
 
 	const { isPending, mutate } = useCreateStudyTimeline()
 	const onSubmit = (values: StudyingForFormValues) => {
@@ -118,6 +91,11 @@ const Page = () => {
 			},
 		})
 	}
+
+	React.useEffect(() => {
+		// if (form.chosen_bundle) {
+		resetField("subjects")
+	}, [form.chosen_bundle, form.exam_type, resetField])
 
 	return (
 		<>
@@ -155,7 +133,8 @@ const Page = () => {
 								name="subjects"
 								label="Select subjects"
 								placeholder="Select subjects..."
-								options={options}
+								options={bundleSubjects ?? []}
+								maxSelectable={maxBundleSubject ?? 0}
 							/>
 
 							<div className="col-span-full flex flex-col gap-2">

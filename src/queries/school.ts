@@ -36,9 +36,10 @@ type ExamBundlesResp = PaginatedResponse<{
 	examinationbundle_amount: number
 	examinationbundle_start_date: string
 	examinationbundle_end_date: string
-	examination_name: string
-	examinationbundle_examination: string
+	examinationbundle_max_subjects: number
+	examination_name: number
 	subject_count: number
+	examinationbundle_examination: string
 }>
 const getExamBundles = async () => {
 	return axios
