@@ -88,7 +88,7 @@ export const SelectItem = React.forwardRef<
 		{...props}>
 		<SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
 
-		<span className="absolute right-4 ml-auto flex size-5 items-center justify-center rounded-full border-2 transition-all group-hover:border-primary-300 group-focus-visible:border-primary-300 group-data-[highlighted]:border-primary-300 group-data-[state=checked]:border-primary-300">
+		<span className="absolute right-4 ml-auto flex size-5 items-center justify-center rounded-full border-2 border-neutral-300 transition-all group-hover:border-primary-300 group-focus-visible:border-primary-300 group-data-[highlighted]:border-primary-300 group-data-[state=checked]:border-primary-300">
 			<SelectPrimitive.ItemIndicator className="size-2.5 rounded-full bg-primary-300" />
 		</span>
 	</SelectPrimitive.Item>
