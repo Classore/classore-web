@@ -36,8 +36,14 @@ const schema = z.object({
 			examination: z.string().min(1, "Please select an exam type"),
 			examination_bundle: z.string().min(1, "Please select a prep bundle"),
 			subjects: z
-				.array(z.string().min(1, "Please select an option"))
-				.min(1, "Please select at least one subject"),
+				.string({
+					required_error: "Please select at least one subject",
+					invalid_type_error: "Please select at least one subject",
+				})
+				.min(1, { message: "Please select at least one subject" })
+				.transform((value) => {
+					return value.split(", ")
+				}),
 		})
 	),
 })
@@ -73,22 +79,32 @@ const Page = () => {
 			(bundle) => bundle.examinationbundle_examination === form.wards?.at(index)?.examination
 		)
 	}
-	const bundleSubjects = (index: number) => {
-		return (
-			subjects
-				?.filter(
-					(subject) => subject.subject_examination_bundle === form.wards?.at(index)?.examination_bundle
-				)
-				.map((subject) => ({
-					label: subject.subject_name,
-					value: subject.subject_id,
-				})) ?? []
-		)
-	}
+	const bundleSubjects = React.useCallback(
+		(index: number) => {
+			return (
+				subjects
+					?.filter(
+						(subject) => subject.subject_examination_bundle === form.wards?.at(index)?.examination_bundle
+					)
+					.map((subject) => ({
+						label: subject.subject_name,
+						value: subject.subject_id,
+					})) ?? []
+			)
+		},
+		[form.wards, subjects]
+	)
 
-	/*
-		- get all selected bundles ids from form.ward and their amount. add everything together
-	*/
+	const maxBundleSubject = React.useCallback(
+		(index: number) => {
+			return (
+				bundles?.find((b) => b.examinationbundle_id === form.wards?.at(index)?.examination_bundle)
+					?.examinationbundle_max_subjects ?? 0
+			)
+		},
+		[bundles, form.wards]
+	)
+
 	const bundleAmount = React.useCallback(() => {
 		let amount = 0
 		form.wards?.forEach((ward) => {
@@ -206,7 +222,7 @@ const Page = () => {
 											placeholder="Select subjects..."
 											className="col-span-full"
 											options={bundleSubjects(index) ?? []}
-											info="0/5 subjects selected"
+											maxSelectable={maxBundleSubject(index)}
 										/>
 									</li>
 								))}
@@ -216,7 +232,7 @@ const Page = () => {
 								<button
 									onClick={() => append(initialValue)}
 									type="button"
-									className="flex w-full items-center justify-center gap-2 rounded-md border border-neutral-200 bg-neutral-100 px-4 py-2.5 text-sm text-neutral-500 transition-colors hover:bg-neutral-300">
+									className="flex w-full items-center justify-center gap-2 rounded-md border border-neutral-200 bg-neutral-100 px-4 py-2.5 text-sm text-neutral-500 transition-colors hover:bg-neutral-200">
 									<Plus />
 									<span>Add Another Ward</span>
 								</button>

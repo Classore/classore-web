@@ -36,9 +36,10 @@ type ExamBundlesResp = PaginatedResponse<{
 	examinationbundle_amount: number
 	examinationbundle_start_date: string
 	examinationbundle_end_date: string
-	examination_name: string
-	examinationbundle_examination: string
+	examinationbundle_max_subjects: number
+	examination_name: number
 	subject_count: number
+	examinationbundle_examination: string
 }>
 const getExamBundles = async () => {
 	return axios
@@ -123,10 +124,34 @@ export const useCreateStudyTimeline = () => {
 	return useMutation({
 		mutationKey: ["create-study-timeline"],
 		mutationFn: createStudyTimeline,
+		onSuccess: () => {},
+	})
+}
+
+// <-- VET STUDY PACK -->
+type VetStudyPackPayload = {
+	chosen_bundle: string
+	subject_length: number
+}
+type VetStudyPackResp = {
+	base_amount: number
+	allowed_subjects: number
+	allow_extra_subjects: string
+	number_of_extra_subjects_added: number
+	grand_total: number
+}
+const vetStudyPack = async (payload: VetStudyPackPayload) => {
+	return axios
+		.post<HttpResponse<VetStudyPackResp>>(endpoints().school.vet_study_pack, payload)
+		.then((res) => res.data)
+}
+export const useVetStudyPack = () => {
+	return useMutation({
+		mutationKey: ["vet-study-pack"],
+		mutationFn: vetStudyPack,
 		onSuccess: () => {
-			toast.success("Your study timeline has been created!", {
-				description: "You will be redirected to the payment page",
-			})
+			// fake
+			toast.success("Your study timeline has been created!")
 		},
 	})
 }
