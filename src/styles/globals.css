@@ -194,3 +194,21 @@ input[type="search"]::-webkit-search-results-decoration {
 .str-chat__empty-channel-text {
 	font-size: 14px;
 }
+
+/* modals */
+.modal-primary {
+	background: linear-gradient(180deg, rgba(111, 66, 193, 0.098) 2.11%, rgba(111, 66, 193, 0) 48.08%),
+		white;
+}
+.modal-secondary {
+	background: linear-gradient(360deg, rgba(111, 66, 193, 0) 47.43%, rgba(246, 127, 54, 0.12) 100%),
+		white;
+}
+.modal-destructive {
+	background: linear-gradient(180deg, rgba(223, 28, 65, 0.092) 2.11%, rgba(223, 28, 65, 0) 21.34%),
+		white;
+}
+.modal-success {
+	background: linear-gradient(180deg, rgba(49, 159, 67, 0.098) 2.11%, rgba(49, 159, 67, 0) 48.08%),
+		white;
+}

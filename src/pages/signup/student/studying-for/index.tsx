@@ -2,24 +2,15 @@ import { AuthLayout } from "@/components/layouts/auth"
 import { Seo, Spinner } from "@/components/shared"
 
 import { StudyingGraphic } from "@/assets/icons"
+import { CheckoutModal } from "@/components/modals"
 import { SignupStepper } from "@/components/signup-stepper"
 import { Button } from "@/components/ui/button"
 import { MultiSelect } from "@/components/ui/multi-select"
 import { Select, SelectItem } from "@/components/ui/select"
 import { formatCurrency } from "@/lib"
-import {
-	getExamBundlesQueryOptions,
-	getExamsQueryOptions,
-	getSubjectsQueryOptions,
-	useCreateStudyTimeline,
-	useGetExamBundles,
-	useGetExams,
-	useGetSubjects,
-} from "@/queries/school"
+import { useGetExamBundles, useGetExams, useGetSubjects, useVetStudyPack } from "@/queries/school"
+import { useMiscStore } from "@/store/z-store/misc"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { dehydrate, QueryClient } from "@tanstack/react-query"
-import { Lock02 } from "@untitled-ui/icons-react"
-import type { GetStaticProps } from "next"
 import * as React from "react"
 import { useForm, useWatch } from "react-hook-form"
 import * as z from "zod"
@@ -30,52 +21,29 @@ const studyingForSchema = z.object({
 			required_error: "Please select an option",
 		})
 		.min(1, { message: "Please select an option" }),
-	subjects: z
-		.array(
-			z.string({
-				required_error: "Please select at least one subject",
-			})
-		)
-		.nonempty({ message: "Please select at least one subject" }),
 	chosen_bundle: z
 		.string({
 			required_error: "Please select an option",
 		})
 		.min(1, { message: "Please select an option" }),
+	subjects: z
+		.string({
+			required_error: "Please select at least one subject",
+			invalid_type_error: "Please select at least one subject",
+		})
+		.min(1, { message: "Please select at least one subject" })
+		.transform((value) => {
+			return value.split(", ")
+		}),
 })
 
 type StudyingForFormValues = z.infer<typeof studyingForSchema>
 
-export const getStaticProps = (async () => {
-	const queryClient = new QueryClient()
-
-	let dehydratedState = {}
-
-	try {
-		await Promise.allSettled([
-			queryClient.ensureQueryData(getExamsQueryOptions),
-			queryClient.ensureQueryData(getExamBundlesQueryOptions),
-			queryClient.ensureQueryData(getSubjectsQueryOptions),
-		])
-
-		dehydratedState = dehydrate(queryClient)
-		queryClient.clear()
-	} catch {
-		return {
-			props: {},
-		}
-	}
-
-	return {
-		props: {
-			dehydratedState,
-		},
-	}
-}) satisfies GetStaticProps
-
 const Page = () => {
+	const setMiscStore = useMiscStore((state) => state.setMisc)
+
 	const [open, setOpen] = React.useState(false)
-	const { control, handleSubmit } = useForm<StudyingForFormValues>({
+	const { control, handleSubmit, resetField } = useForm<StudyingForFormValues>({
 		resolver: zodResolver(studyingForSchema),
 		defaultValues: {
 			exam_type: "",
@@ -96,28 +64,41 @@ const Page = () => {
 	const examBundles = bundles?.filter(
 		(bundle) => bundle.examinationbundle_examination === form.exam_type
 	)
-	const bundleSubjects = subjects?.filter(
-		(subject) => subject.subject_examination_bundle === form.chosen_bundle
-	)
 
-	const bundle_amount =
-		bundles?.find((b) => b.examinationbundle_id === form.chosen_bundle)?.examinationbundle_amount ?? 0
-
-	const options =
-		bundleSubjects?.map((subject) => ({
+	// MAYBE: might memorize this to avoid unnecessary re-filtering this
+	const bundleSubjects = subjects
+		?.filter((subject) => subject.subject_examination_bundle === form.chosen_bundle)
+		?.map((subject) => ({
 			label: subject.subject_name,
 			value: subject.subject_id,
-		})) ?? []
+		}))
 
-	const { isPending, mutate } = useCreateStudyTimeline()
+	const maxBundleSubject = bundles?.find(
+		(b) => b.examinationbundle_id === form.chosen_bundle
+	)?.examinationbundle_max_subjects
+
+	const { isPending, mutate } = useVetStudyPack()
 	const onSubmit = (values: StudyingForFormValues) => {
-		mutate(values, {
+		const payload = {
+			chosen_bundle: values.chosen_bundle,
+			subject_length: values.subjects.length,
+		}
+		mutate(payload, {
 			onSuccess: (data) => {
+				const payload = {
+					...values,
+					...data.data,
+				}
+				setMiscStore(payload)
 				setOpen(true)
-				window.open(data.data.payment_link.authorization_url, "_self")
 			},
 		})
 	}
+
+	React.useEffect(() => {
+		// if (form.chosen_bundle) {
+		resetField("subjects")
+	}, [form.chosen_bundle, form.exam_type, resetField])
 
 	return (
 		<>
@@ -155,31 +136,21 @@ const Page = () => {
 								name="subjects"
 								label="Select subjects"
 								placeholder="Select subjects..."
-								options={options}
+								options={bundleSubjects ?? []}
+								maxSelectable={maxBundleSubject ?? 0}
 							/>
 
-							<div className="col-span-full flex flex-col gap-2">
+							<div className="col-span-full">
 								<Button type="submit" disabled={isPending}>
-									{isPending ? <Spinner /> : `Pay ${formatCurrency(Number(bundle_amount) ?? 0)}`}
+									{isPending ? <Spinner /> : `Continue`}
 								</Button>
-								<div className="flex items-center gap-1.5 self-center text-neutral-500">
-									<Lock02 width={18} />
-									<p className="text-center text-sm">Payment secured by Paystack</p>
-								</div>
 							</div>
 						</form>
 					</div>
 				</div>
 			</AuthLayout>
 
-			{open ? (
-				<div className="fixed left-0 top-0 z-50 flex h-screen w-screen items-center justify-center gap-2 bg-black/50">
-					<div className="grid max-w-xs place-items-center gap-4 rounded-md bg-white p-10 text-center text-sm text-neutral-600">
-						<Spinner variant="primary" size="md" />
-						<p className="leading-tight">Please wait while we redirect you to the payment page...</p>
-					</div>
-				</div>
-			) : null}
+			<CheckoutModal open={open} setOpen={setOpen} />
 		</>
 	)
 }
