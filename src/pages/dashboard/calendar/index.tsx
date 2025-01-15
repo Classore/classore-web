@@ -67,7 +67,7 @@ const Page = () => {
 		})
 
 		return monthEvents
-	}, [current])
+	}, [current, events])
 
 	const goToPreviousMonth = () => setCurrent(subMonths(current, 1))
 

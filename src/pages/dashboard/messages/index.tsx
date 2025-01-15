@@ -1,14 +1,14 @@
 import { useRouter } from "next/router"
-import dynamic from "next/dynamic"
+// import dynamic from "next/dynamic"
 import React from "react"
 
 import { DashboardLayout } from "@/components/layouts"
 import { Loading, Seo } from "@/components/shared"
 import { useUserStore } from "@/store/z-store"
 
-export const ChatComponent = dynamic(() => import("@/components/shared/chat-component"), {
-	ssr: false,
-})
+// const ChatComponent = dynamic(() => import("@/components/shared/chat-component"), {
+// 	ssr: false,
+// })
 
 const Page = () => {
 	const { user } = useUserStore()
