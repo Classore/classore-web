@@ -1,7 +1,6 @@
 import { RiFileTextLine, RiPlayCircleLine, RiTimeLine } from "@remixicon/react"
 import Image from "next/image"
 import Link from "next/link"
-import React from "react"
 
 import type { CourseProps } from "@/types"
 
@@ -14,7 +13,7 @@ export const CourseCard = ({ course }: Props) => {
 		<Link
 			href={`/dashboard/courses/${course.id}`}
 			key={course.id}
-			className="flex aspect-[1.12/1] w-[350px] flex-col gap-5 rounded-lg border p-4 transition-all duration-700 hover:shadow-2xl">
+			className="flex min-w-[340px] flex-col gap-5 rounded-lg border p-4 transition-all duration-700 hover:shadow-2xl">
 			<div className="relative aspect-[1.96/1] w-full rounded-lg">
 				<div className="absolute right-[10px] top-2 !z-[5] flex items-center gap-1 rounded bg-white p-1">
 					<RiTimeLine size={18} />
@@ -30,7 +29,7 @@ export const CourseCard = ({ course }: Props) => {
 			</div>
 			<div className="flex w-full flex-col">
 				<h5 className="font-medium capitalize">{course.title}</h5>
-				<p className="text-sm text-neutral-400">{course.description.substring(0, 45)}...</p>
+				<p className="truncate text-sm text-neutral-400">{course.description}.</p>
 			</div>
 			<hr className="w-full bg-neutral-300" />
 			<div className="flex w-full items-center justify-between">

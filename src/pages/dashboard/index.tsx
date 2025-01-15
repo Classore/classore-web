@@ -1,7 +1,7 @@
 import { useQueries } from "@tanstack/react-query"
 import Link from "next/link"
 
-import { Challenge, Leaderboard, Learning } from "@/components/home"
+import { Challenge, ExplorePopularExams, Leaderboard, Learning, MyCourses } from "@/components/home"
 import { DashboardLayout } from "@/components/layouts"
 import { Seo } from "@/components/shared"
 import { Button } from "@/components/ui/button"
@@ -31,6 +31,7 @@ const Page = () => {
 							<Link href="/dashboard/categories">Browse Categories</Link>
 						</Button>
 					</div>
+
 					<div className="flex w-full flex-col gap-4">
 						<p className="text-xl font-medium">Overview</p>
 						<div className="grid grid-cols-3 gap-4">
@@ -39,17 +40,10 @@ const Page = () => {
 							<Leaderboard position={1} />
 						</div>
 					</div>
-					<div className="flex w-full flex-col gap-4">
-						<div className="flex items-center">
-							<p className="text-xl font-medium">My Courses</p>
-						</div>
-						<div className="flex w-auto items-center gap-4 overflow-x-auto"></div>
-					</div>
-					<div className="flex w-full flex-col gap-4">
-						<div className="flex items-center">
-							<p className="text-xl font-medium">Explore Popular Exams</p>
-						</div>
-						<div className="flex w-auto items-center gap-4 overflow-x-auto"></div>
+
+					<div className="flex flex-col gap-10 pb-10">
+						<MyCourses />
+						<ExplorePopularExams />
 					</div>
 				</div>
 			</DashboardLayout>

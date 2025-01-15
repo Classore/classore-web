@@ -24,6 +24,9 @@ const config: Config = {
 				dashboard: "url('/assets/images/dashboard.png')",
 				squiggly: "url('/assets/images/squiggly.png')",
 			},
+			gridTemplateColumns: {
+				fluid: "repeat(auto-fit, minmax(300px, 1fr))",
+			},
 			colors: {
 				error: "#E33629",
 				neutral: {
