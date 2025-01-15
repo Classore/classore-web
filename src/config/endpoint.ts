@@ -18,7 +18,7 @@ export const endpoints = (id?: string) => {
 		create: "/courses",
 		update: `/courses/${id}`,
 		delete: `/courses/${id}`,
-	}
+	} as const
 
 	const school = {
 		get_exams: "/school/exams/fetch-exams",
@@ -27,6 +27,7 @@ export const endpoints = (id?: string) => {
 		get_classes: "/school/subject/fetch-classes",
 		create_study_timeline: "/school/exams/create-study-timeline",
 		vet_study_pack: "/school/exams/vet-study-pack-options",
+		get_my_courses: "/student/my-courses",
 	} as const
 
 	const waitlist = {

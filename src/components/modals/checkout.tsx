@@ -27,7 +27,9 @@ export const CheckoutModal = ({ open, setOpen }: CheckoutModalProps) => {
 	const { data: subjects } = useGetSubjects()
 
 	const exam_type = exams?.find((exam) => exam.examination_id === values.exam_type)?.examination_name
-	const prep_bundle = bundles?.find((bundle) => bundle.examinationbundle_id === values.chosen_bundle)
+	const prep_bundle = bundles?.data.find(
+		(bundle) => bundle.examinationbundle_id === values.chosen_bundle
+	)
 	const chosen_subjects =
 		subjects
 			?.filter((subject) => values.subjects.includes(subject.subject_id))

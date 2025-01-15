@@ -6,7 +6,6 @@ import { DashboardLayout } from "@/components/layouts"
 import { Seo } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 
-import { Bundle } from "@/components/course"
 
 const Page = () => {
 	return (
@@ -38,10 +37,10 @@ const Page = () => {
 						</div>
 					</div>
 
-					<div className="flex flex-col gap-10">
+					{/* <div className="flex flex-col gap-10">
 						<Bundle title="JAMB Prep Bundle" />
 						<Bundle title="WAEC Prep Bundle" />
-					</div>
+					</div> */}
 				</div>
 			</DashboardLayout>
 		</>

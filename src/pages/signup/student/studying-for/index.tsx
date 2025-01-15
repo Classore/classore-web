@@ -61,7 +61,7 @@ const Page = () => {
 	const { data: subjects } = useGetSubjects()
 
 	// filters
-	const examBundles = bundles?.filter(
+	const examBundles = bundles?.data.filter(
 		(bundle) => bundle.examinationbundle_examination === form.exam_type
 	)
 
@@ -73,7 +73,7 @@ const Page = () => {
 			value: subject.subject_id,
 		}))
 
-	const maxBundleSubject = bundles?.find(
+	const maxBundleSubject = bundles?.data.find(
 		(b) => b.examinationbundle_id === form.chosen_bundle
 	)?.examinationbundle_max_subjects
 

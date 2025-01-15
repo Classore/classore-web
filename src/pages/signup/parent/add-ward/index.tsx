@@ -75,7 +75,7 @@ const Page = () => {
 
 	// filters
 	const examBundles = (index: number) => {
-		return bundles?.filter(
+		return bundles?.data.filter(
 			(bundle) => bundle.examinationbundle_examination === form.wards?.at(index)?.examination
 		)
 	}
@@ -98,7 +98,7 @@ const Page = () => {
 	const maxBundleSubject = React.useCallback(
 		(index: number) => {
 			return (
-				bundles?.find((b) => b.examinationbundle_id === form.wards?.at(index)?.examination_bundle)
+				bundles?.data.find((b) => b.examinationbundle_id === form.wards?.at(index)?.examination_bundle)
 					?.examinationbundle_max_subjects ?? 0
 			)
 		},
@@ -108,7 +108,7 @@ const Page = () => {
 	const bundleAmount = React.useCallback(() => {
 		let amount = 0
 		form.wards?.forEach((ward) => {
-			const exam_bundle = bundles?.find(
+			const exam_bundle = bundles?.data.find(
 				(bundle) => bundle.examinationbundle_id === ward.examination_bundle
 			)
 			amount += exam_bundle?.examinationbundle_amount ?? 0

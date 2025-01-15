@@ -30,7 +30,7 @@ export const useGetExams = () => {
 }
 
 // <-- GET EXAM BUNDLES -->
-type ExamBundlesResp = PaginatedResponse<{
+export type ExamBundlesResp = PaginatedResponse<{
 	examinationbundle_id: string
 	examinationbundle_name: string
 	examinationbundle_amount: number
@@ -40,21 +40,30 @@ type ExamBundlesResp = PaginatedResponse<{
 	examination_name: number
 	subject_count: number
 	examinationbundle_examination: string
+	enrolled: number
 }>
-const getExamBundles = async () => {
+type Params = Partial<typeof params> & {
+	search?: string
+	examination?: string
+}
+const getExamBundles = async (params?: Params) => {
 	return axios
-		.get<HttpResponse<ExamBundlesResp>>(endpoints().school.get_exam_bundles, { params })
+		.get<HttpResponse<ExamBundlesResp>>(endpoints().school.get_exam_bundles, {
+			params: {
+				...params,
+				...(params?.examination && { examination: params.examination }),
+			},
+		})
 		.then((res) => res.data)
 }
-export const getExamBundlesQueryOptions = queryOptions({
-	queryKey: ["exam-bundles"],
-	queryFn: getExamBundles,
-	staleTime: Infinity,
-	gcTime: Infinity,
-	select: (data) => data.data.data,
-})
-export const useGetExamBundles = () => {
-	return useQuery(getExamBundlesQueryOptions)
+export const useGetExamBundles = (params?: Params) => {
+	return useQuery({
+		queryKey: ["exam-bundles", { params }],
+		queryFn: () => getExamBundles(params),
+		staleTime: Infinity,
+		gcTime: Infinity,
+		select: (data) => data.data,
+	})
 }
 
 // <-- GET SUBJECTS -->

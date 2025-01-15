@@ -67,7 +67,7 @@ export const NextPrevButtons = ({ emblaApi }: PropType) => {
 				type="button"
 				disabled={nextBtnDisabled}
 				onClick={onNextButtonClick}
-				className="grid size-8 touch-manipulation place-items-center rounded-full border bg-white text-black transition-all hover:bg-neutral-100 active:scale-105 disabled:cursor-not-allowed disabled:opacity-50">
+				className="grid size-8 touch-manipulation place-items-center rounded-full border bg-white text-black transition-all active:scale-105 disabled:cursor-not-allowed disabled:opacity-50 [&:not(:disabled)]:hover:bg-neutral-100">
 				<ChevronLeft className="size-4 rotate-180" />
 				<span className="sr-only">Next</span>
 			</button>

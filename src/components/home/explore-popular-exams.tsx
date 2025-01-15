@@ -1,10 +1,14 @@
-import { categories } from "@/mock"
+import { useGetExamBundles } from "@/queries/school"
 import useEmblaCarousel from "embla-carousel-react"
 import { NextPrevButtons } from "../embla-navigation"
+import { Spinner } from "../shared"
 import { ExamCard } from "./exam-card"
 
 export const ExplorePopularExams = () => {
 	const [emblaRef, emblaApi] = useEmblaCarousel()
+	const { data: bundles, isPending } = useGetExamBundles({
+		limit: 15,
+	})
 
 	return (
 		<div className="flex w-full flex-col gap-4">
@@ -14,13 +18,21 @@ export const ExplorePopularExams = () => {
 				<NextPrevButtons emblaApi={emblaApi} />
 			</div>
 
-			<div className="overflow-x-clip" ref={emblaRef}>
-				<div className="flex touch-pan-y touch-pinch-zoom flex-col items-center gap-4 md:flex-row">
-					{categories[0].subjects.map((subject) => (
-						<ExamCard key={subject.id} course={subject} />
-					))}
+			{isPending ? (
+				<Spinner variant="primary" />
+			) : (
+				<div className="overflow-x-clip" ref={emblaRef}>
+					<div className="flex touch-pan-y touch-pinch-zoom flex-col items-center gap-4 md:flex-row">
+						{bundles?.data.length ? (
+							bundles.data.map((subject) => (
+								<ExamCard key={subject.examinationbundle_id} course={subject} className="min-w-[360px]" />
+							))
+						) : (
+							<p className="text-sm text-neutral-400">No bundles found</p>
+						)}
+					</div>
 				</div>
-			</div>
+			)}
 		</div>
 	)
 }

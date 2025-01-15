@@ -11,6 +11,37 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 
 import { BrowserCategories } from "@/components/categories"
 import { categories } from "@/mock"
+import { getExamsQueryOptions } from "@/queries/school"
+import { dehydrate, QueryClient } from "@tanstack/react-query"
+import type { GetStaticProps } from "next"
+
+export const getStaticProps = (async () => {
+	const queryClient = new QueryClient()
+	let dehydratedState = {}
+
+	try {
+		const resp = await Promise.allSettled([queryClient.ensureQueryData(getExamsQueryOptions)])
+
+		if (resp[0].status === "rejected") {
+			return {
+				props: {},
+			}
+		}
+
+		dehydratedState = dehydrate(queryClient)
+		queryClient.clear()
+	} catch {
+		return {
+			props: {},
+		}
+	}
+
+	return {
+		props: {
+			dehydratedState,
+		},
+	}
+}) satisfies GetStaticProps
 
 const Page = () => {
 	const featured = categories.filter((category) => !!category.featured)
