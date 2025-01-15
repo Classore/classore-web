@@ -1,8 +1,9 @@
-import { useGetExamBundles, useGetExams } from "@/queries/school"
 import * as React from "react"
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
+import { useGetExamBundles, useGetExams } from "@/queries/school"
 import { ExamCard } from "../home/exam-card"
 import { Spinner } from "../shared"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
 
 export const BrowserCategories = () => {
 	const [tab, setTab] = React.useState("all")
@@ -18,7 +19,6 @@ export const BrowserCategories = () => {
 			<div className="flex w-full flex-col gap-6">
 				<div className="flex items-center gap-4">
 					<p className="text-xl font-medium">Browse Categories</p>
-
 					<TabsList>
 						<TabsTrigger value="all">All</TabsTrigger>
 						{exams?.map((exam) => (
@@ -33,7 +33,7 @@ export const BrowserCategories = () => {
 					<Spinner variant="primary" />
 				) : (
 					<>
-						<TabsContent value="all" className="grid-cols-fluid grid gap-x-4 gap-y-6">
+						<TabsContent value="all" className="grid grid-cols-fluid gap-x-4 gap-y-6">
 							{bundles?.data.length ? (
 								bundles.data.map((subject) => (
 									<ExamCard key={subject.examinationbundle_id} course={subject} className="min-w-[360px]" />
@@ -47,7 +47,7 @@ export const BrowserCategories = () => {
 							<TabsContent
 								key={exam.examination_id}
 								value={exam.examination_id}
-								className="grid-cols-fluid grid gap-x-4 gap-y-6">
+								className="grid grid-cols-fluid gap-x-4 gap-y-6">
 								{bundles?.data.length ? (
 									bundles.data.map((subject) => (
 										<ExamCard key={subject.examinationbundle_id} course={subject} className="min-w-[360px]" />

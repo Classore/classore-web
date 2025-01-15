@@ -2,10 +2,10 @@ import { RiFileTextLine, RiPlayCircleLine, RiTimeLine } from "@remixicon/react"
 import Image from "next/image"
 import Link from "next/link"
 
-import type { MyCoursesResp } from "@/queries/course"
+import type { ExamCourseProps } from "@/types/type"
 
 interface Props {
-	course: MyCoursesResp["data"][number]
+	course: ExamCourseProps
 }
 
 export const CourseCard = ({ course }: Props) => {

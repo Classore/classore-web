@@ -3,13 +3,11 @@ import { addMonths, format, subMonths } from "date-fns"
 import Link from "next/link"
 import React from "react"
 
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import { DashboardLayout } from "@/components/layouts"
 import { AvatarGroup, Seo } from "@/components/shared"
 import { Button } from "@/components/ui/button"
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import type { EventProps } from "@/types"
-
-import { events } from "@/mock"
 
 type DayEventProps = EventProps & {
 	status: "past" | "upcoming" | "current"
@@ -30,6 +28,7 @@ const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Fri
 
 const Page = () => {
 	const [current, setCurrent] = React.useState(new Date())
+	const events: EventProps[] = []
 
 	const getEventStatus = React.useCallback((event: EventProps) => {
 		const today = new Date()

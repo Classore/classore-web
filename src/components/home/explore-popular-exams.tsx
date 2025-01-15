@@ -1,8 +1,9 @@
-import { useGetExamBundles } from "@/queries/school"
 import useEmblaCarousel from "embla-carousel-react"
+
+import { useGetExamBundles } from "@/queries/school"
 import { NextPrevButtons } from "../embla-navigation"
-import { Spinner } from "../shared"
 import { ExamCard } from "./exam-card"
+import { Spinner } from "../shared"
 
 export const ExplorePopularExams = () => {
 	const [emblaRef, emblaApi] = useEmblaCarousel()
@@ -14,7 +15,6 @@ export const ExplorePopularExams = () => {
 		<div className="flex w-full flex-col gap-4">
 			<div className="flex items-center justify-between">
 				<p className="text-xl font-medium">Explore popular exams</p>
-
 				<NextPrevButtons emblaApi={emblaApi} />
 			</div>
 

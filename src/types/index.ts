@@ -1,3 +1,5 @@
+import type { ExamCourseProps } from "./type"
+
 export type Maybe<T> = T | null
 
 export type Undefined<T> = T | undefined
@@ -111,7 +113,7 @@ export type CategoryProps = Node & {
 	price: number
 	reviews: ReviewProps[]
 	summary: string
-	subjects: CourseProps[]
+	subjects: ExamCourseProps[]
 }
 
 export type CourseProps = Node & {

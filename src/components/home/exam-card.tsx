@@ -26,7 +26,9 @@ export const ExamCard = ({ course, className }: Props) => {
 				className="h-52 w-full rounded-md object-cover"
 			/>
 			<div className="flex items-center justify-between gap-1">
-				<h5 className="font-medium capitalize">{course.examinationbundle_name} Prep Bundle</h5>
+				<h5 className="font-medium capitalize">
+					{course.examinationbundle_name.toUpperCase()} Prep Bundle
+				</h5>
 
 				<p className="text-sm font-bold">{formatCurrency(course.examinationbundle_amount)}</p>
 			</div>

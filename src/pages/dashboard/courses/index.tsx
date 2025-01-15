@@ -6,7 +6,6 @@ import { DashboardLayout } from "@/components/layouts"
 import { Seo } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 
-
 const Page = () => {
 	return (
 		<>
