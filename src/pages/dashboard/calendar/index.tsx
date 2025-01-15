@@ -28,7 +28,6 @@ const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Fri
 
 const Page = () => {
 	const [current, setCurrent] = React.useState(new Date())
-	const events: EventProps[] = []
 
 	const getEventStatus = React.useCallback((event: EventProps) => {
 		const today = new Date()
@@ -50,6 +49,7 @@ const Page = () => {
 
 	const processedEvents = React.useMemo(() => {
 		const monthEvents: Record<string, EventProps[]> = {}
+		const events: EventProps[] = []
 		events.forEach((event) => {
 			event.date.forEach((dateItem) => {
 				const eventDate = new Date(dateItem)
@@ -67,7 +67,7 @@ const Page = () => {
 		})
 
 		return monthEvents
-	}, [current, events])
+	}, [current])
 
 	const goToPreviousMonth = () => setCurrent(subMonths(current, 1))
 

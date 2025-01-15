@@ -14,7 +14,7 @@ const Page = () => {
 	const { user } = useUserStore()
 	const router = useRouter()
 	const { otherUserId } = router.query
-	otherUserId
+	console.log(otherUserId)
 
 	if (!user) return <Loading />
 
