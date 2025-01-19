@@ -6,6 +6,7 @@
 		"formik",
 		"Paystack",
 		"Popover",
-		"Signup"
+		"Signup",
+		"vettings"
 	]
 }

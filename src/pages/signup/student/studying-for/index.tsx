@@ -79,20 +79,25 @@ const Page = () => {
 
 	const { isPending, mutate } = useVetStudyPack()
 	const onSubmit = (values: StudyingForFormValues) => {
-		const payload = {
-			chosen_bundle: values.chosen_bundle,
-			subject_length: values.subjects.length,
-		}
-		mutate(payload, {
-			onSuccess: (data) => {
-				const payload = {
-					...values,
-					...data.data,
-				}
-				setMiscStore(payload)
-				setOpen(true)
+		const payload = [
+			{
+				chosen_bundle: values.chosen_bundle,
+				subject_length: values.subjects.length,
 			},
-		})
+		]
+		mutate(
+			{ vettings: payload },
+			{
+				onSuccess: (data) => {
+					const payload = {
+						...values,
+						...data.data,
+					}
+					setMiscStore(payload)
+					setOpen(true)
+				},
+			}
+		)
 	}
 
 	React.useEffect(() => {

@@ -139,15 +139,24 @@ export const useCreateStudyTimeline = () => {
 
 // <-- VET STUDY PACK -->
 type VetStudyPackPayload = {
-	chosen_bundle: string
-	subject_length: number
+	vettings: Array<{
+		chosen_bundle: string
+		subject_length: number
+	}>
 }
 type VetStudyPackResp = {
-	base_amount: number
-	allowed_subjects: number
-	allow_extra_subjects: string
-	number_of_extra_subjects_added: number
-	grand_total: number
+	summary: {
+		base_amount: number
+		number_of_extra_subjects_added: number
+		grand_total: number
+	}
+	vettings: Array<{
+		base_amount: number
+		allowed_subjects: number
+		allow_extra_subjects: string
+		number_of_extra_subjects_added: number
+		grand_total: number
+	}>
 }
 const vetStudyPack = async (payload: VetStudyPackPayload) => {
 	return axios
