@@ -173,3 +173,7 @@ export const paginate = <T>(data: T[], page: number, limit: number): T[] => {
 	const end = start + limit
 	return data.slice(start, end)
 }
+
+export const formatNumber = (number: number) => {
+	return new Intl.NumberFormat("en-NG").format(number)
+}

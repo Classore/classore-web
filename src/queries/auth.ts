@@ -86,7 +86,7 @@ const ResetPasswordMutation = async (payload: ResetPasswordDto) => {
 		.then((res) => res.data)
 }
 
-type AddWardsDto = Array<{
+export type AddWardsDto = Array<{
 	first_name: string
 	last_name: string
 	email: string
@@ -122,3 +122,4 @@ export {
 	VerifyEmailMutation,
 	WaitlistMutation,
 }
+

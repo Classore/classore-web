@@ -1,11 +1,7 @@
 import { formatCurrency } from "@/lib"
-import {
-	useCreateStudyTimeline,
-	useGetExamBundles,
-	useGetExams,
-	useGetSubjects,
-} from "@/queries/school"
+import { AddWardsMutation, type AddWardsDto } from "@/queries"
 import { useMiscStore } from "@/store/z-store/misc"
+import { useMutation } from "@tanstack/react-query"
 import { Lock02 } from "@untitled-ui/icons-react"
 import * as React from "react"
 import { toast } from "sonner"
@@ -18,40 +14,31 @@ type CheckoutModalProps = {
 	setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export const CheckoutModal = ({ open, setOpen }: CheckoutModalProps) => {
+export const CheckoutAddWardsModal = ({ open, setOpen }: CheckoutModalProps) => {
 	const [visible, setVisible] = React.useState(false)
 	const values = useMiscStore((state) => state.payload)
 
-	const { data: bundles } = useGetExamBundles()
-	const { data: exams } = useGetExams()
-	const { data: subjects } = useGetSubjects()
+	console.log("values", values)
 
-	const exam_type = exams?.find((exam) => exam.examination_id === values.exam_type)?.examination_name
-	const prep_bundle = bundles?.data.find(
-		(bundle) => bundle.examinationbundle_id === values.chosen_bundle
-	)
-	const chosen_subjects =
-		subjects
-			?.filter((subject) => values.subjects.includes(subject.subject_id))
-			?.map((subject) => subject.subject_name)
-			.join(", ") ?? ""
+	const chosen_subjects = values.vettings.reduce((acc, item) => acc + item.allowed_subjects, 0)
 
-	const chosen_bundle = prep_bundle?.examinationbundle_name ?? ""
-	const bundle_amount = prep_bundle?.examinationbundle_amount ?? 0
-
-	const { isPending, mutate } = useCreateStudyTimeline()
+	const { isPending, mutate } = useMutation({
+		mutationKey: ["add-ward"],
+		// @ts-expect-error err
+		mutationFn: (values: AddWardsDto) => AddWardsMutation(values.wards),
+		onSuccess: (data) => {
+			setVisible(true)
+			window.open(data.data.payment_link_data.authorization_url, "_self")
+		},
+	})
 	const continueToPayment = () => {
 		if (!values) {
 			toast.error("Something went wrong, please try again")
 			return
 		}
 
-		mutate(values, {
-			onSuccess: (data) => {
-				setVisible(true)
-				window.open(data.data.payment_link.authorization_url, "_self")
-			},
-		})
+		// @ts-expect-error err
+		mutate(values.wards)
 	}
 
 	return (
@@ -69,17 +56,12 @@ export const CheckoutModal = ({ open, setOpen }: CheckoutModalProps) => {
 
 				<ul className="flex flex-col gap-4">
 					<li>
-						<p className="text-sm text-neutral-400">Exam type:</p>
-						<p className="font-medium capitalize">{exam_type}</p>
+						<p className="text-sm text-neutral-400">Total number of wards:</p>
+						<p className="font-medium capitalize">{values.vettings.length}</p>
 					</li>
+
 					<li>
-						<p className="text-sm text-neutral-400">Prep bundle (allowed subjects):</p>
-						<p className="font-medium capitalize">
-							{chosen_bundle} Prep Bundle ({values.vettings[0].allowed_subjects} subjects)
-						</p>
-					</li>
-					<li>
-						<p className="text-sm text-neutral-400">Chosen Subjects:</p>
+						<p className="text-sm text-neutral-400">Total number of chosen subjects:</p>
 						<p className="font-medium capitalize">{chosen_subjects}</p>
 					</li>
 
@@ -89,7 +71,7 @@ export const CheckoutModal = ({ open, setOpen }: CheckoutModalProps) => {
 					</li>
 
 					<li>
-						<p className="text-sm text-neutral-400">No of extra subjects added:</p>
+						<p className="text-sm text-neutral-400">Total number of extra subjects chosen:</p>
 						<p className="font-medium">{values.summary.number_of_extra_subjects_added}</p>
 					</li>
 
@@ -101,7 +83,7 @@ export const CheckoutModal = ({ open, setOpen }: CheckoutModalProps) => {
 
 				<div className="flex flex-col gap-1">
 					<Button onClick={continueToPayment} type="submit" disabled={isPending}>
-						{isPending ? <Spinner /> : `Pay ${formatCurrency(Number(bundle_amount ?? 0))}`}
+						{isPending ? <Spinner /> : `Pay ${formatCurrency(Number(values.summary.grand_total ?? 0))}`}
 					</Button>
 					<div className="flex items-center gap-1.5 self-center text-neutral-500">
 						<Lock02 width={18} />
