@@ -3,11 +3,12 @@ import Link from "next/link"
 
 import { Challenge, ExplorePopularExams, Leaderboard, Learning, MyCourses } from "@/components/home"
 import { DashboardLayout } from "@/components/layouts"
-import { Seo } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { useUserStore } from "@/store/z-store"
+import type { ChallengeProps } from "@/types"
+import { Seo } from "@/components/shared"
 
-import { challenges } from "@/mock"
+const challenges: ChallengeProps[] = []
 
 const Page = () => {
 	const { user } = useUserStore()

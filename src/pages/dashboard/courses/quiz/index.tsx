@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button"
 import { useUserStore } from "@/store/z-store"
 import { Seo } from "@/components/shared"
 import { getInitials } from "@/lib"
+import type { ChapterProps } from "@/types"
 import {
 	Dialog,
 	DialogContent,
@@ -23,7 +24,15 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog"
 
-import { categories } from "@/mock"
+const categories: {
+	subjects: {
+		id: string
+		chapters: ChapterProps[]
+		title: string
+	}[]
+	id: string
+	name: string
+}[] = []
 
 const items = [
 	{ label: "answered", color: "var(--primary-400)" },

@@ -1,37 +1,38 @@
 import { RiArrowLeftSLine, RiUpload2Line } from "@remixicon/react"
-import { RiFolder4Line } from "@remixicon/react"
+// import { RiFolder4Line } from "@remixicon/react"
 import { useRouter } from "next/router"
 import Image from "next/image"
-import Link from "next/link"
+// import Link from "next/link"
 import React from "react"
 
 import { DashboardLayout } from "@/components/layouts"
 import { ReviewCard, Seo } from "@/components/shared"
+import type { ExamBundleProps } from "@/types/type"
 import { Button } from "@/components/ui/button"
 import { formatCurrency } from "@/lib"
 
-import { categories } from "@/mock"
+const categories: ExamBundleProps[] = []
 
 const Page = () => {
-	const [current, setCurrent] = React.useState<number | null>(null)
+	// const [current, setCurrent] = React.useState<number | null>(null)
 	const router = useRouter()
 	const { id } = router.query
 
-	const handleToggle = (index: number) => {
-		if (index === current) {
-			setCurrent(null)
-		} else {
-			setCurrent(index)
-		}
-	}
+	// const handleToggle = (index: number) => {
+	// 	if (index === current) {
+	// 		setCurrent(null)
+	// 	} else {
+	// 		setCurrent(index)
+	// 	}
+	// }
 
-	const category = categories.find((category) => category.id === String(id))
+	const category = categories.find((category) => category.examinationbundle_id === String(id))
 
 	if (!category) return null
 
 	return (
 		<>
-			<Seo title={category.name} />
+			<Seo title={`${category.examination_name}`} />
 			<DashboardLayout>
 				<div className="flex w-full flex-col gap-6 px-8 py-6">
 					<div className="flex w-full flex-col gap-2">
@@ -41,20 +42,20 @@ const Page = () => {
 									<RiArrowLeftSLine />
 									Back
 								</Button>
-								<h4 className="font-medium lg:text-xl">{category?.name}</h4>
+								<h4 className="font-medium lg:text-xl">{category?.examination_name}</h4>
 							</div>
 							<Button size="cmd" variant="cmd">
 								Share
 								<RiUpload2Line />
 							</Button>
 						</div>
-						<p className="text-xs text-neutral-400">Categories / {category?.name}</p>
+						<p className="text-xs text-neutral-400">Categories / {category?.examination_name}</p>
 					</div>
 					<div className="grid w-full grid-cols-3 gap-8">
 						<div className="col-span-2 flex flex-col gap-4">
 							<div className="relative aspect-[1.78/1] w-full rounded-lg">
 								<Image
-									src={String(category?.image)}
+									src={""}
 									alt="desginer color"
 									fill
 									sizes="(max-width:1024px)100%"
@@ -63,19 +64,11 @@ const Page = () => {
 							</div>
 							<div className="flex w-full flex-col gap-2">
 								<p className="text-xl font-medium">Summary</p>
-								<p className="text-sm text-neutral-400">{category?.summary}</p>
+								<p className="text-sm text-neutral-400">{""}</p>
 							</div>
 							<div className="flex w-full flex-col gap-2">
 								<p className="text-sm font-medium">Subject included</p>
-								<div className="flex items-center gap-2">
-									{category?.subjects.slice(0, 3).map((subject) => (
-										<div
-											key={subject.id}
-											className="rounded-lg bg-neutral-300 px-3 py-[6px] text-sm text-neutral-400">
-											{subject.title}
-										</div>
-									))}
-								</div>
+								<div className="flex items-center gap-2">{category?.subject_count}</div>
 							</div>
 							<div className="flex w-full items-center justify-between rounded-xl border p-4"></div>
 							<div className="flex w-full flex-col gap-2">
@@ -93,7 +86,7 @@ const Page = () => {
 							<div className="flex w-full flex-col gap-5">
 								<div className="flex w-full items-center justify-between">
 									<h5 className="font-bold">Bundle Highlight</h5>
-									<h5 className="font-bold">{formatCurrency(category.price)}</h5>
+									<h5 className="font-bold">{formatCurrency(category.examinationbundle_amount)}</h5>
 								</div>
 								<hr className="w-full bg-neutral-300" />
 								<Button>Enroll Now</Button>
@@ -110,7 +103,7 @@ const Page = () => {
 									<h5 className="font-bold">All Courses</h5>
 								</div>
 								<div className="flex w-full flex-col">
-									{category.subjects.map((subject, index) => (
+									{/* {category.subjects.map((subject, index) => (
 										<div
 											key={subject.id}
 											className={`flex w-full flex-col gap-2 border-b py-4 first:border-t last:border-b-0`}>
@@ -134,7 +127,7 @@ const Page = () => {
 													className={`w-full transform grid-cols-3 gap-x-3 bg-[#f6f8fa] p-4 transition-transform duration-700 ${index === current ? "grid h-fit" : "hidden h-0"}`}></div>
 											)}
 										</div>
-									))}
+									))} */}
 								</div>
 							</div>
 						</div>

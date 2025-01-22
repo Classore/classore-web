@@ -17,8 +17,6 @@ import { useUserStore } from "@/store/z-store"
 import type { UserMetricProps } from "@/types"
 import { getInitials, paginate } from "@/lib"
 
-import { leaderboard, timeChart } from "@/mock"
-
 const filters = ["all", "quiz", "streak"] as const
 type Filters = (typeof filters)[number]
 
@@ -38,7 +36,7 @@ const screens = [
 ] as const
 type Screens = "minimize" | "maximize"
 
-const getPositionIcon = (index: number) => {
+export const getPositionIcon = (index: number) => {
 	if (index === 0) {
 		return (
 			<div className="relative size-6">
@@ -67,6 +65,14 @@ const getPositionIcon = (index: number) => {
 	)
 }
 
+const leaderboard: {
+	userId: string
+	position: number
+	id: string
+	streak: number
+	quiz: number
+}[] = []
+
 const Page = () => {
 	const [screen, setScreen] = React.useState<Screens>("minimize")
 	const [filter, setFilter] = React.useState<Filters>("all")
@@ -77,18 +83,9 @@ const Page = () => {
 		defaultValues: { timeline: "today" },
 	})
 
-	const overall = React.useMemo(() => {
-		return leaderboard.map((user, index) => ({
-			...user,
-			all: user.quiz + user.streak,
-			position: index + 1,
-			positionIcon: getPositionIcon(index),
-		}))
-	}, [])
-
 	const paginated = React.useMemo(() => {
-		return paginate(overall, page, 10)
-	}, [overall, page])
+		return paginate(leaderboard, page, 10)
+	}, [page])
 
 	const background = (index: number) => {
 		if (index === 1) return "bg-gradient-to-r from-[#fcf4d5] to-white"
@@ -114,11 +111,6 @@ const Page = () => {
 			value: "N/A",
 		},
 	]
-
-	const totalHours = React.useMemo(() => {
-		const totalTimeInSeconds = timeChart.reduce((acc, cur) => acc + cur.time_spent, 0)
-		return totalTimeInSeconds / 3600
-	}, [])
 
 	return (
 		<>
@@ -175,7 +167,7 @@ const Page = () => {
 											<div
 												className={`grid w-full gap-4 rounded-md px-3 py-4 transition-all ${background(user.position)} grid-cols-4`}>
 												<div className="col-span-2 flex w-full items-center gap-5">
-													{user.positionIcon}
+													{/* {user.positionIcon} */}
 													<div className="flex items-center gap-2">
 														<div className="size-10 rounded-lg border-2 border-white"></div>
 														<div className="flex flex-col gap-1">
@@ -200,7 +192,12 @@ const Page = () => {
 										</div>
 									))}
 								</div>
-								<Pagination current={page} onPageChange={setPage} pageSize={10} total={overall.length} />
+								<Pagination
+									current={page}
+									onPageChange={setPage}
+									pageSize={10}
+									total={leaderboard.length}
+								/>
 							</div>
 							<div
 								className={`w-[350px] min-w-[350px] flex-col gap-6 transition-all ${screen === "minimize" ? "flex" : "hidden"}`}>
@@ -239,7 +236,7 @@ const Page = () => {
 									<p className="text-sm font-medium text-neutral-500">Analytics</p>
 									<div className="flex w-full flex-col gap-6 rounded-md border p-4">
 										<div className="flex w-full items-center justify-between">
-											<p className="font-bold">{totalHours.toFixed(2)} hours spent</p>
+											<p className="font-bold">{0} hours spent</p>
 											<Select control={control} name="timeline" className="h-[33px] text-sm">
 												{timeFilters.map((filter) => (
 													<SelectItem key={filter} value={filter}>
@@ -248,7 +245,7 @@ const Page = () => {
 												))}
 											</Select>
 										</div>
-										<ChartLine data={timeChart} />
+										<ChartLine data={[]} />
 									</div>
 								</div>
 								<div className="w-full space-y-2">

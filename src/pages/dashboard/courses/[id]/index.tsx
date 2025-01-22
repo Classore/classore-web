@@ -31,7 +31,14 @@ import {
 } from "@/components/ui/dialog"
 import type { ChapterProps } from "@/types"
 
-import { categories } from "@/mock"
+const categories: {
+	subjects: {
+		id: string
+		chapters: ChapterProps[]
+		title: string
+	}[]
+	id: string
+}[] = []
 
 const tabs = ["summary", "transcript", "resources", "quiz history"] as const
 type Tabs = (typeof tabs)[number]

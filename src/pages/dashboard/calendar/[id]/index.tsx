@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Seo } from "@/components/shared"
 import type { EventProps } from "@/types"
 
-import { events } from "@/mock"
+const events: EventProps[] = []
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i)
 const TIME_HEIGHT = 48 // Height for each hour slot in pixels

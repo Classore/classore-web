@@ -2,18 +2,16 @@ import React from "react"
 
 import type { NotificationProps } from "@/types"
 import { Checkbox } from "../ui/checkbox"
-
-import { notifications } from "@/mock"
-
 interface Props {
 	isSelected: (id: string) => boolean
 	notification: NotificationProps
 	onSelect: (id: string) => void
 }
 
+const notifications: NotificationProps[] = []
+
 const Notification = () => {
 	const [selected, setSelected] = React.useState<string[]>([])
-
 	const isSelected = (id: string) => !!selected.find((notification) => notification === id)
 
 	const onSelect = (id: string) => {
