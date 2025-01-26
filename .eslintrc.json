@@ -1,5 +1,9 @@
 {
-	"extends": ["next/core-web-vitals", "next/typescript", "plugin:@tanstack/query/recommended"],
+	"extends": [
+		"next/core-web-vitals",
+		"next/typescript",
+		"plugin:@tanstack/query/recommended"
+	],
 	"rules": {
 		// This helps to import values as types if they are only used as types. e.g import type { Foo } from "./foo"
 		"@typescript-eslint/consistent-type-imports": "error",

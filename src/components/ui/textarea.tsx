@@ -1,15 +1,20 @@
-import * as React from "react"
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
-import { useController, type Control, type FieldValues, type Path } from "react-hook-form"
-import { ErrorMessage } from "../shared"
+import { cn } from "@/lib/utils";
+import {
+	useController,
+	type Control,
+	type FieldValues,
+	type Path,
+} from "react-hook-form";
+import { ErrorMessage } from "../shared";
 
 interface TextareaProps<T extends FieldValues>
 	extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
-	label: string
-	labelClassName?: string
-	control: Control<T>
-	name: Path<T>
+	label: string;
+	labelClassName?: string;
+	control: Control<T>;
+	name: Path<T>;
 }
 
 const Textarea = <T extends FieldValues>({
@@ -26,7 +31,7 @@ const Textarea = <T extends FieldValues>({
 	} = useController({
 		name,
 		control,
-	})
+	});
 	return (
 		<div className={cn("flex flex-col gap-1.5 font-body", className)}>
 			<label id={name} className={cn("text-sm text-neutral-400", labelClassName)}>
@@ -46,7 +51,7 @@ const Textarea = <T extends FieldValues>({
 
 			{error ? <ErrorMessage message={error.message} /> : null}
 		</div>
-	)
-}
+	);
+};
 
-export { Textarea }
+export { Textarea };

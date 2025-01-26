@@ -1,20 +1,29 @@
-import { OTPInput as InputOTP } from "input-otp"
-import { useController, type Control, type FieldValues, type Path } from "react-hook-form"
-import { ErrorMessage } from "../shared"
+import { OTPInput as InputOTP } from "input-otp";
+import {
+	useController,
+	type Control,
+	type FieldValues,
+	type Path,
+} from "react-hook-form";
+import { ErrorMessage } from "../shared";
 
 interface OTPInputProps<T extends FieldValues> {
-	control: Control<T>
-	name: Path<T>
+	control: Control<T>;
+	name: Path<T>;
 }
 
-export const OTPInput = <T extends FieldValues>({ control, name, ...props }: OTPInputProps<T>) => {
+export const OTPInput = <T extends FieldValues>({
+	control,
+	name,
+	...props
+}: OTPInputProps<T>) => {
 	const {
 		fieldState: { error },
 		field,
 	} = useController({
 		name,
 		control,
-	})
+	});
 
 	return (
 		<div className="flex flex-col gap-1.5 font-body">
@@ -48,5 +57,5 @@ export const OTPInput = <T extends FieldValues>({ control, name, ...props }: OTP
 
 			{error ? <ErrorMessage message={error.message} /> : null}
 		</div>
-	)
-}
+	);
+};

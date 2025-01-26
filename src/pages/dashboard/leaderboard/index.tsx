@@ -1,28 +1,32 @@
-import { Target04, Trophy01 } from "@untitled-ui/icons-react"
-import { useForm } from "react-hook-form"
-import Image from "next/image"
-import React from "react"
-import { RiFlashlightLine, RiFullscreenExitLine, RiFullscreenLine } from "@remixicon/react"
+import { Target04, Trophy01 } from "@untitled-ui/icons-react";
+import { useQuery } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import Image from "next/image";
+import React from "react";
+import {
+	RiFlashlightLine,
+	RiFullscreenExitLine,
+	RiFullscreenLine,
+	RiLoaderLine,
+} from "@remixicon/react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Select, SelectItem } from "@/components/ui/select"
-import trophy from "@/assets/illustrations/trophy.svg"
-import { DashboardLayout } from "@/components/layouts"
-import bronze from "@/assets/images/award-bronze.png"
-import silver from "@/assets/images/award-silver.png"
-import { Pagination, Seo } from "@/components/shared"
-import gold from "@/assets/images/award-gold.png"
-import { ChartLine } from "@/components/charts"
-import { useUserStore } from "@/store/z-store"
-import type { UserMetricProps } from "@/types"
-import { getInitials, paginate } from "@/lib"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useGetExamBundles, useGetExams } from "@/queries/school";
+import { Select, SelectItem } from "@/components/ui/select";
+import trophy from "@/assets/illustrations/trophy.svg";
+import { DashboardLayout } from "@/components/layouts";
+import bronze from "@/assets/images/award-bronze.png";
+import silver from "@/assets/images/award-silver.png";
+import { Pagination, Seo } from "@/components/shared";
+import gold from "@/assets/images/award-gold.png";
+import { viewLeaderboard } from "@/queries/user";
+import { ChartLine } from "@/components/charts";
+import { useUserStore } from "@/store/z-store";
+import type { UserMetricProps } from "@/types";
+import { getInitials } from "@/lib";
 
-import { leaderboard, timeChart } from "@/mock"
-
-const filters = ["all", "quiz", "streak"] as const
-type Filters = (typeof filters)[number]
-
-const timeFilters = [
+const ITEMS_PER_PAGE = 10;
+const TIME_FILTERS = [
 	"today",
 	"yesterday",
 	"this week",
@@ -30,95 +34,112 @@ const timeFilters = [
 	"last 3 months",
 	"last 6 months",
 	"this year",
-] as const
+] as const;
 
 const screens = [
 	{ label: "minimize", icon: RiFullscreenExitLine },
 	{ label: "maximize", icon: RiFullscreenLine },
-] as const
-type Screens = "minimize" | "maximize"
+] as const;
+type Screens = "minimize" | "maximize";
 
-const getPositionIcon = (index: number) => {
+export const getPositionIcon = (index: number) => {
 	if (index === 0) {
 		return (
 			<div className="relative size-6">
 				<Image src={gold} alt="award-gold" fill sizes="100%" />
 			</div>
-		)
+		);
 	}
 	if (index === 1) {
 		return (
 			<div className="relative size-6">
 				<Image src={silver} alt="award-silver" fill sizes="100%" />
 			</div>
-		)
+		);
 	}
 	if (index === 2) {
 		return (
 			<div className="relative size-6">
 				<Image src={bronze} alt="award-bronze" fill sizes="100%" />
 			</div>
-		)
+		);
 	}
 	return (
 		<div className="grid size-6 place-items-center rounded-full bg-neutral-100 text-neutral-500">
 			{index + 1}
 		</div>
-	)
-}
+	);
+};
+
+const metrics: UserMetricProps[] = [
+	{
+		icon: <Trophy01 />,
+		label: "Ranking",
+		value: "N/A",
+	},
+	{
+		icon: <RiFlashlightLine />,
+		label: "Streak",
+		value: "N/A",
+	},
+	{
+		icon: <Target04 />,
+		label: "Quiz Points",
+		value: "N/A",
+	},
+];
 
 const Page = () => {
-	const [screen, setScreen] = React.useState<Screens>("minimize")
-	const [filter, setFilter] = React.useState<Filters>("all")
-	const [page, setPage] = React.useState(1)
-	const { user } = useUserStore()
+	const [examination_bundle, setExaminationBundle] = React.useState("");
+	const [screen, setScreen] = React.useState<Screens>("minimize");
+	const [examination, setExamination] = React.useState("");
+	const [page, setPage] = React.useState(1);
+	const { user } = useUserStore();
+
+	const { data: exams } = useGetExams();
+	const { data: examBundles } = useGetExamBundles({
+		examination: examination,
+		limit: 50,
+	});
+
+	React.useEffect(() => {
+		if (exams && !examination) {
+			setExamination(exams[0]?.examination_id);
+		}
+	}, [examBundles, examination, examination_bundle, exams]);
+
+	React.useEffect(() => {
+		if (examination && examBundles && !examination_bundle) {
+			setExaminationBundle(examBundles.data[0]?.examinationbundle_id);
+		}
+	}, [examBundles, examination_bundle, examination]);
+
+	const { data: leaderboards, isLoading } = useQuery({
+		queryKey: ["leaderboard", examination_bundle, examination, page],
+		queryFn: () =>
+			viewLeaderboard({
+				examination: examination,
+				examination_bundle: examination_bundle,
+				limit: ITEMS_PER_PAGE,
+				page: page,
+			}),
+		enabled: Boolean(examination && examination_bundle),
+		select: (data) => ({
+			leaderboard: data.data.data,
+			meta: data.data.meta,
+		}),
+	});
 
 	const { control } = useForm({
 		defaultValues: { timeline: "today" },
-	})
-
-	const overall = React.useMemo(() => {
-		return leaderboard.map((user, index) => ({
-			...user,
-			all: user.quiz + user.streak,
-			position: index + 1,
-			positionIcon: getPositionIcon(index),
-		}))
-	}, [])
-
-	const paginated = React.useMemo(() => {
-		return paginate(overall, page, 10)
-	}, [overall, page])
+	});
 
 	const background = (index: number) => {
-		if (index === 1) return "bg-gradient-to-r from-[#fcf4d5] to-white"
-		if (index === 2) return "bg-gradient-to-r from-[#f4f5f5] to-white"
-		if (index === 3) return "bg-gradient-to-r from-[#f6f2ec] to-white"
-		return "bg-transparent"
-	}
-
-	const metrics: UserMetricProps[] = [
-		{
-			icon: <Trophy01 />,
-			label: "Ranking",
-			value: "N/A",
-		},
-		{
-			icon: <RiFlashlightLine />,
-			label: "Streak",
-			value: "N/A",
-		},
-		{
-			icon: <Target04 />,
-			label: "Quiz Points",
-			value: "N/A",
-		},
-	]
-
-	const totalHours = React.useMemo(() => {
-		const totalTimeInSeconds = timeChart.reduce((acc, cur) => acc + cur.time_spent, 0)
-		return totalTimeInSeconds / 3600
-	}, [])
+		if (index === 1) return "bg-gradient-to-r from-[#fcf4d5] to-white";
+		if (index === 2) return "bg-gradient-to-r from-[#f4f5f5] to-white";
+		if (index === 3) return "bg-gradient-to-r from-[#f6f2ec] to-white";
+		return "bg-transparent";
+	};
 
 	return (
 		<>
@@ -129,7 +150,8 @@ const Page = () => {
 						<div className="flex max-w-[448px] flex-col items-center gap-2">
 							<h2 className="text-[40px] font-bold">Leaderboard</h2>
 							<p className="text-center text-neutral-500">
-								Explore available categories and unlock your potential. Earn point reward as you win.
+								Explore available categories and unlock your potential. Earn point reward as you
+								win.
 							</p>
 						</div>
 						<div className="absolute left-1/2 top-[120px] aspect-square w-[402px] -translate-x-1/2">
@@ -142,17 +164,19 @@ const Page = () => {
 							/>
 						</div>
 					</div>
-					<div className="flex w-full flex-col gap-4">
+					<div className="flex w-full flex-col gap-y-4">
 						<div className="flex w-full items-center justify-between">
-							<div className="flex items-center gap-2">
-								{filters.map((f) => (
+							<div className="flex items-center gap-x-2">
+								{exams?.map((exam) => (
 									<button
-										key={f}
-										className={`flex h-9 w-[94px] items-center justify-center rounded-md text-sm font-medium capitalize transition-all ${
-											filter === f ? "bg-primary-100 font-bold text-primary-500" : "text-neutral-500"
+										key={exam.examination_id}
+										className={`flex h-9 w-fit items-center rounded-md px-2 py-0.5 text-sm font-medium capitalize transition-all ${
+											examination === exam.examination_id
+												? "bg-primary-100 font-bold text-primary-500"
+												: "text-neutral-500"
 										}`}
-										onClick={() => setFilter(f)}>
-										{f.charAt(0).toUpperCase() + f.slice(1)}
+										onClick={() => setExamination(exam.examination_id)}>
+										{exam.examination_name}
 									</button>
 								))}
 							</div>
@@ -167,40 +191,77 @@ const Page = () => {
 								))}
 							</div>
 						</div>
+						<div className="flex items-center gap-x-2">
+							{examBundles?.data?.map((bundle) => (
+								<button
+									key={bundle.examinationbundle_id}
+									className={`flex h-9 w-fit items-center rounded-md px-2 py-0.5 text-sm font-medium uppercase transition-all ${
+										examination_bundle === bundle.examinationbundle_id
+											? "bg-primary-100 font-bold text-primary-500"
+											: "text-neutral-500"
+									}`}
+									onClick={() => setExaminationBundle(bundle.examinationbundle_id)}>
+									{bundle.examinationbundle_name}
+								</button>
+							))}
+						</div>
 						<div className="flex w-full items-start gap-6">
 							<div className="flex w-full flex-col gap-4">
-								<div className="flex-1 rounded-lg border">
-									{paginated.map((user) => (
-										<div key={user.id} className="flex w-full items-center gap-4 border-b">
-											<div
-												className={`grid w-full gap-4 rounded-md px-3 py-4 transition-all ${background(user.position)} grid-cols-4`}>
-												<div className="col-span-2 flex w-full items-center gap-5">
-													{user.positionIcon}
-													<div className="flex items-center gap-2">
-														<div className="size-10 rounded-lg border-2 border-white"></div>
-														<div className="flex flex-col gap-1">
-															<p className="text-sm font-bold">{user.userId}</p>
-															<p className="text-xs text-neutral-400">Lagos</p>
+								{isLoading ? (
+									<div className="grid h-[400px] w-full place-items-center">
+										<RiLoaderLine className="size-8 animate-spin text-primary-400" />
+									</div>
+								) : (
+									<>
+										{!leaderboards?.leaderboard.length ? (
+											<div className="grid h-[400px] w-full place-items-center">
+												<p className="text-sm font-medium">No leaderboard found.</p>
+											</div>
+										) : (
+											<div className="flex-1 rounded-lg border">
+												{leaderboards?.leaderboard.map((user, index) => (
+													<div
+														key={user.leaderboard_id}
+														className="flex w-full items-center gap-4 border-b">
+														<div
+															className={`grid w-full grid-cols-4 gap-4 rounded-md px-3 py-4 transition-all ${background(index + 1)}`}>
+															<div className="col-span-2 flex w-full items-center gap-5">
+																{index + 1}
+																<div className="flex items-center gap-2">
+																	<div className="size-10 rounded-lg border-2 border-white"></div>
+																	<div className="flex flex-col gap-1">
+																		<p className="text-sm font-bold capitalize">
+																			{user.user_first_name} {user.user_last_name}
+																		</p>
+																		<p className="text-xs text-neutral-400">Lagos</p>
+																	</div>
+																</div>
+															</div>
+															<div className={`flex w-full items-center`}>
+																<div className="flex w-fit items-center gap-1 rounded-lg border-2 bg-white px-3 py-[6px] text-sm text-neutral-500">
+																	<RiFlashlightLine size={16} />
+																	{user.leaderboard_points} Days
+																</div>
+															</div>
+															<div className="flex w-full items-center">
+																<div className="flex w-fit items-center gap-1 rounded-lg border-2 bg-white px-3 py-[6px] text-sm text-neutral-500">
+																	<span className="size-1 rounded-full bg-black" />
+																	{user.leaderboard_points} Pts
+																</div>
+															</div>
 														</div>
 													</div>
-												</div>
-												<div className={`flex w-full items-center`}>
-													<div className="flex w-fit items-center gap-1 rounded-lg border-2 bg-white px-3 py-[6px] text-sm text-neutral-500">
-														<RiFlashlightLine size={16} />
-														{user.streak} Days
-													</div>
-												</div>
-												<div className="flex w-full items-center">
-													<div className="flex w-fit items-center gap-1 rounded-lg border-2 bg-white px-3 py-[6px] text-sm text-neutral-500">
-														<span className="size-1 rounded-full bg-black" />
-														{user.quiz} Pts
-													</div>
-												</div>
+												))}
 											</div>
-										</div>
-									))}
-								</div>
-								<Pagination current={page} onPageChange={setPage} pageSize={10} total={overall.length} />
+										)}
+									</>
+								)}
+								<Pagination
+									current={page}
+									onPageChange={setPage}
+									pageSize={10}
+									total={leaderboards?.meta.itemCount ?? 0}
+								/>
 							</div>
 							<div
 								className={`w-[350px] min-w-[350px] flex-col gap-6 transition-all ${screen === "minimize" ? "flex" : "hidden"}`}>
@@ -239,16 +300,16 @@ const Page = () => {
 									<p className="text-sm font-medium text-neutral-500">Analytics</p>
 									<div className="flex w-full flex-col gap-6 rounded-md border p-4">
 										<div className="flex w-full items-center justify-between">
-											<p className="font-bold">{totalHours.toFixed(2)} hours spent</p>
+											<p className="font-bold">{0} hours spent</p>
 											<Select control={control} name="timeline" className="h-[33px] text-sm">
-												{timeFilters.map((filter) => (
+												{TIME_FILTERS.map((filter) => (
 													<SelectItem key={filter} value={filter}>
 														{filter}
 													</SelectItem>
 												))}
 											</Select>
 										</div>
-										<ChartLine data={timeChart} />
+										<ChartLine data={[]} />
 									</div>
 								</div>
 								<div className="w-full space-y-2">
@@ -267,7 +328,7 @@ const Page = () => {
 				</div>
 			</DashboardLayout>
 		</>
-	)
-}
+	);
+};
 
-export default Page
+export default Page;

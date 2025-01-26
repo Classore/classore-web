@@ -1,26 +1,26 @@
-import { MessageChatCircle, Share07 } from "@untitled-ui/icons-react"
-import Image from "next/image"
-import { toast } from "sonner"
-import Link from "next/link"
-import React from "react"
+import { MessageChatCircle, Share07 } from "@untitled-ui/icons-react";
+import Image from "next/image";
+import { toast } from "sonner";
+import Link from "next/link";
+import React from "react";
 
-import { classore } from "@/assets/images"
-import { Contact } from "../waitlist"
+import { classore } from "@/assets/images";
+import { Contact } from "../waitlist";
 import {
 	Dialog,
 	DialogContent,
 	DialogDescription,
 	DialogTitle,
 	DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 
 export const Appbar = () => {
-	const [open, setOpen] = React.useState(false)
+	const [open, setOpen] = React.useState(false);
 
 	const copyText = () => {
-		navigator.clipboard.writeText("https://classore.com")
-		toast.success("Copied!")
-	}
+		navigator.clipboard.writeText("https://classore.com");
+		toast.success("Copied!");
+	};
 
 	return (
 		<nav className="container mx-auto px-4 py-[26px] lg:px-0">
@@ -53,5 +53,5 @@ export const Appbar = () => {
 				</div>
 			</div>
 		</nav>
-	)
-}
+	);
+};

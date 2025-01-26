@@ -1,20 +1,20 @@
-import { AuthLayout } from "@/components/layouts/auth"
-import { Seo, Spinner } from "@/components/shared"
+import { AuthLayout } from "@/components/layouts/auth";
+import { Seo, Spinner } from "@/components/shared";
 
-import { ForgotPasswordGraphic } from "@/assets/icons"
-import { classore } from "@/assets/images"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { ResetPasswordMutation } from "@/queries"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@tanstack/react-query"
-import { ChevronLeft } from "@untitled-ui/icons-react"
-import Image from "next/image"
-import Link from "next/link"
-import { useRouter } from "next/router"
-import { useForm } from "react-hook-form"
-import { toast } from "sonner"
-import * as z from "zod"
+import { ForgotPasswordGraphic } from "@/assets/icons";
+import { classore } from "@/assets/images";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ResetPasswordMutation } from "@/queries";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import { ChevronLeft } from "@untitled-ui/icons-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import * as z from "zod";
 // const appId = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID
 
 const pageSchema = z
@@ -64,21 +64,21 @@ const pageSchema = z
 				code: "custom",
 				message: "Passwords do not match",
 				path: ["confirm_password"],
-			})
+			});
 		}
-	})
+	});
 
-type FormValues = z.infer<typeof pageSchema>
+type FormValues = z.infer<typeof pageSchema>;
 
 const Page = () => {
-	const router = useRouter()
+	const router = useRouter();
 	const { control, handleSubmit } = useForm<FormValues>({
 		defaultValues: {
 			password: "",
 			confirm_password: "",
 		},
 		resolver: zodResolver(pageSchema),
-	})
+	});
 
 	const { isPending, mutate } = useMutation({
 		mutationKey: ["login"],
@@ -88,16 +88,16 @@ const Page = () => {
 				new_password: value.password,
 			}),
 		onSuccess: () => {
-			sessionStorage.removeItem("temp_classore")
+			sessionStorage.removeItem("temp_classore");
 			toast.success("Password reset successful!", {
 				description: "You can now sign in with your new password",
-			})
-			router.replace("/signin")
+			});
+			router.replace("/signin");
 		},
-	})
+	});
 	const onSubmit = (values: FormValues) => {
-		mutate(values)
-	}
+		mutate(values);
+	};
 
 	return (
 		<>
@@ -121,10 +121,14 @@ const Page = () => {
 						<header className="flex flex-col gap-4">
 							<ForgotPasswordGraphic />
 
-							<h2 className="font-body text-2xl font-bold text-neutral-900">Reset your Password</h2>
+							<h2 className="font-body text-2xl font-bold text-neutral-900">
+								Reset your Password
+							</h2>
 						</header>
 
-						<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 font-body font-normal">
+						<form
+							onSubmit={handleSubmit(onSubmit)}
+							className="flex flex-col gap-4 font-body font-normal">
 							<Input
 								type="password"
 								label="Password"
@@ -153,7 +157,7 @@ const Page = () => {
 				</div>
 			</AuthLayout>
 		</>
-	)
-}
+	);
+};
 
-export default Page
+export default Page;

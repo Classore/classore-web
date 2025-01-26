@@ -5,34 +5,39 @@ import {
 	CommandInput,
 	CommandItem,
 	CommandList,
-} from "@/components/ui/command"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { cn } from "@/lib"
-import { PopoverClose } from "@radix-ui/react-popover"
-import { ChevronDown } from "@untitled-ui/icons-react"
-import * as React from "react"
-import { useController, type Control, type FieldValues, type Path } from "react-hook-form"
-import { toast } from "sonner"
-import { ErrorMessage } from "../shared"
-import { Button } from "./button"
+} from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib";
+import { PopoverClose } from "@radix-ui/react-popover";
+import { ChevronDown } from "@untitled-ui/icons-react";
+import * as React from "react";
+import {
+	useController,
+	type Control,
+	type FieldValues,
+	type Path,
+} from "react-hook-form";
+import { toast } from "sonner";
+import { ErrorMessage } from "../shared";
+import { Button } from "./button";
 
 type Option = {
-	label: string
-	value: string
-}
+	label: string;
+	value: string;
+};
 
-type Options = Option[]
+type Options = Option[];
 
 type MultiSelectProps<T extends FieldValues> = {
-	label: string
-	options: Options
-	name: Path<T>
-	control: Control<T>
-	placeholder?: string
-	className?: string
-	info?: string
-	maxSelectable?: number
-}
+	label: string;
+	options: Options;
+	name: Path<T>;
+	control: Control<T>;
+	placeholder?: string;
+	className?: string;
+	info?: string;
+	maxSelectable?: number;
+};
 
 export const MultiSelect = <T extends FieldValues>({
 	label,
@@ -44,7 +49,7 @@ export const MultiSelect = <T extends FieldValues>({
 	info,
 	maxSelectable,
 }: MultiSelectProps<T>) => {
-	const inputRef = React.useRef<HTMLInputElement>(null)
+	const inputRef = React.useRef<HTMLInputElement>(null);
 	const {
 		field: { onChange, ref, value },
 		fieldState: { error },
@@ -54,40 +59,41 @@ export const MultiSelect = <T extends FieldValues>({
 		rules: {
 			required: true,
 		},
-	})
+	});
 
 	const handleValueChange = React.useCallback(
 		(value: string, inputValue: string, onChange: (...event: unknown[]) => void) => {
-			const values = String(inputValue).trim() === "" ? [] : inputValue.split(", ")
+			const values = String(inputValue).trim() === "" ? [] : inputValue.split(", ");
 
-			const valIdx = values.findIndex((val) => val === value)
+			const valIdx = values.findIndex((val) => val === value);
 			if (valIdx === -1) {
 				if (maxSelectable && values.length >= maxSelectable) {
 					toast.info(
 						`You have selected the maximum number of selection allowed, which is: ${maxSelectable}.`
-					)
-					return
+					);
+					return;
 				}
 
-				values.push(value)
+				values.push(value);
 			} else {
-				values.splice(valIdx, 1)
+				values.splice(valIdx, 1);
 			}
-			onChange(values.join(", "))
+			onChange(values.join(", "));
 			// setOpenCombobox(false)
-			inputRef?.current?.focus()
+			inputRef?.current?.focus();
 		},
 		[maxSelectable]
-	)
+	);
 
 	/*
 	The ".filter(Boolean)" is to remove any empty strings from the array. cos when u split an empty string,
 	it will return an array with one empty string
 	*/
-	const selectedLength = typeof value === "string" ? value.split(", ").filter(Boolean).length : 0
+	const selectedLength =
+		typeof value === "string" ? value.split(", ").filter(Boolean).length : 0;
 	const currentValue = options
 		.filter((option) => value.includes(option.value))
-		.map((option) => option.label)
+		.map((option) => option.label);
 
 	return (
 		<label className={cn("flex flex-col gap-1.5 font-body", className)}>
@@ -125,7 +131,7 @@ export const MultiSelect = <T extends FieldValues>({
 									const selected =
 										String(value)
 											.split(", ")
-											.findIndex((val) => val === option.value) !== -1
+											.findIndex((val) => val === option.value) !== -1;
 
 									return (
 										<CommandItem
@@ -145,7 +151,7 @@ export const MultiSelect = <T extends FieldValues>({
 												/>
 											</div> */}
 										</CommandItem>
-									)
+									);
 								})}
 							</CommandGroup>
 
@@ -166,5 +172,5 @@ export const MultiSelect = <T extends FieldValues>({
 
 			{error ? <ErrorMessage message={error.message} /> : null}
 		</label>
-	)
-}
+	);
+};

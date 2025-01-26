@@ -1,4 +1,4 @@
-import { Html, Head, Main, NextScript } from "next/document"
+import { Html, Head, Main, NextScript } from "next/document";
 
 export default function Document() {
 	return (
@@ -11,11 +11,11 @@ export default function Document() {
 				<NextScript />
 			</body>
 		</Html>
-	)
+	);
 }
 
 const GoogleAnalytics = () => {
-	if (process.env.NODE_ENV !== "production") return null
+	if (process.env.NODE_ENV !== "production") return null;
 
 	return (
 		<>
@@ -33,5 +33,5 @@ const GoogleAnalytics = () => {
           `,
 				}}></script>
 		</>
-	)
-}
+	);
+};

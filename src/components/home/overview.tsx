@@ -1,13 +1,13 @@
-import { Check } from "lucide-react"
-import Image from "next/image"
-import Link from "next/link"
-import React from "react"
+import { Check } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import React from "react";
 
-import solarsystem from "@/assets/illustrations/solar-system.svg"
-import listening from "@/assets/illustrations/listening.svg"
-import trophy from "@/assets/illustrations/trophy.svg"
-import { Button } from "@/components/ui/button"
-import type { ChallengeProps } from "@/types"
+import solarsystem from "@/assets/illustrations/solar-system.svg";
+import listening from "@/assets/illustrations/listening.svg";
+import trophy from "@/assets/illustrations/trophy.svg";
+import { Button } from "@/components/ui/button";
+import type { ChallengeProps } from "@/types";
 
 const Learning = ({ exam_type }: { exam_type: string }) => {
 	return (
@@ -24,27 +24,27 @@ const Learning = ({ exam_type }: { exam_type: string }) => {
 			<div className="flex w-full flex-col gap-3">
 				<p className="font-medium">My Learning</p>
 				<p className="text-sm">
-					You haven&apos;t started your learning yet. Let&apos;s get started with {exam_type} this
-					morning
+					You haven&apos;t started your learning yet. Let&apos;s get started with {exam_type}{" "}
+					this morning
 				</p>
 			</div>
 			<Button className="w-fit" variant="dark">
 				<Link href="/dashboard/courses">Start Learning</Link>
 			</Button>
 		</div>
-	)
-}
+	);
+};
 
 const Challenge = ({ challenges }: { challenges: ChallengeProps[] }) => {
 	const acquiredPoints = React.useMemo(() => {
 		// get completed challenges and add the points
 		return challenges.reduce((acc, challenge) => {
 			if (challenge.challenges_challenge_is_completed) {
-				return acc + challenge.challenges_challenge_points
+				return acc + challenge.challenges_challenge_points;
 			}
-			return acc
-		}, 0)
-	}, [challenges])
+			return acc;
+		}, 0);
+	}, [challenges]);
 
 	return (
 		<div className="relative flex aspect-[1.81/1] w-full flex-col gap-6 overflow-hidden rounded-2xl border bg-[#e2e4e9] p-5">
@@ -75,8 +75,8 @@ const Challenge = ({ challenges }: { challenges: ChallengeProps[] }) => {
 				</Link>
 			</div>
 		</div>
-	)
-}
+	);
+};
 
 const Leaderboard = ({ position }: { position: number }) => {
 	return (
@@ -103,7 +103,7 @@ const Leaderboard = ({ position }: { position: number }) => {
 				View Leaderboard
 			</Link>
 		</div>
-	)
-}
+	);
+};
 
-export { Challenge, Leaderboard, Learning }
+export { Challenge, Leaderboard, Learning };

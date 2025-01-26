@@ -1,2 +1,2 @@
-export * from "./checkout"
-export * from "./logout"
+export * from "./checkout";
+export * from "./logout";

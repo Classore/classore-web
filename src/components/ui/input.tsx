@@ -1,16 +1,22 @@
-import * as React from "react"
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
-import { Eye, EyeSlash } from "iconsax-react"
-import { useController, type Control, type FieldValues, type Path } from "react-hook-form"
-import { ErrorMessage } from "../shared"
+import { cn } from "@/lib/utils";
+import { Eye, EyeSlash } from "iconsax-react";
+import {
+	useController,
+	type Control,
+	type FieldValues,
+	type Path,
+} from "react-hook-form";
+import { ErrorMessage } from "../shared";
 
-interface InputProps<T extends FieldValues> extends React.InputHTMLAttributes<HTMLInputElement> {
-	label: string
-	labelClassName?: string
-	control: Control<T>
-	name: Path<T>
-	type: React.HTMLInputTypeAttribute
+interface InputProps<T extends FieldValues>
+	extends React.InputHTMLAttributes<HTMLInputElement> {
+	label: string;
+	labelClassName?: string;
+	control: Control<T>;
+	name: Path<T>;
+	type: React.HTMLInputTypeAttribute;
 }
 
 const Input = <T extends FieldValues>({
@@ -22,14 +28,14 @@ const Input = <T extends FieldValues>({
 	type,
 	...props
 }: InputProps<T>) => {
-	const [togglePassword, setTogglePassword] = React.useState(false)
+	const [togglePassword, setTogglePassword] = React.useState(false);
 	const {
 		fieldState: { error },
 		field,
 	} = useController({
 		name,
 		control,
-	})
+	});
 
 	return (
 		<div className={cn("flex flex-col gap-1.5 font-body", className)}>
@@ -56,15 +62,17 @@ const Input = <T extends FieldValues>({
 						onClick={() => setTogglePassword(!togglePassword)}>
 						{!togglePassword ? <Eye /> : <EyeSlash />}
 
-						<span className="sr-only">{togglePassword ? "show password" : "hide password"}</span>
+						<span className="sr-only">
+							{togglePassword ? "show password" : "hide password"}
+						</span>
 					</button>
 				) : null}
 			</div>
 
 			{error ? <ErrorMessage message={error.message} /> : null}
 		</div>
-	)
-}
-Input.displayName = "Input"
+	);
+};
+Input.displayName = "Input";
 
-export { Input }
+export { Input };

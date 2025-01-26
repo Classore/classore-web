@@ -1,8 +1,8 @@
-import { combine } from "zustand/middleware"
-import { create } from "zustand/react"
+import { combine } from "zustand/middleware";
+import { create } from "zustand/react";
 
-import { useGlobalStore, useUserStore } from "./z-store"
+import { useGlobalStore, useUserStore } from "./z-store";
 
-const useStore = create(combine(useGlobalStore, useUserStore))
+const useStore = create(combine(useGlobalStore, useUserStore));
 
-export { useStore }
+export { useStore };

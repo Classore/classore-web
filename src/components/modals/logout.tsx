@@ -1,20 +1,20 @@
-import { LogoutGraphic } from "@/assets/icons"
-import { useUserStore } from "@/store/z-store"
-import { LogOut04 } from "@untitled-ui/icons-react"
-import { useRouter } from "next/router"
-import { toast } from "sonner"
-import { Button } from "../ui/button"
-import { Dialog, DialogClose, DialogContent, DialogTrigger } from "../ui/dialog"
+import { LogoutGraphic } from "@/assets/icons";
+import { useUserStore } from "@/store/z-store";
+import { LogOut04 } from "@untitled-ui/icons-react";
+import { useRouter } from "next/router";
+import { toast } from "sonner";
+import { Button } from "../ui/button";
+import { Dialog, DialogClose, DialogContent, DialogTrigger } from "../ui/dialog";
 
 export const LogoutModal = () => {
-	const router = useRouter()
-	const { signOut } = useUserStore()
+	const router = useRouter();
+	const { signOut } = useUserStore();
 
 	const logout = () => {
-		signOut()
-		toast.success("Logout successful!")
-		router.replace("/signin")
-	}
+		signOut();
+		toast.success("Logout successful!");
+		router.replace("/signin");
+	};
 
 	return (
 		<Dialog>
@@ -45,5 +45,5 @@ export const LogoutModal = () => {
 				</div>
 			</DialogContent>
 		</Dialog>
-	)
-}
+	);
+};

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
-import type { Config } from "tailwindcss"
+import type { Config } from "tailwindcss";
 
 const config: Config = {
 	darkMode: ["class"],
@@ -23,6 +23,10 @@ const config: Config = {
 			backgroundImage: {
 				dashboard: "url('/assets/images/dashboard.png')",
 				squiggly: "url('/assets/images/squiggly.png')",
+				"vector-grid": "url('/assets/images/vector-grid.png')",
+			},
+			gridTemplateColumns: {
+				fluid: "repeat(auto-fit, minmax(300px, 1fr))",
 			},
 			colors: {
 				error: "#E33629",
@@ -74,19 +78,38 @@ const config: Config = {
 					"0%, 50%, 100%": { scale: "1", opacity: "1" },
 					"25%, 75%": { scale: "0.75", opacity: "0.5" },
 				},
+				"slide-from-bottom": {
+					"0%": { transform: "translateY(100%)" },
+					"100%": { transform: "translateY(0)" },
+				},
+				"slide-from-left": {
+					"0%": { transform: "translateX(-100%)" },
+					"100%": { transform: "translateX(0)" },
+				},
+				"slide-from-right": {
+					"0%": { transform: "translateX(100%)" },
+					"100%": { transform: "translateX(0)" },
+				},
+				"slide-from-top": {
+					"0%": { transform: "translateY(-100%)" },
+					"100%": { transform: "translateY(0)" },
+				},
 			},
 			animation: {
 				"caret-blink": "caret-blink 1.25s ease-out infinite",
 				scale: "scale 2500ms ease-in-out infinite",
+				"slide-from-bottom": "slide-from-bottom 0.5s ease-out forwards",
+				"slide-from-left": "slide-from-left 0.5s ease-out forwards",
+				"slide-from-right": "slide-from-right 0.5s ease-out forwards",
+				"slide-from-top": "slide-from-top 0.5s ease-out forwards",
 			},
 			boxShadow: {
 				neomorphism: "inset 5px 5px 10px #eef0f2, inset -5px -5px 10px #f6f8fa",
 				primary: "0 0 0 2px rgba(111,66,193,0.1),0px 0px 0px 3px rgba(111,66,193,0.1)",
-				// error: "0 0 0 2px rgba(220,38,38,0.1),0px 0px 0px 3px rgba(220,38,38,0.1)",
 			},
 		},
 	},
 	plugins: [require("tailwindcss-animate"), require("@tailwindcss/forms")],
-}
+};
 
-export default config
+export default config;

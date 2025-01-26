@@ -1,13 +1,13 @@
-import { RiFileTextLine, RiFolderVideoLine, RiPlayCircleLine } from "@remixicon/react"
-import { Check } from "lucide-react"
-import React from "react"
+import { RiFileTextLine, RiFolderVideoLine, RiPlayCircleLine } from "@remixicon/react";
+import { Check } from "lucide-react";
+import React from "react";
 
-import type { ChapterProps } from "@/types"
+import type { ChapterProps } from "@/types";
 
 interface Props {
-	chapters: ChapterProps[]
-	setCurrent: (index: ChapterProps) => void
-	current?: ChapterProps
+	chapters: ChapterProps[];
+	setCurrent: (index: ChapterProps) => void;
+	current?: ChapterProps;
 }
 
 export const ChapterList = ({ chapters, setCurrent, current }: Props) => {
@@ -24,7 +24,8 @@ export const ChapterList = ({ chapters, setCurrent, current }: Props) => {
 							{chapter === current ? <RiFolderVideoLine /> : <RiPlayCircleLine />}
 						</button>
 						<div className="flex flex-1 flex-col gap-2">
-							<h5 className={`${chapter === current ? "font-medium text-black" : "text-neutral-400"}`}>
+							<h5
+								className={`${chapter === current ? "font-medium text-black" : "text-neutral-400"}`}>
 								{chapter.title}
 							</h5>
 							{chapter === current ? (
@@ -48,5 +49,5 @@ export const ChapterList = ({ chapters, setCurrent, current }: Props) => {
 				</div>
 			))}
 		</div>
-	)
-}
+	);
+};

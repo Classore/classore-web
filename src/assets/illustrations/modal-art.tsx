@@ -1,4 +1,4 @@
-import type { SVGProps } from "react"
+import type { SVGProps } from "react";
 export const ModalArt = (props: SVGProps<SVGSVGElement>) => (
 	<svg xmlns="http://www.w3.org/2000/svg" width={475} height={562} fill="none" {...props}>
 		<path
@@ -20,4 +20,4 @@ export const ModalArt = (props: SVGProps<SVGSVGElement>) => (
 			</radialGradient>
 		</defs>
 	</svg>
-)
+);
