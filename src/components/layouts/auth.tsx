@@ -1,11 +1,15 @@
-import Image, { type StaticImageData } from "next/image"
-import Link from "next/link"
-import React from "react"
+import Image, { type StaticImageData } from "next/image";
+import Link from "next/link";
+import React from "react";
 
-import { onlineLearning, solutionIllustration, testingIllustration } from "@/assets/illustrations"
-import { classore } from "@/assets/images"
+import {
+	onlineLearning,
+	solutionIllustration,
+	testingIllustration,
+} from "@/assets/illustrations";
+import { classore } from "@/assets/images";
 
-type Screen = "signin" | "signup" | "forgot-password" | "reset-password"
+type Screen = "signin" | "signup" | "forgot-password" | "reset-password";
 
 // since you are already passing screens, we have auto inject the images and the text in the auth layout based on the screen name
 const authIllustration: Record<Screen, StaticImageData> = {
@@ -13,9 +17,15 @@ const authIllustration: Record<Screen, StaticImageData> = {
 	signin: testingIllustration,
 	"forgot-password": solutionIllustration,
 	"reset-password": solutionIllustration,
-}
+};
 
-export function AuthLayout({ children, screen }: { children: React.ReactNode; screen: Screen }) {
+export function AuthLayout({
+	children,
+	screen,
+}: {
+	children: React.ReactNode;
+	screen: Screen;
+}) {
 	return (
 		<main className="mx-auto flex flex-col bg-white lg:grid lg:grid-cols-5">
 			<aside className="sticky top-0 col-span-2 hidden h-dvh flex-col gap-12 self-start bg-primary-100 p-10 pl-20 lg:flex">
@@ -37,5 +47,5 @@ export function AuthLayout({ children, screen }: { children: React.ReactNode; sc
 				{children}
 			</section>
 		</main>
-	)
+	);
 }

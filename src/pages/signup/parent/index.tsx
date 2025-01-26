@@ -1,20 +1,20 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { AuthLayout } from "@/components/layouts/auth"
-import { ErrorMessage, Seo, Spinner } from "@/components/shared"
+import { AuthLayout } from "@/components/layouts/auth";
+import { ErrorMessage, Seo, Spinner } from "@/components/shared";
 
-import { GoogleIcon, UserDetailsGraphic } from "@/assets/icons"
-import { SignupStepper } from "@/components/signup-stepper"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { setToken } from "@/lib/cookies"
-import { SignUpMutation } from "@/queries"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@tanstack/react-query"
-import Link from "next/link"
-import { useRouter } from "next/router"
-import { useForm } from "react-hook-form"
-import { toast } from "sonner"
-import * as z from "zod"
+import { GoogleIcon, UserDetailsGraphic } from "@/assets/icons";
+import { SignupStepper } from "@/components/signup-stepper";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { setToken } from "@/lib/cookies";
+import { SignUpMutation } from "@/queries";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import * as z from "zod";
 
 const onboardSchema = z.object({
 	first_name: z.string().min(1, { message: "Please enter your first name" }).trim(),
@@ -48,12 +48,12 @@ const onboardSchema = z.object({
 	accept_terms: z.literal(true, {
 		errorMap: () => ({ message: "You must accept the terms & conditions" }),
 	}),
-})
+});
 
-type OnboardFormValues = z.infer<typeof onboardSchema>
+type OnboardFormValues = z.infer<typeof onboardSchema>;
 
 const Page = () => {
-	const router = useRouter()
+	const router = useRouter();
 	const {
 		control,
 		register,
@@ -69,41 +69,41 @@ const Page = () => {
 			referral_code: "",
 			accept_terms: undefined,
 		},
-	})
+	});
 
 	const { isPending, mutate } = useMutation({
 		mutationKey: ["signup"],
 		mutationFn: (values: OnboardFormValues) => {
-			const { accept_terms, ...rest } = values
+			const { accept_terms, ...rest } = values;
 
 			return SignUpMutation({
 				...rest,
 				sign_up_channel: "DEFAULT",
 				user_type: "PARENT",
 				referral_code: rest.referral_code ?? "",
-			})
+			});
 		},
 		onSuccess: (data) => {
 			toast.success("Sign up successful!", {
 				description: "Please check your email to verify your account",
-			})
+			});
 
-			const { access_token, password, ...rest } = data.data.user_details
+			const { access_token, password, ...rest } = data.data.user_details;
 
-			setToken(access_token)
-			localStorage.setItem("CLASSORE_USER", JSON.stringify(rest))
+			setToken(access_token);
+			localStorage.setItem("CLASSORE_USER", JSON.stringify(rest));
 			router.push({
 				pathname: "/signup/parent/verify-email",
 				query: {
 					email: encodeURIComponent(data.data.user_details.email),
 					step: "3",
 				},
-			})
+			});
 		},
-	})
+	});
 	const onSubmit = (values: OnboardFormValues) => {
-		mutate(values)
-	}
+		mutate(values);
+	};
 
 	return (
 		<>
@@ -116,7 +116,9 @@ const Page = () => {
 					<div className="flex flex-col gap-6">
 						<header className="flex flex-col gap-4">
 							<UserDetailsGraphic />
-							<h2 className="font-body text-2xl font-bold text-neutral-900">Let’s get you onboard</h2>
+							<h2 className="font-body text-2xl font-bold text-neutral-900">
+								Let’s get you onboard
+							</h2>
 						</header>
 
 						<form
@@ -129,7 +131,13 @@ const Page = () => {
 								control={control}
 								name="first_name"
 							/>
-							<Input type="text" label="Last Name" placeholder="Doe" control={control} name="last_name" />
+							<Input
+								type="text"
+								label="Last Name"
+								placeholder="Doe"
+								control={control}
+								name="last_name"
+							/>
 							<Input
 								type="email"
 								label="Email Address"
@@ -166,7 +174,9 @@ const Page = () => {
 									<p>I agree to the terms and conditions</p>
 								</label>
 
-								{errors.accept_terms ? <ErrorMessage message={errors.accept_terms.message} /> : null}
+								{errors.accept_terms ? (
+									<ErrorMessage message={errors.accept_terms.message} />
+								) : null}
 							</div>
 
 							<div className="col-span-full flex flex-col gap-2">
@@ -195,7 +205,7 @@ const Page = () => {
 				</div>
 			</AuthLayout>
 		</>
-	)
-}
+	);
+};
 
-export default Page
+export default Page;

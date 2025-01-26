@@ -1,23 +1,23 @@
-import Image from "next/image"
-import React from "react"
+import Image from "next/image";
+import React from "react";
 
-import { arrow, learn } from "@/assets/illustrations"
-import { Appbar, Seo } from "@/components/shared"
-import { Button } from "@/components/ui/button"
-import { Modal } from "@/components/waitlist"
-import { event } from "@/lib"
+import { arrow, learn } from "@/assets/illustrations";
+import { Appbar, Seo } from "@/components/shared";
+import { Button } from "@/components/ui/button";
+import { Modal } from "@/components/waitlist";
+import { event } from "@/lib";
 import {
 	Dialog,
 	DialogContent,
 	DialogDescription,
 	DialogTitle,
 	DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 
-const colors = ["#42f4b5", "#38e365", "#b2dd4d", "#d34609"]
+const colors = ["#42f4b5", "#38e365", "#b2dd4d", "#d34609"];
 
 const Page = () => {
-	const [open, setOpen] = React.useState(false)
+	const [open, setOpen] = React.useState(false);
 
 	return (
 		<>
@@ -48,12 +48,17 @@ const Page = () => {
 							</div>
 							<div className="flex flex-col gap-3">
 								<div className="flex flex-wrap items-center">
-									<h1 className="text-7xl font-semibold leading-[82px]">Learn Anywhere, Anytime with</h1>
-									<h1 className="text-7xl font-semibold leading-[82px] text-secondary-300">Classore</h1>
+									<h1 className="text-7xl font-semibold leading-[82px]">
+										Learn Anywhere, Anytime with
+									</h1>
+									<h1 className="text-7xl font-semibold leading-[82px] text-secondary-300">
+										Classore
+									</h1>
 									<Image src={arrow} alt="arrow" width={82} height={61} className="ml-8" />
 								</div>
 								<p className="w-full text-neutral-500 lg:w-[381px] lg:text-xl">
-									Learning made easy and fun - don&apos;t miss early access to a new way of learning
+									Learning made easy and fun - don&apos;t miss early access to a new way of
+									learning
 								</p>
 								<Dialog open={open} onOpenChange={setOpen}>
 									<DialogTrigger asChild>
@@ -61,8 +66,8 @@ const Page = () => {
 											className="w-fit"
 											size="lg"
 											onClick={() => {
-												setOpen(true)
-												event("Lead", { content_name: "Open waitlist pop-up" })
+												setOpen(true);
+												event("Lead", { content_name: "Open waitlist pop-up" });
 											}}>
 											Click here to join waitlist
 										</Button>
@@ -90,7 +95,7 @@ const Page = () => {
 				</main>
 			</div>
 		</>
-	)
-}
+	);
+};
 
-export default Page
+export default Page;

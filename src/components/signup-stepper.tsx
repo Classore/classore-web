@@ -1,18 +1,18 @@
-import { classore } from "@/assets/images"
-import Image from "next/image"
-import Link from "next/link"
-import { useRouter } from "next/router"
+import { classore } from "@/assets/images";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 type SignupStepper = {
-	step: number
-}
+	step: number;
+};
 
-const steps = [1, 2, 3, 4]
+const steps = [1, 2, 3, 4];
 
 export const SignupStepper = () => {
-	const router = useRouter()
+	const router = useRouter();
 
-	const step = Number(router.query.step) ?? 1
+	const step = Number(router.query.step) ?? 1;
 
 	return (
 		<div className="flex items-center justify-between gap-2">
@@ -30,7 +30,9 @@ export const SignupStepper = () => {
 				<Image src={classore} alt="classore" width={120} height={25} />
 			</Link>
 
-			<p className="text-sm tracking-tight text-neutral-500">STEP {router.query.step ?? 1} of 4</p>
+			<p className="text-sm tracking-tight text-neutral-500">
+				STEP {router.query.step ?? 1} of 4
+			</p>
 		</div>
-	)
-}
+	);
+};

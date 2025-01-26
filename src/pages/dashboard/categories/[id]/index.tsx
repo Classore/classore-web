@@ -1,22 +1,22 @@
-import { RiArrowLeftSLine, RiUpload2Line } from "@remixicon/react"
+import { RiArrowLeftSLine, RiUpload2Line } from "@remixicon/react";
 // import { RiFolder4Line } from "@remixicon/react"
-import { useRouter } from "next/router"
-import Image from "next/image"
+import { useRouter } from "next/router";
+import Image from "next/image";
 // import Link from "next/link"
-import React from "react"
+import React from "react";
 
-import { DashboardLayout } from "@/components/layouts"
-import { ReviewCard, Seo } from "@/components/shared"
-import type { ExamBundleProps } from "@/types/type"
-import { Button } from "@/components/ui/button"
-import { formatCurrency } from "@/lib"
+import { DashboardLayout } from "@/components/layouts";
+import { ReviewCard, Seo } from "@/components/shared";
+import type { ExamBundleProps } from "@/types/type";
+import { Button } from "@/components/ui/button";
+import { formatCurrency } from "@/lib";
 
-const categories: ExamBundleProps[] = []
+const categories: ExamBundleProps[] = [];
 
 const Page = () => {
 	// const [current, setCurrent] = React.useState<number | null>(null)
-	const router = useRouter()
-	const { id } = router.query
+	const router = useRouter();
+	const { id } = router.query;
 
 	// const handleToggle = (index: number) => {
 	// 	if (index === current) {
@@ -26,9 +26,11 @@ const Page = () => {
 	// 	}
 	// }
 
-	const category = categories.find((category) => category.examinationbundle_id === String(id))
+	const category = categories.find(
+		(category) => category.examinationbundle_id === String(id)
+	);
 
-	if (!category) return null
+	if (!category) return null;
 
 	return (
 		<>
@@ -49,7 +51,9 @@ const Page = () => {
 								<RiUpload2Line />
 							</Button>
 						</div>
-						<p className="text-xs text-neutral-400">Categories / {category?.examination_name}</p>
+						<p className="text-xs text-neutral-400">
+							Categories / {category?.examination_name}
+						</p>
 					</div>
 					<div className="grid w-full grid-cols-3 gap-8">
 						<div className="col-span-2 flex flex-col gap-4">
@@ -86,7 +90,9 @@ const Page = () => {
 							<div className="flex w-full flex-col gap-5">
 								<div className="flex w-full items-center justify-between">
 									<h5 className="font-bold">Bundle Highlight</h5>
-									<h5 className="font-bold">{formatCurrency(category.examinationbundle_amount)}</h5>
+									<h5 className="font-bold">
+										{formatCurrency(category.examinationbundle_amount)}
+									</h5>
 								</div>
 								<hr className="w-full bg-neutral-300" />
 								<Button>Enroll Now</Button>
@@ -135,7 +141,7 @@ const Page = () => {
 				</div>
 			</DashboardLayout>
 		</>
-	)
-}
+	);
+};
 
-export default Page
+export default Page;

@@ -1,22 +1,22 @@
-import { useRouter } from "next/router"
+import { useRouter } from "next/router";
 // import dynamic from "next/dynamic"
-import React from "react"
+import React from "react";
 
-import { DashboardLayout } from "@/components/layouts"
-import { Loading, Seo } from "@/components/shared"
-import { useUserStore } from "@/store/z-store"
+import { DashboardLayout } from "@/components/layouts";
+import { Loading, Seo } from "@/components/shared";
+import { useUserStore } from "@/store/z-store";
 
 // const ChatComponent = dynamic(() => import("@/components/shared/chat-component"), {
 // 	ssr: false,
 // })
 
 const Page = () => {
-	const { user } = useUserStore()
-	const router = useRouter()
-	const { otherUserId } = router.query
-	console.log(otherUserId)
+	const { user } = useUserStore();
+	const router = useRouter();
+	const { otherUserId } = router.query;
+	console.log(otherUserId);
 
-	if (!user) return <Loading />
+	if (!user) return <Loading />;
 
 	return (
 		<>
@@ -31,7 +31,7 @@ const Page = () => {
 				</div>
 			</DashboardLayout>
 		</>
-	)
-}
+	);
+};
 
-export default Page
+export default Page;

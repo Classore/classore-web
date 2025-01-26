@@ -1,23 +1,23 @@
-import { createPersistMiddleware } from "../middleware"
+import { createPersistMiddleware } from "../middleware";
 
-import type { Maybe, QuestionProps } from "@/types"
+import type { Maybe, QuestionProps } from "@/types";
 
 interface QuizStore {
 	// getters
-	answered: QuestionProps[]
-	currentIndex: Maybe<number>
-	currentQuestion: Maybe<QuestionProps>
-	isAnswered: (question: QuestionProps) => boolean
-	questions: QuestionProps[]
-	timeLeft: number
-	totalQuestions: number
+	answered: QuestionProps[];
+	currentIndex: Maybe<number>;
+	currentQuestion: Maybe<QuestionProps>;
+	isAnswered: (question: QuestionProps) => boolean;
+	questions: QuestionProps[];
+	timeLeft: number;
+	totalQuestions: number;
 
 	// setters
-	nextQuestion: () => void
-	previousQuestion: () => void
-	selectAnswer: (answer: string) => void
-	setQuestions: (questions: QuestionProps) => void
-	start: () => void
+	nextQuestion: () => void;
+	previousQuestion: () => void;
+	selectAnswer: (answer: string) => void;
+	setQuestions: (questions: QuestionProps) => void;
+	start: () => void;
 }
 
 const initialState: QuizStore = {
@@ -36,10 +36,10 @@ const initialState: QuizStore = {
 	selectAnswer: () => {},
 	setQuestions: () => {},
 	start: () => {},
-}
+};
 
 const useQuizStore = createPersistMiddleware<QuizStore>("classore-quiz-store", () => ({
 	...initialState,
-}))
+}));
 
-export { useQuizStore }
+export { useQuizStore };

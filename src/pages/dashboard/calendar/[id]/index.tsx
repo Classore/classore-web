@@ -1,104 +1,104 @@
-import { format, addHours, isSameDay } from "date-fns"
-import { RiArrowLeftSLine } from "@remixicon/react"
-import { useRouter } from "next/router"
-import React from "react"
+import { format, addHours, isSameDay } from "date-fns";
+import { RiArrowLeftSLine } from "@remixicon/react";
+import { useRouter } from "next/router";
+import React from "react";
 
-import { DashboardLayout } from "@/components/layouts"
-import { Button } from "@/components/ui/button"
-import { Seo } from "@/components/shared"
-import type { EventProps } from "@/types"
+import { DashboardLayout } from "@/components/layouts";
+import { Button } from "@/components/ui/button";
+import { Seo } from "@/components/shared";
+import type { EventProps } from "@/types";
 
-const events: EventProps[] = []
+const events: EventProps[] = [];
 
-const HOURS = Array.from({ length: 24 }, (_, i) => i)
-const TIME_HEIGHT = 48 // Height for each hour slot in pixels
+const HOURS = Array.from({ length: 24 }, (_, i) => i);
+const TIME_HEIGHT = 48; // Height for each hour slot in pixels
 
 type DayEventProps = EventProps & {
-	status: "past" | "upcoming" | "current"
-}
+	status: "past" | "upcoming" | "current";
+};
 
 type DayProps = {
-	day: number | null
-	events: DayEventProps[]
-}
+	day: number | null;
+	events: DayEventProps[];
+};
 
 const Page = () => {
-	const router = useRouter()
-	const { id } = router.query
-	const scrollContainerRef = React.useRef<HTMLDivElement>(null)
+	const router = useRouter();
+	const { id } = router.query;
+	const scrollContainerRef = React.useRef<HTMLDivElement>(null);
 
 	const current = React.useMemo(() => {
-		if (!id || typeof id !== "string") return new Date()
-		const date = new Date()
-		const dayNum = parseInt(id)
-		if (isNaN(dayNum)) return new Date()
-		date.setDate(dayNum)
-		return date
-	}, [id])
+		if (!id || typeof id !== "string") return new Date();
+		const date = new Date();
+		const dayNum = parseInt(id);
+		if (isNaN(dayNum)) return new Date();
+		date.setDate(dayNum);
+		return date;
+	}, [id]);
 
 	React.useEffect(() => {
 		// Scroll to current time on load
 		if (scrollContainerRef.current) {
-			const currentHour = new Date().getHours()
-			scrollContainerRef.current.scrollTop = currentHour * TIME_HEIGHT - 200
+			const currentHour = new Date().getHours();
+			scrollContainerRef.current.scrollTop = currentHour * TIME_HEIGHT - 200;
 		}
-	}, [])
+	}, []);
 
 	const getEventStatus = React.useCallback((event: EventProps) => {
-		const today = new Date()
-		const firstDate = new Date(event.date[0])
-		const lastDate = new Date(event.date[event.date.length - 1])
+		const today = new Date();
+		const firstDate = new Date(event.date[0]);
+		const lastDate = new Date(event.date[event.date.length - 1]);
 
-		if (lastDate < today) return "past"
-		if (firstDate > today) return "upcoming"
-		return "current"
-	}, [])
+		if (lastDate < today) return "past";
+		if (firstDate > today) return "upcoming";
+		return "current";
+	}, []);
 
 	const getDaysInMonth = (year: number, month: number) => {
-		return new Date(year, month + 1, 0).getDate()
-	}
+		return new Date(year, month + 1, 0).getDate();
+	};
 
 	const getFirstDayOfMonth = (year: number, month: number) => {
-		return new Date(year, month, 1).getDay()
-	}
+		return new Date(year, month, 1).getDay();
+	};
 
 	const processedEvents = React.useMemo(() => {
-		const monthEvents: Record<string, EventProps[]> = {}
+		const monthEvents: Record<string, EventProps[]> = {};
 		events.forEach((event) => {
 			event.date.forEach((dateItem) => {
-				const eventDate = new Date(dateItem)
+				const eventDate = new Date(dateItem);
 				if (
 					eventDate.getFullYear() === current.getFullYear() &&
 					eventDate.getMonth() === current.getMonth()
 				) {
-					const dateKey = eventDate.getDate().toString()
+					const dateKey = eventDate.getDate().toString();
 					if (!monthEvents[dateKey]) {
-						monthEvents[dateKey] = []
+						monthEvents[dateKey] = [];
 					}
-					monthEvents[dateKey].push(event)
+					monthEvents[dateKey].push(event);
 				}
-			})
-		})
+			});
+		});
 
-		return monthEvents
-	}, [current])
+		return monthEvents;
+	}, [current]);
 
 	const calendarDays = React.useMemo(() => {
-		const year = current.getFullYear()
-		const month = current.getMonth()
-		const daysInMonth = getDaysInMonth(year, month)
-		const firstDay = getFirstDayOfMonth(year, month)
-		const days: DayProps[] = []
+		const year = current.getFullYear();
+		const month = current.getMonth();
+		const daysInMonth = getDaysInMonth(year, month);
+		const firstDay = getFirstDayOfMonth(year, month);
+		const days: DayProps[] = [];
 
 		for (let i = 0; i < firstDay; i++) {
 			days.push({
 				day: null,
 				events: [],
-			})
+			});
 		}
 
 		for (let day = 1; day <= daysInMonth; day++) {
-			const eventForDay = processedEvents[day] || []
+			const eventForDay = processedEvents[day] || [];
 
 			days.push({
 				day,
@@ -106,30 +106,30 @@ const Page = () => {
 					...event,
 					status: getEventStatus(event),
 				})),
-			})
+			});
 		}
 
-		return days
-	}, [current, getEventStatus, processedEvents])
+		return days;
+	}, [current, getEventStatus, processedEvents]);
 
-	const dayItems = calendarDays.find((dayItem) => dayItem.day === Number(id))
+	const dayItems = calendarDays.find((dayItem) => dayItem.day === Number(id));
 
 	const getEventPosition = (event: DayEventProps) => {
-		const startDate = new Date(event.date[0])
-		if (!isSameDay(startDate, current)) return null
+		const startDate = new Date(event.date[0]);
+		if (!isSameDay(startDate, current)) return null;
 
-		const startHour = startDate.getHours()
-		const startMinutes = startDate.getMinutes()
-		const endDate = addHours(startDate, 1)
-		const endHour = endDate.getHours()
-		const endMinutes = endDate.getMinutes()
+		const startHour = startDate.getHours();
+		const startMinutes = startDate.getMinutes();
+		const endDate = addHours(startDate, 1);
+		const endHour = endDate.getHours();
+		const endMinutes = endDate.getMinutes();
 
-		const top = startHour * TIME_HEIGHT + (startMinutes / 60) * TIME_HEIGHT
+		const top = startHour * TIME_HEIGHT + (startMinutes / 60) * TIME_HEIGHT;
 		const height =
-			(endHour - startHour) * TIME_HEIGHT + ((endMinutes - startMinutes) / 60) * TIME_HEIGHT
+			(endHour - startHour) * TIME_HEIGHT + ((endMinutes - startMinutes) / 60) * TIME_HEIGHT;
 
-		return { top, height }
-	}
+		return { top, height };
+	};
 
 	return (
 		<>
@@ -164,15 +164,16 @@ const Page = () => {
 										className="absolute left-0 right-0 border-t-2 border-red-500"
 										style={{
 											top: `${
-												new Date().getHours() * TIME_HEIGHT + (new Date().getMinutes() / 60) * TIME_HEIGHT
+												new Date().getHours() * TIME_HEIGHT +
+												(new Date().getMinutes() / 60) * TIME_HEIGHT
 											}px`,
 										}}>
 										<div className="absolute -left-2 -top-[7px] h-3 w-3 rounded-full bg-red-500" />
 									</div>
 								)}
 								{dayItems?.events.map((event) => {
-									const position = getEventPosition(event)
-									if (!position) return null
+									const position = getEventPosition(event);
+									if (!position) return null;
 									return (
 										<div
 											key={event.id}
@@ -187,7 +188,7 @@ const Page = () => {
 												{format(addHours(new Date(event.date[0]), 1), "h:mm a")}
 											</div>
 										</div>
-									)
+									);
 								})}
 							</div>
 						</div>
@@ -195,7 +196,7 @@ const Page = () => {
 				</div>
 			</DashboardLayout>
 		</>
-	)
-}
+	);
+};
 
-export default Page
+export default Page;

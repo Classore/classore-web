@@ -1,16 +1,16 @@
-import { ChevronLeft } from "lucide-react"
-import * as React from "react"
+import { ChevronLeft } from "lucide-react";
+import * as React from "react";
 
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
-import { useGetExamBundles } from "@/queries/school"
-import { CardLarge } from "../home"
-import { Spinner } from "../shared"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { useGetExamBundles } from "@/queries/school";
+import { CardLarge } from "../home";
+import { Spinner } from "../shared";
 
 export const FeaturedCategories = () => {
 	const { data: bundles, isPending } = useGetExamBundles({
 		limit: 5,
 		page: 1,
-	})
+	});
 
 	return (
 		<div className="flex w-full flex-col gap-4">
@@ -44,5 +44,5 @@ export const FeaturedCategories = () => {
 				</div>
 			)}
 		</div>
-	)
-}
+	);
+};

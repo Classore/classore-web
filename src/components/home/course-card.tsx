@@ -1,11 +1,11 @@
-import { RiFileTextLine, RiPlayCircleLine, RiTimeLine } from "@remixicon/react"
-import Image from "next/image"
-import Link from "next/link"
+import { RiFileTextLine, RiPlayCircleLine, RiTimeLine } from "@remixicon/react";
+import Image from "next/image";
+import Link from "next/link";
 
-import type { ExamCourseProps } from "@/types/type"
+import type { ExamCourseProps } from "@/types/type";
 
 interface Props {
-	course: ExamCourseProps
+	course: ExamCourseProps;
 }
 
 export const CourseCard = ({ course }: Props) => {
@@ -47,5 +47,5 @@ export const CourseCard = ({ course }: Props) => {
 				</div>
 			</div>
 		</Link>
-	)
-}
+	);
+};

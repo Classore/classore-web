@@ -1,16 +1,16 @@
-import { RiDeleteBin6Line, RiImageLine } from "@remixicon/react"
-import React from "react"
+import { RiDeleteBin6Line, RiImageLine } from "@remixicon/react";
+import React from "react";
 
-import { Avatar, AvatarImage } from "../ui/avatar"
-import { useUserStore } from "@/store/z-store"
-import { useForm } from "react-hook-form"
-import { Textarea } from "../ui/textarea"
-import { useFileHandler } from "@/hooks"
-import { Button } from "../ui/button"
-import { Input } from "../ui/input"
+import { Avatar, AvatarImage } from "../ui/avatar";
+import { useUserStore } from "@/store/z-store";
+import { useForm } from "react-hook-form";
+import { Textarea } from "../ui/textarea";
+import { useFileHandler } from "@/hooks";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 
 const Profile = () => {
-	const { user } = useUserStore()
+	const { user } = useUserStore();
 
 	const initialValues = {
 		bio: "",
@@ -19,30 +19,30 @@ const Profile = () => {
 		image: "",
 		last_name: user?.last_name ?? "",
 		date_of_birth: "",
-	}
+	};
 
-	const [values, setValues] = React.useState(initialValues)
+	const [values, setValues] = React.useState(initialValues);
 	const { control } = useForm({
 		defaultValues: initialValues,
-	})
+	});
 
 	const { handleClick, handleFileChange, inputRef } = useFileHandler({
 		onFilesChange: (files) => {
-			const file = files[0]
-			const reader = new FileReader()
-			reader.readAsDataURL(file)
+			const file = files[0];
+			const reader = new FileReader();
+			reader.readAsDataURL(file);
 			reader.onload = () => {
 				setValues((prev) => ({
 					...prev,
 					image: reader.result as string,
-				}))
-			}
+				}));
+			};
 		},
-	})
+	});
 
 	const handleSubmit = (e: React.FormEvent) => {
-		e.preventDefault()
-	}
+		e.preventDefault();
+	};
 
 	return (
 		<form onSubmit={handleSubmit} className="flex w-full flex-col border-t">
@@ -59,7 +59,11 @@ const Profile = () => {
 							onChange={handleFileChange}
 							className="hidden"
 						/>
-						<Button type="button" onClick={handleClick} variant="outline" className="h-9 w-fit text-sm">
+						<Button
+							type="button"
+							onClick={handleClick}
+							variant="outline"
+							className="h-9 w-fit text-sm">
 							<RiImageLine size={20} />
 							Change Image
 						</Button>
@@ -115,7 +119,7 @@ const Profile = () => {
 				</div>
 			</div>
 		</form>
-	)
-}
+	);
+};
 
-export default Profile
+export default Profile;

@@ -6,48 +6,49 @@ import {
 	RiPlayLargeFill,
 	RiVolumeMuteLine,
 	RiVolumeUpLine,
-} from "@remixicon/react"
-import { LoaderCircle } from "lucide-react"
-import React from "react"
+} from "@remixicon/react";
+import { LoaderCircle } from "lucide-react";
+import React from "react";
 
-import { formatTime } from "@/lib"
+import { formatTime } from "@/lib";
 
 interface Props {
-	src: string
+	src: string;
 }
 
 export const VideoPlayer = ({ src }: Props) => {
-	const container = React.useRef<HTMLDivElement>(null)!
-	const video = React.useRef<HTMLVideoElement>(null)!
-	const scrub = React.useRef<HTMLDivElement>(null)!
+	const container = React.useRef<HTMLDivElement>(null)!;
+	const video = React.useRef<HTMLVideoElement>(null)!;
+	const scrub = React.useRef<HTMLDivElement>(null)!;
 
-	const [showControls, setShowControls] = React.useState(false)
-	const [isFullscreen, setIsFullscreen] = React.useState(false)
-	const [isPlaying, setIsPlaying] = React.useState(false)
-	const [currentTime, setCurrentTime] = React.useState(0)
-	const [isLoading, setIsLoading] = React.useState(true)
-	const [isMuted, setIsMuted] = React.useState(false)
-	const [progress, setProgress] = React.useState(0)
-	const [duration, setDuration] = React.useState(0)
-	const [isPip, setIsPip] = React.useState(false)
+	const [showControls, setShowControls] = React.useState(false);
+	const [isFullscreen, setIsFullscreen] = React.useState(false);
+	const [isPlaying, setIsPlaying] = React.useState(false);
+	const [currentTime, setCurrentTime] = React.useState(0);
+	const [isLoading, setIsLoading] = React.useState(true);
+	const [isMuted, setIsMuted] = React.useState(false);
+	const [progress, setProgress] = React.useState(0);
+	const [duration, setDuration] = React.useState(0);
+	const [isPip, setIsPip] = React.useState(false);
+	const [isDragging, setIsDragging] = React.useState(false);
 
 	const togglePlay = () => {
 		if (video.current) {
 			if (isPlaying) {
-				video.current.pause()
+				video.current.pause();
 			} else {
-				video.current.play()
+				video.current.play();
 			}
-			setIsPlaying(!isPlaying)
+			setIsPlaying(!isPlaying);
 		}
-	}
+	};
 
 	const toggleMute = () => {
 		if (video.current) {
-			video.current.muted = !isMuted
-			setIsMuted(!isMuted)
+			video.current.muted = !isMuted;
+			setIsMuted(!isMuted);
 		}
-	}
+	};
 
 	const togglePictureInPicture = () => {
 		if (video.current) {
@@ -56,123 +57,150 @@ export const VideoPlayer = ({ src }: Props) => {
 					video.current
 						.requestPictureInPicture()
 						.then(() => setIsPip(true))
-						.catch((error) => console.error("Error entering Picture-in-Picture", error))
+						.catch((error) => console.error("Error entering Picture-in-Picture", error));
 				}
 			} else {
 				if (document.exitPictureInPicture) {
 					document
 						.exitPictureInPicture()
 						.then(() => setIsPip(false))
-						.catch((error) => console.error("Error exiting Picture-in-Picture", error))
+						.catch((error) => console.error("Error exiting Picture-in-Picture", error));
 				}
 			}
 		}
-	}
+	};
 
 	const toggleFullscreen = () => {
-		if (!video.current) return
+		if (!video.current) return;
 
 		const doc = document as Document & {
-			mozCancelFullScreen?: () => Promise<void>
-			webkitExitFullscreen?: () => Promise<void>
-			msExitFullscreen?: () => Promise<void>
-		}
+			mozCancelFullScreen?: () => Promise<void>;
+			webkitExitFullscreen?: () => Promise<void>;
+			msExitFullscreen?: () => Promise<void>;
+		};
 
 		const elem = video.current as HTMLVideoElement & {
-			mozRequestFullScreen?: () => Promise<void>
-			webkitRequestFullscreen?: () => Promise<void>
-			msRequestFullscreen?: () => Promise<void>
-		}
+			mozRequestFullScreen?: () => Promise<void>;
+			webkitRequestFullscreen?: () => Promise<void>;
+			msRequestFullscreen?: () => Promise<void>;
+		};
 
 		if (!isFullscreen) {
 			const requestFS =
 				elem.requestFullscreen ||
 				elem.mozRequestFullScreen ||
 				elem.webkitRequestFullscreen ||
-				elem.msRequestFullscreen
+				elem.msRequestFullscreen;
 
-			requestFS?.call(elem)
+			requestFS?.call(elem);
 		} else {
 			const exitFS =
 				doc.exitFullscreen ||
 				doc.mozCancelFullScreen ||
 				doc.webkitExitFullscreen ||
-				doc.msExitFullscreen
+				doc.msExitFullscreen;
 
-			exitFS?.call(doc)
+			exitFS?.call(doc);
 		}
 
-		setIsFullscreen(!isFullscreen)
-	}
+		setIsFullscreen(!isFullscreen);
+	};
 
 	const handleTimeUpdate = () => {
-		if (video.current) {
-			const currentProgress = (video.current.currentTime / video.current.duration) * 100
-			setProgress(currentProgress)
-			setCurrentTime(video.current.currentTime)
+		if (video.current && !isDragging) {
+			const currentProgress = (video.current.currentTime / video.current.duration) * 100;
+			setProgress(currentProgress);
+			setCurrentTime(video.current.currentTime);
 		}
-	}
+	};
 
 	const handleLoadedMetadata = () => {
 		if (video.current) {
-			setDuration(video.current.duration)
-			setIsLoading(false)
+			setDuration(video.current.duration);
+			setIsLoading(false);
 		}
-	}
+	};
 
-	const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
+	const handleScrubClick = (e: React.MouseEvent<HTMLDivElement>) => {
 		if (scrub.current && video.current) {
-			const progressBar = scrub.current
-			const percent = e.nativeEvent.offsetX / progressBar.offsetWidth
-			video.current.currentTime = percent * video.current.duration
-			setProgress(percent * 100)
+			const progressBar = scrub.current;
+			const percent = e.nativeEvent.offsetX / progressBar.offsetWidth;
+			video.current.currentTime = percent * video.current.duration;
+			setProgress(percent * 100);
 		}
-	}
+	};
+
+	const handleScrubStart = (e: React.MouseEvent<HTMLDivElement>) => {
+		setIsDragging(true);
+		handleScrubDrag(e);
+		document.addEventListener("mousemove", handleScrubDrag);
+		document.addEventListener("mouseup", handleScrubEnd);
+	};
+
+	const handleScrubDrag = (e: MouseEvent | React.MouseEvent) => {
+		if (scrub.current && video.current && isDragging) {
+			const rect = scrub.current.getBoundingClientRect();
+			const percent = Math.min(Math.max((e.clientX - rect.left) / rect.width, 0), 1);
+			video.current.currentTime = percent * video.current.duration;
+			setProgress(percent * 100);
+			setCurrentTime(video.current.currentTime);
+		}
+	};
+
+	const handleScrubEnd = () => {
+		setIsDragging(false);
+		document.removeEventListener("mousemove", handleScrubDrag);
+		document.removeEventListener("mouseup", handleScrubEnd);
+	};
 
 	const preventContextMenu = (e: React.MouseEvent) => {
-		e.preventDefault()
-		return false
-	}
+		e.preventDefault();
+		return false;
+	};
 
 	const handleMouseMove = () => {
-		setShowControls(true)
+		setShowControls(true);
 		if (controlsTimeoutRef.current) {
-			clearTimeout(controlsTimeoutRef.current)
+			clearTimeout(controlsTimeoutRef.current);
 		}
 
 		controlsTimeoutRef.current = setTimeout(() => {
-			setShowControls(false)
-		}, 3000)
-	}
+			setShowControls(false);
+		}, 3000);
+	};
 
-	const controlsTimeoutRef = React.useRef<NodeJS.Timeout>()
+	const controlsTimeoutRef = React.useRef<NodeJS.Timeout>();
 
 	React.useEffect(() => {
-		const videoElement = video.current
+		const videoElement = video.current;
 
 		const preventDownload = (e: Event) => {
-			e.preventDefault()
-			return false
-		}
+			e.preventDefault();
+			return false;
+		};
 
 		if (videoElement) {
-			videoElement.addEventListener("contextmenu", preventDownload)
-			videoElement.addEventListener("dragstart", preventDownload)
+			videoElement.addEventListener("contextmenu", preventDownload);
+			videoElement.addEventListener("dragstart", preventDownload);
 		}
 
 		return () => {
 			if (videoElement) {
-				videoElement.removeEventListener("contextmenu", preventDownload)
-				videoElement.removeEventListener("dragstart", preventDownload)
+				videoElement.removeEventListener("contextmenu", preventDownload);
+				videoElement.removeEventListener("dragstart", preventDownload);
 			}
-		}
-	}, [video])
+			if (controlsTimeoutRef.current) {
+				clearTimeout(controlsTimeoutRef.current);
+			}
+			document.removeEventListener("mousemove", handleScrubDrag);
+			document.removeEventListener("mouseup", handleScrubEnd);
+		};
+	}, [handleScrubDrag]);
 
 	return (
 		<div
 			ref={container}
 			onMouseMove={handleMouseMove}
-			// onMouseOver={() => console.log("hi")}
 			onMouseLeave={() => setShowControls(false)}
 			className="relative grid size-full place-items-center rounded-lg bg-black">
 			<div onContextMenu={preventContextMenu} className="relative size-full rounded-lg">
@@ -211,12 +239,15 @@ export const VideoPlayer = ({ src }: Props) => {
 				<div className="absolute bottom-5 left-4 flex w-[calc(100%-32px)] flex-col gap-2">
 					<div
 						ref={scrub}
-						onClick={handleProgressClick}
+						onClick={handleScrubClick}
+						onMouseDown={handleScrubStart}
 						className="relative flex h-1 w-full cursor-pointer items-center rounded-2xl bg-neutral-200/75">
 						<div
 							style={{ left: `${progress}%` }}
 							className="absolute top-1/2 size-4 -translate-y-1/2 rounded-full bg-white"></div>
-						<div style={{ width: `${progress}%` }} className="h-full rounded-2xl bg-white"></div>
+						<div
+							style={{ width: `${progress}%` }}
+							className="h-full rounded-2xl bg-white"></div>
 					</div>
 					<div className="flex w-full items-center justify-between">
 						<div className="text-xs text-white">
@@ -224,19 +255,22 @@ export const VideoPlayer = ({ src }: Props) => {
 						</div>
 						<div className="flex items-center gap-3 text-white">
 							<button onClick={toggleMute} className="transition-all duration-500">
-								{isMuted ? <RiVolumeUpLine size={20} /> : <RiVolumeMuteLine size={20} />}
+								{isMuted ? <RiVolumeMuteLine size={20} /> : <RiVolumeUpLine size={20} />}
 							</button>
 							<button onClick={togglePictureInPicture} className="transition-all duration-500">
 								<RiPictureInPictureLine size={20} />
 							</button>
-
 							<button onClick={toggleFullscreen} className="transition-all duration-500">
-								{isFullscreen ? <RiFullscreenExitLine size={20} /> : <RiFullscreenLine size={20} />}
+								{isFullscreen ? (
+									<RiFullscreenExitLine size={20} />
+								) : (
+									<RiFullscreenLine size={20} />
+								)}
 							</button>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	)
-}
+	);
+};

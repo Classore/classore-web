@@ -1,11 +1,11 @@
-import { RiStarFill } from "@remixicon/react"
-import Image from "next/image"
-import React from "react"
+import { RiStarFill } from "@remixicon/react";
+import Image from "next/image";
+import React from "react";
 
-import type { ReviewProps } from "@/types"
+import type { ReviewProps } from "@/types";
 
 interface Props {
-	review?: ReviewProps
+	review?: ReviewProps;
 }
 
 export const ReviewCard = ({}: Props) => {
@@ -17,8 +17,9 @@ export const ReviewCard = ({}: Props) => {
 				</div>
 				<div className="max-h-[120px] w-full overflow-hidden">
 					<p className="text-sm text-neutral-400">
-						Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eos officia non iste dolorum, ut
-						eveniet, a aperiam quasi ad facilis, fugiat veritatis nisi praesentium eius!
+						Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eos officia non iste
+						dolorum, ut eveniet, a aperiam quasi ad facilis, fugiat veritatis nisi praesentium
+						eius!
 					</p>
 				</div>
 			</div>
@@ -38,11 +39,11 @@ export const ReviewCard = ({}: Props) => {
 				</div>
 			</div>
 		</div>
-	)
-}
+	);
+};
 
 const Stars = ({ rating }: { rating: number }) => {
-	const MAX_RATING = 5
+	const MAX_RATING = 5;
 
 	return (
 		<div className="flex items-center gap-1">
@@ -53,5 +54,5 @@ const Stars = ({ rating }: { rating: number }) => {
 				/>
 			))}
 		</div>
-	)
-}
+	);
+};

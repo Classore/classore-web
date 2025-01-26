@@ -1,13 +1,13 @@
-import { formatCurrency, formatNumber } from "@/lib"
-import type { ExamBundlesResp } from "@/queries/school"
-import { RiTimeLine, RiUserLine } from "@remixicon/react"
-import Image from "next/image"
-import Link from "next/link"
-import { twMerge } from "tailwind-merge"
+import { formatCurrency, formatNumber } from "@/lib";
+import type { ExamBundlesResp } from "@/queries/school";
+import { RiTimeLine, RiUserLine } from "@remixicon/react";
+import Image from "next/image";
+import Link from "next/link";
+import { twMerge } from "tailwind-merge";
 
 interface Props {
-	course: ExamBundlesResp["data"][number]
-	className?: string
+	course: ExamBundlesResp["data"][number];
+	className?: string;
 }
 
 export const ExamCard = ({ course, className }: Props) => {
@@ -46,5 +46,5 @@ export const ExamCard = ({ course, className }: Props) => {
 				<p className="ml-auto text-sm">4.8 (1,509)</p>
 			</div>
 		</Link>
-	)
-}
+	);
+};

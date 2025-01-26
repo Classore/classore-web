@@ -1,8 +1,8 @@
-import { GoogleIcon } from "@/assets/icons"
-import { Button } from "../ui/button"
-import { Spinner } from "./spinner"
+import { GoogleIcon } from "@/assets/icons";
+import { Button } from "../ui/button";
+import { Spinner } from "./spinner";
 
-const isPending = false
+const isPending = false;
 export const GoogleAuth = () => {
 	// const { isPending, mutate } = useMutation({
 	// 	mutationKey: ["google-auth"],
@@ -25,5 +25,5 @@ export const GoogleAuth = () => {
 				</>
 			)}
 		</Button>
-	)
-}
+	);
+};

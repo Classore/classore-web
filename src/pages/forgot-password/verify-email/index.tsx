@@ -1,22 +1,22 @@
-import { VerifyEmailGraphic } from "@/assets/icons"
-import { classore } from "@/assets/images"
-import { AuthLayout } from "@/components/layouts/auth"
-import { Seo, Spinner } from "@/components/shared"
-import { Button } from "@/components/ui/button"
-import { OTPInput } from "@/components/ui/otp-input"
-import { useCountDown } from "@/hooks/use-countdown"
-import { formatEmail } from "@/lib"
-import { ForgotPasswordMutation } from "@/queries"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@tanstack/react-query"
-import { ChevronLeft } from "lucide-react"
-import type { GetServerSideProps, InferGetServerSidePropsType } from "next"
-import Image from "next/image"
-import Link from "next/link"
-import { useRouter } from "next/router"
-import { useForm } from "react-hook-form"
-import { toast } from "sonner"
-import * as z from "zod"
+import { VerifyEmailGraphic } from "@/assets/icons";
+import { classore } from "@/assets/images";
+import { AuthLayout } from "@/components/layouts/auth";
+import { Seo, Spinner } from "@/components/shared";
+import { Button } from "@/components/ui/button";
+import { OTPInput } from "@/components/ui/otp-input";
+import { useCountDown } from "@/hooks/use-countdown";
+import { formatEmail } from "@/lib";
+import { ForgotPasswordMutation } from "@/queries";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import { ChevronLeft } from "lucide-react";
+import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import * as z from "zod";
 
 const pageSchema = z.object({
 	verification_code: z
@@ -26,29 +26,29 @@ const pageSchema = z.object({
 		.min(4, { message: "Verification code must be 4 digits" })
 		.max(4, { message: "Verification code must be 4 digits" })
 		.trim(),
-})
+});
 
-type FormValues = z.infer<typeof pageSchema>
+type FormValues = z.infer<typeof pageSchema>;
 
 export const getServerSideProps = (async (req) => {
-	const email = req.query.email ?? ""
+	const email = req.query.email ?? "";
 
 	return {
 		props: {
 			email: typeof email === "string" ? formatEmail(decodeURIComponent(email)) : "",
 		},
-	}
-}) satisfies GetServerSideProps<{ email: string }>
+	};
+}) satisfies GetServerSideProps<{ email: string }>;
 
 const Page = ({ email }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-	const router = useRouter()
-	const { counter, reset } = useCountDown({ total: 60, ms: 1000 })
+	const router = useRouter();
+	const { counter, reset } = useCountDown({ total: 60, ms: 1000 });
 	const { control, handleSubmit } = useForm<FormValues>({
 		defaultValues: {
 			verification_code: "",
 		},
 		resolver: zodResolver(pageSchema),
-	})
+	});
 
 	const { isPending, mutate } = useMutation({
 		mutationKey: ["login"],
@@ -59,15 +59,15 @@ const Page = ({ email }: InferGetServerSidePropsType<typeof getServerSideProps>)
 		onSuccess: () => {
 			toast.success("OTP resent successfully!", {
 				description: "Please check your email to verify your account",
-			})
-			reset()
+			});
+			reset();
 		},
-	})
+	});
 
 	const onSubmit = (values: FormValues) => {
-		sessionStorage.setItem("temp_classore", JSON.stringify(values))
-		router.push("/forgot-password/reset")
-	}
+		sessionStorage.setItem("temp_classore", JSON.stringify(values));
+		router.push("/forgot-password/reset");
+	};
 
 	return (
 		<>
@@ -92,14 +92,19 @@ const Page = ({ email }: InferGetServerSidePropsType<typeof getServerSideProps>)
 							<VerifyEmailGraphic />
 
 							<div>
-								<h2 className="font-body text-2xl font-bold text-neutral-900">Verify your email address</h2>
+								<h2 className="font-body text-2xl font-bold text-neutral-900">
+									Verify your email address
+								</h2>
 								<p className="pt-1 text-sm text-neutral-500">
-									A 4 digit code has been sent to <span className="font-bold text-neutral-900">{email}</span>
+									A 4 digit code has been sent to{" "}
+									<span className="font-bold text-neutral-900">{email}</span>
 								</p>
 							</div>
 						</header>
 
-						<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6 font-body font-normal">
+						<form
+							onSubmit={handleSubmit(onSubmit)}
+							className="flex flex-col gap-6 font-body font-normal">
 							<OTPInput control={control} name="verification_code" />
 
 							<div className="col-span-full flex flex-col gap-2">
@@ -131,7 +136,7 @@ const Page = ({ email }: InferGetServerSidePropsType<typeof getServerSideProps>)
 				</div>
 			</AuthLayout>
 		</>
-	)
-}
+	);
+};
 
-export default Page
+export default Page;

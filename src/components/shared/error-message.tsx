@@ -1,8 +1,8 @@
-import { Warning2 } from "iconsax-react"
+import { Warning2 } from "iconsax-react";
 
 type ErrorMessageProps = {
-	message: string | undefined
-}
+	message: string | undefined;
+};
 
 export const ErrorMessage = ({ message }: ErrorMessageProps) => {
 	return (
@@ -10,5 +10,5 @@ export const ErrorMessage = ({ message }: ErrorMessageProps) => {
 			<Warning2 variant="Bold" size={16} />
 			<span>{message}</span>
 		</p>
-	)
-}
+	);
+};

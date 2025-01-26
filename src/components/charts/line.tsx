@@ -1,15 +1,15 @@
-import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
+import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
 
-import type { UserChartProps } from "@/types"
+import type { UserChartProps } from "@/types";
 import {
 	type ChartConfig,
 	ChartContainer,
 	ChartTooltip,
 	ChartTooltipContent,
-} from "@/components/ui/chart"
+} from "@/components/ui/chart";
 
 interface Props {
-	data: UserChartProps[]
+	data: UserChartProps[];
 }
 
 export const ChartLine = ({ data }: Props) => {
@@ -18,7 +18,7 @@ export const ChartLine = ({ data }: Props) => {
 			label: "Time spent",
 			color: "var(--primary-400)",
 		},
-	} satisfies ChartConfig
+	} satisfies ChartConfig;
 
 	return (
 		<ChartContainer config={config}>
@@ -41,5 +41,5 @@ export const ChartLine = ({ data }: Props) => {
 				/>
 			</LineChart>
 		</ChartContainer>
-	)
-}
+	);
+};

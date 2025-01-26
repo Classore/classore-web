@@ -1,14 +1,14 @@
-import { RiStarFill, RiTimeLine, RiUserLine } from "@remixicon/react"
-import Image from "next/image"
-import Link from "next/link"
-import React from "react"
+import { RiStarFill, RiTimeLine, RiUserLine } from "@remixicon/react";
+import Image from "next/image";
+import Link from "next/link";
+import React from "react";
 
-import type { ExamBundleProps } from "@/types/type"
-import { AvatarGroup } from "../shared"
-import { formatCurrency } from "@/lib"
+import type { ExamBundleProps } from "@/types/type";
+import { AvatarGroup } from "../shared";
+import { formatCurrency } from "@/lib";
 
 interface Props {
-	bundle: ExamBundleProps
+	bundle: ExamBundleProps;
 }
 
 const CardSmall = ({ bundle }: Props) => {
@@ -46,8 +46,8 @@ const CardSmall = ({ bundle }: Props) => {
 				</div>
 			</div>
 		</Link>
-	)
-}
+	);
+};
 
 const CardLarge = ({ bundle }: Props) => {
 	return (
@@ -67,10 +67,10 @@ const CardLarge = ({ bundle }: Props) => {
 						<div>
 							<h5 className="text-xl font-medium uppercase">{bundle.examinationbundle_name}</h5>
 							<p className="min-h-20 text-sm text-neutral-400">
-								Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto vero, fugiat laborum
-								consequuntur aperiam illo in nihil adipisci nam, veritatis iure soluta earum odit explicabo
-								tenetur. Iste, provident obcaecati. Impedit optio architecto deserunt! Dolores adipisci
-								dolor officia officiis quos provident.
+								Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto vero, fugiat
+								laborum consequuntur aperiam illo in nihil adipisci nam, veritatis iure soluta
+								earum odit explicabo tenetur. Iste, provident obcaecati. Impedit optio architecto
+								deserunt! Dolores adipisci dolor officia officiis quos provident.
 							</p>
 						</div>
 						<p className="font-semibold">{formatCurrency(bundle.examinationbundle_amount)}</p>
@@ -88,7 +88,7 @@ const CardLarge = ({ bundle }: Props) => {
 				</div>
 			</div>
 		</div>
-	)
-}
+	);
+};
 
-export { CardLarge, CardSmall }
+export { CardLarge, CardSmall };

@@ -1,19 +1,24 @@
-import { AuthLayout } from "@/components/layouts/auth"
-import { Seo, Spinner } from "@/components/shared"
+import { AuthLayout } from "@/components/layouts/auth";
+import { Seo, Spinner } from "@/components/shared";
 
-import { StudyingGraphic } from "@/assets/icons"
-import { CheckoutModal } from "@/components/modals"
-import { SignupStepper } from "@/components/signup-stepper"
-import { Button } from "@/components/ui/button"
-import { MultiSelect } from "@/components/ui/multi-select"
-import { Select, SelectItem } from "@/components/ui/select"
-import { formatCurrency } from "@/lib"
-import { useGetExamBundles, useGetExams, useGetSubjects, useVetStudyPack } from "@/queries/school"
-import { useMiscStore } from "@/store/z-store/misc"
-import { zodResolver } from "@hookform/resolvers/zod"
-import * as React from "react"
-import { useForm, useWatch } from "react-hook-form"
-import * as z from "zod"
+import { StudyingGraphic } from "@/assets/icons";
+import { CheckoutModal } from "@/components/modals";
+import { SignupStepper } from "@/components/signup-stepper";
+import { Button } from "@/components/ui/button";
+import { MultiSelect } from "@/components/ui/multi-select";
+import { Select, SelectItem } from "@/components/ui/select";
+import { formatCurrency } from "@/lib";
+import {
+	useGetExamBundles,
+	useGetExams,
+	useGetSubjects,
+	useVetStudyPack,
+} from "@/queries/school";
+import { useMiscStore } from "@/store/z-store/misc";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as React from "react";
+import { useForm, useWatch } from "react-hook-form";
+import * as z from "zod";
 
 const studyingForSchema = z.object({
 	exam_type: z
@@ -33,16 +38,16 @@ const studyingForSchema = z.object({
 		})
 		.min(1, { message: "Please select at least one subject" })
 		.transform((value) => {
-			return value.split(", ")
+			return value.split(", ");
 		}),
-})
+});
 
-type StudyingForFormValues = z.infer<typeof studyingForSchema>
+type StudyingForFormValues = z.infer<typeof studyingForSchema>;
 
 const Page = () => {
-	const setMiscStore = useMiscStore((state) => state.setMisc)
+	const setMiscStore = useMiscStore((state) => state.setMisc);
 
-	const [open, setOpen] = React.useState(false)
+	const [open, setOpen] = React.useState(false);
 	const { control, handleSubmit, resetField } = useForm<StudyingForFormValues>({
 		resolver: zodResolver(studyingForSchema),
 		defaultValues: {
@@ -50,20 +55,20 @@ const Page = () => {
 			chosen_bundle: "",
 			subjects: [],
 		},
-	})
+	});
 
 	const form = useWatch({
 		control,
-	})
+	});
 
-	const { data: bundles } = useGetExamBundles()
-	const { data: exams } = useGetExams()
-	const { data: subjects } = useGetSubjects()
+	const { data: bundles } = useGetExamBundles();
+	const { data: exams } = useGetExams();
+	const { data: subjects } = useGetSubjects();
 
 	// filters
 	const examBundles = bundles?.data.filter(
 		(bundle) => bundle.examinationbundle_examination === form.exam_type
-	)
+	);
 
 	// MAYBE: might memorize this to avoid unnecessary re-filtering this
 	const bundleSubjects = subjects
@@ -71,34 +76,34 @@ const Page = () => {
 		?.map((subject) => ({
 			label: subject.subject_name,
 			value: subject.subject_id,
-		}))
+		}));
 
 	const maxBundleSubject = bundles?.data.find(
 		(b) => b.examinationbundle_id === form.chosen_bundle
-	)?.examinationbundle_max_subjects
+	)?.examinationbundle_max_subjects;
 
-	const { isPending, mutate } = useVetStudyPack()
+	const { isPending, mutate } = useVetStudyPack();
 	const onSubmit = (values: StudyingForFormValues) => {
 		const payload = {
 			chosen_bundle: values.chosen_bundle,
 			subject_length: values.subjects.length,
-		}
+		};
 		mutate(payload, {
 			onSuccess: (data) => {
 				const payload = {
 					...values,
 					...data.data,
-				}
-				setMiscStore(payload)
-				setOpen(true)
+				};
+				setMiscStore(payload);
+				setOpen(true);
 			},
-		})
-	}
+		});
+	};
 
 	React.useEffect(() => {
 		// if (form.chosen_bundle) {
-		resetField("subjects")
-	}, [form.chosen_bundle, form.exam_type, resetField])
+		resetField("subjects");
+	}, [form.chosen_bundle, form.exam_type, resetField]);
 
 	return (
 		<>
@@ -110,10 +115,14 @@ const Page = () => {
 					<div className="flex flex-col gap-6">
 						<header className="flex flex-col gap-4">
 							<StudyingGraphic />
-							<h2 className="font-body text-2xl font-bold text-neutral-900">What are you studying for</h2>
+							<h2 className="font-body text-2xl font-bold text-neutral-900">
+								What are you studying for
+							</h2>
 						</header>
 
-						<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6 font-body font-normal">
+						<form
+							onSubmit={handleSubmit(onSubmit)}
+							className="flex flex-col gap-6 font-body font-normal">
 							<Select label="I am studying for" control={control} name="exam_type">
 								{exams?.map((exam) => (
 									<SelectItem key={exam.examination_id} value={exam.examination_id}>
@@ -124,7 +133,9 @@ const Page = () => {
 
 							<Select label="Select prep bundle" control={control} name="chosen_bundle">
 								{examBundles?.map((bundle) => (
-									<SelectItem key={bundle.examinationbundle_id} value={bundle.examinationbundle_id}>
+									<SelectItem
+										key={bundle.examinationbundle_id}
+										value={bundle.examinationbundle_id}>
 										{bundle.examinationbundle_name} Exam Prep Bundle (
 										{formatCurrency(bundle.examinationbundle_amount)})
 									</SelectItem>
@@ -152,7 +163,7 @@ const Page = () => {
 
 			<CheckoutModal open={open} setOpen={setOpen} />
 		</>
-	)
-}
+	);
+};
 
-export default Page
+export default Page;

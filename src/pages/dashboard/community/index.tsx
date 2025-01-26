@@ -1,18 +1,18 @@
 // import dynamic from "next/dynamic"
-import React from "react"
+import React from "react";
 
-import { DashboardLayout } from "@/components/layouts"
-import { Loading, Seo } from "@/components/shared"
-import { useUserStore } from "@/store/z-store"
+import { DashboardLayout } from "@/components/layouts";
+import { Loading, Seo } from "@/components/shared";
+import { useUserStore } from "@/store/z-store";
 
 // const ChannelsComponent = dynamic(() => import("@/components/shared/comunity"), {
 // 	ssr: false,
 // })
 
 const Page = () => {
-	const { user } = useUserStore()
+	const { user } = useUserStore();
 
-	if (!user) return <Loading />
+	if (!user) return <Loading />;
 
 	return (
 		<>
@@ -27,7 +27,7 @@ const Page = () => {
 				</div>
 			</DashboardLayout>
 		</>
-	)
-}
+	);
+};
 
-export default Page
+export default Page;

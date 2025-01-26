@@ -1,59 +1,45 @@
-import { useRouter } from "next/router"
-import Image from "next/image"
-import React from "react"
+import { useRouter } from "next/router";
+import Image from "next/image";
+import React from "react";
 import {
 	RiArrowDropDownLine,
 	RiArrowLeftSLine,
 	RiCloseLine,
 	RiQuestionLine,
 	RiTimeLine,
-} from "@remixicon/react"
+} from "@remixicon/react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { usePreventNavigation, useQuizHandler } from "@/hooks"
-import { Button } from "@/components/ui/button"
-import { useUserStore } from "@/store/z-store"
-import { Seo } from "@/components/shared"
-import { getInitials } from "@/lib"
-import type { ChapterProps } from "@/types"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { usePreventNavigation, useQuizHandler } from "@/hooks";
+import { Button } from "@/components/ui/button";
+import { useUserStore } from "@/store/z-store";
+// import type { ChapterProps } from "@/types";
+import { Seo } from "@/components/shared";
+import { getInitials } from "@/lib";
 import {
 	Dialog,
 	DialogContent,
 	DialogDescription,
 	DialogTitle,
 	DialogTrigger,
-} from "@/components/ui/dialog"
-
-const categories: {
-	subjects: {
-		id: string
-		chapters: ChapterProps[]
-		title: string
-	}[]
-	id: string
-	name: string
-}[] = []
+} from "@/components/ui/dialog";
 
 const items = [
 	{ label: "answered", color: "var(--primary-400)" },
 	{ label: "unanswered", color: "var(--neutral-400)" },
-]
+];
 
 const Page = () => {
-	const [dialogOpen, setDialogOpen] = React.useState(false)
-	const [isOpen, setIsOpen] = React.useState(false)
-	const [open, setOpen] = React.useState(false)
-	const { user } = useUserStore()
-	const router = useRouter()
-	const { id } = router.query
-
-	const quizzes = categories[0]?.subjects[9]?.chapters[0]?.quizzes
-	const quiz = quizzes.find((quiz) => quiz.id === String(id))!
-	const questions = quiz?.questions
+	const [dialogOpen, setDialogOpen] = React.useState(false);
+	const [isOpen, setIsOpen] = React.useState(false);
+	const [open, setOpen] = React.useState(false);
+	const { user } = useUserStore();
+	const router = useRouter();
+	const id = router.query.id as string;
 
 	const handleQuit = () => {
-		router.push("/dashboard/courses")
-	}
+		router.push("/dashboard/courses");
+	};
 
 	const {
 		current,
@@ -65,14 +51,14 @@ const Page = () => {
 		selectAnswer,
 		setCurrent,
 	} = useQuizHandler({
-		questions,
+		questions: [],
 		onSubmit: (answered) => {
-			console.log(answered)
-			router.push("/dashboard/courses")
+			console.log(answered);
+			router.push("/dashboard/courses");
 		},
-	})
+	});
 
-	usePreventNavigation(true, `/dashboard/courses/`)
+	usePreventNavigation(true, `/dashboard/courses/`);
 
 	return (
 		<>
@@ -88,7 +74,7 @@ const Page = () => {
 								sizes="(max-width:1024px)100%"
 							/>
 						</div>
-						<h5 className="text-xl font-bold">{categories[0].name}</h5>
+						<h5 className="text-xl font-bold">{`Category Name Here ${id}`}</h5>
 						<button onClick={() => setOpen(!open)} className="flex items-center gap-2">
 							<Avatar className="size-[46px] bg-black">
 								<AvatarImage src={user?.image} alt={user?.first_name} />
@@ -129,11 +115,14 @@ const Page = () => {
 										<DialogTitle className="text-2xl font-bold">Quit?</DialogTitle>
 										<DialogDescription hidden></DialogDescription>
 										<div className="w-full rounded-lg bg-neutral-100 p-4 text-sm text-neutral-400">
-											Are you sure you want to quit your quiz now? Please note that you will lose an attempt by
-											quitting.
+											Are you sure you want to quit your quiz now? Please note that you will lose an
+											attempt by quitting.
 										</div>
 										<div className="flex w-full items-center justify-end gap-4">
-											<Button className="max-w-[115px]" onClick={() => setDialogOpen(false)} variant="outline">
+											<Button
+												className="max-w-[115px]"
+												onClick={() => setDialogOpen(false)}
+												variant="outline">
 												Cancel
 											</Button>
 											<Button className="w-fit" onClick={handleQuit}>
@@ -149,7 +138,7 @@ const Page = () => {
 								<div className="flex items-center gap-1 text-neutral-400">
 									<RiQuestionLine />
 									<p className="text-sm font-bold">
-										QUESTION {current + 1} OF {questions?.length}
+										QUESTION {current + 1} OF {"Question Count"}
 									</p>
 								</div>
 								<div className="flex items-center gap-1">
@@ -179,7 +168,10 @@ const Page = () => {
 								</div>
 							</div>
 							<div className="flex w-full items-center justify-between">
-								<Button onClick={() => handleNavigation("skip")} className="max-w-[115px]" variant="text">
+								<Button
+									onClick={() => handleNavigation("skip")}
+									className="max-w-[115px]"
+									variant="text">
 									Skip Question
 								</Button>
 								<div className="flex items-center gap-4">
@@ -189,7 +181,7 @@ const Page = () => {
 										variant="outline">
 										Previous
 									</Button>
-									{questions?.length - 1 === current ? (
+									{[...Array(10)]?.length - 1 === current ? (
 										<Dialog open={isOpen} onOpenChange={setIsOpen}>
 											<DialogTrigger asChild>
 												<Button className="max-w-[115px]">Submit</Button>
@@ -207,7 +199,10 @@ const Page = () => {
 														Are you sure you want to submit your quiz now?
 													</div>
 													<div className="flex w-full items-center justify-end gap-4">
-														<Button className="max-w-[115px]" onClick={() => setIsOpen(false)} variant="outline">
+														<Button
+															className="max-w-[115px]"
+															onClick={() => setIsOpen(false)}
+															variant="outline">
 															Cancel
 														</Button>
 														<Button className="max-w-[115px]" onClick={handleSubmission}>
@@ -237,7 +232,7 @@ const Page = () => {
 								))}
 							</div>
 							<div className="grid w-full grid-cols-5 gap-x-9 gap-y-2">
-								{questions?.map((question, index) => (
+								{[{ id: "1" }, { id: "2" }]?.map((question, index) => (
 									<button
 										onClick={() => setCurrent(index)}
 										key={question.id}
@@ -251,7 +246,7 @@ const Page = () => {
 				</div>
 			</div>
 		</>
-	)
-}
+	);
+};
 
-export default Page
+export default Page;
