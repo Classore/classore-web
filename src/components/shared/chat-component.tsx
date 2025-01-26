@@ -1,6 +1,6 @@
-import type { Channel as StreamChannel, UserSort } from "stream-chat"
-import { StreamChat } from "stream-chat"
-import React from "react"
+import type { Channel as StreamChannel, UserSort } from "stream-chat";
+import { StreamChat } from "stream-chat";
+import React from "react";
 import {
 	Chat,
 	Channel,
@@ -9,38 +9,38 @@ import {
 	MessageList,
 	Thread,
 	Window,
-} from "stream-chat-react"
+} from "stream-chat-react";
 
-import type { AdminProps, UserProps } from "@/types"
-import { Loading } from "./loader"
+import type { AdminProps, UserProps } from "@/types";
+import { Loading } from "./loader";
 
 interface User {
-	id: string
-	name: string
+	id: string;
+	name: string;
 }
 
 interface UserListProps {
-	client: StreamChat
-	currentUserId: string
-	onSelectUser: (userId: string) => void
-	selectedUserId: string | null
-	predefinedUsers?: AdminProps[]
-	onStartNewChat?: () => void
+	client: StreamChat;
+	currentUserId: string;
+	onSelectUser: (userId: string) => void;
+	selectedUserId: string | null;
+	predefinedUsers?: AdminProps[];
+	onStartNewChat?: () => void;
 }
 
 interface Props {
-	user: UserProps
-	initialOtherUserId?: string
+	user: UserProps;
+	initialOtherUserId?: string;
 }
 
 const ChatComponent = ({ user, initialOtherUserId }: Props) => {
-	const [selectedUserId, setSelectedUserId] = React.useState<string | null>(null)
-	const [channel, setChannel] = React.useState<StreamChannel | null>(null)
-	const [client, setClient] = React.useState<StreamChat | null>(null)
+	const [selectedUserId, setSelectedUserId] = React.useState<string | null>(null);
+	const [channel, setChannel] = React.useState<StreamChannel | null>(null);
+	const [client, setClient] = React.useState<StreamChat | null>(null);
 
 	const createDirectChannel = React.useCallback(
 		async (otherUserId: string) => {
-			if (!client) return
+			if (!client) return;
 
 			try {
 				const response = await fetch("/api/create-direct-chat", {
@@ -52,75 +52,75 @@ const ChatComponent = ({ user, initialOtherUserId }: Props) => {
 						currentUserId: user.id,
 						otherUserId,
 					}),
-				})
+				});
 
 				if (!response.ok) {
-					throw new Error("Failed to create direct chat")
+					throw new Error("Failed to create direct chat");
 				}
 
-				const { channelId } = await response.json()
+				const { channelId } = await response.json();
 				const newChannel = client.channel("messaging", channelId, {
 					members: [user.id, otherUserId],
-				})
+				});
 
-				await newChannel.watch()
-				setChannel(newChannel)
-				setSelectedUserId(otherUserId)
+				await newChannel.watch();
+				setChannel(newChannel);
+				setSelectedUserId(otherUserId);
 			} catch (error) {
-				console.error("Error creating direct channel:", error)
+				console.error("Error creating direct channel:", error);
 			}
 		},
 		[client, user.id]
-	)
+	);
 
 	const initializeChat = React.useCallback(async () => {
 		try {
-			const response = await fetch(`/api/get-token?userId=${user.id}`)
+			const response = await fetch(`/api/get-token?userId=${user.id}`);
 			if (!response.ok) {
-				throw new Error("Failed to get token")
+				throw new Error("Failed to get token");
 			}
 
-			const { token } = await response.json()
-			const apiKey = process.env.NEXT_PUBLIC_GETSTREAM_API_KEY
+			const { token } = await response.json();
+			const apiKey = process.env.NEXT_PUBLIC_GETSTREAM_API_KEY;
 
 			if (!apiKey) {
-				throw new Error("Stream API key is not defined")
+				throw new Error("Stream API key is not defined");
 			}
 
-			const newClient = StreamChat.getInstance(apiKey)
+			const newClient = StreamChat.getInstance(apiKey);
 			await newClient.connectUser(
 				{
 					id: user.id,
 					name: `User ${user.first_name}`,
 				},
 				token
-			)
+			);
 
-			setClient(newClient)
+			setClient(newClient);
 
 			if (initialOtherUserId && initialOtherUserId !== "") {
-				await createDirectChannel(initialOtherUserId)
+				await createDirectChannel(initialOtherUserId);
 			}
 		} catch (error) {
-			console.error("Chat initialization error:", error)
+			console.error("Chat initialization error:", error);
 		}
-	}, [user.id, user.first_name, initialOtherUserId, createDirectChannel])
+	}, [user.id, user.first_name, initialOtherUserId, createDirectChannel]);
 
 	React.useEffect(() => {
-		initializeChat()
+		initializeChat();
 
 		return () => {
 			if (client) {
-				client.disconnectUser()
+				client.disconnectUser();
 			}
-		}
-	}, [client, initializeChat])
+		};
+	}, [client, initializeChat]);
 
 	const handleStartNewChat = React.useCallback(() => {
-		console.log("open new chat")
-	}, [])
+		console.log("open new chat");
+	}, []);
 
-	if (!client || !channel) return <Loading />
+	if (!client || !channel) return <Loading />;
 
 	return (
 		<div className="flex h-full w-full items-start">
@@ -152,57 +152,58 @@ const ChatComponent = ({ user, initialOtherUserId }: Props) => {
 				</div>
 			</Chat>
 		</div>
-	)
-}
+	);
+};
 
 const UserList: React.FC<UserListProps> = React.memo(
 	({ client, currentUserId, onSelectUser, onStartNewChat, predefinedUsers = [] }) => {
-		const [users, setUsers] = React.useState<User[]>([])
-		const [loading, setLoading] = React.useState(true)
+		const [users, setUsers] = React.useState<User[]>([]);
+		const [loading, setLoading] = React.useState(true);
 
 		React.useEffect(() => {
 			const fetchUsers = async () => {
 				try {
-					const filter = { id: { $ne: currentUserId } }
-					const sort: UserSort = { last_active: -1 }
+					const filter = { id: { $ne: currentUserId } };
+					const sort: UserSort = { last_active: -1 };
 					const options = {
 						limit: 50,
 						presence: true,
-					}
+					};
 
-					const { users } = await client.queryUsers(filter, sort, options)
+					const { users } = await client.queryUsers(filter, sort, options);
 
 					const formattedUsers = users.map((user) => ({
 						id: user.id,
 						name: user.name || user.id,
-					}))
+					}));
 
 					const formattedPredefinedUsers = predefinedUsers!.map((user) => ({
 						id: user.id,
 						name: user.first_name,
-					}))
+					}));
 
 					const combinedUsers = [
 						...formattedPredefinedUsers,
 						...formattedUsers.filter(
-							(fetchedUser) => !formattedPredefinedUsers.some((predefined) => predefined === fetchedUser)
+							(fetchedUser) =>
+								!formattedPredefinedUsers.some((predefined) => predefined === fetchedUser)
 						),
-					]
+					];
 
-					setUsers(combinedUsers)
+					setUsers(combinedUsers);
 				} catch (error) {
-					console.error("Error fetching users:", error)
+					console.error("Error fetching users:", error);
 				} finally {
-					setLoading(false)
+					setLoading(false);
 				}
-			}
+			};
 
 			if (client) {
-				fetchUsers()
+				fetchUsers();
 			}
-		}, [client, currentUserId, predefinedUsers])
+		}, [client, currentUserId, predefinedUsers]);
 
-		if (loading) return <Loading />
+		if (loading) return <Loading />;
 
 		return (
 			<div className="flex h-full w-full flex-col gap-4 overflow-y-auto">
@@ -231,10 +232,10 @@ const UserList: React.FC<UserListProps> = React.memo(
 					<p className="text-center text-gray-500">No chats available</p>
 				)}
 			</div>
-		)
+		);
 	}
-)
+);
 
-UserList.displayName = "UserList"
+UserList.displayName = "UserList";
 
-export default React.memo(ChatComponent)
+export default React.memo(ChatComponent);

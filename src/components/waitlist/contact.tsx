@@ -1,11 +1,11 @@
-import { CloseCircle } from "iconsax-react"
-import React from "react"
+import { CloseCircle } from "iconsax-react";
+import React from "react";
 
-import { social_links } from "@/config"
-import { Button } from "../ui/button"
+import { social_links } from "@/config";
+import { Button } from "../ui/button";
 
 interface Props {
-	onClose: () => void
+	onClose: () => void;
 }
 
 export const Contact = ({ onClose }: Props) => {
@@ -42,5 +42,5 @@ export const Contact = ({ onClose }: Props) => {
 				</div>
 			</div>
 		</div>
-	)
-}
+	);
+};

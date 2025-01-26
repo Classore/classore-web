@@ -1,21 +1,26 @@
-import { useController, type Control, type FieldValues, type Path } from "react-hook-form"
-import * as SelectPrimitive from "@radix-ui/react-select"
-import { ChevronDown } from "@untitled-ui/icons-react"
-import * as React from "react"
+import {
+	useController,
+	type Control,
+	type FieldValues,
+	type Path,
+} from "react-hook-form";
+import * as SelectPrimitive from "@radix-ui/react-select";
+import { ChevronDown } from "@untitled-ui/icons-react";
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
-import { ErrorMessage } from "../shared"
+import { cn } from "@/lib/utils";
+import { ErrorMessage } from "../shared";
 
 interface SelectProps<T extends FieldValues>
 	extends React.PropsWithChildren,
 		React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger> {
-	name: Path<T>
-	control: Control<T>
-	className?: string
-	label?: string
-	placeholder?: string
-	labelClassName?: string
-	wrapperClassName?: string
+	name: Path<T>;
+	control: Control<T>;
+	className?: string;
+	label?: string;
+	placeholder?: string;
+	labelClassName?: string;
+	wrapperClassName?: string;
 }
 
 export const Select = <T extends FieldValues>({
@@ -35,7 +40,7 @@ export const Select = <T extends FieldValues>({
 	} = useController({
 		name,
 		control,
-	})
+	});
 
 	return (
 		<label className={cn("flex flex-col gap-1.5 font-body", wrapperClassName)}>
@@ -72,8 +77,8 @@ export const Select = <T extends FieldValues>({
 
 			{error ? <ErrorMessage message={error.message} /> : null}
 		</label>
-	)
-}
+	);
+};
 
 export const SelectItem = React.forwardRef<
 	React.ElementRef<typeof SelectPrimitive.Item>,
@@ -92,5 +97,5 @@ export const SelectItem = React.forwardRef<
 			<SelectPrimitive.ItemIndicator className="size-2.5 rounded-full bg-primary-300" />
 		</span>
 	</SelectPrimitive.Item>
-))
-SelectItem.displayName = SelectPrimitive.Item.displayName
+));
+SelectItem.displayName = SelectPrimitive.Item.displayName;

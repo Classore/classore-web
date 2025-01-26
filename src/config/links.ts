@@ -1,14 +1,17 @@
-import { Facebook, Instagram, Twitter, Youtube } from "lucide-react"
 import {
 	RiCalendar2Line,
+	RiFacebookCircleLine,
 	RiGraduationCapLine,
 	RiHome8Line,
+	RiInstagramLine,
 	RiLayoutGridLine,
 	RiMessage3Line,
 	RiSpeedUpLine,
 	RiTeamLine,
 	RiTrophyLine,
-} from "@remixicon/react"
+	RiTwitterXLine,
+	RiYoutubeLine,
+} from "@remixicon/react";
 
 export const dashboard_links = [
 	{
@@ -66,13 +69,34 @@ export const dashboard_links = [
 			},
 		],
 	},
-]
+];
 
-export const footer_links = []
+export const footer_links = [
+	{
+		label: "1",
+		links: [
+			{ name: "For Students", href: "/" },
+			{ name: "For Parents", href: "/" },
+			{ name: "For Agents", href: "/" },
+		],
+	},
+	{
+		label: "2",
+		links: [
+			{ name: "What We Offer", href: "/what-we-offer" },
+			{ name: "Testimomnials", href: "/testimonials" },
+			{ name: "FAQs", href: "/frequently-asked-questions" },
+		],
+	},
+];
 
 export const social_links = [
-	{ label: "Facebook", url: "https://facebook.com/classoreapp", icon: Facebook },
-	{ label: "Instagram", url: "https://instagram.com/classoreapp", icon: Instagram },
-	{ label: "X (Twitter)", url: "https://x.com/classore", icon: Twitter },
-	{ label: "YouTube", url: "https://youtube.com/@Classore", icon: Youtube },
-]
+	{ label: "Instagram", url: "https://instagram.com/classoreapp", icon: RiInstagramLine },
+	{
+		label: "Facebook",
+		url: "https://facebook.com/classoreapp",
+		icon: RiFacebookCircleLine,
+	},
+	{ label: "X (Twitter)", url: "https://x.com/classore", icon: RiTwitterXLine },
+	{ label: "YouTube", url: "https://youtube.com/@Classore", icon: RiYoutubeLine },
+];

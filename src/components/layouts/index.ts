@@ -1,2 +1,2 @@
-export * from "./dashboard"
-export * from "./settings-drawer"
+export * from "./dashboard";
+export * from "./settings-drawer";

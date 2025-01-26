@@ -1,4 +1,4 @@
-import type { RemixiconComponentType } from "@remixicon/react"
+import type { RemixiconComponentType } from "@remixicon/react";
 import {
 	RiCameraLine,
 	RiCloseLine,
@@ -6,31 +6,31 @@ import {
 	RiNotification4Line,
 	RiUser3Line,
 	RiUserAddLine,
-} from "@remixicon/react"
-import Image from "next/image"
-import React from "react"
+} from "@remixicon/react";
+import Image from "next/image";
+import React from "react";
 
-import Notification from "@/components/settings/notification"
-import Points from "@/components/settings/points"
-import Profile from "@/components/settings/profile"
-import Security from "@/components/settings/security"
-import { useFileHandler } from "@/hooks"
-import { getInitials } from "@/lib"
-import { useUserStore } from "@/store/z-store"
-import { User03 } from "@untitled-ui/icons-react"
-import { TabPanel } from "../shared"
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
-import { Button } from "../ui/button"
-import { ScrollArea } from "../ui/scroll-area"
-import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "../ui/sheet"
+import Notification from "@/components/settings/notification";
+import Points from "@/components/settings/points";
+import Profile from "@/components/settings/profile";
+import Security from "@/components/settings/security";
+import { useFileHandler } from "@/hooks";
+import { getInitials } from "@/lib";
+import { useUserStore } from "@/store/z-store";
+import { User03 } from "@untitled-ui/icons-react";
+import { TabPanel } from "../shared";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Button } from "../ui/button";
+import { ScrollArea } from "../ui/scroll-area";
+import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "../ui/sheet";
 
-type TabNames = "profile" | "notification" | "security" | "points"
+type TabNames = "profile" | "notification" | "security" | "points";
 
 type TabList = {
-	label: string
-	name: TabNames
-	icon: RemixiconComponentType
-}
+	label: string;
+	name: TabNames;
+	icon: RemixiconComponentType;
+};
 
 const tabs: TabList[] = [
 	{
@@ -53,23 +53,23 @@ const tabs: TabList[] = [
 		name: "points",
 		icon: RiUserAddLine,
 	},
-]
+];
 
 export const SettingsDrawer = () => {
-	const [current, setCurrent] = React.useState<TabNames>("profile")
-	const [backgroundImage, setBackgroundImage] = React.useState("")
-	const { user } = useUserStore()
+	const [current, setCurrent] = React.useState<TabNames>("profile");
+	const [backgroundImage, setBackgroundImage] = React.useState("");
+	const { user } = useUserStore();
 
 	const { handleClick, handleFileChange, inputRef } = useFileHandler({
 		onFilesChange: (files) => {
-			const file = files[0]
-			const reader = new FileReader()
-			reader.readAsDataURL(file)
+			const file = files[0];
+			const reader = new FileReader();
+			reader.readAsDataURL(file);
 			reader.onload = () => {
-				setBackgroundImage(reader.result as string)
-			}
+				setBackgroundImage(reader.result as string);
+			};
 		},
-	})
+	});
 
 	return (
 		<Sheet>
@@ -167,5 +167,5 @@ export const SettingsDrawer = () => {
 				</div>
 			</SheetContent>
 		</Sheet>
-	)
-}
+	);
+};

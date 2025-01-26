@@ -1,10 +1,15 @@
-import { RiCalendar2Line, RiCheckLine, RiCloseLine, RiFileHistoryLine } from "@remixicon/react"
-import React from "react"
+import {
+	RiCalendar2Line,
+	RiCheckLine,
+	RiCloseLine,
+	RiFileHistoryLine,
+} from "@remixicon/react";
+import React from "react";
 
-import type { QuizProps } from "@/types"
+import type { QuizProps } from "@/types";
 
 interface Props {
-	quizzes?: QuizProps[]
+	quizzes?: QuizProps[];
 }
 
 export const QuizHistory = ({ quizzes }: Props) => {
@@ -32,8 +37,8 @@ export const QuizHistory = ({ quizzes }: Props) => {
 				</div>
 			)}
 		</div>
-	)
-}
+	);
+};
 
 const Quiz = ({ quiz }: { quiz: QuizProps }) => {
 	return (
@@ -56,5 +61,5 @@ const Quiz = ({ quiz }: { quiz: QuizProps }) => {
 				{quiz.score < 70 ? "Failed" : "Passed"}
 			</div>
 		</div>
-	)
-}
+	);
+};

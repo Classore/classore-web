@@ -1,7 +1,7 @@
-import type { Channel as StreamChannel, ChannelSort } from "stream-chat"
-import { RiHashtag } from "@remixicon/react"
-import { StreamChat } from "stream-chat"
-import React from "react"
+import type { Channel as StreamChannel, ChannelSort } from "stream-chat";
+import { RiHashtag } from "@remixicon/react";
+import { StreamChat } from "stream-chat";
+import React from "react";
 import {
 	Chat,
 	Channel,
@@ -10,59 +10,59 @@ import {
 	MessageList,
 	Thread,
 	Window,
-} from "stream-chat-react"
+} from "stream-chat-react";
 
-import type { UserProps } from "@/types"
-import { fromSnakeCase } from "@/lib"
-import { Loading } from "./loader"
+import type { UserProps } from "@/types";
+import { fromSnakeCase } from "@/lib";
+import { Loading } from "./loader";
 
 interface ChannelListProps {
-	currentChannel: StreamChannel
-	client: StreamChat
-	userId: string
-	onChannelSelect: (channel: StreamChannel) => void
+	currentChannel: StreamChannel;
+	client: StreamChat;
+	userId: string;
+	onChannelSelect: (channel: StreamChannel) => void;
 }
 
 interface Props {
-	user: UserProps
+	user: UserProps;
 }
 
 const ChannelsComponent = ({ user }: Props) => {
-	const [channel, setChannel] = React.useState<StreamChannel | null>(null)
-	const [client, setClient] = React.useState<StreamChat | null>(null)
+	const [channel, setChannel] = React.useState<StreamChannel | null>(null);
+	const [client, setClient] = React.useState<StreamChat | null>(null);
 
 	React.useEffect(() => {
 		const initialize = async () => {
 			try {
-				const response = await fetch(`/api/get-token?userId=${user.id}`)
-				const { token } = await response.json()
+				const response = await fetch(`/api/get-token?userId=${user.id}`);
+				const { token } = await response.json();
 
-				const client = StreamChat.getInstance(process.env.NEXT_PUBLIC_GETSTREAM_API_KEY)
-				await client.connectUser({ id: user.id, name: user.first_name }, token)
+				const client = StreamChat.getInstance(process.env.NEXT_PUBLIC_GETSTREAM_API_KEY);
+				await client.connectUser({ id: user.id, name: user.first_name }, token);
 				const channel = client.channel("messaging", "general", {
 					name: "General Channel",
 					members: [user.id],
-				})
-				await channel.create()
-				await channel.watch()
+				});
+				await channel.create();
+				await channel.watch();
 
-				setClient(client)
-				setChannel(channel)
+				setClient(client);
+				setChannel(channel);
 			} catch (error) {
-				console.error("Error initializing chat:", error)
+				console.error("Error initializing chat:", error);
 			}
-		}
+		};
 
-		initialize()
+		initialize();
 
 		return () => {
 			if (client) {
-				client.disconnectUser()
+				client.disconnectUser();
 			}
-		}
-	}, [client, user.first_name, user.id])
+		};
+	}, [client, user.first_name, user.id]);
 
-	if (!client || !channel) return <Loading />
+	if (!client || !channel) return <Loading />;
 
 	return (
 		<div className="flex h-full w-full items-start">
@@ -93,14 +93,19 @@ const ChannelsComponent = ({ user }: Props) => {
 				</div>
 			</Chat>
 		</div>
-	)
-}
+	);
+};
 
-export default ChannelsComponent
+export default ChannelsComponent;
 
-const ChannelList = ({ currentChannel, client, userId, onChannelSelect }: ChannelListProps) => {
-	const [channels, setChannels] = React.useState<StreamChannel[]>([])
-	const [loading, setLoading] = React.useState(true)
+const ChannelList = ({
+	currentChannel,
+	client,
+	userId,
+	onChannelSelect,
+}: ChannelListProps) => {
+	const [channels, setChannels] = React.useState<StreamChannel[]>([]);
+	const [loading, setLoading] = React.useState(true);
 
 	React.useEffect(() => {
 		const fetchChannels = async () => {
@@ -108,28 +113,28 @@ const ChannelList = ({ currentChannel, client, userId, onChannelSelect }: Channe
 				const filter = {
 					type: "messaging",
 					members: { $in: [userId] },
-				}
-				const sort: ChannelSort = [{ last_message_at: -1 }]
+				};
+				const sort: ChannelSort = [{ last_message_at: -1 }];
 
 				const channelResult = await client.queryChannels(filter, sort, {
 					watch: true,
 					state: true,
-				})
+				});
 
-				setChannels(channelResult)
-				setLoading(false)
+				setChannels(channelResult);
+				setLoading(false);
 			} catch (error) {
-				console.error("Error fetching channels:", error)
-				setLoading(false)
+				console.error("Error fetching channels:", error);
+				setLoading(false);
 			}
-		}
+		};
 
 		if (client) {
-			fetchChannels()
+			fetchChannels();
 		}
-	}, [client, userId])
+	}, [client, userId]);
 
-	if (loading) return <Loading />
+	if (loading) return <Loading />;
 
 	return (
 		<div className="flex w-full flex-col">
@@ -148,5 +153,5 @@ const ChannelList = ({ currentChannel, client, userId, onChannelSelect }: Channe
 				))}
 			</div>
 		</div>
-	)
-}
+	);
+};

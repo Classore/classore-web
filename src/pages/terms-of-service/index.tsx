@@ -1,6 +1,6 @@
-import React from "react"
+import React from "react";
 
-import { Appbar, Footer, Seo } from "@/components/shared"
+import { Appbar, Footer, Seo } from "@/components/shared";
 
 const Page = () => {
 	return (
@@ -12,7 +12,7 @@ const Page = () => {
 			</div>
 			<Footer />
 		</>
-	)
-}
+	);
+};
 
-export default Page
+export default Page;

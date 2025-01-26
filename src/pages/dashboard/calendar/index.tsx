@@ -1,95 +1,106 @@
-import { RiArrowLeftSLine, RiCalendarEventLine } from "@remixicon/react"
-import { addMonths, format, subMonths } from "date-fns"
-import Link from "next/link"
-import React from "react"
+import { RiArrowLeftSLine, RiCalendarEventLine } from "@remixicon/react";
+import { addMonths, format, subMonths } from "date-fns";
+import Link from "next/link";
+import React from "react";
 
-import { DashboardLayout } from "@/components/layouts"
-import { AvatarGroup, Seo } from "@/components/shared"
-import { Button } from "@/components/ui/button"
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
-import type { EventProps } from "@/types"
-
-import { events } from "@/mock"
+import {
+	HoverCard,
+	HoverCardContent,
+	HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import { DashboardLayout } from "@/components/layouts";
+import { AvatarGroup, Seo } from "@/components/shared";
+import { Button } from "@/components/ui/button";
+import type { EventProps } from "@/types";
 
 type DayEventProps = EventProps & {
-	status: "past" | "upcoming" | "current"
-}
+	status: "past" | "upcoming" | "current";
+};
 
 type DayProps = {
-	day: number | null
-	events: DayEventProps[]
-}
+	day: number | null;
+	events: DayEventProps[];
+};
 
 const EventStatusColor: Record<DayEventProps["status"], string> = {
 	past: "bg-neutral-200 text-neutral-700 border-neutral-700",
 	upcoming: "bg-blue-100 text-blue-700 border-blue-700",
 	current: "bg-green-100 text-green-700 border-green-700",
-}
+};
 
-const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+const daysOfWeek = [
+	"Sunday",
+	"Monday",
+	"Tuesday",
+	"Wednesday",
+	"Thursday",
+	"Friday",
+	"Saturday",
+];
 
 const Page = () => {
-	const [current, setCurrent] = React.useState(new Date())
+	const [current, setCurrent] = React.useState(new Date());
 
 	const getEventStatus = React.useCallback((event: EventProps) => {
-		const today = new Date()
-		const firstDate = new Date(event.date[0])
-		const lastDate = new Date(event.date[event.date.length - 1])
+		const today = new Date();
+		const firstDate = new Date(event.date[0]);
+		const lastDate = new Date(event.date[event.date.length - 1]);
 
-		if (lastDate < today) return "past"
-		if (firstDate > today) return "upcoming"
-		return "current"
-	}, [])
+		if (lastDate < today) return "past";
+		if (firstDate > today) return "upcoming";
+		return "current";
+	}, []);
 
 	const getDaysInMonth = (year: number, month: number) => {
-		return new Date(year, month + 1, 0).getDate()
-	}
+		return new Date(year, month + 1, 0).getDate();
+	};
 
 	const getFirstDayOfMonth = (year: number, month: number) => {
-		return new Date(year, month, 1).getDay()
-	}
+		return new Date(year, month, 1).getDay();
+	};
 
 	const processedEvents = React.useMemo(() => {
-		const monthEvents: Record<string, EventProps[]> = {}
+		const monthEvents: Record<string, EventProps[]> = {};
+		const events: EventProps[] = [];
 		events.forEach((event) => {
 			event.date.forEach((dateItem) => {
-				const eventDate = new Date(dateItem)
+				const eventDate = new Date(dateItem);
 				if (
 					eventDate.getFullYear() === current.getFullYear() &&
 					eventDate.getMonth() === current.getMonth()
 				) {
-					const dateKey = eventDate.getDate().toString()
+					const dateKey = eventDate.getDate().toString();
 					if (!monthEvents[dateKey]) {
-						monthEvents[dateKey] = []
+						monthEvents[dateKey] = [];
 					}
-					monthEvents[dateKey].push(event)
+					monthEvents[dateKey].push(event);
 				}
-			})
-		})
+			});
+		});
 
-		return monthEvents
-	}, [current])
+		return monthEvents;
+	}, [current]);
 
-	const goToPreviousMonth = () => setCurrent(subMonths(current, 1))
+	const goToPreviousMonth = () => setCurrent(subMonths(current, 1));
 
-	const goToNextMonth = () => setCurrent(addMonths(current, 1))
+	const goToNextMonth = () => setCurrent(addMonths(current, 1));
 
 	const calendarDays = React.useMemo(() => {
-		const year = current.getFullYear()
-		const month = current.getMonth()
-		const daysInMonth = getDaysInMonth(year, month)
-		const firstDay = getFirstDayOfMonth(year, month)
-		const days: DayProps[] = []
+		const year = current.getFullYear();
+		const month = current.getMonth();
+		const daysInMonth = getDaysInMonth(year, month);
+		const firstDay = getFirstDayOfMonth(year, month);
+		const days: DayProps[] = [];
 
 		for (let i = 0; i < firstDay; i++) {
 			days.push({
 				day: null,
 				events: [],
-			})
+			});
 		}
 
 		for (let day = 1; day <= daysInMonth; day++) {
-			const eventForDay = processedEvents[day] || []
+			const eventForDay = processedEvents[day] || [];
 
 			days.push({
 				day,
@@ -97,29 +108,29 @@ const Page = () => {
 					...event,
 					status: getEventStatus(event),
 				})),
-			})
+			});
 		}
 
-		return days
-	}, [current, getEventStatus, processedEvents])
+		return days;
+	}, [current, getEventStatus, processedEvents]);
 
 	const isFirstDayOfEvent = (event: EventProps, currentDate: number) => {
-		const firstDate = new Date(event.date[0])
-		return firstDate.getDate() === currentDate
-	}
+		const firstDate = new Date(event.date[0]);
+		return firstDate.getDate() === currentDate;
+	};
 
 	const isLastDayOfEvent = (event: EventProps, currentDate: number) => {
-		const lastDate = new Date(event.date[event.date.length - 1])
-		return lastDate.getDate() === currentDate
-	}
+		const lastDate = new Date(event.date[event.date.length - 1]);
+		return lastDate.getDate() === currentDate;
+	};
 
 	const images = (count: number) => {
 		const created = Array(count).map(
 			() =>
 				"https://images.unsplash.com/photo-1479936343636-73cdc5aae0c3?q=80&w=1760&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-		)
-		return created
-	}
+		);
+		return created;
+	};
 
 	return (
 		<>
@@ -159,7 +170,7 @@ const Page = () => {
 								const isToday =
 									dayItem.day === new Date().getDate() &&
 									current.getMonth() === new Date().getMonth() &&
-									current.getFullYear() === new Date().getFullYear()
+									current.getFullYear() === new Date().getFullYear();
 
 								return (
 									<div
@@ -171,7 +182,8 @@ const Page = () => {
 												<Link
 													href={`/dashboard/calendar/${dayItem.day}`}
 													className="link flex items-center gap-1 text-xs">
-													{dayItem.events.length < 2 ? "View Event" : "View Events"} ({dayItem.events.length})
+													{dayItem.events.length < 2 ? "View Event" : "View Events"} (
+													{dayItem.events.length})
 												</Link>
 											) : null}
 
@@ -183,9 +195,9 @@ const Page = () => {
 
 										<div className="mt-1 flex flex-col gap-1 overflow-y-auto">
 											{dayItem.events.map((event, eventIndex) => {
-												const isFirstDay = isFirstDayOfEvent(event, dayItem.day!)
-												const isLastDay = isLastDayOfEvent(event, dayItem.day!)
-												const isMultiDay = event.date.length > 1
+												const isFirstDay = isFirstDayOfEvent(event, dayItem.day!);
+												const isLastDay = isLastDayOfEvent(event, dayItem.day!);
+												const isMultiDay = event.date.length > 1;
 
 												return (
 													<HoverCard key={`${event.id}-${eventIndex}`}>
@@ -221,8 +233,12 @@ const Page = () => {
 															<div className="flex flex-col gap-1">
 																{event.date.map((dateItem, dateIndex) => (
 																	<div key={dateIndex} className="flex items-center gap-1">
-																		<span className="text-xs text-neutral-500">{format(dateItem, "EEEE")}</span>
-																		<span className="text-xs text-neutral-500">{format(dateItem, "hh:mm a")}</span>
+																		<span className="text-xs text-neutral-500">
+																			{format(dateItem, "EEEE")}
+																		</span>
+																		<span className="text-xs text-neutral-500">
+																			{format(dateItem, "hh:mm a")}
+																		</span>
 																	</div>
 																))}
 															</div>
@@ -239,18 +255,18 @@ const Page = () => {
 															)}
 														</HoverCardContent>
 													</HoverCard>
-												)
+												);
 											})}
 										</div>
 									</div>
-								)
+								);
 							})}
 						</div>
 					</div>
 				</div>
 			</DashboardLayout>
 		</>
-	)
-}
+	);
+};
 
-export default Page
+export default Page;

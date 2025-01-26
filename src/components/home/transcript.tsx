@@ -1,11 +1,11 @@
-import { RiSpeakLine } from "@remixicon/react"
-import React from "react"
+import { RiSpeakLine } from "@remixicon/react";
+import React from "react";
 
-import type { TranscriptProps } from "@/types"
-import { formatTime } from "@/lib"
+import type { TranscriptProps } from "@/types";
+import { formatTime } from "@/lib";
 
 interface Props {
-	transcript?: TranscriptProps[]
+	transcript?: TranscriptProps[];
 }
 
 export const Transcript = ({ transcript }: Props) => {
@@ -28,7 +28,8 @@ export const Transcript = ({ transcript }: Props) => {
 						{transcript.map((item) => (
 							<div key={item.id} className="flex w-full flex-col gap-2 p-4">
 								<div className="w-fit rounded bg-neutral-200 px-3 py-0.5 text-sm text-neutral-400">
-									[{formatTime(item.duration[0])} - {formatTime(item.duration[1])}] <span>{item.title}</span>
+									[{formatTime(item.duration[0])} - {formatTime(item.duration[1])}]{" "}
+									<span>{item.title}</span>
 								</div>
 								<div className="w-full text-sm text-neutral-400">{item.summary}</div>
 							</div>
@@ -37,5 +38,5 @@ export const Transcript = ({ transcript }: Props) => {
 				)}
 			</div>
 		</div>
-	)
-}
+	);
+};

@@ -1,19 +1,19 @@
-import React from "react"
+import React from "react";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
-	open: boolean
-	onClose?: () => void
+	open: boolean;
+	onClose?: () => void;
 }
 
 const Backdrop = React.forwardRef<HTMLDivElement, Props>(
 	({ children, onClose, open, ...props }, ref) => {
 		React.useEffect(() => {
 			if (open) {
-				document.body.style.overflow = "hidden"
+				document.body.style.overflow = "hidden";
 			} else {
-				document.body.style.overflow = "auto"
+				document.body.style.overflow = "auto";
 			}
-		}, [open])
+		}, [open]);
 
 		return (
 			<div
@@ -26,10 +26,10 @@ const Backdrop = React.forwardRef<HTMLDivElement, Props>(
 				{...props}>
 				{children}
 			</div>
-		)
+		);
 	}
-)
+);
 
-Backdrop.displayName = "Backdrop"
+Backdrop.displayName = "Backdrop";
 
-export { Backdrop }
+export { Backdrop };

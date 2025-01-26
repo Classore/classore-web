@@ -1,23 +1,23 @@
-import { useGoogleLogin } from "@react-oauth/google"
-import { useMutation } from "@tanstack/react-query"
-import Link from "next/link"
-import { useRouter } from "next/router"
-import { useForm } from "react-hook-form"
-import { toast } from "sonner"
-import * as z from "zod"
+import { useGoogleLogin } from "@react-oauth/google";
+import { useMutation } from "@tanstack/react-query";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import * as z from "zod";
 
-import { AuthGraphic, GoogleIcon } from "@/assets/icons"
-import { AuthLayout } from "@/components/layouts/auth"
-import { Seo, Spinner } from "@/components/shared"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { endpoints } from "@/config"
-import { axios, capitalize } from "@/lib"
-import { setToken } from "@/lib/cookies"
-import { SignInMutation } from "@/queries"
-import { useUserStore } from "@/store/z-store"
-import type { HttpError, HttpResponse, UserProps } from "@/types"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { AuthGraphic, GoogleIcon } from "@/assets/icons";
+import { AuthLayout } from "@/components/layouts/auth";
+import { Seo, Spinner } from "@/components/shared";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { endpoints } from "@/config";
+import { axios, capitalize } from "@/lib";
+import { setToken } from "@/lib/cookies";
+import { SignInMutation } from "@/queries";
+import { useUserStore } from "@/store/z-store";
+import type { HttpError, HttpResponse, UserProps } from "@/types";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const loginSchema = z.object({
 	email: z
@@ -27,13 +27,13 @@ const loginSchema = z.object({
 		.trim(),
 	password: z.string().min(1, { message: "Please enter your password" }).trim(),
 	// remember_me: z.boolean().optional(),
-})
+});
 
-type LoginFormValues = z.infer<typeof loginSchema>
+type LoginFormValues = z.infer<typeof loginSchema>;
 
 const Page = () => {
-	const { signIn } = useUserStore()
-	const router = useRouter()
+	const { signIn } = useUserStore();
+	const router = useRouter();
 	const { control, handleSubmit } = useForm<LoginFormValues>({
 		defaultValues: {
 			email: "",
@@ -41,7 +41,7 @@ const Page = () => {
 			// remember_me: false,
 		},
 		resolver: zodResolver(loginSchema),
-	})
+	});
 
 	const loginWithGoogle = useGoogleLogin({
 		scope: "openid email profile",
@@ -49,39 +49,39 @@ const Page = () => {
 			try {
 				const { data } = await axios.get<HttpResponse<UserProps>>(
 					`${endpoints().auth.google_signin}?access_token=${credential.access_token}`
-				)
+				);
 
-				const { access_token } = data.data
-				signIn(data.data, access_token)
-				toast.success(`Welcome ${capitalize(data.data.first_name)}`)
-				router.push("/dashboard")
+				const { access_token } = data.data;
+				signIn(data.data, access_token);
+				toast.success(`Welcome ${capitalize(data.data.first_name)}`);
+				router.push("/dashboard");
 			} catch (error: unknown) {
 				const {
 					response: {
 						data: { message },
 					},
-				} = error as HttpError
-				toast.error(message ?? "An error occurred")
+				} = error as HttpError;
+				toast.error(message ?? "An error occurred");
 			}
 		},
 		onError: (error) => {
-			console.error("An error occurred", error)
+			console.error("An error occurred", error);
 		},
-	})
+	});
 
 	const { isPending, mutate } = useMutation({
 		mutationKey: ["login"],
 		mutationFn: (values: LoginFormValues) => SignInMutation(values),
 		onSuccess: (data) => {
-			const { access_token } = data.data
+			const { access_token } = data.data;
 
-			setToken(access_token)
-			const isStudent = data.data.user_type === "STUDENT"
+			setToken(access_token);
+			const isStudent = data.data.user_type === "STUDENT";
 
 			if (!data.data.is_verified) {
 				toast.success("Verify your email to complete registration", {
 					description: "Please check your email to verify your account",
-				})
+				});
 
 				router.push({
 					pathname: isStudent ? "/signup/student/verify-email" : "/signup/parent/verify-email",
@@ -89,32 +89,32 @@ const Page = () => {
 						email: encodeURIComponent(data.data.email.trim()),
 						step: "3",
 					},
-				})
-				return
+				});
+				return;
 			}
 
 			if (!data.data.chosen_study_plan && isStudent) {
 				toast.success("Choose your study plan", {
 					description: "Please choose your study plan to complete registration",
-				})
+				});
 				router.push({
 					pathname: "/signup/student/studying-for",
 					query: {
 						step: "4",
 					},
-				})
-				return
+				});
+				return;
 			}
 
-			signIn(data.data, access_token)
-			toast.success("Login successful!")
-			router.replace("/dashboard")
+			signIn(data.data, access_token);
+			toast.success("Login successful!");
+			router.replace("/dashboard");
 		},
-	})
+	});
 
 	const onSubmit = (values: LoginFormValues) => {
-		mutate(values)
-	}
+		mutate(values);
+	};
 
 	return (
 		<>
@@ -126,7 +126,9 @@ const Page = () => {
 						<h2 className="font-body text-2xl font-bold text-neutral-900">Welcome Back</h2>
 					</header>
 
-					<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 font-body font-normal">
+					<form
+						onSubmit={handleSubmit(onSubmit)}
+						className="flex flex-col gap-4 font-body font-normal">
 						<Input
 							type="email"
 							label="Email Address"
@@ -167,7 +169,9 @@ const Page = () => {
 							</Button>
 							<p className="text-center text-neutral-500">
 								New user?{" "}
-								<Link href="/signup?step=1" className="font-medium text-secondary-300 hover:underline">
+								<Link
+									href="/signup?step=1"
+									className="font-medium text-secondary-300 hover:underline">
 									Sign up
 								</Link>
 							</p>
@@ -191,7 +195,7 @@ const Page = () => {
 				</div>
 			</AuthLayout>
 		</>
-	)
-}
+	);
+};
 
-export default Page
+export default Page;
