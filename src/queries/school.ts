@@ -44,6 +44,7 @@ export type ExamBundlesResp = PaginatedResponse<{
 	examinationbundle_allow_extra_subjects: string
 	examinationbundle_rating: number
 	examination_name: string
+	examinationbundle_banner: string
 	subject_count: number
 	enrolled: number
 	raters: number

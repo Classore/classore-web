@@ -1,4 +1,4 @@
-import { useGetMyCourses } from "@/queries/course"
+import { useGetMyCourses } from "@/queries/student"
 import useEmblaCarousel from "embla-carousel-react"
 import * as React from "react"
 import { NextPrevButtons } from "../embla-navigation"

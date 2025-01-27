@@ -132,7 +132,15 @@ const Page = () => {
 								<div className="flex items-center justify-between border-b border-b-neutral-200 pb-4">
 									<p className="font-bold text-neutral-700">Bundle Highlight</p>
 
-									<p className="text-xl font-bold text-neutral-700">{formatCurrency(bundle?.amount ?? 0)}</p>
+									{bundle?.is_bought ? (
+										<p className="rounded-full bg-secondary-100 px-4 py-1.5 text-sm text-secondary-300">
+											Active Plan
+										</p>
+									) : (
+										<p className="text-xl font-bold text-neutral-700">
+											{formatCurrency(bundle?.amount ?? 0)}
+										</p>
+									)}
 								</div>
 
 								<div className="flex flex-col gap-2 border-b border-b-neutral-200 pb-4">

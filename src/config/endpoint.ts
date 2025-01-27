@@ -28,7 +28,13 @@ export const endpoints = (id?: string) => {
 		get_classes: "/school/subject/fetch-classes",
 		create_study_timeline: "/school/exams/create-study-timeline",
 		vet_study_pack: "/school/exams/vet-study-pack-options",
+	} as const
+
+	const student = {
 		get_my_courses: "/student/my-courses",
+		get_single_course: `/student/view-course/${id}`,
+		get_upcoming_events: "student/upcoming-events",
+		get_leaderboard: "/student/leaderboard/fetch-all",
 	} as const
 
 	const waitlist = {
@@ -36,5 +42,5 @@ export const endpoints = (id?: string) => {
 		get: `/mail/fetch-waitlist`,
 	}
 
-	return { auth, courses, school, waitlist }
+	return { auth, courses, school, waitlist, student }
 }

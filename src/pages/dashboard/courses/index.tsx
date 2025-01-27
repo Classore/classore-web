@@ -2,12 +2,15 @@ import Image from "next/image"
 import Link from "next/link"
 
 import consultation from "@/assets/illustrations/consultation.svg"
+import { Bundle } from "@/components/course"
 import { DashboardLayout } from "@/components/layouts"
-import { Seo } from "@/components/shared"
+import { Seo, Spinner } from "@/components/shared"
 import { Button } from "@/components/ui/button"
-
+import { useGetProfile } from "@/queries/student"
 
 const Page = () => {
+	const { data, isPending } = useGetProfile()
+
 	return (
 		<>
 			<Seo title="My Courses" />
@@ -37,10 +40,15 @@ const Page = () => {
 						</div>
 					</div>
 
-					{/* <div className="flex flex-col gap-10">
-						<Bundle title="JAMB Prep Bundle" />
-						<Bundle title="WAEC Prep Bundle" />
-					</div> */}
+					<div className="flex flex-col gap-10">
+						{isPending ? (
+							<div className="mx-auto py-4">
+								<Spinner variant="primary" />
+							</div>
+						) : (
+							data?.time_line.map((bundle) => <Bundle key={bundle.id} bundle={bundle} />)
+						)}
+					</div>
 				</div>
 			</DashboardLayout>
 		</>

@@ -62,6 +62,13 @@ export const BrowserCategories = () => {
 						))}
 					</>
 				)}
+
+				{/* <Pagination
+					current={page}
+					onPageChange={setPage}
+					pageSize={15}
+					total={bundles?.meta.pageCount ?? 1}
+				/> */}
 			</div>
 		</Tabs>
 	)

@@ -1,26 +1,27 @@
+import { RiFlashlightLine, RiFullscreenExitLine, RiFullscreenLine } from "@remixicon/react"
 import { Target04, Trophy01 } from "@untitled-ui/icons-react"
-import { useForm } from "react-hook-form"
 import Image from "next/image"
 import React from "react"
-import { RiFlashlightLine, RiFullscreenExitLine, RiFullscreenLine } from "@remixicon/react"
+import { useForm } from "react-hook-form"
 
+import trophy from "@/assets/illustrations/trophy.svg"
+import bronze from "@/assets/images/award-bronze.png"
+import gold from "@/assets/images/award-gold.png"
+import silver from "@/assets/images/award-silver.png"
+import { ChartLine } from "@/components/charts"
+import { DashboardLayout } from "@/components/layouts"
+import { Pagination, Seo, Spinner } from "@/components/shared"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Select, SelectItem } from "@/components/ui/select"
-import trophy from "@/assets/illustrations/trophy.svg"
-import { DashboardLayout } from "@/components/layouts"
-import bronze from "@/assets/images/award-bronze.png"
-import silver from "@/assets/images/award-silver.png"
-import { Pagination, Seo } from "@/components/shared"
-import gold from "@/assets/images/award-gold.png"
-import { ChartLine } from "@/components/charts"
+import { getInitials, paginate } from "@/lib"
 import { useUserStore } from "@/store/z-store"
 import type { UserMetricProps } from "@/types"
-import { getInitials, paginate } from "@/lib"
 
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { leaderboard, timeChart } from "@/mock"
-
-const filters = ["all", "quiz", "streak"] as const
-type Filters = (typeof filters)[number]
+import { getExamsQueryOptions, useGetExamBundles, useGetExams } from "@/queries/school"
+import { dehydrate, QueryClient } from "@tanstack/react-query"
+import type { GetStaticProps } from "next"
 
 const timeFilters = [
 	"today",
@@ -67,9 +68,44 @@ const getPositionIcon = (index: number) => {
 	)
 }
 
+export const getStaticProps = (async () => {
+	const queryClient = new QueryClient()
+	let dehydratedState = {}
+
+	try {
+		const resp = await Promise.allSettled([queryClient.ensureQueryData(getExamsQueryOptions)])
+
+		if (resp[0].status === "rejected") {
+			return {
+				props: {},
+			}
+		}
+
+		dehydratedState = dehydrate(queryClient)
+		queryClient.clear()
+	} catch {
+		return {
+			props: {},
+		}
+	}
+
+	return {
+		props: {
+			dehydratedState,
+		},
+	}
+}) satisfies GetStaticProps
+
 const Page = () => {
+	const { data: exams } = useGetExams()
+	const [exam, setExam] = React.useState(exams?.at(0)?.examination_id ?? "")
+
+	const { data: bundles, isPending: isPendingBundles } = useGetExamBundles({
+		examination: exam,
+	})
+	const [bundle, setBundle] = React.useState(bundles?.data.at(0)?.examinationbundle_id ?? "")
+
 	const [screen, setScreen] = React.useState<Screens>("minimize")
-	const [filter, setFilter] = React.useState<Filters>("all")
 	const [page, setPage] = React.useState(1)
 	const { user } = useUserStore()
 
@@ -142,127 +178,160 @@ const Page = () => {
 							/>
 						</div>
 					</div>
+
 					<div className="flex w-full flex-col gap-4">
-						<div className="flex w-full items-center justify-between">
-							<div className="flex items-center gap-2">
-								{filters.map((f) => (
-									<button
-										key={f}
-										className={`flex h-9 w-[94px] items-center justify-center rounded-md text-sm font-medium capitalize transition-all ${
-											filter === f ? "bg-primary-100 font-bold text-primary-500" : "text-neutral-500"
-										}`}
-										onClick={() => setFilter(f)}>
-										{f.charAt(0).toUpperCase() + f.slice(1)}
-									</button>
-								))}
-							</div>
-							<div className="flex items-center gap-2">
-								{screens.map(({ icon: Icon, label }) => (
-									<button
-										key={label}
-										className={`grid h-10 w-10 place-items-center rounded-md transition-all ${screen === label ? "bg-neutral-200" : "hover:bg-neutral-100"}`}
-										onClick={() => setScreen(label)}>
-										<Icon size={20} />
-									</button>
-								))}
-							</div>
-						</div>
-						<div className="flex w-full items-start gap-6">
-							<div className="flex w-full flex-col gap-4">
-								<div className="flex-1 rounded-lg border">
-									{paginated.map((user) => (
-										<div key={user.id} className="flex w-full items-center gap-4 border-b">
-											<div
-												className={`grid w-full gap-4 rounded-md px-3 py-4 transition-all ${background(user.position)} grid-cols-4`}>
-												<div className="col-span-2 flex w-full items-center gap-5">
-													{user.positionIcon}
-													<div className="flex items-center gap-2">
-														<div className="size-10 rounded-lg border-2 border-white"></div>
-														<div className="flex flex-col gap-1">
-															<p className="text-sm font-bold">{user.userId}</p>
-															<p className="text-xs text-neutral-400">Lagos</p>
-														</div>
-													</div>
-												</div>
-												<div className={`flex w-full items-center`}>
-													<div className="flex w-fit items-center gap-1 rounded-lg border-2 bg-white px-3 py-[6px] text-sm text-neutral-500">
-														<RiFlashlightLine size={16} />
-														{user.streak} Days
-													</div>
-												</div>
-												<div className="flex w-full items-center">
-													<div className="flex w-fit items-center gap-1 rounded-lg border-2 bg-white px-3 py-[6px] text-sm text-neutral-500">
-														<span className="size-1 rounded-full bg-black" />
-														{user.quiz} Pts
-													</div>
-												</div>
-											</div>
-										</div>
+						<Tabs value={exam} onValueChange={setExam}>
+							<div className="flex w-full items-center justify-between">
+								<TabsList>
+									{exams?.map((exam) => (
+										<TabsTrigger key={exam.examination_id} value={exam.examination_id}>
+											{exam.examination_name} Exams
+										</TabsTrigger>
+									))}
+								</TabsList>
+
+								<div className="flex items-center gap-2">
+									{screens.map(({ icon: Icon, label }) => (
+										<button
+											key={label}
+											className={`grid h-10 w-10 place-items-center rounded-md transition-all ${screen === label ? "bg-neutral-200" : "hover:bg-neutral-100"}`}
+											onClick={() => setScreen(label)}>
+											<Icon size={20} />
+										</button>
 									))}
 								</div>
-								<Pagination current={page} onPageChange={setPage} pageSize={10} total={overall.length} />
 							</div>
-							<div
-								className={`w-[350px] min-w-[350px] flex-col gap-6 transition-all ${screen === "minimize" ? "flex" : "hidden"}`}>
-								<div className="flex w-full flex-col items-center gap-4 rounded-md border p-4">
-									<div className="flex w-full flex-col items-center gap-2">
-										<div className="flex flex-col items-center gap-2">
-											<Avatar className="size-12 rounded bg-[#bfdbfe]">
-												<AvatarImage src={user?.image} alt={user?.first_name} />
-												<AvatarFallback className="text-xl font-semibold">
-													{getInitials(`${user?.first_name} ${user?.last_name}`)}
-												</AvatarFallback>
-											</Avatar>
-											<div className="flex flex-col gap-1">
-												<p className="font-bold capitalize">
-													{user?.first_name} {user?.last_name}
-												</p>
-												<p className="text-xs text-neutral-400">{user?.email}</p>
-											</div>
-										</div>
-									</div>
-									<div className="grid w-full grid-cols-2 gap-3">
-										{metrics.map(({ icon, label, value }) => (
-											<div key={label} className="flex items-start gap-4 rounded-lg border p-3">
-												<div className="grid size-7 place-items-center rounded-full border">
-													{React.cloneElement(icon, { className: "size-[18px]" })}
-												</div>
-												<div className="">
-													<p className="font-bold">{value}</p>
-													<p className="text-sm text-neutral-400">{label}</p>
-												</div>
-											</div>
-										))}
-									</div>
-								</div>
-								<div className="w-full space-y-2">
-									<p className="text-sm font-medium text-neutral-500">Analytics</p>
-									<div className="flex w-full flex-col gap-6 rounded-md border p-4">
-										<div className="flex w-full items-center justify-between">
-											<p className="font-bold">{totalHours.toFixed(2)} hours spent</p>
-											<Select control={control} name="timeline" className="h-[33px] text-sm">
-												{timeFilters.map((filter) => (
-													<SelectItem key={filter} value={filter}>
-														{filter}
-													</SelectItem>
+
+							{exams?.map((exam) => (
+								<TabsContent key={exam.examination_id} value={exam.examination_id}>
+									{isPendingBundles ? (
+										<Spinner variant="primary" />
+									) : (
+										<Tabs value={bundle} onValueChange={setBundle}>
+											<TabsList className="w-full justify-normal gap-4 overflow-x-auto border-b border-b-neutral-200">
+												{bundles?.data.map((bundle) => (
+													<TabsTrigger
+														className="relative px-2 font-normal data-[state=active]:bg-transparent data-[state=active]:after:absolute data-[state=active]:after:bottom-0 data-[state=active]:after:left-0 data-[state=active]:after:h-0.5 data-[state=active]:after:w-full data-[state=active]:after:bg-primary-300 data-[state=active]:after:transition-all"
+														key={bundle.examinationbundle_id}
+														value={bundle.examinationbundle_id}>
+														{bundle.examinationbundle_name} Prep Bundle
+													</TabsTrigger>
 												))}
-											</Select>
-										</div>
-										<ChartLine data={timeChart} />
-									</div>
-								</div>
-								<div className="w-full space-y-2">
-									<p className="text-sm font-medium text-neutral-500">Remarks</p>
-									<div className="flex w-full flex-col items-center gap-3 rounded-md border p-4">
-										<p className="text-2xl font-bold">0%</p>
-										<div className="w-fit rounded-full bg-primary-100 px-4 py-1 text-sm text-primary-400">
-											Overall Perfomance
-										</div>
-										<div className="w-full text-center text-sm text-neutral-400"></div>
-									</div>
-								</div>
-							</div>
-						</div>
+											</TabsList>
+
+											{bundles?.data.map((bundle) => (
+												<TabsContent
+													className="py-2"
+													key={bundle.examinationbundle_id}
+													value={bundle.examinationbundle_id}>
+													<div className="flex w-full items-start gap-6">
+														<div className="flex w-full flex-col gap-4">
+															<div className="flex-1 rounded-lg border">
+																{paginated.map((user) => (
+																	<div key={user.id} className="flex w-full items-center gap-4 border-b">
+																		<div
+																			className={`grid w-full gap-4 rounded-md px-3 py-4 transition-all ${background(user.position)} grid-cols-4`}>
+																			<div className="col-span-2 flex w-full items-center gap-5">
+																				{user.positionIcon}
+																				<div className="flex items-center gap-2">
+																					<div className="size-10 rounded-lg border-2 border-white"></div>
+																					<div className="flex flex-col gap-1">
+																						<p className="text-sm font-bold">{user.userId}</p>
+																						<p className="text-xs text-neutral-400">Lagos</p>
+																					</div>
+																				</div>
+																			</div>
+																			<div className={`flex w-full items-center`}>
+																				<div className="flex w-fit items-center gap-1 rounded-lg border-2 bg-white px-3 py-[6px] text-sm text-neutral-500">
+																					<RiFlashlightLine size={16} />
+																					{user.streak} Days
+																				</div>
+																			</div>
+																			<div className="flex w-full items-center">
+																				<div className="flex w-fit items-center gap-1 rounded-lg border-2 bg-white px-3 py-[6px] text-sm text-neutral-500">
+																					<span className="size-1 rounded-full bg-black" />
+																					{user.quiz} Pts
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																))}
+															</div>
+															<Pagination
+																current={page}
+																onPageChange={setPage}
+																pageSize={10}
+																total={overall.length}
+															/>
+														</div>
+														<div
+															className={`w-[350px] min-w-[350px] flex-col gap-6 transition-all ${screen === "minimize" ? "flex" : "hidden"}`}>
+															<div className="flex w-full flex-col items-center gap-4 rounded-md border p-4">
+																<div className="flex w-full flex-col items-center gap-2">
+																	<div className="flex flex-col items-center gap-2">
+																		<Avatar className="size-12 rounded bg-[#bfdbfe]">
+																			<AvatarImage src={user?.image} alt={user?.first_name} />
+																			<AvatarFallback className="text-xl font-semibold">
+																				{getInitials(`${user?.first_name} ${user?.last_name}`)}
+																			</AvatarFallback>
+																		</Avatar>
+																		<div className="flex flex-col gap-1">
+																			<p className="font-bold capitalize">
+																				{user?.first_name} {user?.last_name}
+																			</p>
+																			<p className="text-xs text-neutral-400">{user?.email}</p>
+																		</div>
+																	</div>
+																</div>
+																<div className="grid w-full grid-cols-2 gap-3">
+																	{metrics.map(({ icon, label, value }) => (
+																		<div key={label} className="flex items-start gap-4 rounded-lg border p-3">
+																			<div className="grid size-7 place-items-center rounded-full border">
+																				{React.cloneElement(icon, { className: "size-[18px]" })}
+																			</div>
+																			<div className="">
+																				<p className="font-bold">{value}</p>
+																				<p className="text-sm text-neutral-400">{label}</p>
+																			</div>
+																		</div>
+																	))}
+																</div>
+															</div>
+															<div className="w-full space-y-2">
+																<p className="text-sm font-medium text-neutral-500">Analytics</p>
+																<div className="flex w-full flex-col gap-6 rounded-md border p-4">
+																	<div className="flex w-full items-center justify-between">
+																		<p className="font-bold">{totalHours.toFixed(2)} hours spent</p>
+																		<Select control={control} name="timeline" className="h-[33px] text-sm">
+																			{timeFilters.map((filter) => (
+																				<SelectItem key={filter} value={filter}>
+																					{filter}
+																				</SelectItem>
+																			))}
+																		</Select>
+																	</div>
+																	<ChartLine data={timeChart} />
+																</div>
+															</div>
+															<div className="w-full space-y-2">
+																<p className="text-sm font-medium text-neutral-500">Remarks</p>
+																<div className="flex w-full flex-col items-center gap-3 rounded-md border p-4">
+																	<p className="text-2xl font-bold">0%</p>
+																	<div className="w-fit rounded-full bg-primary-100 px-4 py-1 text-sm text-primary-400">
+																		Overall Perfomance
+																	</div>
+																	<div className="w-full text-center text-sm text-neutral-400"></div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</TabsContent>
+											))}
+										</Tabs>
+									)}
+								</TabsContent>
+							))}
+						</Tabs>
 					</div>
 				</div>
 			</DashboardLayout>

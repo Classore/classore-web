@@ -399,3 +399,52 @@ export type SingleBundleResp = {
 		rating_createdon: string
 	}>
 }
+
+export type UserProfileResp = {
+	id: string
+	createdOn: string
+	updatedOn: string
+	isDeleted: boolean
+	isBlocked: boolean
+	first_name: string
+	last_name: string
+	email: string
+	phone_number: string
+	password: string
+	description: string
+	access_token: string
+	referral_code: string
+	profile_image: string
+	is_verified: boolean
+	chosen_study_plan: boolean
+	user_type: string
+	wallet_id: string
+	leaderboard_id: string
+	sign_up_channel: string
+	my_wards: Array<string>
+	parent: string
+	birthday: string
+	time_line: Array<{
+		id: string
+		createdOn: string
+		updatedOn: string
+		isDeleted: boolean
+		isBlocked: boolean
+		user_id: string
+		exam_type: string
+		chosen_bundle: string
+		subjects: Array<{
+			id: string
+			name: string
+		}>
+		end_date: string
+		status: string
+		is_paid: boolean
+		amount_paid: number
+		exam_bundle_details: {
+			id: string
+			name: string
+		}
+	}>
+}
+
