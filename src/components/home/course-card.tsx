@@ -2,6 +2,7 @@ import { RiFileTextLine, RiPlayCircleLine, RiTimeLine } from "@remixicon/react"
 import Image from "next/image"
 import Link from "next/link"
 
+import { formatNumber } from "@/lib"
 import type { MyCoursesResp } from "@/queries/course"
 
 interface Props {
@@ -35,11 +36,11 @@ export const CourseCard = ({ course }: Props) => {
 				<div className="flex w-full items-center gap-2 text-neutral-400">
 					<div className="flex items-center gap-1">
 						<RiPlayCircleLine size={20} />
-						<span className="text-sm">12 Videos</span>
+						<span className="text-sm">{formatNumber(course.no_of_videos)} Videos</span>
 					</div>
 					<div className="flex items-center gap-1">
 						<RiFileTextLine size={20} />
-						<span className="text-sm">32 Materials</span>
+						<span className="text-sm">{formatNumber(course.no_of_attachments)} Materials</span>
 					</div>
 				</div>
 				<div className="flex h-[6px] w-16 items-center rounded-3xl bg-[#efefef]">

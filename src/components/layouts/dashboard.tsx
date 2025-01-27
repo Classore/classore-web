@@ -5,17 +5,22 @@ import React from "react"
 
 import meeting from "@/assets/illustrations/meeting.svg"
 import { dashboard_links } from "@/config"
-import { normalize } from "@/lib"
+import { cn, normalize } from "@/lib"
 import { Button } from "../ui/button"
 import { Appbar } from "./appbar"
 
-export function DashboardLayout({ children }: { children: React.ReactNode }) {
+type DashboardLayoutProps = {
+	children: React.ReactNode
+	className?: string
+}
+
+export function DashboardLayout({ children, className }: DashboardLayoutProps) {
 	const router = useRouter()
 
 	const isOnRoute = (href: string) => normalize(router.pathname) === href
 
 	return (
-		<div className="flex h-screen w-screen select-none items-center overflow-hidden bg-white">
+		<main className="flex h-screen w-screen select-none items-center overflow-hidden bg-white">
 			<aside className="flex h-full w-[256px] min-w-[256px] flex-col justify-between border-r border-neutral-300 py-8">
 				<div className="flex w-full flex-col gap-8">
 					<div className="relative h-[30px] w-[135px] px-6">
@@ -63,10 +68,12 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 					</div>
 				</div>
 			</aside>
-			<div className="flex h-full max-w-[calc(100vw-256px)] flex-1 flex-col">
+
+			<section className="flex h-full max-w-[calc(100vw-256px)] flex-1 flex-col">
 				<Appbar />
-				<div className="flex-1 overflow-y-auto">{children}</div>
-			</div>
-		</div>
+
+				<div className={cn("flex-1 overflow-y-auto", className)}>{children}</div>
+			</section>
+		</main>
 	)
 }

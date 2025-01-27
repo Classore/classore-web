@@ -27,6 +27,8 @@ export interface HttpResponse<T> {
 	success: boolean
 }
 
+
+
 export type HttpError = {
 	response: {
 		data: {
@@ -306,4 +308,94 @@ export type AddWardsProps = {
 		access_code: string
 		reference: string
 	}
+}
+
+export type SingleBundleResp = {
+	id: string
+	name: string
+	description: string
+	enrolled: number
+	raters: number
+	amount: number
+	is_bought: boolean
+	start_date: string
+	end_date: string
+	examination: {
+		id: string
+		name: string
+	}
+	max_subjects: number
+	extra_charge: number
+	amount_per_subject: number
+	allow_extra_subjects: string
+	rating: string
+	number_of_subjects: number
+	average_downloadable_materials: number
+	subjects: Array<{
+		id: string
+		createdOn: string
+		updatedOn: string
+		updatedBy: string
+		deletedOn: string
+		deletedBy: string
+		isDeleted: boolean
+		isBlocked: boolean
+		name: string
+		class?: string
+		examination: string
+		examination_bundle: string
+		bench_mark: number
+		number_of_chapters: number
+		number_of_materials: number
+		total_quizes: number
+		chapters: Array<{
+			id: string
+			createdOn: string
+			updatedOn: string
+			updatedBy: string
+			deletedOn: string
+			deletedBy: string
+			isDeleted: boolean
+			isBlocked: boolean
+			subject_id: string
+			name: string
+			sequence: number
+			images: Array<string>
+			videos: Array<string>
+			content: string
+			bench_mark: number
+			modules: Array<{
+				id: string
+				createdOn: string
+				updatedOn: string
+				updatedBy: string
+				deletedOn: string
+				deletedBy: string
+				isDeleted: boolean
+				isBlocked: boolean
+				chapter: string
+				title: string
+				sequence: number
+				images: Array<string>
+				videos: Array<string>
+				content: string
+				tutor: string
+				attachments: Array<string>
+			}>
+		}>
+	}>
+	reviews: Array<{
+		rating_id: string
+		rating_comment: string
+		rating_rating: number
+		rating_examination: string
+		rating_examination_bundle: string
+		rating_subject: string
+		rating_user: string
+		rating_purpose: string
+		user_first_name: string
+		user_last_name: string
+		user_profile_image: string
+		rating_createdon: string
+	}>
 }

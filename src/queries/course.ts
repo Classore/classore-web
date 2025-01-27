@@ -1,6 +1,6 @@
 import { endpoints } from "@/config"
 import { axios } from "@/lib"
-import type { HttpResponse, PaginatedResponse } from "@/types"
+import type { HttpResponse, PaginatedResponse, PaginationProps } from "@/types"
 import { useQuery } from "@tanstack/react-query"
 
 export type MyCoursesResp = PaginatedResponse<{
@@ -21,13 +21,25 @@ export type MyCoursesResp = PaginatedResponse<{
 	examBundle_end_date: string
 	chapter_id?: string
 	chapter_name?: string
+	no_of_videos: number
+	no_of_attachments: number
 }>
-type Params = {
-	status?: string
-}
+type Params = Partial<
+	PaginationProps & {
+		status: "PENDING" | "ONGOING" | "COMPLETED"
+		examination_bundle: string
+		examination: string
+	}
+>
 const getMyCourses = async (params: Params) => {
 	return axios
-		.get<HttpResponse<MyCoursesResp>>(endpoints().school.get_my_courses, { params })
+		.get<HttpResponse<MyCoursesResp>>(endpoints().school.get_my_courses, {
+			params: {
+				...params,
+				...(params?.examination_bundle && { examination_bundle: params.examination_bundle }),
+				...(params?.examination && { examination: params.examination }),
+			},
+		})
 		.then((res) => res.data)
 }
 export const useGetMyCourses = (params: Params) => {

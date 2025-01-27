@@ -23,6 +23,7 @@ export const endpoints = (id?: string) => {
 	const school = {
 		get_exams: "/school/exams/fetch-exams",
 		get_exam_bundles: "/school/exams/fetch-exam-bundles",
+		get_single_exam_bundle: `/school/exams/exam-bundle/view-one/${id}`,
 		get_subjects: "/school/subject/fetch-all",
 		get_classes: "/school/subject/fetch-classes",
 		create_study_timeline: "/school/exams/create-study-timeline",
