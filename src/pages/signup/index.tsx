@@ -1,14 +1,14 @@
-import { AuthLayout } from "@/components/layouts/auth"
-import { ErrorMessage, Seo } from "@/components/shared"
+import { AuthLayout } from "@/components/layouts/auth";
+import { ErrorMessage, Seo } from "@/components/shared";
 
-import { AuthGraphic } from "@/assets/icons"
-import { SignupStepper } from "@/components/signup-stepper"
-import { Button } from "@/components/ui/button"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { User01 } from "@untitled-ui/icons-react"
-import { useRouter } from "next/router"
-import { Controller, useForm } from "react-hook-form"
-import * as z from "zod"
+import { AuthGraphic } from "@/assets/icons";
+import { SignupStepper } from "@/components/signup-stepper";
+import { Button } from "@/components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { User01 } from "@untitled-ui/icons-react";
+import { useRouter } from "next/router";
+import { Controller, useForm } from "react-hook-form";
+import * as z from "zod";
 
 const options = [
 	{
@@ -23,22 +23,22 @@ const options = [
 		slug: "parent",
 		description: "I want to monitor my child's growth",
 	},
-]
+];
 
 const signupSchema = z.object({
 	register_as: z.string().min(1, "Please select an option to register as"),
-})
+});
 
-type FormValues = z.infer<typeof signupSchema>
+type FormValues = z.infer<typeof signupSchema>;
 
 const Page = () => {
-	const router = useRouter()
+	const router = useRouter();
 	const { control, handleSubmit } = useForm<FormValues>({
 		defaultValues: {
 			register_as: "",
 		},
 		resolver: zodResolver(signupSchema),
-	})
+	});
 
 	const onSubmit = (value: FormValues) => {
 		router.push({
@@ -46,8 +46,8 @@ const Page = () => {
 			query: {
 				step: "2",
 			},
-		})
-	}
+		});
+	};
 
 	return (
 		<>
@@ -74,7 +74,7 @@ const Page = () => {
 											role="radiogroup"
 											aria-labelledby="registration-radio-group">
 											{options.map((option) => {
-												const state = option.slug === value ? "checked" : "unchecked"
+												const state = option.slug === value ? "checked" : "unchecked";
 
 												return (
 													<label
@@ -87,7 +87,9 @@ const Page = () => {
 														</div>
 														<div>
 															<h3 className="font-bold">{option.label}</h3>
-															<p className="font-heading text-sm text-neutral-500">{option.description}</p>
+															<p className="font-heading text-sm text-neutral-500">
+																{option.description}
+															</p>
 														</div>
 
 														<input
@@ -101,7 +103,7 @@ const Page = () => {
 														/>
 														<div className="relative ml-auto size-6 rounded-full border-[2.5px] border-neutral-300 group-data-[error=true]:border-red-600 group-data-[state=checked]:border-primary-300 group-data-[state=checked]:after:absolute group-data-[state=checked]:after:left-1/2 group-data-[state=checked]:after:top-1/2 group-data-[state=checked]:after:size-3 group-data-[state=checked]:after:-translate-x-1/2 group-data-[state=checked]:after:-translate-y-1/2 group-data-[state=checked]:after:rounded-full group-data-[state=checked]:after:bg-primary-300 group-data-[state=checked]:after:transition-transform" />
 													</label>
-												)
+												);
 											})}
 										</div>
 
@@ -118,7 +120,7 @@ const Page = () => {
 				</div>
 			</AuthLayout>
 		</>
-	)
-}
+	);
+};
 
-export default Page
+export default Page;

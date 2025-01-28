@@ -1,12 +1,12 @@
-import { RiFileTextLine, RiPlayCircleLine, RiTimeLine } from "@remixicon/react"
-import Image from "next/image"
-import Link from "next/link"
+import { RiFileTextLine, RiPlayCircleLine, RiTimeLine } from "@remixicon/react";
+import Image from "next/image";
+import Link from "next/link";
 
-import { capitalize, formatNumber } from "@/lib"
-import type { MyCoursesResp } from "@/queries/student"
+import { capitalize, formatNumber } from "@/lib";
+import type { MyCoursesResp } from "@/queries/student";
 
 interface Props {
-	course: MyCoursesResp["data"][number]
+	course: MyCoursesResp["data"][number];
 }
 
 export const CourseCard = ({ course }: Props) => {
@@ -55,5 +55,5 @@ export const CourseCard = ({ course }: Props) => {
 				</div>
 			</div>
 		</Link>
-	)
-}
+	);
+};

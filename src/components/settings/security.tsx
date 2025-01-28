@@ -1,20 +1,25 @@
-import React from "react"
+import React from "react";
 
-import { useForm } from "react-hook-form"
-import { Button } from "../ui/button"
-import { Input } from "../ui/input"
+import { useForm } from "react-hook-form";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 
 const Security = () => {
-	const { control } = useForm({})
+	const { control } = useForm({});
 	const handleSubmit = (e: React.FormEvent) => {
-		e.preventDefault()
-	}
+		e.preventDefault();
+	};
 
 	return (
 		<form
 			onSubmit={handleSubmit}
 			className="flex h-full w-full flex-col justify-between gap-5 border-b border-t py-5">
-			<Input type="password" name="current_password" label="Current Password" control={control} />
+			<Input
+				type="password"
+				name="current_password"
+				label="Current Password"
+				control={control}
+			/>
 			<Input type="password" name="new_password" label="New Password" control={control} />
 			<Input
 				type="password"
@@ -40,7 +45,7 @@ const Security = () => {
 				</div>
 			</div>
 		</form>
-	)
-}
+	);
+};
 
-export default Security
+export default Security;

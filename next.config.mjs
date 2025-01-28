@@ -11,6 +11,6 @@ const nextConfig = {
 			{ protocol: "http", hostname: "dummyimage.com" },
 		],
 	},
-}
+};
 
-export default nextConfig
+export default nextConfig;

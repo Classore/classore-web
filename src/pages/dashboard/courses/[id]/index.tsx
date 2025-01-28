@@ -1,11 +1,11 @@
-import { RiThumbDownLine, RiThumbUpLine } from "@remixicon/react"
-import Image from "next/image"
-import Link from "next/link"
-import { useRouter } from "next/router"
+import { RiThumbDownLine, RiThumbUpLine } from "@remixicon/react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
-import blockchain from "@/assets/illustrations/blockchain.svg"
-import trophy from "@/assets/illustrations/trophy.svg"
-import { DashboardLayout } from "@/components/layouts"
+import blockchain from "@/assets/illustrations/blockchain.svg";
+import trophy from "@/assets/illustrations/trophy.svg";
+import { DashboardLayout } from "@/components/layouts";
 import {
 	AvatarGroup,
 	BackBtn,
@@ -13,18 +13,18 @@ import {
 	Seo,
 	Spinner,
 	VideoPlayer,
-} from "@/components/shared"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
+} from "@/components/shared";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 
-import { ChapterList, QuizHistory, Resources } from "@/components/home"
-import { JoinCommunityModal, QuizAlertModal, TakeQuizModal } from "@/components/modals"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { capitalize } from "@/lib"
-import { useGetSingleCourse } from "@/queries/student"
+import { ChapterList, QuizHistory, Resources } from "@/components/home";
+import { JoinCommunityModal, QuizAlertModal, TakeQuizModal } from "@/components/modals";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { capitalize } from "@/lib";
+import { useGetSingleCourse } from "@/queries/student";
 
-const tabs = ["summary", "transcript", "resources", "quiz history"] as const
-type Tabs = (typeof tabs)[number]
+const tabs = ["summary", "transcript", "resources", "quiz history"] as const;
+type Tabs = (typeof tabs)[number];
 
 const images = [
 	"/assets/images/avatar.png",
@@ -38,16 +38,16 @@ const images = [
 	"/assets/images/avatar.png",
 	"/assets/images/avatar.png",
 	"/assets/images/avatar.png",
-]
+];
 
 const Page = () => {
 	// const [current, setCurrent] = React.useState<ChapterProps>()
-	const router = useRouter()
-	const { id } = router.query
+	const router = useRouter();
+	const { id } = router.query;
 
 	const { data: course, isPending } = useGetSingleCourse({
 		course_id: id as string,
-	})
+	});
 
 	return (
 		<>
@@ -74,12 +74,13 @@ const Page = () => {
 									<QuizAlertModal />
 								</div>
 							</div>
-							<p className="text-xs capitalize text-neutral-400">Categories / {course?.subject_id.name}</p>
+							<p className="text-xs capitalize text-neutral-400">
+								Categories / {course?.subject_id.name}
+							</p>
 						</div>
 						<div className="grid w-full grid-cols-3 gap-8">
 							<div className="col-span-2 flex w-full flex-col gap-4">
 								<VideoPlayer src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" />
-
 								<div className="flex w-full items-center justify-between">
 									<h3 className="text-balance text-xl font-semibold capitalize">
 										{course?.current_chapter.name}
@@ -149,7 +150,9 @@ const Page = () => {
 									<p className="text-xs text-neutral-400">
 										Current position: <span className="font-bold text-black">1</span>
 									</p>
-									<Link href="/dashboard/leaderboard" className="text-sm text-primary-400 underline">
+									<Link
+										href="/dashboard/leaderboard"
+										className="text-sm text-primary-400 underline">
 										View Leaderboard
 									</Link>
 									<div className="absolute right-4 top-2 aspect-square w-[134px]">
@@ -164,7 +167,9 @@ const Page = () => {
 								</div>
 								<div className="flex w-full items-center justify-between gap-3 rounded-lg border p-4">
 									<div className="flex max-w-[75%] flex-col gap-3">
-										<p className="text-sm capitalize">Join {course?.subject_id.name} Community Forum</p>
+										<p className="text-sm capitalize">
+											Join {course?.subject_id.name} Community Forum
+										</p>
 										<AvatarGroup images={images} />
 									</div>
 
@@ -196,7 +201,7 @@ const Page = () => {
 				)}
 			</DashboardLayout>
 		</>
-	)
-}
+	);
+};
 
-export default Page
+export default Page;

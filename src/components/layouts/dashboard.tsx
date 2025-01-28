@@ -1,13 +1,13 @@
-import Image from "next/image"
-import Link from "next/link"
-import { useRouter } from "next/router"
-import React from "react"
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import React from "react";
 
-import meeting from "@/assets/illustrations/meeting.svg"
-import { dashboard_links } from "@/config"
-import { cn, normalize } from "@/lib"
-import { Button } from "../ui/button"
-import { Appbar } from "./appbar"
+import meeting from "@/assets/illustrations/meeting.svg";
+import { dashboard_links } from "@/config";
+import { cn, normalize } from "@/lib";
+import { Button } from "../ui/button";
+import { Appbar } from "./appbar";
 
 type DashboardLayoutProps = {
 	children: React.ReactNode
@@ -15,16 +15,21 @@ type DashboardLayoutProps = {
 }
 
 export function DashboardLayout({ children, className }: DashboardLayoutProps) {
-	const router = useRouter()
+	const router = useRouter();
 
-	const isOnRoute = (href: string) => normalize(router.pathname) === href
+	const isOnRoute = (href: string) => normalize(router.pathname) === href;
 
 	return (
 		<main className="flex h-screen w-screen select-none items-center overflow-hidden bg-white">
 			<aside className="flex h-full w-[256px] min-w-[256px] flex-col justify-between border-r border-neutral-300 py-8">
 				<div className="flex w-full flex-col gap-8">
 					<div className="relative h-[30px] w-[135px] px-6">
-						<Image src="/assets/images/classore.png" alt="classore" fill sizes="(max-width:1024px)100%" />
+						<Image
+							src="/assets/images/classore.png"
+							alt="classore"
+							fill
+							sizes="(max-width:1024px)100%"
+						/>
 					</div>
 					<div className="flex w-full flex-col">
 						<p className="ml-6 text-xs text-neutral-500">MENU</p>
@@ -60,7 +65,9 @@ export function DashboardLayout({ children, className }: DashboardLayoutProps) {
 						</div>
 						<div className="flex h-full w-full flex-col justify-between">
 							<h6 className="text-sm font-medium">Invite</h6>
-							<p className="w-32 text-xs text-neutral-400">Earn 550 points from inviting a friend</p>
+							<p className="w-32 text-xs text-neutral-400">
+								Earn 550 points from inviting a friend
+							</p>
 							<Button className="w-fit px-5 py-2" variant="dark">
 								<Link href="/dashboard/courses">Invite</Link>
 							</Button>
@@ -75,5 +82,5 @@ export function DashboardLayout({ children, className }: DashboardLayoutProps) {
 				<div className={cn("flex-1 overflow-y-auto", className)}>{children}</div>
 			</section>
 		</main>
-	)
+	);
 }

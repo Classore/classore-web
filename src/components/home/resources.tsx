@@ -7,14 +7,14 @@ import {
 	RiFoldersLine,
 	RiLoaderLine,
 	type RemixiconComponentType,
-} from "@remixicon/react"
-import { toast } from "sonner"
+} from "@remixicon/react";
+import { toast } from "sonner";
 
-import { useDownload } from "@/hooks"
-import type { FiletypeProps, ResourceProps } from "@/types"
+import { useDownload } from "@/hooks";
+import type { FiletypeProps, ResourceProps } from "@/types";
 
 interface Props {
-	resources?: ResourceProps[]
+	resources?: ResourceProps[];
 }
 
 const fileIcon: Record<FiletypeProps, RemixiconComponentType> = {
@@ -23,7 +23,7 @@ const fileIcon: Record<FiletypeProps, RemixiconComponentType> = {
 	pptx: RiFilePpt2Line,
 	pdf: RiFilePdf2Line,
 	txt: RiFileTextLine,
-}
+};
 
 export const Resources = ({ resources }: Props) => {
 	return (
@@ -52,22 +52,22 @@ export const Resources = ({ resources }: Props) => {
 				</div>
 			)}
 		</div>
-	)
-}
+	);
+};
 
 const Resource = ({ resource }: { resource: ResourceProps }) => {
 	const { download, loading } = useDownload({
 		filename: `${resource.title}.pdf`,
 		url: "/api/download",
 		onSuccess: () => {
-			toast.success("File downloaded successfully")
+			toast.success("File downloaded successfully");
 		},
 		onError: (error) => {
-			toast.error(error instanceof Error ? error.message : "Failed to download file")
+			toast.error(error instanceof Error ? error.message : "Failed to download file");
 		},
-	})
+	});
 
-	const Icon = fileIcon[resource.file]
+	const Icon = fileIcon[resource.file];
 
 	return (
 		<div className="flex w-full items-center justify-between border-b p-4 last:border-b-0">
@@ -75,7 +75,10 @@ const Resource = ({ resource }: { resource: ResourceProps }) => {
 				<div className="grid size-8 place-items-center rounded-md bg-neutral-200 text-neutral-400">
 					<Icon size={20} />
 				</div>
-				<a href={resource.url} target="_blank" className="text-sm text-neutral-400 hover:underline">
+				<a
+					href={resource.url}
+					target="_blank"
+					className="text-sm text-neutral-400 hover:underline">
 					{resource.title}
 				</a>
 			</div>
@@ -87,5 +90,5 @@ const Resource = ({ resource }: { resource: ResourceProps }) => {
 				)}
 			</button>
 		</div>
-	)
-}
+	);
+};

@@ -1,21 +1,21 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@tanstack/react-query"
-import { TickCircle } from "iconsax-react"
-import { useForm } from "react-hook-form"
-import { toast } from "sonner"
-import React from "react"
-import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import { TickCircle } from "iconsax-react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import React from "react";
+import { z } from "zod";
 
-import { type WaitlistDto, WaitlistMutation } from "@/queries"
-import type { HttpError } from "@/types"
-import { Button } from "../ui/button"
-import { Input } from "../ui/input"
-import { Spinner } from "../shared"
-import { event } from "@/lib"
+import { type WaitlistDto, WaitlistMutation } from "@/queries";
+import type { HttpError } from "@/types";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Spinner } from "../shared";
+import { event } from "@/lib";
 
-const roles = ["student", "parent"] as const
+const roles = ["student", "parent"] as const;
 interface Props {
-	onClose: () => void
+	onClose: () => void;
 }
 const defaultValues: WaitlistDto = {
 	email: "",
@@ -23,28 +23,28 @@ const defaultValues: WaitlistDto = {
 	last_name: "",
 	phone_number: "+2349023969367",
 	waitlist_type: "",
-}
+};
 
 export const Modal = ({ onClose }: Props) => {
 	const { isPending, mutateAsync } = useMutation({
 		mutationFn: (payload: WaitlistDto) => WaitlistMutation(payload),
 		mutationKey: ["waitlist"],
 		onSuccess: (data) => {
-			toast.success(data.message)
-			event("CompleteRegistration", { content_name: "Joined waitlist" })
-			onClose()
+			toast.success(data.message);
+			event("CompleteRegistration", { content_name: "Joined waitlist" });
+			onClose();
 		},
 		onError: (error: HttpError) => {
-			let msg = ""
-			const { message } = error.response.data
+			let msg = "";
+			const { message } = error.response.data;
 			if (Array.isArray(message)) {
-				msg = message[0]
+				msg = message[0];
 			} else {
-				msg = message
+				msg = message;
 			}
-			toast.error(msg ?? "Soemthing went wrong!")
+			toast.error(msg ?? "Soemthing went wrong!");
 		},
-	})
+	});
 
 	const {
 		control,
@@ -65,17 +65,17 @@ export const Modal = ({ onClose }: Props) => {
 				waitlist_type: z.string().nonempty("Role is required!"),
 			})
 		),
-	})
+	});
 
 	const onSubmit = (values: WaitlistDto) => {
 		const payload = {
 			...values,
 			waitlist_type: values.waitlist_type.toUpperCase(),
-		}
-		mutateAsync(payload)
-	}
+		};
+		mutateAsync(payload);
+	};
 
-	const selectedRole = watch("waitlist_type")
+	const selectedRole = watch("waitlist_type");
 
 	return (
 		<div className="flex w-full flex-col gap-8 rounded-3xl border bg-gradient-to-b from-[#fef0e8] to-transparent p-3">
@@ -125,5 +125,5 @@ export const Modal = ({ onClose }: Props) => {
 				</Button>
 			</form>
 		</div>
-	)
-}
+	);
+};

@@ -1,58 +1,62 @@
-import { formatCurrency } from "@/lib"
+import { formatCurrency } from "@/lib";
 import {
 	useCreateStudyTimeline,
 	useGetExamBundles,
 	useGetExams,
 	useGetSubjects,
-} from "@/queries/school"
-import { useMiscStore } from "@/store/z-store/misc"
-import { Lock02 } from "@untitled-ui/icons-react"
-import * as React from "react"
-import { toast } from "sonner"
-import { Spinner } from "../shared"
-import { Button } from "../ui/button"
-import { Dialog, DialogContent } from "../ui/dialog"
+} from "@/queries/school";
+import { useMiscStore } from "@/store/z-store/misc";
+import { Lock02 } from "@untitled-ui/icons-react";
+import * as React from "react";
+import { toast } from "sonner";
+import { Spinner } from "../shared";
+import { Button } from "../ui/button";
+import { Dialog, DialogContent } from "../ui/dialog";
 
 type CheckoutModalProps = {
-	open: boolean
-	setOpen: React.Dispatch<React.SetStateAction<boolean>>
-}
+	open: boolean;
+	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
 export const CheckoutModal = ({ open, setOpen }: CheckoutModalProps) => {
-	const [visible, setVisible] = React.useState(false)
-	const values = useMiscStore((state) => state.payload)
+	const [visible, setVisible] = React.useState(false);
+	const values = useMiscStore((state) => state.payload);
 
-	const { data: bundles } = useGetExamBundles()
-	const { data: exams } = useGetExams()
-	const { data: subjects } = useGetSubjects()
+	const { data: bundles } = useGetExamBundles({});
+	const { data: exams } = useGetExams();
+	const { data: subjects } = useGetSubjects();
 
-	const exam_type = exams?.find((exam) => exam.examination_id === values.exam_type)?.examination_name
+	const exam_type = exams?.find(
+		(exam) => exam.examination_id === values.exam_type
+	)?.examination_name;
 	const prep_bundle = bundles?.data.find(
 		(bundle) => bundle.examinationbundle_id === values.chosen_bundle
-	)
+	);
 	const chosen_subjects =
 		subjects
 			?.filter((subject) => values.subjects.includes(subject.subject_id))
 			?.map((subject) => subject.subject_name)
-			.join(", ") ?? ""
+			.join(", ") ?? "";
 
-	const chosen_bundle = prep_bundle?.examinationbundle_name ?? ""
-	const bundle_amount = prep_bundle?.examinationbundle_amount ?? 0
+	const chosen_bundle = prep_bundle?.examinationbundle_name ?? "";
+	const bundle_amount = prep_bundle?.examinationbundle_amount ?? 0;
 
-	const { isPending, mutate } = useCreateStudyTimeline()
+	const { isPending, mutate } = useCreateStudyTimeline();
 	const continueToPayment = () => {
 		if (!values) {
-			toast.error("Something went wrong, please try again")
-			return
+			toast.error("Something went wrong, please try again");
+			return;
 		}
 
 		mutate(values, {
 			onSuccess: (data) => {
-				setVisible(true)
-				window.open(data.data.payment_link.authorization_url, "_self")
+				setVisible(true);
+				window.open(data.data.payment_link.authorization_url, "_self");
 			},
-		})
-	}
+		});
+	};
+
+	if (typeof window === "undefined") return null;
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
@@ -113,7 +117,9 @@ export const CheckoutModal = ({ open, setOpen }: CheckoutModalProps) => {
 					<div className="absolute inset-0 z-50 mx-auto grid place-items-center gap-4 rounded-md bg-white/50 p-10 text-center text-sm text-neutral-600 backdrop-blur-sm backdrop-filter">
 						<div className="grid place-items-center gap-4 rounded-lg p-10">
 							<Spinner variant="primary" size="md" />
-							<p className="leading-tight">Please wait while we redirect you to the payment page...</p>
+							<p className="leading-tight">
+								Please wait while we redirect you to the payment page...
+							</p>
 							<p className="text-xs font-bold">
 								NB: <br />
 								DO NOT CLOSE THIS WINDOW OR REFRESH THE PAGE
@@ -123,5 +129,5 @@ export const CheckoutModal = ({ open, setOpen }: CheckoutModalProps) => {
 				) : null}
 			</DialogContent>
 		</Dialog>
-	)
-}
+	);
+};

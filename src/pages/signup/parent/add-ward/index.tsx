@@ -1,22 +1,27 @@
-import { UserDetailsGraphic } from "@/assets/icons"
-import { AuthLayout } from "@/components/layouts/auth"
-import { CheckoutAddWardsModal } from "@/components/modals"
-import { Seo, Spinner } from "@/components/shared"
-import { SignupStepper } from "@/components/signup-stepper"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { MultiSelect } from "@/components/ui/multi-select"
-import { Select, SelectItem } from "@/components/ui/select"
-import { formatCurrency } from "@/lib"
-import { useGetExamBundles, useGetExams, useGetSubjects, useVetStudyPack } from "@/queries/school"
-import { useMiscStore } from "@/store/z-store/misc"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Lock02 } from "@untitled-ui/icons-react"
-import { Trash } from "iconsax-react"
-import { Plus } from "lucide-react"
-import * as React from "react"
-import { useFieldArray, useForm, useWatch } from "react-hook-form"
-import * as z from "zod"
+import { UserDetailsGraphic } from "@/assets/icons";
+import { AuthLayout } from "@/components/layouts/auth";
+import { CheckoutAddWardsModal } from "@/components/modals";
+import { Seo, Spinner } from "@/components/shared";
+import { SignupStepper } from "@/components/signup-stepper";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { MultiSelect } from "@/components/ui/multi-select";
+import { Select, SelectItem } from "@/components/ui/select";
+import { formatCurrency } from "@/lib";
+import {
+	useGetExamBundles,
+	useGetExams,
+	useGetSubjects,
+	useVetStudyPack,
+} from "@/queries/school";
+import { useMiscStore } from "@/store/z-store/misc";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Lock02 } from "@untitled-ui/icons-react";
+import { Trash } from "iconsax-react";
+import { Plus } from "lucide-react";
+import * as React from "react";
+import { useFieldArray, useForm, useWatch } from "react-hook-form";
+import * as z from "zod";
 
 const initialValue = {
 	first_name: "",
@@ -25,14 +30,17 @@ const initialValue = {
 	examination: "",
 	examination_bundle: "",
 	subjects: [],
-}
+};
 
 const schema = z.object({
 	wards: z.array(
 		z.object({
 			first_name: z.string().min(1, "Please enter your first name"),
 			last_name: z.string().min(1, "Please enter your last name"),
-			email: z.string().min(1, "Please enter your email address").email("Invalid email address"),
+			email: z
+				.string()
+				.min(1, "Please enter your email address")
+				.email("Invalid email address"),
 			examination: z.string().min(1, "Please select an exam type"),
 			examination_bundle: z.string().min(1, "Please select a prep bundle"),
 			subjects: z
@@ -42,77 +50,79 @@ const schema = z.object({
 				})
 				.min(1, { message: "Please select at least one subject" })
 				.transform((value) => {
-					return value.split(", ")
+					return value.split(", ");
 				}),
 		})
 	),
-})
+});
 
-type FormValues = z.infer<typeof schema>
+type FormValues = z.infer<typeof schema>;
 
 const Page = () => {
-	const setMiscStore = useMiscStore((state) => state.setMisc)
+	const setMiscStore = useMiscStore((state) => state.setMisc);
 
-	const [open, setOpen] = React.useState(false)
+	const [open, setOpen] = React.useState(false);
 	const { control, handleSubmit } = useForm<FormValues>({
 		resolver: zodResolver(schema),
 		defaultValues: {
 			wards: [initialValue],
 		},
-	})
+	});
 
 	const { fields, append, remove } = useFieldArray({
 		control,
 		name: "wards",
 		shouldUnregister: true,
-	})
+	});
 
 	const form = useWatch({
 		control,
-	})
+	});
 
-	const { data: bundles } = useGetExamBundles()
-	const { data: exams } = useGetExams()
-	const { data: subjects } = useGetSubjects()
+	const { data: bundles } = useGetExamBundles({});
+	const { data: exams } = useGetExams();
+	const { data: subjects } = useGetSubjects();
 
 	// filters
 	const examBundles = (index: number) => {
 		return bundles?.data.filter(
 			(bundle) => bundle.examinationbundle_examination === form.wards?.at(index)?.examination
-		)
-	}
+		);
+	};
 	const bundleSubjects = React.useCallback(
 		(index: number) => {
 			return (
 				subjects
 					?.filter(
-						(subject) => subject.subject_examination_bundle === form.wards?.at(index)?.examination_bundle
+						(subject) =>
+							subject.subject_examination_bundle === form.wards?.at(index)?.examination_bundle
 					)
 					.map((subject) => ({
 						label: subject.subject_name,
 						value: subject.subject_id,
 					})) ?? []
-			)
+			);
 		},
 		[form.wards, subjects]
-	)
+	);
 
 	const maxBundleSubject = React.useCallback(
 		(index: number) => {
 			return (
-				bundles?.data.find((b) => b.examinationbundle_id === form.wards?.at(index)?.examination_bundle)
-					?.examinationbundle_max_subjects ?? 0
-			)
+				bundles?.data.find(
+					(b) => b.examinationbundle_id === form.wards?.at(index)?.examination_bundle
+				)?.examinationbundle_max_subjects ?? 0
+			);
 		},
 		[bundles, form.wards]
-	)
+	);
 
-	const { isPending, mutate } = useVetStudyPack()
+	const { isPending, mutate } = useVetStudyPack();
 	const onSubmit = (values: FormValues) => {
 		const payload = values.wards.map((item) => ({
 			chosen_bundle: item.examination_bundle,
 			subject_length: item.subjects.length,
-		}))
+		}));
 
 		mutate(
 			{ vettings: payload },
@@ -122,14 +132,14 @@ const Page = () => {
 						...values,
 						...data.data,
 						total_wards: values.wards.length,
-					}
+					};
 					// @ts-expect-error err
-					setMiscStore(payload)
-					setOpen(true)
+					setMiscStore(payload);
+					setOpen(true);
 				},
 			}
-		)
-	}
+		);
+	};
 
 	return (
 		<>
@@ -211,7 +221,9 @@ const Page = () => {
 											wrapperClassName="col-span-full"
 											name={`wards.${index}.examination_bundle`}>
 											{examBundles(index)?.map((bundle) => (
-												<SelectItem key={bundle.examinationbundle_id} value={bundle.examinationbundle_id}>
+												<SelectItem
+													key={bundle.examinationbundle_id}
+													value={bundle.examinationbundle_id}>
 													{bundle.examinationbundle_name} Exam Prep Bundle (
 													{formatCurrency(bundle.examinationbundle_amount)})
 												</SelectItem>
@@ -257,7 +269,7 @@ const Page = () => {
 
 			<CheckoutAddWardsModal open={open} setOpen={setOpen} />
 		</>
-	)
-}
+	);
+};
 
-export default Page
+export default Page;

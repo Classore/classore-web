@@ -1,12 +1,12 @@
-import React from "react"
+import React from "react";
 
 interface Props {
-	children?: React.ReactNode
-	color?: string
-	label?: string
-	size?: number
-	thickness?: number
-	value?: number
+	children?: React.ReactNode;
+	color?: string;
+	label?: string;
+	size?: number;
+	thickness?: number;
+	value?: number;
 }
 
 const Progress = ({
@@ -17,12 +17,12 @@ const Progress = ({
 	thickness = 25,
 	value = 0,
 }: Props) => {
-	const axis = size / 2
-	const radius = size / 2
-	const circumference = 2 * Math.PI * radius
-	const offset = circumference - (value / 100) * circumference
+	const axis = size / 2;
+	const radius = size / 2;
+	const circumference = 2 * Math.PI * radius;
+	const offset = circumference - (value / 100) * circumference;
 
-	const fill = value > 0 ? "#c00c0020" : "transparent"
+	const fill = value > 0 ? "#c00c0020" : "transparent";
 
 	return (
 		<div className="flex flex-col items-center justify-center gap-3">
@@ -53,9 +53,9 @@ const Progress = ({
 			</div>
 			{label && <div className="text-sm text-neutral-400">{label}</div>}
 		</div>
-	)
-}
+	);
+};
 
-Progress.displayName = "Progress"
+Progress.displayName = "Progress";
 
-export { Progress }
+export { Progress };

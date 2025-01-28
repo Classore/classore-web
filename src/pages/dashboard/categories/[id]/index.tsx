@@ -1,12 +1,12 @@
-import { BundleSubjects } from "@/components/categories"
-import { DashboardLayout } from "@/components/layouts"
-import { AddMoreCourseModal, EnrollModal, ShareReview } from "@/components/modals"
-import { BackBtn, EmptyState, ReviewCard, Seo, Spinner } from "@/components/shared"
-import { Button } from "@/components/ui/button"
-import { capitalize, formatCurrency, formatNumber } from "@/lib"
-import { useGetSingleExamBundleQuery } from "@/queries/school"
-import { RiStarFill } from "@remixicon/react"
-import { Devices } from "iconsax-react"
+import { BundleSubjects } from "@/components/categories";
+import { DashboardLayout } from "@/components/layouts";
+import { AddMoreCourseModal, EnrollModal, ShareReview } from "@/components/modals";
+import { BackBtn, EmptyState, ReviewCard, Seo, Spinner } from "@/components/shared";
+import { Button } from "@/components/ui/button";
+import { capitalize, formatCurrency, formatNumber } from "@/lib";
+import { useGetSingleExamBundleQuery } from "@/queries/school";
+import { RiStarFill } from "@remixicon/react";
+import { Devices } from "iconsax-react";
 import {
 	FolderArchive,
 	List,
@@ -16,20 +16,24 @@ import {
 	Star,
 	User,
 	Wifi,
-} from "lucide-react"
-import Image from "next/image"
-import { useRouter } from "next/router"
+} from "lucide-react";
+import Image from "next/image";
+import { useRouter } from "next/router";
 
 const Page = () => {
-	const router = useRouter()
+	const router = useRouter();
 
 	const { data: bundle, isPending } = useGetSingleExamBundleQuery({
 		bundle_id: router.query.id as string,
-	})
+	});
 
 	return (
 		<>
-			<Seo title={bundle?.name ? `${capitalize(bundle?.name)} Exam Prep Bundle` : "Bundle Details"} />
+			<Seo
+				title={
+					bundle?.name ? `${capitalize(bundle?.name)} Exam Prep Bundle` : "Bundle Details"
+				}
+			/>
 
 			<DashboardLayout className="px-8 py-6">
 				{isPending ? (
@@ -74,7 +78,9 @@ const Page = () => {
 
 								<div className="flex flex-col gap-1">
 									<h3 className="text-xl font-medium text-neutral-900">Summary</h3>
-									<p className="text-sm text-neutral-400">{capitalize(bundle?.description ?? "")}</p>
+									<p className="text-sm text-neutral-400">
+										{capitalize(bundle?.description ?? "")}
+									</p>
 								</div>
 
 								<div className="flex flex-col gap-1">
@@ -108,7 +114,9 @@ const Page = () => {
 										</div>
 
 										<ul className="grid grid-cols-2 gap-4">
-											{bundle?.reviews.map((item) => <ReviewCard review={item} key={item.rating_id} />)}
+											{bundle?.reviews.map((item) => (
+												<ReviewCard review={item} key={item.rating_id} />
+											))}
 										</ul>
 									</div>
 								) : (
@@ -161,7 +169,9 @@ const Page = () => {
 										</li>
 										<li className="flex items-center gap-2 text-sm text-neutral-400">
 											<NotebookText className="size-4" />
-											<span>{bundle?.average_downloadable_materials} Downloadable Material Per Subject </span>
+											<span>
+												{bundle?.average_downloadable_materials} Downloadable Material Per Subject{" "}
+											</span>
 										</li>
 										<li className="flex items-center gap-2 text-sm text-neutral-400">
 											<List className="size-4" />
@@ -189,8 +199,8 @@ const Page = () => {
 				)}
 			</DashboardLayout>
 		</>
-	)
-}
+	);
+};
 
 const renderStars = () => {
 	return (
@@ -199,7 +209,7 @@ const renderStars = () => {
 				<Star key={i} className="size-4 text-[#FFC107]" />
 			))}
 		</div>
-	)
-}
+	);
+};
 
-export default Page
+export default Page;

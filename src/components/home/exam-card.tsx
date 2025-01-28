@@ -1,13 +1,13 @@
-import { formatCurrency, formatNumber } from "@/lib"
-import type { ExamBundlesResp } from "@/queries/school"
-import { RiStarFill, RiTimeLine, RiUserLine } from "@remixicon/react"
-import Image from "next/image"
-import Link from "next/link"
-import { twMerge } from "tailwind-merge"
+import { formatCurrency, formatNumber } from "@/lib";
+import type { ExamBundlesResp } from "@/queries/school";
+import { RiStarFill, RiTimeLine, RiUserLine } from "@remixicon/react";
+import Image from "next/image";
+import Link from "next/link";
+import { twMerge } from "tailwind-merge";
 
 interface Props {
-	course: ExamBundlesResp["data"][number]
-	className?: string
+	course: ExamBundlesResp["data"][number];
+	className?: string;
 }
 
 export const ExamCard = ({ course, className }: Props) => {
@@ -29,7 +29,9 @@ export const ExamCard = ({ course, className }: Props) => {
 				className="h-52 w-full rounded-md object-cover"
 			/>
 			<div className="flex items-center justify-between gap-1">
-				<h5 className="font-medium capitalize">{course.examinationbundle_name} Prep Bundle</h5>
+				<h5 className="font-medium capitalize">
+					{course.examinationbundle_name.toUpperCase()} Prep Bundle
+				</h5>
 
 				<p className="text-sm font-bold">{formatCurrency(course.examinationbundle_amount)}</p>
 			</div>
@@ -52,5 +54,5 @@ export const ExamCard = ({ course, className }: Props) => {
 				</div>
 			</div>
 		</Link>
-	)
-}
+	);
+};

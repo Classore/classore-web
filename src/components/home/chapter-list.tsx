@@ -1,17 +1,17 @@
-import { RiFileTextLine, RiFolderVideoLine, RiPlayCircleLine } from "@remixicon/react"
+import { RiFileTextLine, RiFolderVideoLine, RiPlayCircleLine } from "@remixicon/react";
 
-import { capitalize } from "@/lib"
-import type { SingleCourseResp } from "@/types"
+import { capitalize } from "@/lib";
+import type { SingleCourseResp } from "@/types";
 
 interface Props {
 	// chapters: ChapterProps[]
 	// setCurrent: (index: ChapterProps) => void
-	chapters: SingleCourseResp["chapters"]
-	current_chapter_id?: string
+	chapters: SingleCourseResp["chapters"];
+	current_chapter_id?: string;
 }
 
 export const ChapterList = ({ chapters, current_chapter_id }: Props) => {
-	const current_chapter = chapters.find((chapter) => chapter.id === current_chapter_id)
+	const current_chapter = chapters.find((chapter) => chapter.id === current_chapter_id);
 
 	return (
 		<div className="flex flex-col gap-6 pt-4">
@@ -65,7 +65,8 @@ export const ChapterList = ({ chapters, current_chapter_id }: Props) => {
 							{chapter === current ? <RiFolderVideoLine /> : <RiPlayCircleLine />}
 						</button>
 						<div className="flex flex-1 flex-col gap-2">
-							<h5 className={`${chapter === current ? "font-medium text-black" : "text-neutral-400"}`}>
+							<h5
+								className={`${chapter === current ? "font-medium text-black" : "text-neutral-400"}`}>
 								{chapter.title}
 							</h5>
 							{chapter === current ? (
@@ -89,5 +90,5 @@ export const ChapterList = ({ chapters, current_chapter_id }: Props) => {
 				</div>
 			))} */}
 		</div>
-	)
-}
+	);
+};

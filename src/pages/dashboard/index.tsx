@@ -1,30 +1,40 @@
-import { useQueries } from "@tanstack/react-query"
-import Link from "next/link"
+import { useQueries } from "@tanstack/react-query";
+import Link from "next/link";
 
-import { Challenge, ExplorePopularExams, Leaderboard, Learning, MyCourses } from "@/components/home"
-import { DashboardLayout } from "@/components/layouts"
-import { Seo } from "@/components/shared"
-import { Button } from "@/components/ui/button"
-import { useUserStore } from "@/store/z-store"
+import {
+	Challenge,
+	ExplorePopularExams,
+	Leaderboard,
+	Learning,
+	MyCourses,
+} from "@/components/home";
+import { DashboardLayout } from "@/components/layouts";
+import { Button } from "@/components/ui/button";
+import { useUserStore } from "@/store/z-store";
+import type { ChallengeProps } from "@/types";
+import { Seo } from "@/components/shared";
 
-import { challenges } from "@/mock"
+const challenges: ChallengeProps[] = [];
 
 const Page = () => {
-	const { user } = useUserStore()
+	const { user } = useUserStore();
 
-	const [] = useQueries({ queries: [] })
+	const [] = useQueries({ queries: [] });
 
 	return (
 		<>
 			<Seo title="Dashboard" />
 			<DashboardLayout>
-				<div className="flex w-full flex-col gap-6 px-8 py-6">
+				<div className="flex w-full flex-col gap-6 overflow-y-auto px-8 py-6">
 					<div className="flex w-full items-center justify-between gap-[177px] rounded-2xl bg-dashboard bg-cover bg-center bg-no-repeat px-10 py-[52px] text-white">
 						<div className="flex min-w-[323px] flex-col gap-2">
-							<h1 className="font-medium capitalize lg:text-[32px]">Good Morning, {user?.first_name}</h1>
+							<h1 className="font-medium capitalize lg:text-[32px]">
+								Good Morning, {user?.first_name}
+							</h1>
 							<p className="">
-								Welcome to your dashboard-let&apos;s make progress today. Check your latest achievements,
-								track ongoing courses, and take on new challenges to keep learning strong!
+								Welcome to your dashboard-let&apos;s make progress today. Check your latest
+								achievements, track ongoing courses, and take on new challenges to keep learning
+								strong!
 							</p>
 						</div>
 						<Button className="w-[182px] px-6 py-3" variant="primary">
@@ -48,7 +58,7 @@ const Page = () => {
 				</div>
 			</DashboardLayout>
 		</>
-	)
-}
+	);
+};
 
-export default Page
+export default Page;

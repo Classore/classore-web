@@ -1,26 +1,31 @@
-import Image from "next/image"
-import React from "react"
+import Image from "next/image";
+import React from "react";
 
 interface Props {
-	images: string[]
-	count?: number
-	shape?: "round" | "square"
-	size?: number
+	images: string[];
+	count?: number;
+	shape?: "round" | "square";
+	size?: number;
 }
 
-export const AvatarGroup = ({ images, count = 4, shape = "square", size = 32 }: Props) => {
-	const totalImages = images.length
-	const displayedImages = images.slice(0, count)
-	const remainingCount = totalImages - count
+export const AvatarGroup = ({
+	images,
+	count = 4,
+	shape = "square",
+	size = 32,
+}: Props) => {
+	const totalImages = images.length;
+	const displayedImages = images.slice(0, count);
+	const remainingCount = totalImages - count;
 
 	const colors = React.useMemo(() => {
 		return Array.from({ length: count }, () => {
-			const hue = Math.floor(Math.random() * 360)
-			const saturation = Math.floor(Math.random() * 25) + 70
-			const lightness = Math.floor(Math.random() * 25) + 70
-			return `hsl(${hue}, ${saturation}%, ${lightness}%)`
-		})
-	}, [count])
+			const hue = Math.floor(Math.random() * 360);
+			const saturation = Math.floor(Math.random() * 25) + 70;
+			const lightness = Math.floor(Math.random() * 25) + 70;
+			return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+		});
+	}, [count]);
 
 	return (
 		<div className="flex items-center">
@@ -51,5 +56,5 @@ export const AvatarGroup = ({ images, count = 4, shape = "square", size = 32 }: 
 				</div>
 			)}
 		</div>
-	)
-}
+	);
+};

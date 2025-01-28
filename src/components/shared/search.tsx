@@ -1,26 +1,26 @@
-import { RiCommandLine, RiSearchLine } from "@remixicon/react"
-import React from "react"
+import { RiCommandLine, RiSearchLine } from "@remixicon/react";
+import React from "react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
-	wrapperClassName?: string
+	wrapperClassName?: string;
 }
 
 const Search = React.forwardRef<HTMLInputElement, Props>(
 	({ className, onChange, value, wrapperClassName, ...props }, ref) => {
 		const handleCommand = (e: KeyboardEvent) => {
 			if (e.ctrlKey && e.key === "k") {
-				e.preventDefault()
-				const input = document.getElementById("search")
-				if (input) input.focus()
+				e.preventDefault();
+				const input = document.getElementById("search");
+				if (input) input.focus();
 			}
-		}
+		};
 
 		React.useEffect(() => {
-			document.addEventListener("keydown", handleCommand)
-			return () => document.removeEventListener("keydown", handleCommand)
-		})
+			document.addEventListener("keydown", handleCommand);
+			return () => document.removeEventListener("keydown", handleCommand);
+		});
 
 		return (
 			<div
@@ -45,10 +45,10 @@ const Search = React.forwardRef<HTMLInputElement, Props>(
 					<RiCommandLine className="size-4" />K
 				</div>
 			</div>
-		)
+		);
 	}
-)
+);
 
-Search.displayName = "Search"
+Search.displayName = "Search";
 
-export { Search }
+export { Search };

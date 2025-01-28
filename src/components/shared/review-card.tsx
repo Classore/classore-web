@@ -1,11 +1,11 @@
-import { RiStarFill } from "@remixicon/react"
+import { RiStarFill } from "@remixicon/react";
 
-import { getInitials } from "@/lib"
-import type { SingleBundleResp } from "@/types"
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
+import { getInitials } from "@/lib";
+import type { SingleBundleResp } from "@/types";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 interface Props {
-	review?: SingleBundleResp["reviews"][number]
+	review?: SingleBundleResp["reviews"][number];
 }
 
 export const ReviewCard = ({ review }: Props) => {
@@ -32,11 +32,11 @@ export const ReviewCard = ({ review }: Props) => {
 				</div>
 			</div>
 		</li>
-	)
-}
+	);
+};
 
 const Stars = ({ rating }: { rating: number }) => {
-	const MAX_RATING = 5
+	const MAX_RATING = 5;
 
 	return (
 		<div className="flex items-center gap-1">
@@ -47,5 +47,5 @@ const Stars = ({ rating }: { rating: number }) => {
 				/>
 			))}
 		</div>
-	)
-}
+	);
+};

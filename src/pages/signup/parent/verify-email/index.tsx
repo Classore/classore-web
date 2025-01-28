@@ -1,20 +1,20 @@
-import { AuthLayout } from "@/components/layouts/auth"
-import { Seo, Spinner } from "@/components/shared"
+import { AuthLayout } from "@/components/layouts/auth";
+import { Seo, Spinner } from "@/components/shared";
 
-import { VerifyEmailGraphic } from "@/assets/icons"
-import { SignupStepper } from "@/components/signup-stepper"
-import { Button } from "@/components/ui/button"
-import { OTPInput } from "@/components/ui/otp-input"
-import { useCountDown } from "@/hooks/use-countdown"
-import { formatEmail } from "@/lib"
-import { ResendVerificationCodeMutation, VerifyEmailMutation } from "@/queries"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@tanstack/react-query"
-import type { GetServerSideProps, InferGetServerSidePropsType } from "next"
-import { useRouter } from "next/router"
-import { useForm } from "react-hook-form"
-import { toast } from "sonner"
-import * as z from "zod"
+import { VerifyEmailGraphic } from "@/assets/icons";
+import { SignupStepper } from "@/components/signup-stepper";
+import { Button } from "@/components/ui/button";
+import { OTPInput } from "@/components/ui/otp-input";
+import { useCountDown } from "@/hooks/use-countdown";
+import { formatEmail } from "@/lib";
+import { ResendVerificationCodeMutation, VerifyEmailMutation } from "@/queries";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { useRouter } from "next/router";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import * as z from "zod";
 
 const pageSchema = z.object({
 	verification_code: z
@@ -24,53 +24,53 @@ const pageSchema = z.object({
 		.min(4, { message: "Verification code must be 4 digits" })
 		.max(4, { message: "Verification code must be 4 digits" })
 		.trim(),
-})
+});
 
-type FormValues = z.infer<typeof pageSchema>
+type FormValues = z.infer<typeof pageSchema>;
 
 // this help resolves the flash before next calls useRouter
 export const getServerSideProps = (async (req) => {
-	const email = req.query.email ?? ""
+	const email = req.query.email ?? "";
 
 	return {
 		props: {
 			email: typeof email === "string" ? formatEmail(decodeURIComponent(email)) : "",
 		},
-	}
-}) satisfies GetServerSideProps<{ email: string }>
+	};
+}) satisfies GetServerSideProps<{ email: string }>;
 
 const Page = ({ email }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-	const router = useRouter()
-	const { counter, reset } = useCountDown({ total: 60, ms: 1000 })
+	const router = useRouter();
+	const { counter, reset } = useCountDown({ total: 60, ms: 1000 });
 	const { control, handleSubmit, setError } = useForm<FormValues>({
 		defaultValues: {
 			verification_code: "",
 		},
 		resolver: zodResolver(pageSchema),
-	})
+	});
 
 	const resendCode = useMutation({
 		mutationKey: ["resend-verification-code"],
 		mutationFn: ResendVerificationCodeMutation,
 		onSettled: () => {
-			reset()
+			reset();
 		},
-	})
+	});
 
 	const { isPending, mutate } = useMutation({
 		mutationKey: ["verify-email"],
 		mutationFn: (value: FormValues) => VerifyEmailMutation(value),
 		onError: (error) => {
-			setError("verification_code", { message: error.response?.data.message })
+			setError("verification_code", { message: error.response?.data.message });
 		},
 		onSuccess: (data) => {
-			toast.success(data.message)
-			router.push("/signup/parent/success")
+			toast.success(data.message);
+			router.push("/signup/parent/success");
 		},
-	})
+	});
 	const onSubmit = (values: FormValues) => {
-		mutate(values)
-	}
+		mutate(values);
+	};
 
 	return (
 		<>
@@ -84,14 +84,19 @@ const Page = ({ email }: InferGetServerSidePropsType<typeof getServerSideProps>)
 						<header className="flex flex-col gap-4">
 							<VerifyEmailGraphic />
 							<div>
-								<h2 className="font-body text-2xl font-bold text-neutral-900">Verify your email address</h2>
+								<h2 className="font-body text-2xl font-bold text-neutral-900">
+									Verify your email address
+								</h2>
 								<p className="pt-1 text-sm text-neutral-500">
-									A 4 digit code has been sent to <span className="font-bold text-neutral-900">{email}</span>
+									A 4 digit code has been sent to{" "}
+									<span className="font-bold text-neutral-900">{email}</span>
 								</p>
 							</div>
 						</header>
 
-						<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6 font-body font-normal">
+						<form
+							onSubmit={handleSubmit(onSubmit)}
+							className="flex flex-col gap-6 font-body font-normal">
 							<OTPInput control={control} name="verification_code" />
 
 							<div className="col-span-full flex flex-col gap-2">
@@ -123,7 +128,7 @@ const Page = ({ email }: InferGetServerSidePropsType<typeof getServerSideProps>)
 				</div>
 			</AuthLayout>
 		</>
-	)
-}
+	);
+};
 
-export default Page
+export default Page;

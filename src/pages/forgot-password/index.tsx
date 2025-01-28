@@ -1,20 +1,20 @@
-import { classore } from "@/assets/images"
-import { AuthLayout } from "@/components/layouts/auth"
-import { Seo, Spinner } from "@/components/shared"
+import { classore } from "@/assets/images";
+import { AuthLayout } from "@/components/layouts/auth";
+import { Seo, Spinner } from "@/components/shared";
 
-import { ForgotPasswordGraphic } from "@/assets/icons"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { ForgotPasswordMutation } from "@/queries"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@tanstack/react-query"
-import { ChevronLeft } from "@untitled-ui/icons-react"
-import Image from "next/image"
-import Link from "next/link"
-import { useRouter } from "next/router"
-import { useForm } from "react-hook-form"
-import { toast } from "sonner"
-import * as z from "zod"
+import { ForgotPasswordGraphic } from "@/assets/icons";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ForgotPasswordMutation } from "@/queries";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import { ChevronLeft } from "@untitled-ui/icons-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import * as z from "zod";
 // const appId = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID
 
 const pageSchema = z.object({
@@ -23,18 +23,18 @@ const pageSchema = z.object({
 		.min(1, { message: "Please enter your email" })
 		.email({ message: "Please enter a valid email" })
 		.trim(),
-})
+});
 
-type FormValues = z.infer<typeof pageSchema>
+type FormValues = z.infer<typeof pageSchema>;
 
 const Page = () => {
-	const router = useRouter()
+	const router = useRouter();
 	const { control, handleSubmit } = useForm<FormValues>({
 		defaultValues: {
 			email_or_phone_number: "",
 		},
 		resolver: zodResolver(pageSchema),
-	})
+	});
 
 	const { isPending, mutate } = useMutation({
 		mutationKey: ["forgot-password"],
@@ -42,18 +42,18 @@ const Page = () => {
 		onSuccess: (_data, variable) => {
 			toast.success("OTP sent successfully!", {
 				description: "Please check your email to verify your account",
-			})
+			});
 			router.push({
 				pathname: "/forgot-password/verify-email",
 				query: {
 					email: decodeURIComponent(variable.email_or_phone_number),
 				},
-			})
+			});
 		},
-	})
+	});
 	const onSubmit = (values: FormValues) => {
-		mutate(values)
-	}
+		mutate(values);
+	};
 
 	return (
 		<>
@@ -81,7 +81,9 @@ const Page = () => {
 							<h2 className="font-body text-2xl font-bold text-neutral-900">Forgot Password</h2>
 						</header>
 
-						<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 font-body font-normal">
+						<form
+							onSubmit={handleSubmit(onSubmit)}
+							className="flex flex-col gap-4 font-body font-normal">
 							<Input
 								type="email"
 								label="Email Address"
@@ -101,7 +103,7 @@ const Page = () => {
 				</div>
 			</AuthLayout>
 		</>
-	)
-}
+	);
+};
 
-export default Page
+export default Page;

@@ -10,7 +10,7 @@ export const endpoints = (id?: string) => {
 		profile: "/auth/profile",
 		google_auth: "/auth/google",
 		add_wards: "/auth/add-my-wards",
-	} as const
+	} as const;
 
 	const courses = {
 		get_all: "/courses",
@@ -18,7 +18,7 @@ export const endpoints = (id?: string) => {
 		create: "/courses",
 		update: `/courses/${id}`,
 		delete: `/courses/${id}`,
-	} as const
+	} as const;
 
 	const school = {
 		get_exams: "/school/exams/fetch-exams",
@@ -28,19 +28,19 @@ export const endpoints = (id?: string) => {
 		get_classes: "/school/subject/fetch-classes",
 		create_study_timeline: "/school/exams/create-study-timeline",
 		vet_study_pack: "/school/exams/vet-study-pack-options",
-	} as const
+	} as const;
 
 	const student = {
 		get_my_courses: "/student/my-courses",
 		get_single_course: `/student/view-course/${id}`,
 		get_upcoming_events: "student/upcoming-events",
 		get_leaderboard: "/student/leaderboard/fetch-all",
-	} as const
+	} as const;
 
 	const waitlist = {
 		join: `/mail/join-waitlist`,
 		get: `/mail/fetch-waitlist`,
-	}
+	};
 
-	return { auth, courses, school, waitlist, student }
-}
+	return { auth, courses, school, waitlist, student };
+};

@@ -1,20 +1,20 @@
-import { useGetExamBundles } from "@/queries/school"
-import useEmblaCarousel from "embla-carousel-react"
-import { NextPrevButtons } from "../embla-navigation"
-import { Spinner } from "../shared"
-import { ExamCard } from "./exam-card"
+import useEmblaCarousel from "embla-carousel-react";
+
+import { useGetExamBundles } from "@/queries/school";
+import { NextPrevButtons } from "../embla-navigation";
+import { ExamCard } from "./exam-card";
+import { Spinner } from "../shared";
 
 export const ExplorePopularExams = () => {
-	const [emblaRef, emblaApi] = useEmblaCarousel()
+	const [emblaRef, emblaApi] = useEmblaCarousel();
 	const { data: bundles, isPending } = useGetExamBundles({
 		limit: 15,
-	})
+	});
 
 	return (
 		<div className="flex w-full flex-col gap-4">
 			<div className="flex items-center justify-between">
 				<p className="text-xl font-medium">Explore popular exams</p>
-
 				<NextPrevButtons emblaApi={emblaApi} />
 			</div>
 
@@ -27,7 +27,11 @@ export const ExplorePopularExams = () => {
 					<div className="flex touch-pan-y touch-pinch-zoom flex-col items-center gap-4 md:flex-row">
 						{bundles?.data.length ? (
 							bundles.data.map((subject) => (
-								<ExamCard key={subject.examinationbundle_id} course={subject} className="min-w-[360px]" />
+								<ExamCard
+									key={subject.examinationbundle_id}
+									course={subject}
+									className="min-w-[360px]"
+								/>
 							))
 						) : (
 							<p className="text-sm text-neutral-400">No bundles found</p>
@@ -36,5 +40,5 @@ export const ExplorePopularExams = () => {
 				</div>
 			)}
 		</div>
-	)
-}
+	);
+};

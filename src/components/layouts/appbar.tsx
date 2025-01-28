@@ -1,17 +1,17 @@
-import { RiArrowDropDownLine, RiGiftLine, RiNotificationLine } from "@remixicon/react"
+import { RiArrowDropDownLine, RiGiftLine, RiNotificationLine } from "@remixicon/react";
 
-import { Search } from "@/components/shared"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Separator } from "@/components/ui/separator"
-import { getInitials } from "@/lib"
-import { useUserStore } from "@/store/z-store"
-import { LogoutModal } from "../modals"
-import { SettingsDrawer } from "./settings-drawer"
+import { Search } from "@/components/shared";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Separator } from "@/components/ui/separator";
+import { getInitials } from "@/lib";
+import { useUserStore } from "@/store/z-store";
+import { LogoutModal } from "../modals";
+import { SettingsDrawer } from "./settings-drawer";
 
 export const Appbar = () => {
-	const { user } = useUserStore()
+	const { user } = useUserStore();
 
 	return (
 		<>
@@ -58,5 +58,5 @@ export const Appbar = () => {
 				</div>
 			</nav>
 		</>
-	)
-}
+	);
+};
