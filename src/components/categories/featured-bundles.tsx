@@ -1,17 +1,17 @@
-import { formatCurrency, formatNumber } from "@/lib"
-import { useGetExamBundles } from "@/queries/school"
-import { RiStarFill, RiUserLine } from "@remixicon/react"
-import useEmblaCarousel from "embla-carousel-react"
-import Image from "next/image"
-import Link from "next/link"
-import { NextPrevButtons } from "../embla-navigation"
-import { AvatarGroup, Spinner } from "../shared"
+import { formatCurrency, formatNumber } from "@/lib";
+import { useGetExamBundles } from "@/queries/school";
+import { RiStarFill, RiUserLine } from "@remixicon/react";
+import useEmblaCarousel from "embla-carousel-react";
+import Image from "next/image";
+import Link from "next/link";
+import { NextPrevButtons } from "../embla-navigation";
+import { AvatarGroup, Spinner } from "../shared";
 
 export const FeaturedBundles = () => {
-	const [emblaRef, emblaApi] = useEmblaCarousel()
+	const [emblaRef, emblaApi] = useEmblaCarousel();
 	const { data: bundles, isPending } = useGetExamBundles({
 		is_popular: true,
-	})
+	});
 
 	return (
 		<div className="flex w-full flex-col gap-4">
@@ -54,11 +54,13 @@ export const FeaturedBundles = () => {
 														{bundle.examinationbundle_name} Exam Prep Bundle
 													</h5>
 													<p className="pt-2 text-sm text-neutral-400">
-														Lorem ipsum dolor sit, amet consectetur adipisicing elit. Vero asperiores enim
-														corrupti vel eos illo? Impedit possimus maiores reprehenderit unde!
+														Lorem ipsum dolor sit, amet consectetur adipisicing elit. Vero asperiores
+														enim corrupti vel eos illo? Impedit possimus maiores reprehenderit unde!
 													</p>
 												</div>
-												<p className="font-semibold">{formatCurrency(bundle.examinationbundle_amount)}</p>
+												<p className="font-semibold">
+													{formatCurrency(bundle.examinationbundle_amount)}
+												</p>
 											</div>
 											<div className="flex w-full items-center text-sm text-neutral-400">
 												<RiUserLine size={18} /> {formatNumber(bundle.enrolled)} students enrolled
@@ -67,7 +69,8 @@ export const FeaturedBundles = () => {
 										<div className="flex w-full items-center gap-4">
 											<AvatarGroup images={[]} count={4} shape="round" />
 											<div className="flex items-center gap-2 text-sm text-neutral-400">
-												<RiStarFill className="size-4 text-yellow-500" /> {bundle.examinationbundle_rating}
+												<RiStarFill className="size-4 text-yellow-500" />{" "}
+												{bundle.examinationbundle_rating}
 												<span className="text-secondary-400">({bundle.raters} reviews)</span>
 											</div>
 										</div>
@@ -92,5 +95,5 @@ export const FeaturedBundles = () => {
 					</ScrollArea>
 			</div> */}
 		</div>
-	)
-}
+	);
+};

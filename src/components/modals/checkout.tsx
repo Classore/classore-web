@@ -89,7 +89,9 @@ export const CheckoutModal = ({ open, setOpen }: CheckoutModalProps) => {
 
 					<li>
 						<p className="text-sm text-neutral-400">Subtotal:</p>
-						<p className="font-medium">{formatCurrency(Number(values.summary.base_amount ?? 0))}</p>
+						<p className="font-medium">
+							{formatCurrency(Number(values.summary.base_amount ?? 0))}
+						</p>
 					</li>
 
 					<li>
@@ -99,7 +101,9 @@ export const CheckoutModal = ({ open, setOpen }: CheckoutModalProps) => {
 
 					<li>
 						<p className="text-sm text-neutral-400">Grand total:</p>
-						<p className="font-medium">{formatCurrency(Number(values.summary.grand_total ?? 0))}</p>
+						<p className="font-medium">
+							{formatCurrency(Number(values.summary.grand_total ?? 0))}
+						</p>
 					</li>
 				</ul>
 

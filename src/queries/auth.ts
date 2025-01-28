@@ -128,4 +128,3 @@ export {
 	VerifyEmailMutation,
 	WaitlistMutation,
 };
-

@@ -137,21 +137,24 @@ export const VideoPlayer = ({ src }: Props) => {
 		document.addEventListener("mouseup", handleScrubEnd);
 	};
 
-	const handleScrubDrag = (e: MouseEvent | React.MouseEvent) => {
-		if (scrub.current && video.current && isDragging) {
-			const rect = scrub.current.getBoundingClientRect();
-			const percent = Math.min(Math.max((e.clientX - rect.left) / rect.width, 0), 1);
-			video.current.currentTime = percent * video.current.duration;
-			setProgress(percent * 100);
-			setCurrentTime(video.current.currentTime);
-		}
-	};
+	const handleScrubDrag = React.useCallback(
+		(e: MouseEvent | React.MouseEvent) => {
+			if (scrub.current && video.current && isDragging) {
+				const rect = scrub.current.getBoundingClientRect();
+				const percent = Math.min(Math.max((e.clientX - rect.left) / rect.width, 0), 1);
+				video.current.currentTime = percent * video.current.duration;
+				setProgress(percent * 100);
+				setCurrentTime(video.current.currentTime);
+			}
+		},
+		[isDragging, scrub, video]
+	);
 
-	const handleScrubEnd = () => {
+	const handleScrubEnd = React.useCallback(() => {
 		setIsDragging(false);
 		document.removeEventListener("mousemove", handleScrubDrag);
 		document.removeEventListener("mouseup", handleScrubEnd);
-	};
+	}, [handleScrubDrag]);
 
 	const preventContextMenu = (e: React.MouseEvent) => {
 		e.preventDefault();
@@ -195,7 +198,7 @@ export const VideoPlayer = ({ src }: Props) => {
 			document.removeEventListener("mousemove", handleScrubDrag);
 			document.removeEventListener("mouseup", handleScrubEnd);
 		};
-	}, [handleScrubDrag]);
+	}, [handleScrubDrag, handleScrubEnd, video]);
 
 	return (
 		<div

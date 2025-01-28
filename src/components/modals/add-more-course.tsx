@@ -1,21 +1,22 @@
-import { formatCurrency } from "@/lib"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Lock02 } from "@untitled-ui/icons-react";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/router";
+import * as React from "react";
+import { z } from "zod";
 import {
 	useCreateStudyTimeline,
 	useGetExamBundles,
 	useGetExams,
 	useGetSingleExamBundleQuery,
 	useGetSubjects,
-} from "@/queries/school"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Lock02 } from "@untitled-ui/icons-react"
-import { useRouter } from "next/router"
-import * as React from "react"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { Spinner } from "../shared"
-import { Button } from "../ui/button"
-import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog"
-import { Select, SelectItem } from "../ui/select"
+} from "@/queries/school";
+
+import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
+import { Select, SelectItem } from "../ui/select";
+import { formatCurrency } from "@/lib";
+import { Button } from "../ui/button";
+import { Spinner } from "../shared";
 
 const schema = z.object({
 	exam_type: z
@@ -42,21 +43,21 @@ const schema = z.object({
 	// 	.transform((value) => {
 	// 		return value.split(", ")
 	// 	}),
-})
+});
 
-type FormData = z.infer<typeof schema>
+type FormData = z.infer<typeof schema>;
 
 export const AddMoreCourseModal = () => {
-	const router = useRouter()
-	const [open, setOpen] = React.useState(false)
+	const router = useRouter();
+	const [open, setOpen] = React.useState(false);
 
 	const { data: bundle } = useGetSingleExamBundleQuery({
 		bundle_id: router.query.id as string,
-	})
+	});
 
-	const { data: exams } = useGetExams()
-	const { data: bundles } = useGetExamBundles()
-	const { data: subjects } = useGetSubjects()
+	const { data: bundles } = useGetExamBundles({});
+	const { data: subjects } = useGetSubjects();
+	const { data: exams } = useGetExams();
 
 	const { control, handleSubmit } = useForm<FormData>({
 		resolver: zodResolver(schema),
@@ -66,25 +67,28 @@ export const AddMoreCourseModal = () => {
 			chosen_bundle: (router.query.id as string) ?? "",
 			subject: "",
 		},
-	})
+	});
 
 	const bundleSubjects = subjects?.filter(
 		(subject) => subject.subject_examination_bundle === router.query.id
-	)
+	);
 
-	const { isPending, mutate } = useCreateStudyTimeline()
+	const { isPending, mutate } = useCreateStudyTimeline();
 	const onSubmit = (data: FormData) => {
-		console.log(data)
-		// mutate({
-		// 	...data,
-		// 	subjects: [data.subject],
-		// }, {
-		// 	onSuccess: (data) => {
-		// 		setOpen(true)
-		// 		window.open(data.data.payment_link.authorization_url, "_self")
-		// 	},
-		// })
-	}
+		console.log(data);
+		mutate(
+			{
+				...data,
+				subjects: [data.subject],
+			},
+			{
+				onSuccess: (data) => {
+					setOpen(true);
+					window.open(data.data.payment_link.authorization_url, "_self");
+				},
+			}
+		);
+	};
 
 	return (
 		<Dialog>
@@ -99,7 +103,9 @@ export const AddMoreCourseModal = () => {
 			<DialogContent className="flex w-96 flex-col gap-6">
 				<h3 className="text-2xl font-bold">Add New Course</h3>
 
-				<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6 font-body font-normal">
+				<form
+					onSubmit={handleSubmit(onSubmit)}
+					className="flex flex-col gap-6 font-body font-normal">
 					<Select disabled label="I am studying for" control={control} name="exam_type">
 						{exams?.map((exam) => (
 							<SelectItem key={exam.examination_id} value={exam.examination_id}>
@@ -126,7 +132,11 @@ export const AddMoreCourseModal = () => {
 
 					<div className="flex flex-col gap-1">
 						<Button type="submit" disabled={isPending}>
-							{isPending ? <Spinner /> : `Pay ${formatCurrency(Number(bundle?.extra_charge ?? 0))}`}
+							{isPending ? (
+								<Spinner />
+							) : (
+								`Pay ${formatCurrency(Number(bundle?.extra_charge ?? 0))}`
+							)}
 						</Button>
 						<div className="flex items-center gap-1.5 self-center text-neutral-500">
 							<Lock02 width={18} />
@@ -139,7 +149,9 @@ export const AddMoreCourseModal = () => {
 					<div className="absolute inset-0 z-50 mx-auto grid place-items-center gap-4 rounded-md bg-white/50 p-10 text-center text-sm text-neutral-600 backdrop-blur-sm backdrop-filter">
 						<div className="grid place-items-center gap-4 rounded-lg p-10">
 							<Spinner variant="primary" size="md" />
-							<p className="leading-tight">Please wait while we redirect you to the payment page...</p>
+							<p className="leading-tight">
+								Please wait while we redirect you to the payment page...
+							</p>
 							<p className="text-xs font-bold">
 								NB: <br />
 								DO NOT CLOSE THIS WINDOW OR REFRESH THE PAGE
@@ -149,5 +161,5 @@ export const AddMoreCourseModal = () => {
 				) : null}
 			</DialogContent>
 		</Dialog>
-	)
-}
+	);
+};

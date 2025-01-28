@@ -10,9 +10,9 @@ import { Button } from "../ui/button";
 import { Appbar } from "./appbar";
 
 type DashboardLayoutProps = {
-	children: React.ReactNode
-	className?: string
-}
+	children: React.ReactNode;
+	className?: string;
+};
 
 export function DashboardLayout({ children, className }: DashboardLayoutProps) {
 	const router = useRouter();

@@ -1,18 +1,20 @@
-import type { SingleBundleResp } from "@/types"
-import { FolderClosed, NotebookText, PlayCircle } from "lucide-react"
-import * as React from "react"
+import type { SingleBundleResp } from "@/types";
+import { FolderClosed, NotebookText, PlayCircle } from "lucide-react";
+import * as React from "react";
 
 type Props = {
-	subjects: SingleBundleResp["subjects"]
-}
+	subjects: SingleBundleResp["subjects"];
+};
 
 export const BundleSubjects = ({ subjects }: Props) => {
-	const [value, setValue] = React.useState(subjects[0]?.id ?? "")
+	const [value, setValue] = React.useState(subjects[0]?.id ?? "");
 
 	return (
 		<ul>
 			{subjects?.map((subject) => (
-				<li key={subject.id} className="flex flex-col gap-2 border-t border-t-neutral-200 py-4">
+				<li
+					key={subject.id}
+					className="flex flex-col gap-2 border-t border-t-neutral-200 py-4">
 					<div className="flex items-center justify-between gap-1">
 						<button
 							type="button"
@@ -22,7 +24,9 @@ export const BundleSubjects = ({ subjects }: Props) => {
 							<p className="font-medium capitalize">{subject.name}</p>
 						</button>
 
-						{value === subject.id && <p className="text-sm text-secondary-300 underline">Preview</p>}
+						{value === subject.id && (
+							<p className="text-sm text-secondary-300 underline">Preview</p>
+						)}
 					</div>
 
 					{value === subject.id && (
@@ -54,5 +58,5 @@ export const BundleSubjects = ({ subjects }: Props) => {
 				</li>
 			))}
 		</ul>
-	)
-}
+	);
+};

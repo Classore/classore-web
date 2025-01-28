@@ -1,17 +1,3 @@
-<<<<<<< HEAD
-import Image from "next/image"
-import Link from "next/link"
-
-import consultation from "@/assets/illustrations/consultation.svg"
-import { Bundle } from "@/components/course"
-import { DashboardLayout } from "@/components/layouts"
-import { Seo, Spinner } from "@/components/shared"
-import { Button } from "@/components/ui/button"
-import { useGetProfile } from "@/queries/student"
-
-const Page = () => {
-	const { data, isPending } = useGetProfile()
-=======
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
@@ -60,7 +46,6 @@ const Page = () => {
 		}
 		return 0;
 	}, [data]);
->>>>>>> a03d8721612b1bb4894dd39ae3a94863d840d471
 
 	return (
 		<>
@@ -90,18 +75,6 @@ const Page = () => {
 							/>
 						</div>
 					</div>
-<<<<<<< HEAD
-
-					<div className="flex flex-col gap-10">
-						{isPending ? (
-							<div className="mx-auto py-4">
-								<Spinner variant="primary" />
-							</div>
-						) : (
-							data?.time_line.map((bundle) => <Bundle key={bundle.id} bundle={bundle} />)
-						)}
-					</div>
-=======
 					{isLoading ? (
 						<div className="grid h-[400px] w-full place-items-center">
 							<RiLoaderLine className="animate-spin text-primary-400" />
@@ -136,7 +109,6 @@ const Page = () => {
 							</div>
 						</div>
 					)}
->>>>>>> a03d8721612b1bb4894dd39ae3a94863d840d471
 				</div>
 			</DashboardLayout>
 		</>

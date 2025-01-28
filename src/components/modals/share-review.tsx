@@ -1,7 +1,7 @@
-import { Controller, useForm } from "react-hook-form"
-import { Button } from "../ui/button"
-import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog"
-import { Textarea } from "../ui/textarea"
+import { Controller, useForm } from "react-hook-form";
+import { Button } from "../ui/button";
+import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
+import { Textarea } from "../ui/textarea";
 
 const ratings = [
 	{
@@ -29,10 +29,10 @@ const ratings = [
 		name: "excellent",
 		emoji: "🫡",
 	},
-]
+];
 
 export const ShareReview = () => {
-	const { control } = useForm()
+	const { control } = useForm();
 
 	return (
 		<Dialog>
@@ -46,8 +46,8 @@ export const ShareReview = () => {
 				<header className="flex flex-col gap-2 text-center">
 					<h3 className="text-2xl font-bold">Share Your Feedback </h3>
 					<p className="text-pretty text-sm text-neutral-400">
-						Your opinion matters! Please take a moment to rate your experience and share any thoughts.
-						Your feedback helps us improve and serve you better
+						Your opinion matters! Please take a moment to rate your experience and share any
+						thoughts. Your feedback helps us improve and serve you better
 					</p>
 				</header>
 
@@ -69,7 +69,9 @@ export const ShareReview = () => {
 											{/* background: linear-gradient(180deg, rgba(111, 66, 193, 0.15) 0%, rgba(246, 127, 54, 0.15)
 											100%); */}
 											{value === rating.id && (
-												<p className="text-center text-xs capitalize text-neutral-400">{rating.name}</p>
+												<p className="text-center text-xs capitalize text-neutral-400">
+													{rating.name}
+												</p>
 											)}
 										</div>
 									))}
@@ -83,5 +85,5 @@ export const ShareReview = () => {
 				</form>
 			</DialogContent>
 		</Dialog>
-	)
-}
+	);
+};

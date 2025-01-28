@@ -28,6 +28,7 @@ export const endpoints = (id?: string) => {
 		get_classes: "/school/subject/fetch-classes",
 		create_study_timeline: "/school/exams/create-study-timeline",
 		vet_study_pack: "/school/exams/vet-study-pack-options",
+		get_my_courses: "/student/my-courses",
 	} as const;
 
 	const student = {
@@ -37,10 +38,21 @@ export const endpoints = (id?: string) => {
 		get_leaderboard: "/student/leaderboard/fetch-all",
 	} as const;
 
+	const user = {
+		my_courses: "student/my-courses",
+		view_course: `/student/view-course/${id}`,
+		start_course: `/student/start-course/${id}`,
+		create_courses: "/student/create-courses",
+		upcoming_events: "/student/upcoming-events",
+		leaderboard: "/student/leaderboard/fetch-all",
+		fetch_questions: "/school/subject/fetch-questions",
+		submit_quiz: "/school/subject/submit-quiz",
+	} as const;
+
 	const waitlist = {
 		join: `/mail/join-waitlist`,
 		get: `/mail/fetch-waitlist`,
 	};
 
-	return { auth, courses, school, waitlist, student };
+	return { auth, courses, school, user, waitlist, student };
 };

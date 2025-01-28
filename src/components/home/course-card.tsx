@@ -33,7 +33,9 @@ export const CourseCard = ({ course }: Props) => {
 
 			<div className="flex w-full flex-col">
 				<h5 className="font-medium capitalize">{course.subject_name} Tutorials</h5>
-				<p className="truncate text-sm text-neutral-400">{capitalize(course.subject_description)}</p>
+				<p className="truncate text-sm text-neutral-400">
+					{capitalize(course.subject_description)}
+				</p>
 			</div>
 
 			<hr className="w-full bg-neutral-300" />

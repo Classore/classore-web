@@ -1,22 +1,22 @@
-import { formatCurrency } from "@/lib"
+import { formatCurrency } from "@/lib";
 import {
 	useCreateStudyTimeline,
 	useGetExamBundles,
 	useGetExams,
 	useGetSingleExamBundleQuery,
 	useGetSubjects,
-} from "@/queries/school"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Lock02 } from "@untitled-ui/icons-react"
-import { useRouter } from "next/router"
-import * as React from "react"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { Spinner } from "../shared"
-import { Button } from "../ui/button"
-import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog"
-import { MultiSelect } from "../ui/multi-select"
-import { Select, SelectItem } from "../ui/select"
+} from "@/queries/school";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Lock02 } from "@untitled-ui/icons-react";
+import { useRouter } from "next/router";
+import * as React from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Spinner } from "../shared";
+import { Button } from "../ui/button";
+import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
+import { MultiSelect } from "../ui/multi-select";
+import { Select, SelectItem } from "../ui/select";
 
 const schema = z.object({
 	exam_type: z
@@ -36,23 +36,23 @@ const schema = z.object({
 		})
 		.min(1, { message: "Please select at least one subject" })
 		.transform((value) => {
-			return value.split(", ")
+			return value.split(", ");
 		}),
-})
+});
 
-type FormData = z.infer<typeof schema>
+type FormData = z.infer<typeof schema>;
 
 export const EnrollModal = () => {
-	const router = useRouter()
-	const [open, setOpen] = React.useState(false)
+	const router = useRouter();
+	const [open, setOpen] = React.useState(false);
 
 	const { data: bundle } = useGetSingleExamBundleQuery({
 		bundle_id: router.query.id as string,
-	})
+	});
 
-	const { data: exams } = useGetExams()
-	const { data: bundles } = useGetExamBundles()
-	const { data: subjects } = useGetSubjects()
+	const { data: exams } = useGetExams();
+	const { data: bundles } = useGetExamBundles({});
+	const { data: subjects } = useGetSubjects();
 
 	const { control, handleSubmit } = useForm<FormData>({
 		resolver: zodResolver(schema),
@@ -62,24 +62,24 @@ export const EnrollModal = () => {
 			chosen_bundle: (router.query.id as string) ?? "",
 			subjects: [],
 		},
-	})
+	});
 
 	const bundleSubjects = subjects
 		?.filter((subject) => subject.subject_examination_bundle === router.query.id)
 		?.map((subject) => ({
 			label: subject.subject_name,
 			value: subject.subject_id,
-		}))
+		}));
 
-	const { isPending, mutate } = useCreateStudyTimeline()
+	const { isPending, mutate } = useCreateStudyTimeline();
 	const onSubmit = (data: FormData) => {
 		mutate(data, {
 			onSuccess: (data) => {
-				setOpen(true)
-				window.open(data.data.payment_link.authorization_url, "_self")
+				setOpen(true);
+				window.open(data.data.payment_link.authorization_url, "_self");
 			},
-		})
-	}
+		});
+	};
 
 	return (
 		<Dialog>
@@ -95,7 +95,9 @@ export const EnrollModal = () => {
 					</p>
 				</header>
 
-				<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6 font-body font-normal">
+				<form
+					onSubmit={handleSubmit(onSubmit)}
+					className="flex flex-col gap-6 font-body font-normal">
 					<Select disabled label="I am studying for" control={control} name="exam_type">
 						{exams?.map((exam) => (
 							<SelectItem key={exam.examination_id} value={exam.examination_id}>
@@ -136,7 +138,9 @@ export const EnrollModal = () => {
 					<div className="absolute inset-0 z-50 mx-auto grid place-items-center gap-4 rounded-md bg-white/50 p-10 text-center text-sm text-neutral-600 backdrop-blur-sm backdrop-filter">
 						<div className="grid place-items-center gap-4 rounded-lg p-10">
 							<Spinner variant="primary" size="md" />
-							<p className="leading-tight">Please wait while we redirect you to the payment page...</p>
+							<p className="leading-tight">
+								Please wait while we redirect you to the payment page...
+							</p>
 							<p className="text-xs font-bold">
 								NB: <br />
 								DO NOT CLOSE THIS WINDOW OR REFRESH THE PAGE
@@ -146,5 +150,5 @@ export const EnrollModal = () => {
 				) : null}
 			</DialogContent>
 		</Dialog>
-	)
-}
+	);
+};

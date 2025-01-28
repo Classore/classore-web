@@ -1,6 +1,12 @@
-import Image from "next/image"
-import { Button } from "../ui/button"
-import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "../ui/dialog"
+import Image from "next/image";
+import { Button } from "../ui/button";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogTitle,
+	DialogTrigger,
+} from "../ui/dialog";
 
 export const JoinCommunityModal = () => {
 	return (
@@ -22,12 +28,12 @@ export const JoinCommunityModal = () => {
 					/>
 				</div>
 				<DialogDescription className="font-neutral-400 py-3 text-sm">
-					By joining the community, it means you agree to Classore community terms and conditions while
-					learning and making friends.
+					By joining the community, it means you agree to Classore community terms and
+					conditions while learning and making friends.
 				</DialogDescription>
 				<hr className="w-full bg-neutral-400" />
 				<Button>Yes, I agree</Button>
 			</DialogContent>
 		</Dialog>
-	)
-}
+	);
+};

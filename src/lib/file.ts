@@ -61,3 +61,11 @@ export const exportToXLSX = <T>(data: ExportData<T>, options: ExportOptions): vo
 	link.click();
 	document.body.removeChild(link);
 };
+
+export const getFileExtension = (filename: string): string => {
+	const parts = filename.split(".");
+	if (parts.length > 1) {
+		return parts[parts.length - 1];
+	}
+	return "";
+};

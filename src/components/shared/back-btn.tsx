@@ -1,8 +1,8 @@
-import { ChevronLeft } from "lucide-react"
-import { useRouter } from "next/router"
+import { ChevronLeft } from "lucide-react";
+import { useRouter } from "next/router";
 
 export const BackBtn = () => {
-	const router = useRouter()
+	const router = useRouter();
 
 	return (
 		<button
@@ -12,5 +12,5 @@ export const BackBtn = () => {
 			<ChevronLeft className="size-4" />
 			<span className="text-sm text-neutral-700">Back</span>
 		</button>
-	)
-}
+	);
+};

@@ -497,6 +497,7 @@ export type SingleCourseResp = {
 			sequence: number;
 			images: Array<string>;
 			videos: Array<string>;
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			video_objects: Array<any>;
 			content: string;
 			tutor?: string;

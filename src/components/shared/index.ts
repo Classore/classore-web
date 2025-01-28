@@ -10,6 +10,7 @@ export * from "./facebook-pixel";
 export * from "./footer";
 export * from "./google-auth";
 export * from "./loader";
+export * from "./navbar";
 export * from "./pagination";
 export * from "./progress";
 export * from "./review-card";

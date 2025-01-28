@@ -1,14 +1,19 @@
-import { ModalArt } from "@/assets/illustrations"
-import { cn } from "@/lib"
+import { ModalArt } from "@/assets/illustrations";
+import { cn } from "@/lib";
 
 type EmptyScreenProps = {
-	title?: string
-	subtitle: string
-	illustration?: React.ReactNode
-	className?: string
-}
+	title?: string;
+	subtitle: string;
+	illustration?: React.ReactNode;
+	className?: string;
+};
 
-export const EmptyState = ({ subtitle, illustration, title, className }: EmptyScreenProps) => {
+export const EmptyState = ({
+	subtitle,
+	illustration,
+	title,
+	className,
+}: EmptyScreenProps) => {
 	return (
 		<div
 			className={cn(
@@ -26,5 +31,5 @@ export const EmptyState = ({ subtitle, illustration, title, className }: EmptySc
 				<p className="text-center text-sm text-neutral-400">{subtitle}</p>
 			</div>
 		</div>
-	)
-}
+	);
+};

@@ -1,21 +1,25 @@
-import type { SingleCourseResp } from "@/types"
+import type { SingleCourseResp } from "@/types";
 import { RiArrowDropDownLine, RiFolderVideoLine } from "@remixicon/react";
-import * as React from "react"
+import * as React from "react";
 
 type CourseChaptersProps = {
-	chapters: SingleCourseResp["chapters"]
-	progress: number
-	current_chapter_id?: string
-}
+	chapters: SingleCourseResp["chapters"];
+	progress: number;
+	current_chapter_id?: string;
+};
 
-const MIN_CHAPTERS = 5
+const MIN_CHAPTERS = 5;
 
-export const CourseChapters = ({ chapters, progress, current_chapter_id }: CourseChaptersProps) => {
-	const [showAllChapters, setShowAllChapters] = React.useState(false)
+export const CourseChapters = ({
+	chapters,
+	progress,
+	current_chapter_id,
+}: CourseChaptersProps) => {
+	const [showAllChapters, setShowAllChapters] = React.useState(false);
 
-	const displayedChapters = showAllChapters ? chapters : chapters.slice(0, MIN_CHAPTERS)
+	const displayedChapters = showAllChapters ? chapters : chapters.slice(0, MIN_CHAPTERS);
 
-	const hasMoreChapters = chapters.length > MIN_CHAPTERS
+	const hasMoreChapters = chapters.length > MIN_CHAPTERS;
 	return (
 		<>
 			<div className="flex w-full items-center justify-between rounded-lg border p-4">
@@ -78,4 +82,4 @@ export const CourseChapters = ({ chapters, progress, current_chapter_id }: Cours
 			</div>
 		</>
 	);
-}
+};

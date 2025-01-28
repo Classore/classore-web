@@ -35,8 +35,8 @@ export type ExamBundlesResp = PaginatedResponse<{
 	examinationbundle_examination: string;
 	examinationbundle_name: string;
 	examinationbundle_amount: number;
-	examinationbundle_start_date: Date;
-	examinationbundle_end_date: Date;
+	examinationbundle_start_date: Date | string;
+	examinationbundle_end_date: Date | string;
 	examinationbundle_allowed_subjects: number;
 	examinationbundle_max_subjects: number;
 	examinationbundle_extra_charge: number;
