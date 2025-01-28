@@ -19,7 +19,9 @@ export const ExplorePopularExams = () => {
 			</div>
 
 			{isPending ? (
-				<Spinner variant="primary" />
+				<div className="py-2">
+					<Spinner variant="primary" />
+				</div>
 			) : (
 				<div className="overflow-x-clip" ref={emblaRef}>
 					<div className="flex touch-pan-y touch-pinch-zoom flex-col items-center gap-4 md:flex-row">

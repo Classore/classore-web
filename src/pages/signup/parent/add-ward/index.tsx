@@ -1,5 +1,6 @@
 import { UserDetailsGraphic } from "@/assets/icons";
 import { AuthLayout } from "@/components/layouts/auth";
+import { CheckoutAddWardsModal } from "@/components/modals";
 import { Seo, Spinner } from "@/components/shared";
 import { SignupStepper } from "@/components/signup-stepper";
 import { Button } from "@/components/ui/button";
@@ -7,10 +8,14 @@ import { Input } from "@/components/ui/input";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { Select, SelectItem } from "@/components/ui/select";
 import { formatCurrency } from "@/lib";
-import { AddWardsMutation } from "@/queries";
-import { useGetExamBundles, useGetExams, useGetSubjects } from "@/queries/school";
+import {
+	useGetExamBundles,
+	useGetExams,
+	useGetSubjects,
+	useVetStudyPack,
+} from "@/queries/school";
+import { useMiscStore } from "@/store/z-store/misc";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
 import { Lock02 } from "@untitled-ui/icons-react";
 import { Trash } from "iconsax-react";
 import { Plus } from "lucide-react";
@@ -54,6 +59,8 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 const Page = () => {
+	const setMiscStore = useMiscStore((state) => state.setMisc);
+
 	const [open, setOpen] = React.useState(false);
 	const { control, handleSubmit } = useForm<FormValues>({
 		resolver: zodResolver(schema),
@@ -72,7 +79,7 @@ const Page = () => {
 		control,
 	});
 
-	const { data: bundles } = useGetExamBundles();
+	const { data: bundles } = useGetExamBundles({});
 	const { data: exams } = useGetExams();
 	const { data: subjects } = useGetSubjects();
 
@@ -110,27 +117,28 @@ const Page = () => {
 		[bundles, form.wards]
 	);
 
-	const bundleAmount = React.useCallback(() => {
-		let amount = 0;
-		form.wards?.forEach((ward) => {
-			const exam_bundle = bundles?.data.find(
-				(bundle) => bundle.examinationbundle_id === ward.examination_bundle
-			);
-			amount += exam_bundle?.examinationbundle_amount ?? 0;
-		});
-		return amount;
-	}, [bundles, form.wards]);
+	const { isPending, mutate } = useVetStudyPack();
+	const onSubmit = (values: FormValues) => {
+		const payload = values.wards.map((item) => ({
+			chosen_bundle: item.examination_bundle,
+			subject_length: item.subjects.length,
+		}));
 
-	const { isPending, mutate } = useMutation({
-		mutationKey: ["add-ward"],
-		mutationFn: (values: FormValues) => AddWardsMutation(values.wards),
-		onSuccess: (data) => {
-			setOpen(true);
-			window.open(data.data.payment_link_data.authorization_url, "_self");
-		},
-	});
-	const onSubmit = (data: FormValues) => {
-		mutate(data);
+		mutate(
+			{ vettings: payload },
+			{
+				onSuccess: (data) => {
+					const payload = {
+						...values,
+						...data.data,
+						total_wards: values.wards.length,
+					};
+					// @ts-expect-error err
+					setMiscStore(payload);
+					setOpen(true);
+				},
+			}
+		);
 	};
 
 	return (
@@ -246,7 +254,7 @@ const Page = () => {
 
 								<div className="col-span-full flex flex-col gap-2">
 									<Button type="submit" disabled={isPending}>
-										{isPending ? <Spinner /> : `Pay ${formatCurrency(Number(bundleAmount()) ?? 0)}`}
+										{isPending ? <Spinner /> : `Continue`}
 									</Button>
 									<div className="flex items-center gap-1.5 self-center text-neutral-500">
 										<Lock02 width={18} />
@@ -259,16 +267,7 @@ const Page = () => {
 				</div>
 			</AuthLayout>
 
-			{open ? (
-				<div className="fixed left-0 top-0 z-50 flex h-screen w-screen items-center justify-center gap-2 bg-black/50">
-					<div className="grid max-w-xs place-items-center gap-4 rounded-md bg-white p-10 text-center text-sm text-neutral-600">
-						<Spinner variant="primary" size="md" />
-						<p className="leading-tight">
-							Please wait while we redirect you to the payment page...
-						</p>
-					</div>
-				</div>
-			) : null}
+			<CheckoutAddWardsModal open={open} setOpen={setOpen} />
 		</>
 	);
 };

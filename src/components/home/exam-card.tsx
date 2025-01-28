@@ -1,6 +1,6 @@
 import { formatCurrency, formatNumber } from "@/lib";
 import type { ExamBundlesResp } from "@/queries/school";
-import { RiTimeLine, RiUserLine } from "@remixicon/react";
+import { RiStarFill, RiTimeLine, RiUserLine } from "@remixicon/react";
 import Image from "next/image";
 import Link from "next/link";
 import { twMerge } from "tailwind-merge";
@@ -13,13 +13,16 @@ interface Props {
 export const ExamCard = ({ course, className }: Props) => {
 	return (
 		<Link
-			href={`/dashboard/courses/${course.examinationbundle_id}`}
+			href={`/dashboard/categories/${course.examinationbundle_id}`}
 			className={twMerge(
-				"flex w-full flex-1 flex-col gap-4 rounded-lg border bg-white p-4 transition-all duration-700 hover:shadow-2xl",
+				"flex w-full flex-1 flex-col gap-3 rounded-lg border bg-white p-4 transition-all duration-700 hover:shadow-2xl",
 				className
 			)}>
 			<Image
-				src="https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+				src={
+					course.examinationbundle_banner ??
+					"https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+				}
 				alt=""
 				width={318}
 				height={172}
@@ -33,7 +36,7 @@ export const ExamCard = ({ course, className }: Props) => {
 				<p className="text-sm font-bold">{formatCurrency(course.examinationbundle_amount)}</p>
 			</div>
 
-			<div className="flex items-center gap-4 border-t border-neutral-200 pt-4 text-neutral-400">
+			<div className="flex items-center gap-4 border-t border-neutral-200 pt-3 text-neutral-400">
 				<div className="flex items-center gap-1">
 					<RiTimeLine size={18} />
 					<span className="text-sm">15 hrs</span>
@@ -43,7 +46,12 @@ export const ExamCard = ({ course, className }: Props) => {
 					<span className="text-sm">{formatNumber(course.enrolled)} Enrolled</span>
 				</div>
 
-				<p className="ml-auto text-sm">4.8 (1,509)</p>
+				<div className="ml-auto flex items-center gap-1">
+					<RiStarFill className="size-4 text-yellow-500" />
+					<p className="text-sm">
+						{course.examinationbundle_rating} ({formatNumber(course.raters ?? 0)})
+					</p>
+				</div>
 			</div>
 		</Link>
 	);

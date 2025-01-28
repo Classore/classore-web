@@ -1,6 +1,6 @@
 import { endpoints } from "@/config";
 import { axios } from "@/lib";
-import type { HttpResponse, PaginatedResponse } from "@/types";
+import type { HttpResponse, PaginatedResponse, SingleBundleResp } from "@/types";
 import { queryOptions, useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -32,31 +32,43 @@ export const useGetExams = () => {
 // <-- GET EXAM BUNDLES -->
 export type ExamBundlesResp = PaginatedResponse<{
 	examinationbundle_id: string;
+	examinationbundle_examination: string;
 	examinationbundle_name: string;
 	examinationbundle_amount: number;
-	examinationbundle_start_date: string;
-	examinationbundle_end_date: string;
+	examinationbundle_start_date: Date | string;
+	examinationbundle_end_date: Date | string;
+	examinationbundle_allowed_subjects: number;
 	examinationbundle_max_subjects: number;
-	examination_name: number;
+	examinationbundle_extra_charge: number;
+	examinationbundle_amount_per_subject: number;
+	examinationbundle_allow_extra_subjects: string;
+	examinationbundle_rating: number;
+	examination_name: string;
+	examinationbundle_banner: string;
 	subject_count: number;
-	examinationbundle_examination: string;
 	enrolled: number;
+	raters: number;
 }>;
-type Params = Partial<typeof params> & {
-	search?: string;
-	examination?: string;
-};
-const getExamBundles = async (params?: Params) => {
+type Params = Partial<
+	typeof params & {
+		search: string;
+		examination: string;
+		is_popular: boolean;
+	}
+>;
+const getExamBundles = async (params: Params) => {
 	return axios
 		.get<HttpResponse<ExamBundlesResp>>(endpoints().school.get_exam_bundles, {
 			params: {
 				...params,
 				...(params?.examination && { examination: params.examination }),
+				...(params?.is_popular && { is_popular: params.is_popular }),
+				...(params?.search && { search: params.search }),
 			},
 		})
 		.then((res) => res.data);
 };
-export const useGetExamBundles = (params?: Params) => {
+export const useGetExamBundles = (params: Params) => {
 	return useQuery({
 		queryKey: ["exam-bundles", { params }],
 		queryFn: () => getExamBundles(params),
@@ -141,15 +153,24 @@ export const useCreateStudyTimeline = () => {
 
 // <-- VET STUDY PACK -->
 type VetStudyPackPayload = {
-	chosen_bundle: string;
-	subject_length: number;
+	vettings: Array<{
+		chosen_bundle: string;
+		subject_length: number;
+	}>;
 };
 type VetStudyPackResp = {
-	base_amount: number;
-	allowed_subjects: number;
-	allow_extra_subjects: string;
-	number_of_extra_subjects_added: number;
-	grand_total: number;
+	summary: {
+		base_amount: number;
+		number_of_extra_subjects_added: number;
+		grand_total: number;
+	};
+	vettings: Array<{
+		base_amount: number;
+		allowed_subjects: number;
+		allow_extra_subjects: string;
+		number_of_extra_subjects_added: number;
+		grand_total: number;
+	}>;
 };
 const vetStudyPack = async (payload: VetStudyPackPayload) => {
 	return axios
@@ -164,5 +185,21 @@ export const useVetStudyPack = () => {
 			// fake
 			toast.success("Your study timeline has been created!");
 		},
+	});
+};
+
+// <-- GET SINGLE BUNDLE -->
+const getExamBundle = async (id: string) => {
+	return axios
+		.get<HttpResponse<SingleBundleResp>>(endpoints(id).school.get_single_exam_bundle)
+		.then((res) => res.data);
+};
+export const useGetSingleExamBundleQuery = ({ bundle_id }: { bundle_id: string }) => {
+	return useQuery({
+		queryKey: ["exam-bundle", { bundle_id }],
+		queryFn: () => getExamBundle(bundle_id),
+		staleTime: Infinity,
+		gcTime: Infinity,
+		select: (data) => data.data,
 	});
 };

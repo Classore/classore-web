@@ -3,10 +3,10 @@ export type ExamBundleProps = {
 	examinationbundle_id: string;
 	examinationbundle_name: string;
 	examinationbundle_amount: number;
-	examinationbundle_start_date: string;
-	examinationbundle_end_date: string;
+	examinationbundle_start_date: Date | string;
+	examinationbundle_end_date: Date | string;
 	examinationbundle_max_subjects: number;
-	examination_name: number;
+	examination_name: string;
 	subject_count: number;
 	examinationbundle_examination: string;
 	enrolled: number;
@@ -32,7 +32,7 @@ export type ExamCourseProps = {
 	subject_name: string;
 	examBundle_id: string;
 	examBundle_name: string;
-	examBundle_start_date: string;
+	examBundle_start_date: Date | string;
 	examBundle_end_date: string;
 	chapter_id?: string;
 	chapter_name?: string;
