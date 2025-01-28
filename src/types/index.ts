@@ -310,3 +310,216 @@ export type AddWardsProps = {
 		reference: string;
 	};
 };
+
+export type SingleBundleResp = {
+	id: string;
+	name: string;
+	description: string;
+	enrolled: number;
+	raters: number;
+	amount: number;
+	is_bought: boolean;
+	start_date: string;
+	end_date: string;
+	examination: {
+		id: string;
+		name: string;
+	};
+	max_subjects: number;
+	extra_charge: number;
+	amount_per_subject: number;
+	allow_extra_subjects: string;
+	rating: string;
+	number_of_subjects: number;
+	average_downloadable_materials: number;
+	subjects: Array<{
+		id: string;
+		createdOn: string;
+		updatedOn: string;
+		updatedBy: string;
+		deletedOn: string;
+		deletedBy: string;
+		isDeleted: boolean;
+		isBlocked: boolean;
+		name: string;
+		class?: string;
+		examination: string;
+		examination_bundle: string;
+		bench_mark: number;
+		number_of_chapters: number;
+		number_of_materials: number;
+		total_quizes: number;
+		chapters: Array<{
+			id: string;
+			createdOn: string;
+			updatedOn: string;
+			updatedBy: string;
+			deletedOn: string;
+			deletedBy: string;
+			isDeleted: boolean;
+			isBlocked: boolean;
+			subject_id: string;
+			name: string;
+			sequence: number;
+			images: Array<string>;
+			videos: Array<string>;
+			content: string;
+			bench_mark: number;
+			modules: Array<{
+				id: string;
+				createdOn: string;
+				updatedOn: string;
+				updatedBy: string;
+				deletedOn: string;
+				deletedBy: string;
+				isDeleted: boolean;
+				isBlocked: boolean;
+				chapter: string;
+				title: string;
+				sequence: number;
+				images: Array<string>;
+				videos: Array<string>;
+				content: string;
+				tutor: string;
+				attachments: Array<string>;
+			}>;
+		}>;
+	}>;
+	reviews: Array<{
+		rating_id: string;
+		rating_comment: string;
+		rating_rating: number;
+		rating_examination: string;
+		rating_examination_bundle: string;
+		rating_subject: string;
+		rating_user: string;
+		rating_purpose: string;
+		user_first_name: string;
+		user_last_name: string;
+		user_profile_image: string;
+		rating_createdon: string;
+	}>;
+};
+
+export type UserProfileResp = {
+	id: string;
+	createdOn: string;
+	updatedOn: string;
+	isDeleted: boolean;
+	isBlocked: boolean;
+	first_name: string;
+	last_name: string;
+	email: string;
+	phone_number: string;
+	password: string;
+	description: string;
+	access_token: string;
+	referral_code: string;
+	profile_image: string;
+	is_verified: boolean;
+	chosen_study_plan: boolean;
+	user_type: string;
+	wallet_id: string;
+	leaderboard_id: string;
+	sign_up_channel: string;
+	my_wards: Array<string>;
+	parent: string;
+	birthday: string;
+	time_line: Array<{
+		id: string;
+		createdOn: string;
+		updatedOn: string;
+		isDeleted: boolean;
+		isBlocked: boolean;
+		user_id: string;
+		exam_type: string;
+		chosen_bundle: string;
+		subjects: Array<{
+			id: string;
+			name: string;
+		}>;
+		end_date: string;
+		status: string;
+		is_paid: boolean;
+		amount_paid: number;
+		exam_bundle_details: {
+			id: string;
+			name: string;
+		};
+	}>;
+};
+
+export type SingleCourseResp = {
+	id: string;
+	user_id: string;
+	subject_id: {
+		id: string;
+		name: string;
+		description: string;
+		banner: string;
+	};
+	chosen_bundle: string;
+	progress: number;
+	status: string;
+	current_chapter: {
+		id: string;
+		name: string;
+	};
+	current_progress_percentage: number;
+	current_chapter_progress_percentage: number;
+	current_chapter_module: string;
+	current_module_progress_percentage: number;
+	score: number;
+	cut_off: number;
+	quiz_attempts_limit: number;
+	chapters: Array<{
+		id: string;
+		createdOn: string;
+		updatedOn: string;
+		isDeleted: boolean;
+		isBlocked: boolean;
+		subject_id: string;
+		name?: string;
+		sequence?: number;
+		banner: string;
+		images: Array<string>;
+		videos: Array<string>;
+		content?: string;
+		bench_mark: number;
+		modules: Array<{
+			id: string;
+			createdOn: string;
+			updatedOn: string;
+			isDeleted: boolean;
+			isBlocked: boolean;
+			chapter: string;
+			title: string;
+			sequence: number;
+			images: Array<string>;
+			videos: Array<string>;
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			video_objects: Array<any>;
+			content: string;
+			tutor?: string;
+			attachments: Array<string>;
+			progress: number;
+			is_completed: boolean;
+		}>;
+		quizes: Array<{
+			id: string;
+			createdOn: string;
+			updatedOn: string;
+			isDeleted: boolean;
+			isBlocked: boolean;
+			user_id: string;
+			course?: string;
+			chapter: string;
+			module: string;
+			score: number;
+			bench_mark: number;
+			is_passed: boolean;
+			attempts: number;
+		}>;
+		no_of_quizes: number;
+	}>;
+};

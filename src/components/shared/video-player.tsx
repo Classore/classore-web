@@ -137,21 +137,24 @@ export const VideoPlayer = ({ src }: Props) => {
 		document.addEventListener("mouseup", handleScrubEnd);
 	};
 
-	const handleScrubDrag = (e: MouseEvent | React.MouseEvent) => {
-		if (scrub.current && video.current && isDragging) {
-			const rect = scrub.current.getBoundingClientRect();
-			const percent = Math.min(Math.max((e.clientX - rect.left) / rect.width, 0), 1);
-			video.current.currentTime = percent * video.current.duration;
-			setProgress(percent * 100);
-			setCurrentTime(video.current.currentTime);
-		}
-	};
+	const handleScrubDrag = React.useCallback(
+		(e: MouseEvent | React.MouseEvent) => {
+			if (scrub.current && video.current && isDragging) {
+				const rect = scrub.current.getBoundingClientRect();
+				const percent = Math.min(Math.max((e.clientX - rect.left) / rect.width, 0), 1);
+				video.current.currentTime = percent * video.current.duration;
+				setProgress(percent * 100);
+				setCurrentTime(video.current.currentTime);
+			}
+		},
+		[isDragging, scrub, video]
+	);
 
-	const handleScrubEnd = () => {
+	const handleScrubEnd = React.useCallback(() => {
 		setIsDragging(false);
 		document.removeEventListener("mousemove", handleScrubDrag);
 		document.removeEventListener("mouseup", handleScrubEnd);
-	};
+	}, [handleScrubDrag]);
 
 	const preventContextMenu = (e: React.MouseEvent) => {
 		e.preventDefault();
@@ -195,14 +198,14 @@ export const VideoPlayer = ({ src }: Props) => {
 			document.removeEventListener("mousemove", handleScrubDrag);
 			document.removeEventListener("mouseup", handleScrubEnd);
 		};
-	}, [handleScrubDrag]);
+	}, [handleScrubDrag, handleScrubEnd, video]);
 
 	return (
 		<div
 			ref={container}
 			onMouseMove={handleMouseMove}
 			onMouseLeave={() => setShowControls(false)}
-			className="relative grid size-full place-items-center rounded-lg bg-black">
+			className="relative grid h-max w-full place-items-center rounded-lg bg-black">
 			<div onContextMenu={preventContextMenu} className="relative size-full rounded-lg">
 				<video
 					ref={video}
@@ -249,6 +252,7 @@ export const VideoPlayer = ({ src }: Props) => {
 							style={{ width: `${progress}%` }}
 							className="h-full rounded-2xl bg-white"></div>
 					</div>
+
 					<div className="flex w-full items-center justify-between">
 						<div className="text-xs text-white">
 							{formatTime(currentTime)} / {formatTime(duration)}

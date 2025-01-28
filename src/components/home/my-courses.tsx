@@ -1,18 +1,22 @@
-import { useGetMyCourses } from "@/queries/course";
+import { useGetMyCourses } from "@/queries/student";
 import useEmblaCarousel from "embla-carousel-react";
+import * as React from "react";
 import { NextPrevButtons } from "../embla-navigation";
 import { Spinner } from "../shared";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { CourseCard } from "./course-card";
 
-const tabs = ["pending", "ongoing", "completed"];
+const tabs = ["ongoing", "pending", "completed"];
 
 export const MyCourses = () => {
+	const [selected, setSelected] = React.useState(tabs[0] ?? "");
 	const [emblaRef, emblaApi] = useEmblaCarousel();
-	const { data: courses, isPending } = useGetMyCourses({});
+	const { data: courses, isPending } = useGetMyCourses({
+		status: selected.toUpperCase() as "ONGOING" | "PENDING" | "COMPLETED",
+	});
 
 	return (
-		<Tabs defaultValue={tabs[0]}>
+		<Tabs defaultValue={tabs[0]} value={selected} onValueChange={setSelected}>
 			<div className="flex w-full flex-col gap-4">
 				<div className="flex items-center justify-between">
 					<div className="flex items-center gap-4">
@@ -33,7 +37,9 @@ export const MyCourses = () => {
 				{tabs.map((tab) => (
 					<TabsContent key={tab} value={tab}>
 						{isPending ? (
-							<Spinner />
+							<div className="py-2">
+								<Spinner variant="primary" />
+							</div>
 						) : (
 							<div className="overflow-x-clip" ref={emblaRef}>
 								<div className="flex touch-pan-y touch-pinch-zoom flex-col items-center gap-4 md:flex-row">
@@ -42,7 +48,9 @@ export const MyCourses = () => {
 											<CourseCard key={course.course_id} course={course} />
 										))
 									) : (
-										<p className="text-sm text-neutral-400">No courses found</p>
+										<p className="w-full text-center text-sm text-neutral-400">
+											No {selected} courses found!
+										</p>
 									)}
 								</div>
 							</div>

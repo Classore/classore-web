@@ -3,12 +3,12 @@ import Link from "next/link";
 
 import designer from "@/assets/illustrations/designer.svg";
 import { DashboardLayout } from "@/components/layouts";
-import { Button } from "@/components/ui/button";
 import { Seo } from "@/components/shared";
+import { Button } from "@/components/ui/button";
 
-import { BrowserCategories, FeaturedCategories } from "@/components/categories";
-import { dehydrate, QueryClient } from "@tanstack/react-query";
+import { BrowseCategories, FeaturedBundles } from "@/components/categories";
 import { getExamsQueryOptions } from "@/queries/school";
+import { dehydrate, QueryClient } from "@tanstack/react-query";
 import type { GetStaticProps } from "next";
 
 export const getStaticProps = (async () => {
@@ -70,8 +70,8 @@ const Page = () => {
 							/>
 						</div>
 					</div>
-					<FeaturedCategories />
-					<BrowserCategories />
+					<FeaturedBundles />
+					<BrowseCategories />
 				</div>
 			</DashboardLayout>
 		</>

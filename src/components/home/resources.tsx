@@ -1,5 +1,4 @@
 import { toast } from "sonner";
-import React from "react";
 import {
 	RiDownload2Line,
 	RiFilePdf2Line,
@@ -11,14 +10,18 @@ import {
 	type RemixiconComponentType,
 } from "@remixicon/react";
 
-import type { FiletypeProps, ResourceProps } from "@/types";
+import { useGetSingleCourse } from "@/queries/student";
+import type { FiletypeProps } from "@/types";
+import { getFileExtension } from "@/lib";
+import { useRouter } from "next/router";
 import { useDownload } from "@/hooks";
 
 interface Props {
-	resources?: ResourceProps[];
+	chapter_id: string;
+	current_module: string | undefined;
 }
 
-const fileIcon: Record<FiletypeProps, RemixiconComponentType> = {
+const fileIcon: Record<FiletypeProps | (string & {}), RemixiconComponentType> = {
 	doc: RiFileWordLine,
 	docx: RiFileWordLine,
 	pptx: RiFilePpt2Line,
@@ -26,14 +29,24 @@ const fileIcon: Record<FiletypeProps, RemixiconComponentType> = {
 	txt: RiFileTextLine,
 };
 
-export const Resources = ({ resources }: Props) => {
+// TODO: Not done with this
+export const Resources = ({ chapter_id, current_module }: Props) => {
+	const router = useRouter();
+	const { id } = router.query;
+
+	const { data: course } = useGetSingleCourse({
+		course_id: id as string,
+	});
+	const chapter = course?.chapters.find((chapter) => chapter.id === chapter_id);
+	const modules = chapter?.modules.find((module) => module.id === current_module);
+
 	return (
 		<div className="flex w-full flex-col rounded-lg border">
-			<div className="flex items-center gap-2 p-4">
-				<div className="grid size-8 place-items-center rounded-md bg-neutral-200">
-					<RiFoldersLine />
+			<div className="flex items-center gap-4 p-4">
+				<div className="grid size-8 place-items-center rounded-md bg-neutral-100">
+					<RiFoldersLine className="size-4 text-neutral-700" />
 				</div>
-				<div className="flex w-full flex-col gap-1">
+				<div>
 					<p className="font-medium">Resources</p>
 					<p className="text-xs text-neutral-400">
 						Kindly note that all resources are provied here for learning purposes only
@@ -41,14 +54,14 @@ export const Resources = ({ resources }: Props) => {
 				</div>
 			</div>
 			<hr className="w-full bg-neutral-300" />
-			{!resources ? (
+			{!modules?.attachments.length ? (
 				<div className="flex w-full flex-col items-center justify-center gap-2 p-4">
 					<p className="text-sm text-neutral-400">No resources found</p>
 				</div>
 			) : (
 				<div className="flex w-full flex-col">
-					{resources.map((resource) => (
-						<Resource key={resource.id} resource={resource} />
+					{modules.attachments.map((resource, index) => (
+						<Resource key={index} resource={resource} />
 					))}
 				</div>
 			)}
@@ -56,9 +69,9 @@ export const Resources = ({ resources }: Props) => {
 	);
 };
 
-const Resource = ({ resource }: { resource: ResourceProps }) => {
+const Resource = ({ resource }: { resource: string }) => {
 	const { download, loading } = useDownload({
-		filename: `${resource.title}.pdf`,
+		filename: `${resource}.pdf`,
 		url: "/api/download",
 		onSuccess: () => {
 			toast.success("File downloaded successfully");
@@ -68,7 +81,7 @@ const Resource = ({ resource }: { resource: ResourceProps }) => {
 		},
 	});
 
-	const Icon = fileIcon[resource.file];
+	const Icon = fileIcon[getFileExtension(resource)];
 
 	return (
 		<div className="flex w-full items-center justify-between border-b p-4 last:border-b-0">
@@ -77,10 +90,10 @@ const Resource = ({ resource }: { resource: ResourceProps }) => {
 					<Icon size={20} />
 				</div>
 				<a
-					href={resource.url}
+					href={resource}
 					target="_blank"
 					className="text-sm text-neutral-400 hover:underline">
-					{resource.title}
+					{resource}
 				</a>
 			</div>
 			<button onClick={download}>

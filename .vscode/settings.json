@@ -4,8 +4,10 @@
 		"Embla",
 		"examinationbundle",
 		"formik",
+		"LEADERBOARD",
 		"Paystack",
 		"Popover",
-		"Signup"
+		"Signup",
+		"vettings"
 	]
 }
