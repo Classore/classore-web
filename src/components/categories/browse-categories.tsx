@@ -4,7 +4,7 @@ import { ExamCard } from "../home/exam-card"
 import { Spinner } from "../shared"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
 
-export const BrowserCategories = () => {
+export const BrowseCategories = () => {
 	const [tab, setTab] = React.useState("all")
 	const { data: exams } = useGetExams()
 

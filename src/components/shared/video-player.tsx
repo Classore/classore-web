@@ -174,7 +174,7 @@ export const VideoPlayer = ({ src }: Props) => {
 			onMouseMove={handleMouseMove}
 			// onMouseOver={() => console.log("hi")}
 			onMouseLeave={() => setShowControls(false)}
-			className="relative grid size-full place-items-center rounded-lg bg-black">
+			className="relative grid h-max w-full place-items-center rounded-lg bg-black">
 			<div onContextMenu={preventContextMenu} className="relative size-full rounded-lg">
 				<video
 					ref={video}
@@ -218,6 +218,7 @@ export const VideoPlayer = ({ src }: Props) => {
 							className="absolute top-1/2 size-4 -translate-y-1/2 rounded-full bg-white"></div>
 						<div style={{ width: `${progress}%` }} className="h-full rounded-2xl bg-white"></div>
 					</div>
+
 					<div className="flex w-full items-center justify-between">
 						<div className="text-xs text-white">
 							{formatTime(currentTime)} / {formatTime(duration)}

@@ -1,3 +1,3 @@
-export * from "./browser-categories"
+export * from "./browse-categories"
 export * from "./bundle-subjects"
-
+export * from "./featured-bundles"

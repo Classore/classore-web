@@ -27,8 +27,6 @@ export interface HttpResponse<T> {
 	success: boolean
 }
 
-
-
 export type HttpError = {
 	response: {
 		data: {
@@ -448,3 +446,68 @@ export type UserProfileResp = {
 	}>
 }
 
+export type SingleCourseResp = {
+	id: string
+	user_id: string
+	subject_id: {
+		id: string
+		name: string
+		description: string
+		banner: string
+	}
+	chosen_bundle: string
+	progress: number
+	status: string
+	current_chapter: {
+		id: string
+		name: string
+	}
+	current_progress_percentage: number
+	score: number
+	cut_off: number
+	chapters: Array<{
+		id: string
+		createdOn: string
+		updatedOn: string
+		isDeleted: boolean
+		isBlocked: boolean
+		subject_id: string
+		name: string
+		sequence: number
+		banner: string
+		images: Array<string>
+		videos: Array<string>
+		content: string
+		bench_mark: number
+		modules: Array<{
+			id: string
+			createdOn: string
+			updatedOn: string
+			isDeleted: boolean
+			isBlocked: boolean
+			chapter: string
+			title: string
+			sequence: number
+			images: Array<string>
+			videos: Array<string>
+			content: string
+			tutor?: string
+			attachments: Array<string>
+		}>
+		quizes: Array<{
+			id: string
+			createdOn: string
+			updatedOn: string
+			isDeleted: boolean
+			isBlocked: boolean
+			user_id: string
+			course?: string
+			chapter: string
+			module: any
+			score: number
+			bench_mark: number
+			is_passed: boolean
+			attempts: number
+		}>
+	}>
+}

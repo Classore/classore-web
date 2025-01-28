@@ -49,21 +49,26 @@ export type ExamBundlesResp = PaginatedResponse<{
 	enrolled: number
 	raters: number
 }>
-type Params = Partial<typeof params> & {
-	search?: string
-	examination?: string
-}
-const getExamBundles = async (params?: Params) => {
+type Params = Partial<
+	typeof params & {
+		search: string
+		examination: string
+		is_popular: boolean
+	}
+>
+const getExamBundles = async (params: Params) => {
 	return axios
 		.get<HttpResponse<ExamBundlesResp>>(endpoints().school.get_exam_bundles, {
 			params: {
 				...params,
 				...(params?.examination && { examination: params.examination }),
+				...(params?.is_popular && { is_popular: params.is_popular }),
+				...(params?.search && { search: params.search }),
 			},
 		})
 		.then((res) => res.data)
 }
-export const useGetExamBundles = (params?: Params) => {
+export const useGetExamBundles = (params: Params) => {
 	return useQuery({
 		queryKey: ["exam-bundles", { params }],
 		queryFn: () => getExamBundles(params),

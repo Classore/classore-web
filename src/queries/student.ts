@@ -1,6 +1,12 @@
 import { endpoints } from "@/config"
 import { axios } from "@/lib"
-import type { HttpResponse, PaginatedResponse, PaginationProps, UserProfileResp } from "@/types"
+import type {
+	HttpResponse,
+	PaginatedResponse,
+	PaginationProps,
+	SingleCourseResp,
+	UserProfileResp,
+} from "@/types"
 import { useQuery } from "@tanstack/react-query"
 
 // <-- PROFILE -->
@@ -67,6 +73,20 @@ export const useGetMyCourses = (params: Params) => {
 	})
 }
 
+// <-- GET SINGLE COURSE -->
+const getSingleCourse = async (id: string) => {
+	return axios
+		.get<HttpResponse<SingleCourseResp>>(endpoints(id).student.get_single_course)
+		.then((res) => res.data)
+}
+export const useGetSingleCourse = ({course_id}: {course_id: string}) => {
+	return useQuery({
+		queryKey: ["single-course", {course_id}],
+		queryFn: () => getSingleCourse(course_id),
+		select: (data) => data.data,
+	})
+}
+
 // <-- UPCOMING EVENTS -->
 type EventParams = Partial<{
 	timeline: "THIS_MONTH" | "THIS_WEEK" | "THIS_YEAR" | "TODAY"
@@ -112,6 +132,44 @@ export const useGetUpcomingEvents = (params: EventParams) => {
 	return useQuery({
 		queryKey: ["upcoming-events", { params }],
 		queryFn: () => getUpcomingEvents(params),
+		select: (data) => data.data,
+	})
+}
+
+// <-- LEADER BOARD -->
+type LeaderboardResp = PaginatedResponse<{
+	leaderboard_id:                 string;
+    leaderboard_user:               string;
+    leaderboard_points:             number;
+    leaderboard_examination:        string;
+    leaderboard_examination_bundle: string;
+    user_id:                        string;
+    user_first_name:                string;
+    user_last_name:                 string;
+    user_email:                     string;
+    user_profile_image:             null;
+}>
+type LeaderboardParams = Partial<
+	PaginationProps & {
+		examination: string
+		examination_bundle: string
+	}
+>
+const getLeaderboard = async (params: LeaderboardParams) => {
+	return axios
+		.get<HttpResponse<LeaderboardResp>>(endpoints().student.get_leaderboard, {
+			params: {
+				...params,
+				...(params?.examination && { examination_bundle: params.examination }),
+				...(params?.examination_bundle && { examination: params.examination_bundle }),
+			},
+		})
+		.then((res) => res.data)
+}
+export const useGetLeaderboard = (params: LeaderboardParams) => {
+	return useQuery({
+		queryKey: ["leaderboard", { params }],
+		queryFn: () => getLeaderboard(params),
 		select: (data) => data.data,
 	})
 }

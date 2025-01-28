@@ -1,5 +1,3 @@
-import { toast } from "sonner"
-import React from "react"
 import {
 	RiDownload2Line,
 	RiFilePdf2Line,
@@ -10,9 +8,10 @@ import {
 	RiLoaderLine,
 	type RemixiconComponentType,
 } from "@remixicon/react"
+import { toast } from "sonner"
 
-import type { FiletypeProps, ResourceProps } from "@/types"
 import { useDownload } from "@/hooks"
+import type { FiletypeProps, ResourceProps } from "@/types"
 
 interface Props {
 	resources?: ResourceProps[]
@@ -29,11 +28,11 @@ const fileIcon: Record<FiletypeProps, RemixiconComponentType> = {
 export const Resources = ({ resources }: Props) => {
 	return (
 		<div className="flex w-full flex-col rounded-lg border">
-			<div className="flex items-center gap-2 p-4">
-				<div className="grid size-8 place-items-center rounded-md bg-neutral-200">
-					<RiFoldersLine />
+			<div className="flex items-center gap-4 p-4">
+				<div className="grid size-8 place-items-center rounded-md bg-neutral-100">
+					<RiFoldersLine className="size-4 text-neutral-700" />
 				</div>
-				<div className="flex w-full flex-col gap-1">
+				<div>
 					<p className="font-medium">Resources</p>
 					<p className="text-xs text-neutral-400">
 						Kindly note that all resources are provied here for learning purposes only

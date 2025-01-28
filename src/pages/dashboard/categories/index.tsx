@@ -1,16 +1,12 @@
-import { ChevronLeft } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 
 import designer from "@/assets/illustrations/designer.svg"
-import { CardLarge } from "@/components/home"
 import { DashboardLayout } from "@/components/layouts"
 import { Seo } from "@/components/shared"
 import { Button } from "@/components/ui/button"
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 
-import { BrowserCategories } from "@/components/categories"
-import { categories } from "@/mock"
+import { BrowseCategories, FeaturedBundles } from "@/components/categories"
 import { getExamsQueryOptions } from "@/queries/school"
 import { dehydrate, QueryClient } from "@tanstack/react-query"
 import type { GetStaticProps } from "next"
@@ -44,8 +40,6 @@ export const getStaticProps = (async () => {
 }) satisfies GetStaticProps
 
 const Page = () => {
-	const featured = categories.filter((category) => !!category.featured)
-
 	return (
 		<>
 			<Seo title="Categories" />
@@ -71,31 +65,8 @@ const Page = () => {
 							/>
 						</div>
 					</div>
-					<div className="flex w-full flex-col gap-4">
-						<div className="flex items-center justify-between">
-							<p className="text-xl font-semibold">Featured</p>
-							<div className="flex items-center gap-4">
-								<button className="grid size-8 place-items-center rounded-full border bg-white text-black hover:bg-neutral-100">
-									<ChevronLeft className="size-3" />
-								</button>
-								<button className="grid size-8 place-items-center rounded-full border bg-white text-black hover:bg-neutral-100">
-									<ChevronLeft className="size-3 rotate-180" />
-								</button>
-							</div>
-						</div>
-						<div className="w-full overflow-hidden">
-							<ScrollArea className="h-[320px]">
-								<div className="flex w-auto items-center gap-4 overflow-x-scroll">
-									{featured.map((category) => (
-										<CardLarge key={category.id} category={category} />
-									))}
-								</div>
-								<ScrollBar orientation="horizontal" />
-							</ScrollArea>
-						</div>
-					</div>
-
-					<BrowserCategories />
+					<FeaturedBundles />
+					<BrowseCategories />
 				</div>
 			</DashboardLayout>
 		</>

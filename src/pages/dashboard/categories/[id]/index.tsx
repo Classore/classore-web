@@ -1,14 +1,13 @@
 import { BundleSubjects } from "@/components/categories"
 import { DashboardLayout } from "@/components/layouts"
 import { AddMoreCourseModal, EnrollModal, ShareReview } from "@/components/modals"
-import { EmptyState, ReviewCard, Seo, Spinner } from "@/components/shared"
+import { BackBtn, EmptyState, ReviewCard, Seo, Spinner } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { capitalize, formatCurrency, formatNumber } from "@/lib"
 import { useGetSingleExamBundleQuery } from "@/queries/school"
 import { RiStarFill } from "@remixicon/react"
 import { Devices } from "iconsax-react"
 import {
-	ChevronLeft,
 	FolderArchive,
 	List,
 	NotebookText,
@@ -43,13 +42,7 @@ const Page = () => {
 						<header className="flex items-center justify-between gap-2">
 							<div className="flex flex-col gap-2">
 								<div className="flex items-center gap-4">
-									<button
-										onClick={() => router.back()}
-										type="button"
-										className="relative z-50 flex items-center gap-1 self-start rounded-lg border bg-neutral-100 px-3 py-2">
-										<ChevronLeft className="size-4" />
-										<span className="text-sm text-neutral-700">Back</span>
-									</button>
+									<BackBtn />
 
 									<h2 className="text-xl font-medium capitalize text-neutral-900">
 										{bundle?.name} Exam Prep Bundle

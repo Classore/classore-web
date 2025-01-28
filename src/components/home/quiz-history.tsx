@@ -1,5 +1,4 @@
 import { RiCalendar2Line, RiCheckLine, RiCloseLine, RiFileHistoryLine } from "@remixicon/react"
-import React from "react"
 
 import type { QuizProps } from "@/types"
 
@@ -10,11 +9,11 @@ interface Props {
 export const QuizHistory = ({ quizzes }: Props) => {
 	return (
 		<div className="flex w-full flex-col rounded-lg border">
-			<div className="flex items-center gap-2 p-4">
-				<div className="grid size-8 place-items-center rounded-md bg-neutral-200">
-					<RiCalendar2Line />
+			<div className="flex items-center gap-4 p-4">
+				<div className="grid size-8 place-items-center rounded-md bg-neutral-100">
+					<RiCalendar2Line className="size-4 text-neutral-700" />
 				</div>
-				<div className="flex w-full flex-col gap-1">
+				<div className="flex w-full flex-col">
 					<p className="font-medium">Quiz History</p>
 					<p className="text-xs text-neutral-400">View your quiz score here</p>
 				</div>

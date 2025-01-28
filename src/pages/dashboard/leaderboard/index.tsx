@@ -13,13 +13,14 @@ import { DashboardLayout } from "@/components/layouts"
 import { Pagination, Seo, Spinner } from "@/components/shared"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Select, SelectItem } from "@/components/ui/select"
-import { getInitials, paginate } from "@/lib"
+import { getInitials } from "@/lib"
 import { useUserStore } from "@/store/z-store"
 import type { UserMetricProps } from "@/types"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { leaderboard, timeChart } from "@/mock"
+import { timeChart } from "@/mock"
 import { getExamsQueryOptions, useGetExamBundles, useGetExams } from "@/queries/school"
+import { useGetLeaderboard } from "@/queries/student"
 import { dehydrate, QueryClient } from "@tanstack/react-query"
 import type { GetStaticProps } from "next"
 
@@ -109,22 +110,26 @@ const Page = () => {
 	const [page, setPage] = React.useState(1)
 	const { user } = useUserStore()
 
+	const { data: leaderboard, isPending } = useGetLeaderboard({
+		examination: exam,
+		examination_bundle: bundle,
+	})
+
 	const { control } = useForm({
 		defaultValues: { timeline: "today" },
 	})
 
 	const overall = React.useMemo(() => {
-		return leaderboard.map((user, index) => ({
-			...user,
-			all: user.quiz + user.streak,
+		return leaderboard?.data.map((data, index) => ({
+			...data,
 			position: index + 1,
 			positionIcon: getPositionIcon(index),
 		}))
-	}, [])
+	}, [leaderboard?.data])
 
-	const paginated = React.useMemo(() => {
-		return paginate(overall, page, 10)
-	}, [overall, page])
+	// const paginated = React.useMemo(() => {
+	// 	return paginate(overall, page, 10)
+	// }, [overall, page])
 
 	const background = (index: number) => {
 		if (index === 1) return "bg-gradient-to-r from-[#fcf4d5] to-white"
@@ -225,45 +230,60 @@ const Page = () => {
 													key={bundle.examinationbundle_id}
 													value={bundle.examinationbundle_id}>
 													<div className="flex w-full items-start gap-6">
-														<div className="flex w-full flex-col gap-4">
-															<div className="flex-1 rounded-lg border">
-																{paginated.map((user) => (
-																	<div key={user.id} className="flex w-full items-center gap-4 border-b">
-																		<div
-																			className={`grid w-full gap-4 rounded-md px-3 py-4 transition-all ${background(user.position)} grid-cols-4`}>
-																			<div className="col-span-2 flex w-full items-center gap-5">
-																				{user.positionIcon}
-																				<div className="flex items-center gap-2">
-																					<div className="size-10 rounded-lg border-2 border-white"></div>
-																					<div className="flex flex-col gap-1">
-																						<p className="text-sm font-bold">{user.userId}</p>
-																						<p className="text-xs text-neutral-400">Lagos</p>
+														{isPending ? (
+															<div className="flex w-full flex-col items-center justify-center gap-4">
+																<Spinner variant="primary" />
+															</div>
+														) : (
+															<div className="flex w-full flex-col gap-4">
+																{overall?.length ? (
+																	<>
+																		<div className="flex-1 rounded-lg border">
+																			{overall?.map((item) => (
+																				<div
+																					key={item.leaderboard_id}
+																					className="flex w-full items-center gap-4 border-b">
+																					<div
+																						className={`grid w-full gap-4 rounded-md px-3 py-4 transition-all ${background(item.position)} grid-cols-4`}>
+																						<div className="col-span-2 flex w-full items-center gap-5">
+																							{item.positionIcon}
+																							<div className="flex items-center gap-2">
+																								<div className="size-10 rounded-lg border-2 border-white"></div>
+																								<div className="flex flex-col gap-1">
+																									<p className="text-sm font-bold">
+																										{item.user_first_name} {item.user_last_name}
+																									</p>
+																									<p className="text-xs text-neutral-400">Lagos</p>
+																								</div>
+																							</div>
+																						</div>
+
+																						<div className="flex w-full items-center">
+																							<div className="flex w-fit items-center gap-1 rounded-lg border-2 bg-white px-3 py-[6px] text-sm text-neutral-500">
+																								<span className="size-1 rounded-full bg-black" />
+																								{item.leaderboard_points} Pts
+																							</div>
+																						</div>
 																					</div>
 																				</div>
-																			</div>
-																			<div className={`flex w-full items-center`}>
-																				<div className="flex w-fit items-center gap-1 rounded-lg border-2 bg-white px-3 py-[6px] text-sm text-neutral-500">
-																					<RiFlashlightLine size={16} />
-																					{user.streak} Days
-																				</div>
-																			</div>
-																			<div className="flex w-full items-center">
-																				<div className="flex w-fit items-center gap-1 rounded-lg border-2 bg-white px-3 py-[6px] text-sm text-neutral-500">
-																					<span className="size-1 rounded-full bg-black" />
-																					{user.quiz} Pts
-																				</div>
-																			</div>
+																			))}
 																		</div>
-																	</div>
-																))}
+
+																		<Pagination
+																			current={page}
+																			onPageChange={setPage}
+																			pageSize={10}
+																			total={overall?.length ?? 0}
+																		/>
+																	</>
+																) : (
+																	<p className="py-2 text-center text-sm text-neutral-400">
+																		No leaderboard data for this bundle.
+																	</p>
+																)}
 															</div>
-															<Pagination
-																current={page}
-																onPageChange={setPage}
-																pageSize={10}
-																total={overall.length}
-															/>
-														</div>
+														)}
+
 														<div
 															className={`w-[350px] min-w-[350px] flex-col gap-6 transition-all ${screen === "minimize" ? "flex" : "hidden"}`}>
 															<div className="flex w-full flex-col items-center gap-4 rounded-md border p-4">
