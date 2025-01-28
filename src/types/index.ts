@@ -466,8 +466,12 @@ export type SingleCourseResp = {
 		name: string;
 	};
 	current_progress_percentage: number;
+	current_chapter_progress_percentage: number;
+	current_chapter_module: string;
+	current_module_progress_percentage: number;
 	score: number;
 	cut_off: number;
+	quiz_attempts_limit: number;
 	chapters: Array<{
 		id: string;
 		createdOn: string;
@@ -475,12 +479,12 @@ export type SingleCourseResp = {
 		isDeleted: boolean;
 		isBlocked: boolean;
 		subject_id: string;
-		name: string;
-		sequence: number;
+		name?: string;
+		sequence?: number;
 		banner: string;
 		images: Array<string>;
 		videos: Array<string>;
-		content: string;
+		content?: string;
 		bench_mark: number;
 		modules: Array<{
 			id: string;
@@ -493,9 +497,12 @@ export type SingleCourseResp = {
 			sequence: number;
 			images: Array<string>;
 			videos: Array<string>;
+			video_objects: Array<any>;
 			content: string;
 			tutor?: string;
 			attachments: Array<string>;
+			progress: number;
+			is_completed: boolean;
 		}>;
 		quizes: Array<{
 			id: string;
@@ -512,5 +519,6 @@ export type SingleCourseResp = {
 			is_passed: boolean;
 			attempts: number;
 		}>;
+		no_of_quizes: number;
 	}>;
 };

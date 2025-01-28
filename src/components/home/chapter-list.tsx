@@ -1,16 +1,20 @@
-import { RiFileTextLine, RiFolderVideoLine, RiPlayCircleLine } from "@remixicon/react";
+import {
+	RiCheckboxCircleFill,
+	RiFileTextLine,
+	RiFolderVideoLine,
+	RiPlayCircleLine,
+} from "@remixicon/react";
 
 import { capitalize } from "@/lib";
 import type { SingleCourseResp } from "@/types";
 
 interface Props {
-	// chapters: ChapterProps[]
-	// setCurrent: (index: ChapterProps) => void
 	chapters: SingleCourseResp["chapters"];
 	current_chapter_id?: string;
+	current_module: string | undefined;
 }
 
-export const ChapterList = ({ chapters, current_chapter_id }: Props) => {
+export const ChapterList = ({ chapters, current_chapter_id, current_module }: Props) => {
 	const current_chapter = chapters.find((chapter) => chapter.id === current_chapter_id);
 
 	return (
@@ -42,13 +46,20 @@ export const ChapterList = ({ chapters, current_chapter_id }: Props) => {
 				{current_chapter?.modules.map((module) => (
 					<div
 						key={module.id}
-						className="flex items-center gap-4 border-b border-b-neutral-200 px-6 py-4">
-						<div className="grid size-8 place-items-center rounded-md bg-[rgba(241,236,249,0.5)]">
-							<RiPlayCircleLine className="size-4 text-primary-300" />
+						className={`flex items-center gap-4 border-b border-b-neutral-200 px-6 py-4 ${current_module === module.id ? "border-l-4 border-l-primary-300" : ""}`}>
+						<div
+							className={`grid size-8 place-items-center rounded-md ${module.is_completed ? "bg-[rgba(241,236,249,0.5)] text-primary-300" : "bg-neutral-100 text-neutral-400"}`}>
+							<RiPlayCircleLine className="size-4" />
 						</div>
 						<div className="flex flex-col gap-1">
 							<p className="text-sm capitalize text-neutral-500">{module.title}</p>
 							<p className="text-xs text-neutral-400">5:00 Min</p>
+						</div>
+
+						<div className="ml-auto">
+							<RiCheckboxCircleFill
+								className={`size-4 ${module.is_completed ? "text-primary-300" : "text-neutral-200"}`}
+							/>
 						</div>
 					</div>
 				))}

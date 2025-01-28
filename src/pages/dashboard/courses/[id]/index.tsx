@@ -69,7 +69,7 @@ const Page = () => {
 									<h4 className="font-medium capitalize lg:text-xl">{course?.subject_id.name}</h4>
 								</div>
 								<div className="flex items-center gap-4">
-									<TakeQuizModal />
+									<TakeQuizModal chapter_id={course?.current_chapter.id ?? ""} />
 
 									<QuizAlertModal />
 								</div>
@@ -107,6 +107,7 @@ const Page = () => {
 									<TabsContent value="summary">
 										<ChapterList
 											current_chapter_id={course?.current_chapter.id}
+											current_module={course?.current_chapter_module}
 											// progress={course?.current_progress_percentage ?? 0}
 											chapters={course?.chapters ?? []}
 										/>
@@ -115,10 +116,13 @@ const Page = () => {
 										{/* <Transcript transcript={current?.transcript} /> */}
 									</TabsContent>
 									<TabsContent value="resources">
-										<Resources />
+										<Resources
+											current_module={course?.current_chapter_module}
+											chapter_id={course?.current_chapter.id ?? ""}
+										/>
 									</TabsContent>
 									<TabsContent value="quiz history">
-										<QuizHistory />
+										<QuizHistory chapter_id={course?.current_chapter.id ?? ""} />
 									</TabsContent>
 								</Tabs>
 							</div>

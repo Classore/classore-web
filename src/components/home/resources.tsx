@@ -11,10 +11,13 @@ import {
 import { toast } from "sonner";
 
 import { useDownload } from "@/hooks";
+import { useGetSingleCourse } from "@/queries/student";
 import type { FiletypeProps, ResourceProps } from "@/types";
+import { useRouter } from "next/router";
 
 interface Props {
-	resources?: ResourceProps[];
+	chapter_id: string;
+	current_module: string | undefined;
 }
 
 const fileIcon: Record<FiletypeProps, RemixiconComponentType> = {
@@ -25,7 +28,17 @@ const fileIcon: Record<FiletypeProps, RemixiconComponentType> = {
 	txt: RiFileTextLine,
 };
 
-export const Resources = ({ resources }: Props) => {
+// TODO: Not done with this
+export const Resources = ({ chapter_id, current_module }: Props) => {
+	const router = useRouter();
+	const { id } = router.query;
+
+	const { data: course } = useGetSingleCourse({
+		course_id: id as string,
+	});
+	const chapter = course?.chapters.find((chapter) => chapter.id === chapter_id);
+	const modules = chapter?.modules.find((module) => module.id === current_module);
+
 	return (
 		<div className="flex w-full flex-col rounded-lg border">
 			<div className="flex items-center gap-4 p-4">
@@ -40,14 +53,15 @@ export const Resources = ({ resources }: Props) => {
 				</div>
 			</div>
 			<hr className="w-full bg-neutral-300" />
-			{!resources ? (
+			{!modules?.attachments.length ? (
 				<div className="flex w-full flex-col items-center justify-center gap-2 p-4">
 					<p className="text-sm text-neutral-400">No resources found</p>
 				</div>
 			) : (
 				<div className="flex w-full flex-col">
-					{resources.map((resource) => (
-						<Resource key={resource.id} resource={resource} />
+					{modules.attachments.map((resource, index) => (
+						// <Resource key={resource.id} resource={resource} />
+						<p key={index}>Attachement</p>
 					))}
 				</div>
 			)}

@@ -22,7 +22,7 @@ const Progress = ({
 	const circumference = 2 * Math.PI * radius;
 	const offset = circumference - (value / 100) * circumference;
 
-	const fill = value > 0 ? "#c00c0020" : "transparent";
+	const fill = value > 0 ? "#c00c0020" : "#F6F8FA";
 
 	return (
 		<div className="flex flex-col items-center justify-center gap-3">
@@ -47,7 +47,7 @@ const Progress = ({
 
 				<div
 					style={{ width: `${size - thickness}px` }}
-					className="absolute left-1/2 top-1/2 grid aspect-square -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white font-bold shadow-2xl">
+					className="absolute left-1/2 top-1/2 grid aspect-square -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white font-bold shadow-[0px_4px_4px_0px_#0000001A_inset]">
 					{children}
 				</div>
 			</div>
@@ -55,6 +55,7 @@ const Progress = ({
 		</div>
 	);
 };
+
 
 Progress.displayName = "Progress";
 
