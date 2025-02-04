@@ -7,7 +7,7 @@ import type {
 	SingleCourseResp,
 	UserProfileResp,
 } from "@/types";
-import { useQuery } from "@tanstack/react-query";
+import { skipToken, useQuery } from "@tanstack/react-query";
 
 // <-- PROFILE -->
 const getProfile = async () => {
@@ -75,16 +75,32 @@ export const useGetMyCourses = (params: Params) => {
 	});
 };
 
-// <-- GET SINGLE COURSE -->
-const getSingleCourse = async (id: string) => {
+// <-- GET COURSE -->
+const getCourse = async (id: string) => {
 	return axios
-		.get<HttpResponse<SingleCourseResp>>(endpoints(id).student.get_single_course)
+		.get<HttpResponse<SingleCourseResp>>(endpoints(id).student.get_course)
 		.then((res) => res.data);
 };
-export const useGetSingleCourse = ({ course_id }: { course_id: string }) => {
+export const useGetCourse = ({ course_id }: { course_id: string }) => {
 	return useQuery({
-		queryKey: ["single-course", { course_id }],
-		queryFn: () => getSingleCourse(course_id),
+		queryKey: ["course", { course_id }],
+		queryFn: () => getCourse(course_id),
+		select: (data) => data.data,
+	});
+};
+
+// <-- GET SINGLE COURSE -->
+const getChapter = async (id: string) => {
+	return axios
+		.get<
+			HttpResponse<SingleCourseResp["chapters"][number]>
+		>(endpoints(id).student.get_chapter)
+		.then((res) => res.data);
+};
+export const useGetChapter = ({ chapter_id }: { chapter_id: string }) => {
+	return useQuery({
+		queryKey: ["chapter", { chapter_id }],
+		queryFn: chapter_id ? () => getChapter(chapter_id) : skipToken,
 		select: (data) => data.data,
 	});
 };

@@ -17,11 +17,13 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 
-import { ChapterList, QuizHistory, Resources } from "@/components/home";
+import { ChapterList, QuizHistory, Resources, Transcript } from "@/components/home";
 import { JoinCommunityModal, QuizAlertModal, TakeQuizModal } from "@/components/modals";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { capitalize } from "@/lib";
-import { useGetSingleCourse } from "@/queries/student";
+import { useGetCourse } from "@/queries/student";
+import { setChapter } from "@/store/z-store/chapter";
+import * as React from "react";
 
 const tabs = ["summary", "transcript", "resources", "quiz history"] as const;
 type Tabs = (typeof tabs)[number];
@@ -41,13 +43,18 @@ const images = [
 ];
 
 const Page = () => {
-	// const [current, setCurrent] = React.useState<ChapterProps>()
 	const router = useRouter();
 	const { id } = router.query;
 
-	const { data: course, isPending } = useGetSingleCourse({
+	const { data: course, isPending } = useGetCourse({
 		course_id: id as string,
 	});
+
+	React.useEffect(() => {
+		if (course) {
+			setChapter(course.current_chapter.id);
+		}
+	}, [course]);
 
 	return (
 		<>
@@ -69,7 +76,7 @@ const Page = () => {
 									<h4 className="font-medium capitalize lg:text-xl">{course?.subject_id.name}</h4>
 								</div>
 								<div className="flex items-center gap-4">
-									<TakeQuizModal chapter_id={course?.current_chapter.id ?? ""} />
+									<TakeQuizModal />
 
 									<QuizAlertModal />
 								</div>
@@ -105,24 +112,16 @@ const Page = () => {
 									</TabsList>
 
 									<TabsContent value="summary">
-										<ChapterList
-											current_chapter_id={course?.current_chapter.id}
-											current_module={course?.current_chapter_module}
-											// progress={course?.current_progress_percentage ?? 0}
-											chapters={course?.chapters ?? []}
-										/>
+										<ChapterList />
 									</TabsContent>
 									<TabsContent value="transcript">
-										{/* <Transcript transcript={current?.transcript} /> */}
+										<Transcript />
 									</TabsContent>
 									<TabsContent value="resources">
-										<Resources
-											current_module={course?.current_chapter_module}
-											chapter_id={course?.current_chapter.id ?? ""}
-										/>
+										<Resources />
 									</TabsContent>
 									<TabsContent value="quiz history">
-										<QuizHistory chapter_id={course?.current_chapter.id ?? ""} />
+										<QuizHistory />
 									</TabsContent>
 								</Tabs>
 							</div>

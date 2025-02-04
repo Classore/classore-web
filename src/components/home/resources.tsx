@@ -1,4 +1,3 @@
-import { toast } from "sonner";
 import {
 	RiDownload2Line,
 	RiFilePdf2Line,
@@ -9,17 +8,14 @@ import {
 	RiLoaderLine,
 	type RemixiconComponentType,
 } from "@remixicon/react";
+import { toast } from "sonner";
 
-import { useGetSingleCourse } from "@/queries/student";
-import type { FiletypeProps } from "@/types";
-import { getFileExtension } from "@/lib";
-import { useRouter } from "next/router";
 import { useDownload } from "@/hooks";
-
-interface Props {
-	chapter_id: string;
-	current_module: string | undefined;
-}
+import { getFileExtension } from "@/lib";
+import { useGetChapter } from "@/queries/student";
+import { useChapterStore } from "@/store/z-store/chapter";
+import type { FiletypeProps } from "@/types";
+import { Spinner } from "../shared";
 
 const fileIcon: Record<FiletypeProps | (string & {}), RemixiconComponentType> = {
 	doc: RiFileWordLine,
@@ -30,15 +26,36 @@ const fileIcon: Record<FiletypeProps | (string & {}), RemixiconComponentType> = 
 };
 
 // TODO: Not done with this
-export const Resources = ({ chapter_id, current_module }: Props) => {
-	const router = useRouter();
-	const { id } = router.query;
+export const Resources = () => {
+	const currentChapter = useChapterStore((state) => state.chapter);
+	const currentModule = useChapterStore((state) => state.module);
 
-	const { data: course } = useGetSingleCourse({
-		course_id: id as string,
+	const {
+		data: chapter,
+		isPending,
+		isError,
+	} = useGetChapter({
+		chapter_id: currentChapter,
 	});
-	const chapter = course?.chapters.find((chapter) => chapter.id === chapter_id);
-	const modules = chapter?.modules.find((module) => module.id === current_module);
+	const current_module = chapter?.modules.find((module) => module.id === currentModule);
+
+	if (isPending) {
+		return (
+			<div className="flex w-full items-center justify-center gap-2 p-4 text-primary-300">
+				<Spinner variant="primary" />
+				<p className="text-sm">Getting current lesson...</p>
+			</div>
+		);
+	}
+
+	if (isError) {
+		return (
+			<div className="flex w-full flex-col items-center justify-center gap-2 p-4">
+				<p className="font-semibold">Error fetching chapter</p>
+				<p className="text-sm text-neutral-400">Please refresh the page to try again</p>
+			</div>
+		);
+	}
 
 	return (
 		<div className="flex w-full flex-col rounded-lg border">
@@ -54,13 +71,13 @@ export const Resources = ({ chapter_id, current_module }: Props) => {
 				</div>
 			</div>
 			<hr className="w-full bg-neutral-300" />
-			{!modules?.attachments.length ? (
+			{!current_module?.attachments.length ? (
 				<div className="flex w-full flex-col items-center justify-center gap-2 p-4">
 					<p className="text-sm text-neutral-400">No resources found</p>
 				</div>
 			) : (
 				<div className="flex w-full flex-col">
-					{modules.attachments.map((resource, index) => (
+					{current_module.attachments.map((resource, index) => (
 						<Resource key={index} resource={resource} />
 					))}
 				</div>
