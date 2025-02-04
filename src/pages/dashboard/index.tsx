@@ -9,12 +9,29 @@ import {
 	MyCourses,
 } from "@/components/home";
 import { DashboardLayout } from "@/components/layouts";
+import { Seo } from "@/components/shared";
 import { Button } from "@/components/ui/button";
 import { useUserStore } from "@/store/z-store";
 import type { ChallengeProps } from "@/types";
-import { Seo } from "@/components/shared";
 
 const challenges: ChallengeProps[] = [];
+
+function greetUser() {
+	let greeting: string;
+	const hour = new Date().getHours();
+
+	if (hour >= 5 && hour < 12) {
+		greeting = "Good morning";
+	} else if (hour >= 12 && hour < 18) {
+		greeting = "Good afternoon";
+	} else if (hour >= 18 && hour < 22) {
+		greeting = "Good evening";
+	} else {
+		greeting = "Good night";
+	}
+
+	return greeting;
+}
 
 const Page = () => {
 	const { user } = useUserStore();
@@ -29,7 +46,7 @@ const Page = () => {
 					<div className="flex w-full items-center justify-between gap-[177px] rounded-2xl bg-dashboard bg-cover bg-center bg-no-repeat px-10 py-[52px] text-white">
 						<div className="flex min-w-[323px] flex-col gap-2">
 							<h1 className="font-medium capitalize lg:text-[32px]">
-								Good Morning, {user?.first_name}
+								{greetUser()}, {user?.first_name}
 							</h1>
 							<p className="">
 								Welcome to your dashboard-let&apos;s make progress today. Check your latest
