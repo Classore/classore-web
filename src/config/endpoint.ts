@@ -33,7 +33,8 @@ export const endpoints = (id?: string) => {
 
 	const student = {
 		get_my_courses: "/student/my-courses",
-		get_single_course: `/student/view-course/${id}`,
+		get_course: `/student/view-course/${id}`,
+		get_chapter: `student/view-chapter/${id}`,
 		get_upcoming_events: "student/upcoming-events",
 		get_leaderboard: "/student/leaderboard/fetch-all",
 	} as const;

@@ -1,5 +1,5 @@
 import type { SingleCourseResp } from "@/types";
-import { RiArrowDropDownLine, RiFolderVideoLine } from "@remixicon/react";
+import { RiArrowDropDownLine, RiFolderVideoLine, RiLockLine } from "@remixicon/react";
 import * as React from "react";
 
 type CourseChaptersProps = {
@@ -51,14 +51,13 @@ export const CourseChapters = ({
 									<span className="size-1 rounded-full bg-secondary-300" />
 									ONGOING
 								</div>
+							) : !chapter.is_completed ? (
+								<div className="flex items-center gap-1 rounded border border-primary-300 px-2 py-0.5 text-[10px] tracking-wide text-primary-300">
+									<span className="size-1 rounded-full bg-primary-300" />
+									COMPLETED
+								</div>
 							) : (
-								<>
-									{/* {chapter.is_completed ? (
-										<RiLock2Line className="size-[18px] text-neutral-400" />
-									) : (
-										<RiLockUnlockLine className="size-[18px] text-neutral-400" />
-									)} */}
-								</>
+								<RiLockLine className="size-4 text-neutral-400" />
 							)}
 						</div>
 						<div

@@ -18,6 +18,7 @@ const config: Config = {
 		fontFamily: {
 			body: ["var(--body)"],
 			heading: ["var(--heading)"],
+			geist: ["var(--geist)"],
 		},
 		extend: {
 			backgroundImage: {

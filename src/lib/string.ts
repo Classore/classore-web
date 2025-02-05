@@ -178,3 +178,16 @@ export const paginate = <T>(data: T[], page: number, limit: number): T[] => {
 export const formatNumber = (number: number) => {
 	return new Intl.NumberFormat("en-NG").format(number);
 };
+
+export const convertSecondsToMinSec = (totalSeconds: number) => {
+	if (Number.isNaN(totalSeconds) || totalSeconds <= 0) {
+		return "--:--";
+	}
+
+	const minutes = Math.floor(totalSeconds / 60);
+	const seconds = Math.floor(totalSeconds % 60);
+
+	const formattedSeconds = seconds.toString().padStart(2, "0");
+	const formattedMinutes = minutes.toString().padStart(2, "0");
+	return `${formattedMinutes}:${formattedSeconds}`;
+};
