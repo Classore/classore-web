@@ -20,7 +20,7 @@ const Page = () => {
 
 			<Navbar />
 
-			<main className="scrollbar font-geist w-full">
+			<main className="scrollbar w-full font-geist">
 				<section className="relative h-screen w-full bg-gradient-to-b from-primary-100 to-neutral-100">
 					<div className="absolute left-0 top-0 h-full w-full">
 						<Image src="/assets/images/vector-grid.png" alt="vector-grid" fill sizes="100%" />
