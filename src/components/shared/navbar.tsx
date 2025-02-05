@@ -39,7 +39,7 @@ export const Navbar = () => {
 					))}
 				</div>
 				<div className="flex items-center gap-x-4">
-					<Button asChild size="sm" variant="ghost">
+					<Button asChild size="sm" variant="ghost" className="shadow-none">
 						<Link href="/signup">Start Learning</Link>
 					</Button>
 					<Button size="sm" variant="outline-primary">

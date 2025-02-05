@@ -1,4 +1,4 @@
-import { useGetSingleCourse } from "@/queries/student";
+import { useGetCourse } from "@/queries/student";
 import { RiMessage2Line } from "@remixicon/react";
 import { useRouter } from "next/router";
 import { Progress } from "../shared";
@@ -12,18 +12,13 @@ import {
 	DialogTrigger,
 } from "../ui/dialog";
 
-type TakeQuizModalProps = {
-	chapter_id: string;
-};
-
-export const TakeQuizModal = ({ chapter_id }: TakeQuizModalProps) => {
+export const TakeQuizModal = () => {
 	const router = useRouter();
-	const { id } = router.query;
 
-	const { data: course } = useGetSingleCourse({
-		course_id: id as string,
+	const { data } = useGetCourse({
+		course_id: String(router.query.id),
 	});
-	const chapter = course?.chapters.find((chapter) => chapter.id === chapter_id);
+	const chapter = data?.chapters.find((chapter) => chapter.id === data.current_chapter.id);
 
 	return (
 		<Dialog>
@@ -34,33 +29,35 @@ export const TakeQuizModal = ({ chapter_id }: TakeQuizModalProps) => {
 			</DialogTrigger>
 			<DialogContent className="flex w-[400px] flex-col gap-4">
 				<div>
-					<DialogTitle className="text-2xl font-bold">Chapter 1 Quiz</DialogTitle>
+					<DialogTitle className="text-2xl font-bold capitalize">
+						{chapter?.name} Quiz
+					</DialogTitle>
 					<DialogDescription className="font-neutral-400 text-sm">
 						Ready to take your quiz?
 					</DialogDescription>
 				</div>
 				<div className="flex w-full items-center gap-2 rounded-lg border px-4 py-6">
 					<div className="w-[156px] flex-1">
-						<Progress label="Previous Score" value={75} color="var(--primary-400)">
-							75%
+						<Progress label="Previous Score" value={data?.score} color="var(--primary-400)">
+							{data?.score}%
 						</Progress>
 					</div>
 					<hr className="h-9 w-[1px] bg-neutral-300" />
 					<div className="w-[156px] flex-1">
 						<Progress
 							label="Attempts"
-							value={chapter?.quizes.length}
+							value={chapter?.no_of_quizes}
 							color="var(--secondary-400)">
-							{chapter?.quizes.length}/{chapter?.no_of_quizes}
+							{chapter?.no_of_quizes ?? "0"}/{data?.quiz_attempts_limit ?? "3"}
 						</Progress>
 					</div>
 				</div>
-				<div className="flex w-full items-center gap-2 rounded-lg border p-4 text-neutral-400">
+				<div className="flex w-full items-center gap-2 rounded-lg border px-4 py-3 text-neutral-400">
 					<RiMessage2Line className="size-4" />
-					<p className="max-w-[85%] text-sm">
+					<p className="max-w-[85%] text-xs">
 						Remark -{" "}
 						{chapter?.quizes.length
-							? "Your need to score 70% and above to qualify for the next chapter"
+							? `Your need to score ${chapter.bench_mark}% and above to qualify for the next chapter`
 							: "N/A"}
 					</p>
 				</div>
