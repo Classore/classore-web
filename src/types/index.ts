@@ -228,7 +228,10 @@ export type EventProps = Node & {
 
 export type ReviewProps = Node & {
 	__typename?: "Review";
+	fullName: string;
 	rating: number;
+	review: string;
+	userType: "student" | "parent";
 };
 
 export type NotificationProps = Node & {
