@@ -9,7 +9,6 @@ export const useCountDown = ({ total, ms = 1000 }: UseCountDownProps) => {
 	const [counter, setCountDown] = React.useState(total);
 	const [startCountDown, setStartCountDown] = React.useState(false);
 
-	// Store the created interval
 	const intervalId = React.useRef<number>();
 	const start = () => setStartCountDown(true);
 	const reset = () => {
@@ -26,9 +25,7 @@ export const useCountDown = ({ total, ms = 1000 }: UseCountDownProps) => {
 				setCountDown((counter) => counter - 1);
 			}
 		}, ms);
-		// Clear interval when count to zero
 		if (counter === 0) clearInterval(intervalId.current);
-		// Clear interval when unmount
 		return () => clearInterval(intervalId.current);
 	}, [startCountDown, counter, ms]);
 

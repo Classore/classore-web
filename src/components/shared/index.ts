@@ -18,4 +18,5 @@ export * from "./search";
 export * from "./seo";
 export * from "./spinner";
 export * from "./tab-panel";
+export * from "./ticker";
 export * from "./video-player";
