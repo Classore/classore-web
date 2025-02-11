@@ -2,10 +2,18 @@ import { RiDownload2Line } from "@remixicon/react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { AvatarGroup, Footer, Navbar, ReviewCard, Seo } from "@/components/shared";
+import {
+	AvatarGroup,
+	Footer,
+	Navbar,
+	ReviewCard,
+	Seo,
+	Ticker,
+} from "@/components/shared";
 import { PersonalizedPlanCard } from "@/components/home";
 import { MasonryLayout } from "@/components/layouts";
 import { Button } from "@/components/ui/button";
+import { useDeviceWidth } from "@/hooks";
 import {
 	FREQUENTLY_ASKED_QUESTIONS,
 	INCENTIVES,
@@ -21,6 +29,8 @@ const images = [
 ];
 
 const Page = () => {
+	const { isMobile } = useDeviceWidth();
+
 	return (
 		<>
 			<Seo title="" />
@@ -28,12 +38,12 @@ const Page = () => {
 			<Navbar />
 
 			<main className="scrollbar w-full font-geist">
-				<section className="relative min-h-screen w-full bg-gradient-to-b from-primary-100 to-neutral-100">
+				<section className="relative min-h-screen w-full overflow-y-hidden bg-gradient-to-b from-primary-100 to-neutral-100">
 					<div className="absolute left-0 top-0 h-full w-full">
 						<Image src="/assets/images/vector-grid.png" alt="vector-grid" fill sizes="100%" />
 					</div>
 
-					<div className="container flex h-full flex-col items-center justify-end gap-y-5 pt-28">
+					<div className="container absolute left-1/2 top-28 !z-[1] flex h-full -translate-x-1/2 flex-col items-center justify-end gap-y-5">
 						<div className="flex flex-col items-center gap-y-4 text-center lg:w-[750px]">
 							<div className="flex w-fit items-center gap-x-4 rounded-2xl border-2 border-white bg-[rgba(255,255,255,0.3)] px-3 py-1">
 								<p className="text-xs">Join over 2500 learners today</p>
@@ -45,8 +55,8 @@ const Page = () => {
 									Ace Your Exams with Effective Online Lessons
 								</h1>
 								<p className="mx-auto max-w-lg text-neutral-500 lg:text-lg">
-									Our platform simulates different exams, the platform is for you if you are taking
-									JAMB, WAEC, NECO, ICAN.
+									Our platform simulate local and international exams. Prepare in real time. Pass
+									with confidence
 								</p>
 							</div>
 							<div className="flex items-center justify-center gap-x-4 pt-4">
@@ -58,7 +68,7 @@ const Page = () => {
 								</Button>
 							</div>
 						</div>
-						<div className="relative flex w-full lg:h-[550px]">
+						<div className="relative flex w-full lg:h-[650px]">
 							<div className="relative h-full w-[95%] self-start">
 								<Image src="/assets/images/hero-1.png" alt="hero-1" fill sizes="100%" />
 							</div>
@@ -69,11 +79,13 @@ const Page = () => {
 					</div>
 				</section>
 
+				<Ticker />
+
 				<section className="w-full bg-neutral-100 lg:py-20">
 					<div className="container flex flex-col items-center gap-y-20">
 						<div className="flex max-w-[650px] flex-col items-center gap-y-6 text-center">
-							<p className="text-sm font-medium text-secondary-400">WHAT WE OFFER</p>
-							<h4 className="text-4xl font-medium">
+							<p className="text-xs font-medium text-secondary-400 lg:text-sm">WHAT WE OFFER</p>
+							<h4 className="text-2xl font-medium lg:text-4xl">
 								A Personalize Learning for Students, Tracking for Parents
 							</h4>
 						</div>
@@ -84,13 +96,13 @@ const Page = () => {
 						</div>
 					</div>
 				</section>
-				<section className="w-full bg-primary-100 lg:py-20">
-					<div className="container space-y-20">
+				<section className="w-full bg-primary-100 py-10 lg:py-20">
+					<div className="container space-y-20 px-4 lg:px-0">
 						{INCENTIVES.map(({ button, description, href, image, label, title }, index) => (
 							<div
 								key={index}
-								className={`flex w-full items-center ${index % 2 !== 0 ? "flex-row-reverse" : "flex-row"}`}>
-								<div className="grid aspect-square flex-1 place-items-center rounded-3xl bg-gradient-to-b from-primary-200 to-secondary-200">
+								className={`flex w-full items-center gap-5 lg:gap-0 ${index % 2 !== 0 ? "flex-col-reverse lg:flex-row-reverse" : "flex-col-reverse lg:flex-row"}`}>
+								<div className="grid aspect-square w-full flex-1 place-items-center rounded-3xl bg-gradient-to-b from-primary-200 to-secondary-200">
 									<div className="relative aspect-square w-[80%]">
 										<Image src={image} alt={label} quality={100} fill sizes="100%" className="" />
 									</div>
@@ -98,9 +110,11 @@ const Page = () => {
 								<div
 									className={`flex flex-1 flex-col justify-center ${index % 2 !== 0 ? "items-start" : "items-end"}`}>
 									<div className="space-y-4 lg:w-[450px]">
-										<p className="text-sm font-medium uppercase text-secondary-400">{label}</p>
-										<h3 className="text-4xl font-semibold text-neutral-700">{title}</h3>
-										<p className="text-sm text-neutral-400">{description}</p>
+										<p className="text-xs font-medium uppercase text-secondary-400 lg:text-sm">
+											{label}
+										</p>
+										<h3 className="text-2xl font-semibold text-neutral-700 lg:text-4xl">{title}</h3>
+										<p className="text-xs text-neutral-400 lg:text-sm">{description}</p>
 										<Button className="w-fit capitalize" asChild>
 											<Link href={href} target={href.startsWith("https://") ? "_self" : "_self"}>
 												{button}
@@ -112,25 +126,25 @@ const Page = () => {
 						))}
 					</div>
 				</section>
-				<section className="w-full bg-neutral-100 lg:py-20">
+				<section className="w-full bg-neutral-100 py-10 lg:py-20">
 					<div className="container flex flex-col items-center gap-y-20">
 						<div className="flex max-w-[450px] flex-col items-center gap-y-6 text-center">
-							<p className="text-sm font-medium text-secondary-400">TESTIMONIALS</p>
-							<h4 className="text-4xl font-medium">Real Stories. Real Impact</h4>
+							<p className="text-xs font-medium text-secondary-400 lg:text-sm">TESTIMONIALS</p>
+							<h4 className="text-2xl font-medium lg:text-4xl">Real Stories. Real Impact</h4>
 						</div>
-						<MasonryLayout>
+						<MasonryLayout breakpointCols={isMobile ? 1 : 3}>
 							{TESTIMONIALS.map((review) => (
 								<ReviewCard key={review.rating_id} review={review} />
 							))}
 						</MasonryLayout>
 					</div>
 				</section>
-				<section className="w-full bg-primary-100 lg:pt-20">
+				<section className="w-full bg-primary-100 pt-10 lg:pt-20">
 					<div className="container flex flex-col items-center gap-y-20 overflow-hidden">
 						<div className="flex max-w-[450px] flex-col items-center gap-y-6 text-center">
-							<p className="text-sm font-medium text-secondary-400">LEADERBOARD</p>
-							<h4 className="text-4xl font-medium">Learning As A Game</h4>
-							<p className="text-sm text-neutral-400">
+							<p className="text-xs font-medium text-secondary-400 lg:text-sm">LEADERBOARD</p>
+							<h4 className="text-2xl font-medium lg:text-4xl">Learning As A Game</h4>
+							<p className="text-xs text-neutral-400 lg:text-sm">
 								Earn commissions for successful referrals, track your performance with detailed
 								analytics and start earning quickly with easy registration
 							</p>
@@ -138,23 +152,23 @@ const Page = () => {
 								<Link href="/signup">Get Started</Link>
 							</Button>
 						</div>
-						<div className="relative w-full lg:h-[650px]">
+						<div className="relative mx-auto h-[300px] w-[95%] lg:mx-0 lg:h-[650px] lg:w-full">
 							<Image
 								src="/assets/images/leaderboard.png"
 								alt="leaderboard"
 								fill
 								sizes="100%"
-								className="object-cover object-top"
+								className="object-cover"
 								quality={100}
 							/>
 						</div>
 					</div>
 				</section>
-				<section className="w-full bg-neutral-100 lg:py-20">
-					<div className="container flex flex-col items-center gap-y-20">
+				<section className="w-full bg-neutral-100 py-10 lg:py-20">
+					<div className="container flex flex-col items-center gap-y-20 px-4 lg:px-0">
 						<div className="flex max-w-[450px] flex-col items-center gap-y-6 text-center">
-							<p className="text-sm font-medium text-secondary-400">FAQS</p>
-							<h4 className="text-4xl font-medium">Frequently Asked Questions</h4>
+							<p className="text-xs font-medium text-secondary-400 lg:text-sm">FAQS</p>
+							<h4 className="text-2xl font-medium lg:text-4xl">Frequently Asked Questions</h4>
 						</div>
 						<div className="w-full space-y-8 lg:w-[650px]">
 							<div className="flex flex-col items-center gap-y-3">
@@ -163,7 +177,7 @@ const Page = () => {
 										key={index}
 										className="w-full space-y-3 rounded-2xl bg-white p-4 transition-all duration-500 hover:shadow-xl">
 										<h6 className="font-semibold">{question}</h6>
-										<p className="text-sm text-neutral-400">{answer}</p>
+										<p className="text-xs text-neutral-400 lg:text-sm">{answer}</p>
 									</div>
 								))}
 							</div>
@@ -176,15 +190,15 @@ const Page = () => {
 						</div>
 					</div>
 				</section>
-				<section className="w-full bg-primary-100">
+				<section className="w-full bg-primary-100 py-10 lg:py-0">
 					<div className="container grid grid-cols-2">
-						<div className="flex flex-1 flex-col items-start justify-center">
+						<div className="flex flex-1 flex-col items-start justify-center px-4 lg:px-0">
 							<div className="space-y-4 lg:w-[450px]">
-								<p className="text-sm font-medium text-secondary-400">MOBILE APP</p>
-								<h3 className="text-4xl font-semibold text-neutral-700">
+								<p className="text-xs font-medium text-secondary-400 lg:text-sm">MOBILE APP</p>
+								<h3 className="text-2xl font-semibold text-neutral-700 lg:text-4xl">
 									Download Mobile Application
 								</h3>
-								<p className="text-sm text-neutral-400">
+								<p className="text-xs text-neutral-400 lg:text-sm">
 									Earn commissions for successful referrals, track your performance with detailed
 									analytics and start earning quickly with easy registration
 								</p>
@@ -193,7 +207,7 @@ const Page = () => {
 								</Button>
 							</div>
 						</div>
-						<div className="relative aspect-square w-full">
+						<div className="relative aspect-square w-full px-4 lg:px-0">
 							<Image
 								src="/assets/images/download.png"
 								quality={100}

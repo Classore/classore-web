@@ -9,6 +9,17 @@ export type PersonalizedPlanProps = {
 	buttonText?: string;
 };
 
+export const EXAMS = [
+	{ label: "waec", image: "/assets/images/waec.jpeg" },
+	{ label: "neco", image: "/assets/images/neco.jpeg" },
+	{ label: "jamb", image: "/assets/images/jamb.jpg" },
+	{ label: "nabteb", image: "/assets/images/nabteb.jpg" },
+	{ label: "ican", image: "/assets/images/ican.png" },
+	{ label: "ielts", image: "/assets/images/ielts.png" },
+	{ label: "toefl", image: "/assets/images/toefl.png" },
+	{ label: "gmat", image: "/assets/images/gmat.png" },
+];
+
 export const INCENTIVES = [
 	{
 		label: "for parents",
@@ -139,7 +150,7 @@ export const PERSONALIZED_PLANS: PersonalizedPlanProps[] = [
 		type: "card",
 	},
 	{
-		title: "track Progress",
+		title: "Track Progress",
 		description: "Track your growth with detailed analytics and visual performance charts.",
 		image: "/assets/images/personalized-10.png",
 		type: "card",
