@@ -70,7 +70,13 @@ const Page = () => {
 						</div>
 						<div className="relative flex w-full lg:h-[650px]">
 							<div className="relative h-full w-[95%] self-start">
-								<Image src="/assets/images/hero-1.png" alt="hero-1" fill sizes="100%" />
+								<Image
+									src="/assets/images/hero-1.png"
+									alt="hero-1"
+									fill
+									sizes="100%"
+									className="object-cover"
+								/>
 							</div>
 							<div className="absolute bottom-0 right-0 h-[400px] w-[350px]">
 								<Image src="/assets/images/hero-2.png" alt="hero-2" fill sizes="100%" />
