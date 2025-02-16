@@ -14,7 +14,7 @@ const links = [
 export const Navbar = () => {
 	const [scrolled, setScrolled] = React.useState(false);
 
-	const handleScrolled = () => setScrolled(window.scrollY > 400);
+	const handleScrolled = () => setScrolled(window.scrollY > 0);
 
 	React.useEffect(() => {
 		window.addEventListener("scroll", handleScrolled);

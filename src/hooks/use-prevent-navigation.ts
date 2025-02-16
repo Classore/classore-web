@@ -5,7 +5,8 @@ export const usePreventNavigation = (shouldPrevent: boolean, redirectUrl?: strin
 		const handleBeforeUnload = (e: BeforeUnloadEvent) => {
 			if (shouldPrevent) {
 				e.preventDefault();
-				e.returnValue = ""; // For cross-browser compatibility
+				// !do not remove deprecated value
+				e.returnValue = "";
 				const shouldClose = window.confirm(
 					"Are you sure you want to leave this page? Your progress will not be saved."
 				);

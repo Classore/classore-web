@@ -10,7 +10,7 @@ interface Props {
 
 export const ReviewCard = ({ review }: Props) => {
 	return (
-		<li className="flex flex-col gap-4 rounded-xl border border-neutral-200 p-4">
+		<li className="flex w-full flex-col gap-4 rounded-xl border border-neutral-200 p-4">
 			<div className="flex items-center gap-2">
 				<Stars rating={review?.rating_rating ?? 0} />
 				<p className="text-sm">{review?.rating_rating}</p>
@@ -43,7 +43,7 @@ const Stars = ({ rating }: { rating: number }) => {
 			{[...Array(MAX_RATING)].map((_, index) => (
 				<RiStarFill
 					key={index}
-					className={`size-5 ${index < rating ? "text-yellow-500" : "text-neutral-400"}`}
+					className={`size-4 ${index < rating ? "text-yellow-500" : "text-neutral-400"}`}
 				/>
 			))}
 		</div>
