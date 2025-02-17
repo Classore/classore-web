@@ -8,8 +8,8 @@ import { AppStore, PlayStore } from "./app-download";
 export const Footer = () => {
 	return (
 		<footer className="w-full bg-neutral-100 py-[60px]">
-			<div className="container flex flex-wrap items-start gap-x-36">
-				<div className="flex min-w-[330px] flex-col gap-y-6">
+			<div className="container flex flex-wrap items-start gap-x-36 gap-y-10 px-4 lg:gap-y-0 lg:px-0">
+				<div className="flex w-full min-w-[330px] flex-col gap-y-6 lg:w-[330px]">
 					<Link href="/" className="relative h-[30px] w-[135px]">
 						<Image src="/assets/images/classore.png" alt="classore" fill sizes="100%" />
 					</Link>
@@ -21,9 +21,9 @@ export const Footer = () => {
 						</div>
 					</div>
 				</div>
-				<div className="flex flex-1 items-start justify-between">
+				<div className="flex flex-1 flex-wrap items-start gap-y-5 lg:justify-between lg:gap-y-0">
 					{footer_links.map(({ label, links }) => (
-						<div key={label} className="flex flex-1 flex-col gap-y-5">
+						<div key={label} className="flex w-full flex-col gap-y-5 lg:min-w-[200px]">
 							{links.map(({ name, href }) => (
 								<Link
 									key={name}

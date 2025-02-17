@@ -34,7 +34,6 @@ const Page = () => {
 					bundle?.name ? `${capitalize(bundle?.name)} Exam Prep Bundle` : "Bundle Details"
 				}
 			/>
-
 			<DashboardLayout className="px-8 py-6">
 				{isPending ? (
 					<div className="flex w-full flex-col items-center justify-center gap-1 py-4">
