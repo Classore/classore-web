@@ -14,9 +14,10 @@ import { formatTime } from "@/lib";
 
 interface Props {
 	src: string;
+	moduleId?: string;
 }
 
-export const VideoPlayer = ({ src }: Props) => {
+export const VideoPlayer = ({ src, moduleId }: Props) => {
 	const container = React.useRef<HTMLDivElement>(null)!;
 	const video = React.useRef<HTMLVideoElement>(null)!;
 	const scrub = React.useRef<HTMLDivElement>(null)!;
@@ -31,6 +32,14 @@ export const VideoPlayer = ({ src }: Props) => {
 	const [duration, setDuration] = React.useState(0);
 	const [isPip, setIsPip] = React.useState(false);
 	const [isDragging, setIsDragging] = React.useState(false);
+
+	React.useEffect(() => {
+		if (moduleId && video.current) {
+			video.current.currentTime = 0;
+			setProgress(0);
+			setIsPlaying(false);
+		}
+	}, [moduleId, video]);
 
 	const togglePlay = () => {
 		if (video.current) {

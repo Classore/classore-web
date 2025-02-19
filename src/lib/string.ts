@@ -1,4 +1,35 @@
+import DOMPurify from "isomorphic-dompurify";
+
 import type { ReviewProps } from "@/types";
+
+const SANITIZE_CONFIG = {
+	ALLOWED_TAGS: ["b", "i", "em", "strong", "a"],
+	ALLOWED_ATTR: ["href"],
+};
+
+const memoizedSanitize = new Map<string, string>();
+
+export const sanitizeHtml = (html: string) => {
+	if (!html || typeof html !== "string") {
+		return "";
+	}
+
+	if (memoizedSanitize.has(html)) {
+		return memoizedSanitize.get(html)!;
+	}
+
+	const sanitized = DOMPurify.sanitize(html, SANITIZE_CONFIG);
+	memoizedSanitize.set(html, sanitized);
+
+	if (memoizedSanitize.size > 1000) {
+		const firstKey = memoizedSanitize.keys().next().value;
+		if (firstKey !== undefined) {
+			memoizedSanitize.delete(firstKey);
+		}
+	}
+
+	return sanitized;
+};
 
 export const capitalize = (value: string) => {
 	return value.charAt(0).toUpperCase() + value.slice(1);
