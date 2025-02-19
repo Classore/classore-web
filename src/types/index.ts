@@ -509,6 +509,7 @@ export type SingleCourseResp = {
 				secure_url: string;
 				derived_url: string;
 			}>;
+			videos: Array<string>;
 			content: string;
 			tutor?: {
 				first_name: string;
