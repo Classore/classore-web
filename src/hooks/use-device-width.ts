@@ -10,7 +10,7 @@ type DeviceWidth = {
 const MOBILE_BREAKPOINT = 640;
 const TABLET_BREAKPOINT = 1024;
 
-export const useDeviceWidth = (): DeviceWidth => {
+export const useDeviceWidth = () => {
 	const [deviceWidth, setDeviceWidth] = React.useState<DeviceWidth>({
 		width: 0,
 		isMobile: false,
@@ -30,6 +30,7 @@ export const useDeviceWidth = (): DeviceWidth => {
 		};
 		window.addEventListener("resize", updateWidth);
 		updateWidth();
+
 		return () => window.removeEventListener("resize", updateWidth);
 	}, []);
 
