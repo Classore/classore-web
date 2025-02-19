@@ -1,3 +1,5 @@
+import { toast } from "sonner";
+import React from "react";
 import {
 	RiDownload2Line,
 	RiFilePdf2Line,
@@ -8,13 +10,12 @@ import {
 	RiLoaderLine,
 	type RemixiconComponentType,
 } from "@remixicon/react";
-import { toast } from "sonner";
 
-import { useDownload } from "@/hooks";
-import { getFileExtension } from "@/lib";
-import { useGetChapter } from "@/queries/student";
 import { useChapterStore } from "@/store/z-store/chapter";
+import { useGetChapter } from "@/queries/student";
 import type { FiletypeProps } from "@/types";
+import { getFileExtension } from "@/lib";
+import { useDownload } from "@/hooks";
 import { Spinner } from "../shared";
 
 const fileIcon: Record<FiletypeProps | (string & {}), RemixiconComponentType> = {
@@ -37,7 +38,10 @@ export const Resources = () => {
 	} = useGetChapter({
 		chapter_id: currentChapter,
 	});
-	const current_module = chapter?.modules.find((module) => module.id === currentModule);
+
+	const current_module = React.useMemo(() => {
+		return chapter?.modules.find((module) => module.id === currentModule);
+	}, [chapter, currentModule]);
 
 	if (isPending) {
 		return (

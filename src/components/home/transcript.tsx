@@ -1,6 +1,21 @@
 import { RiSpeakLine } from "@remixicon/react";
+import React from "react";
+
+import { useChapterStore } from "@/store/z-store/chapter";
+import { useGetChapter } from "@/queries/student";
+import { sanitizeHtml } from "@/lib";
 
 export const Transcript = () => {
+	const { chapter, module } = useChapterStore();
+
+	const { data } = useGetChapter({
+		chapter_id: chapter,
+	});
+
+	const currentModule = React.useMemo(() => {
+		return data?.modules.find((item) => item.id === module);
+	}, [data?.modules, module]);
+
 	return (
 		<div className="flex w-full flex-col rounded-lg border">
 			<div className="flex items-center gap-4 p-4">
@@ -13,23 +28,15 @@ export const Transcript = () => {
 			</div>
 			<hr className="w-full bg-neutral-300" />
 			<div className="max-h-[700px] w-full overflow-auto">
-				<div className="flex w-full flex-col items-center justify-center gap-2 p-4">
-					<p className="text-sm text-neutral-400">No transcript available</p>
-				</div>
-				{/* {!transcript ? (
-				) : (
-					<div className="flex w-full flex-col">
-						{transcript.map((item) => (
-							<div key={item.id} className="flex w-full flex-col gap-2 p-4">
-								<div className="w-fit rounded bg-neutral-200 px-3 py-0.5 text-sm text-neutral-400">
-									[{formatTime(item.duration[0])} - {formatTime(item.duration[1])}]{" "}
-									<span>{item.title}</span>
-								</div>
-								<div className="w-full text-sm text-neutral-400">{item.summary}</div>
-							</div>
-						))}
+				{!currentModule?.content ? (
+					<div className="flex w-full flex-col items-center justify-center gap-2 p-4">
+						<p className="text-sm text-neutral-400">No transcript available</p>
 					</div>
-				)} */}
+				) : (
+					<div
+						className="w-full p-4 text-sm first-letter:capitalize"
+						dangerouslySetInnerHTML={{ __html: sanitizeHtml(currentModule.content) }}></div>
+				)}
 			</div>
 		</div>
 	);

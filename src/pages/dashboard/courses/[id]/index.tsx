@@ -1,11 +1,21 @@
 import { RiThumbDownLine, RiThumbUpLine } from "@remixicon/react";
-import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/router";
+import Image from "next/image";
+import * as React from "react";
+import Link from "next/link";
 
+import { JoinCommunityModal, QuizAlertModal, TakeQuizModal } from "@/components/modals";
+import { ChapterList, QuizHistory, Resources, Transcript } from "@/components/home";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useGetChapter, useGetCourse } from "@/queries/student";
 import blockchain from "@/assets/illustrations/blockchain.svg";
-import trophy from "@/assets/illustrations/trophy.svg";
+import { useChapterStore } from "@/store/z-store/chapter";
 import { DashboardLayout } from "@/components/layouts";
+import trophy from "@/assets/illustrations/trophy.svg";
+import { setChapter } from "@/store/z-store/chapter";
+import { Button } from "@/components/ui/button";
+import { capitalize } from "@/lib";
 import {
 	AvatarGroup,
 	BackBtn,
@@ -14,16 +24,6 @@ import {
 	Spinner,
 	VideoPlayer,
 } from "@/components/shared";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-
-import { ChapterList, QuizHistory, Resources, Transcript } from "@/components/home";
-import { JoinCommunityModal, QuizAlertModal, TakeQuizModal } from "@/components/modals";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { capitalize } from "@/lib";
-import { useGetCourse } from "@/queries/student";
-import { setChapter } from "@/store/z-store/chapter";
-import * as React from "react";
 
 const tabs = ["summary", "transcript", "resources", "quiz history"] as const;
 type Tabs = (typeof tabs)[number];
@@ -46,8 +46,14 @@ const Page = () => {
 	const router = useRouter();
 	const { id } = router.query;
 
+	const { module } = useChapterStore();
+
 	const { data: course, isPending } = useGetCourse({
 		course_id: id as string,
+	});
+
+	const { data: chapter } = useGetChapter({
+		chapter_id: course?.current_chapter.id ?? "",
 	});
 
 	React.useEffect(() => {
@@ -55,6 +61,10 @@ const Page = () => {
 			setChapter(course.current_chapter.id);
 		}
 	}, [course]);
+
+	const currentModule = React.useMemo(() => {
+		return chapter?.modules.find((item) => item.id === module);
+	}, [chapter, module]);
 
 	return (
 		<>
@@ -77,7 +87,6 @@ const Page = () => {
 								</div>
 								<div className="flex items-center gap-4">
 									<TakeQuizModal />
-
 									<QuizAlertModal />
 								</div>
 							</div>
@@ -87,10 +96,14 @@ const Page = () => {
 						</div>
 						<div className="grid w-full grid-cols-3 gap-8">
 							<div className="col-span-2 flex w-full flex-col gap-4">
-								<VideoPlayer src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" />
+								{/* <VideoPlayer src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" /> */}
+								<VideoPlayer
+									src={currentModule?.video_array[0].secure_url ?? ""}
+									moduleId={module}
+								/>
 								<div className="flex w-full items-center justify-between">
 									<h3 className="text-balance text-xl font-semibold capitalize">
-										{course?.current_chapter.name}
+										{course?.current_chapter?.name}
 									</h3>
 									<div className="flex items-center gap-3">
 										<div className="flex items-center px-2 py-1">
