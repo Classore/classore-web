@@ -10,7 +10,7 @@ import {
 import * as React from "react";
 import { Spinner } from "../shared";
 
-export const ChapterList = () => {
+export const ChapterModules = () => {
 	const currentChapter = useChapterStore((state) => state.chapter);
 	const currentModule = useChapterStore((state) => state.module);
 
@@ -23,11 +23,11 @@ export const ChapterList = () => {
 	});
 
 	React.useEffect(() => {
-		if (chapter) {
+		if (chapter && !currentModule) {
 			const current_module = chapter.current_chapter_module ?? chapter.modules[0].id;
 			setModule(current_module);
 		}
-	}, [chapter]);
+	}, [chapter, currentModule]);
 
 	if (isPending) {
 		return (
@@ -67,17 +67,18 @@ export const ChapterList = () => {
 							</div>
 							<div className="flex items-center gap-1">
 								<RiFileTextLine size={18} />
-								<span>2 Quizzes</span>
+								<span>{chapter.no_of_quizes} Quizzes</span>
 							</div>
 						</div>
 					</div>
 				</div>
 
 				{chapter?.modules.map((module) => (
-					<div
+					<button
+						type="button"
 						key={module.id}
 						onClick={() => setModule(module.id)}
-						className={`flex items-center gap-4 border-b border-b-neutral-200 px-6 py-4 ${currentModule === module.id ? "border-l-4 border-l-primary-300" : ""}`}>
+						className={`flex w-full items-center gap-4 border-b border-b-neutral-200 px-6 py-4 ${currentModule === module.id ? "border-l-4 border-l-primary-300" : ""}`}>
 						<div
 							className={`grid size-8 place-items-center rounded-md ${module.is_completed || currentModule === module.id ? "bg-[rgba(241,236,249,0.5)] text-primary-300" : "bg-neutral-100 text-neutral-400"}`}>
 							<RiPlayCircleLine className="size-4" />
@@ -85,7 +86,7 @@ export const ChapterList = () => {
 
 						<div className="flex flex-col gap-1">
 							<p className="text-sm capitalize text-neutral-500">{module.title}</p>
-							<p className="text-xs text-neutral-400">
+							<p className="w-fit text-xs text-neutral-400">
 								{module.video_array.length
 									? `${convertSecondsToMinSec(module.video_array.at(0)?.duration ?? 0)} min`
 									: "--:--"}
@@ -97,7 +98,7 @@ export const ChapterList = () => {
 								className={`size-5 ${module.is_completed ? "text-primary-300" : "text-neutral-200"}`}
 							/>
 						</div>
-					</div>
+					</button>
 				))}
 			</div>
 		</div>

@@ -43,7 +43,7 @@ export function AuthLayout({
 				/>
 			</aside>
 
-			<section className="col-span-3 mx-auto min-h-dvh bg-white px-6 py-10 lg:mx-0 lg:px-32 lg:py-6">
+			<section className="mx-auto min-h-dvh w-96 bg-white px-6 py-10 lg:col-span-3 lg:mx-0 lg:w-full lg:px-32 lg:py-6">
 				{children}
 			</section>
 		</main>

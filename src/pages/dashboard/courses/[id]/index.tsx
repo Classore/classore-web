@@ -1,21 +1,14 @@
 import { RiThumbDownLine, RiThumbUpLine } from "@remixicon/react";
-import { useRouter } from "next/router";
 import Image from "next/image";
-import * as React from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import * as React from "react";
 
-import { JoinCommunityModal, QuizAlertModal, TakeQuizModal } from "@/components/modals";
-import { ChapterList, QuizHistory, Resources, Transcript } from "@/components/home";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useGetChapter, useGetCourse } from "@/queries/student";
 import blockchain from "@/assets/illustrations/blockchain.svg";
-import { useChapterStore } from "@/store/z-store/chapter";
-import { DashboardLayout } from "@/components/layouts";
 import trophy from "@/assets/illustrations/trophy.svg";
-import { setChapter } from "@/store/z-store/chapter";
-import { Button } from "@/components/ui/button";
-import { capitalize } from "@/lib";
+import { ChapterModules, QuizHistory, Resources, Transcript } from "@/components/home";
+import { DashboardLayout } from "@/components/layouts";
+import { JoinCommunityModal, QuizAlertModal, TakeQuizModal } from "@/components/modals";
 import {
 	AvatarGroup,
 	BackBtn,
@@ -24,6 +17,12 @@ import {
 	Spinner,
 	VideoPlayer,
 } from "@/components/shared";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { capitalize, getInitials } from "@/lib";
+import { useGetChapter, useGetCourse } from "@/queries/student";
+import { setChapter, useChapterStore } from "@/store/z-store/chapter";
 
 const tabs = ["summary", "transcript", "resources", "quiz history"] as const;
 type Tabs = (typeof tabs)[number];
@@ -66,6 +65,22 @@ const Page = () => {
 		return chapter?.modules.find((item) => item.id === module);
 	}, [chapter, module]);
 
+	const tutor = React.useMemo(() => {
+		const chapter = course?.chapters.find(
+			(chapter) => chapter.id === course?.current_chapter.id
+		);
+
+		// find the tutor of the current module and if no module is current, find the tutor of the first module
+		const currentModule = chapter?.modules.find(
+			(module) =>
+				module.id ===
+				(course?.current_chapter_module
+					? course?.current_chapter_module
+					: chapter?.modules[0].id)
+		);
+		return currentModule?.tutor;
+	}, [course]);
+
 	return (
 		<>
 			<Seo title={capitalize(course?.subject_id.name ?? "Course Details")} />
@@ -98,7 +113,7 @@ const Page = () => {
 							<div className="col-span-2 flex w-full flex-col gap-4">
 								{/* <VideoPlayer src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" /> */}
 								<VideoPlayer
-									src={currentModule?.video_array[0]?.secure_url ?? ""}
+									src={currentModule?.video_array.at(0)?.secure_url ?? ""}
 									moduleId={module}
 								/>
 								<div className="flex w-full items-center justify-between">
@@ -125,7 +140,7 @@ const Page = () => {
 									</TabsList>
 
 									<TabsContent value="summary">
-										<ChapterList />
+										<ChapterModules />
 									</TabsContent>
 									<TabsContent value="transcript">
 										<Transcript />
@@ -194,14 +209,16 @@ const Page = () => {
 								<div className="flex w-full flex-col gap-3 rounded-lg border p-4">
 									<p className="text-sm">Course Instructor</p>
 									<div className="flex w-full items-center justify-between">
-										<div className="flex items-center gap-1">
+										<div className="flex items-center gap-2">
 											<Avatar className="size-8 rounded-lg">
 												<AvatarImage src="" alt="" className="rounded-lg object-cover" />
-												<AvatarFallback className="rounded-lg bg-primary-100 text-primary-400">
-													JA
+												<AvatarFallback className="rounded-lg bg-primary-100 uppercase text-primary-400">
+													{getInitials(`${tutor?.first_name} ${tutor?.last_name}`)}
 												</AvatarFallback>
 											</Avatar>
-											<p className="text-sm font-semibold">John Arowoka</p>
+											<p className="text-sm font-semibold capitalize">
+												{tutor?.first_name ? `${tutor?.first_name} ${tutor?.last_name}` : "Anonymous"}
+											</p>
 										</div>
 										<Button size="special" variant="special">
 											Send Message
