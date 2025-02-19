@@ -1,29 +1,29 @@
-import { Target04, Trophy01 } from "@untitled-ui/icons-react";
-import { useQuery } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
-import Image from "next/image";
-import React from "react";
 import {
 	RiFlashlightLine,
 	RiFullscreenExitLine,
 	RiFullscreenLine,
 	RiLoaderLine,
 } from "@remixicon/react";
+import { useQuery } from "@tanstack/react-query";
+import { Target04, Trophy01 } from "@untitled-ui/icons-react";
+import Image from "next/image";
+import React from "react";
+import { useForm } from "react-hook-form";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useGetExamBundles, useGetExams } from "@/queries/school";
-import { Select, SelectItem } from "@/components/ui/select";
 import trophy from "@/assets/illustrations/trophy.svg";
-import { DashboardLayout } from "@/components/layouts";
 import bronze from "@/assets/images/award-bronze.png";
-import silver from "@/assets/images/award-silver.png";
-import { Pagination, Seo } from "@/components/shared";
 import gold from "@/assets/images/award-gold.png";
-import { viewLeaderboard } from "@/queries/user";
+import silver from "@/assets/images/award-silver.png";
 import { ChartLine } from "@/components/charts";
+import { DashboardLayout } from "@/components/layouts";
+import { Pagination, Seo } from "@/components/shared";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Select, SelectItem } from "@/components/ui/select";
+import { getInitials } from "@/lib";
+import { useGetExamBundles, useGetExams } from "@/queries/school";
+import { viewLeaderboard } from "@/queries/user";
 import { useUserStore } from "@/store/z-store";
 import type { UserMetricProps } from "@/types";
-import { getInitials } from "@/lib";
 
 const ITEMS_PER_PAGE = 10;
 const TIME_FILTERS = [
@@ -170,7 +170,7 @@ const Page = () => {
 								{exams?.map((exam) => (
 									<button
 										key={exam.examination_id}
-										className={`flex h-9 w-fit items-center rounded-md px-2 py-0.5 text-sm font-medium capitalize transition-all ${
+										className={`flex h-9 w-fit items-center rounded-md px-4 py-0.5 text-sm font-medium capitalize transition-all ${
 											examination === exam.examination_id
 												? "bg-primary-100 font-bold text-primary-500"
 												: "text-neutral-500"
@@ -195,7 +195,7 @@ const Page = () => {
 							{examBundles?.data?.map((bundle) => (
 								<button
 									key={bundle.examinationbundle_id}
-									className={`flex h-9 w-fit items-center rounded-md px-2 py-0.5 text-sm font-medium uppercase transition-all ${
+									className={`flex h-9 w-fit items-center rounded-md px-4 py-0.5 text-sm font-medium uppercase transition-all ${
 										examination_bundle === bundle.examinationbundle_id
 											? "bg-primary-100 font-bold text-primary-500"
 											: "text-neutral-500"
