@@ -2,8 +2,8 @@ import useEmblaCarousel from "embla-carousel-react";
 
 import { useGetExamBundles } from "@/queries/school";
 import { NextPrevButtons } from "../embla-navigation";
-import { ExamCard } from "./exam-card";
 import { Spinner } from "../shared";
+import { ExamCard } from "./exam-card";
 
 export const ExplorePopularExams = () => {
 	const [emblaRef, emblaApi] = useEmblaCarousel();
@@ -30,7 +30,7 @@ export const ExplorePopularExams = () => {
 								<ExamCard
 									key={subject.examinationbundle_id}
 									course={subject}
-									className="min-w-[360px]"
+									className="min-w-[380px]"
 								/>
 							))
 						) : (

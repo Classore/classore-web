@@ -213,7 +213,9 @@ const Page = () => {
 											<Avatar className="size-8 rounded-lg">
 												<AvatarImage src="" alt="" className="rounded-lg object-cover" />
 												<AvatarFallback className="rounded-lg bg-primary-100 uppercase text-primary-400">
-													{getInitials(`${tutor?.first_name} ${tutor?.last_name}`)}
+													{getInitials(
+														tutor?.first_name ? `${tutor?.first_name} ${tutor?.last_name}` : "Anonymous"
+													)}
 												</AvatarFallback>
 											</Avatar>
 											<p className="text-sm font-semibold capitalize">
