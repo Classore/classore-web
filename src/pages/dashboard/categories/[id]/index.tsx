@@ -146,7 +146,9 @@ const Page = () => {
 								<div className="flex flex-col gap-2 border-b border-b-neutral-200 pb-4">
 									{bundle?.is_bought ? (
 										<>
-											<Button>Continue Learning</Button>
+											<Button onClick={() => router.push("/dashboard/courses")}>
+												Continue Learning
+											</Button>
 											{bundle.allow_extra_subjects === "YES" ? <AddMoreCourseModal /> : null}
 										</>
 									) : (

@@ -12,7 +12,7 @@ import {
 	PERSONALIZED_PLANS,
 	TESTIMONIALS,
 } from "@/constants";
-import { useDeviceWidth } from "@/hooks";
+import { useDeviceWidth } from "@/hooks/use-device-width";
 
 const images = [
 	"/assets/images/avatar-0.png",
