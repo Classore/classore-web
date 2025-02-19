@@ -1,3 +1,4 @@
+import { persist } from "zustand/middleware";
 import { create } from "zustand";
 
 type State = {
@@ -5,10 +6,15 @@ type State = {
 	module: string;
 };
 
-const useChapterStore = create<State>(() => ({
-	chapter: "",
-	module: "",
-}));
+const useChapterStore = create<State>()(
+	persist(
+		() => ({
+			chapter: "",
+			module: "",
+		}),
+		{ name: "chapter-store" }
+	)
+);
 
 const setChapter = (chapter_id: string) =>
 	useChapterStore.setState({ chapter: chapter_id });
