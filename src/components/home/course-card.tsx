@@ -27,7 +27,7 @@ export const CourseCard = ({ course }: Props) => {
 					alt={course.subject_name}
 					width={318}
 					height={172}
-					className="h-52 max-w-[340px] rounded-md object-cover"
+					className="h-52 w-full rounded-md object-cover"
 				/>
 			</div>
 
