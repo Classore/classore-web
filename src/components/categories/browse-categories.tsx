@@ -35,13 +35,15 @@ export const BrowseCategories = () => {
 				) : (
 					<>
 						{tab === "all" && (
-							<TabsContent value="all" className="grid grid-cols-fluid gap-x-4 gap-y-6">
+							<TabsContent
+								value="all"
+								className="grid grid-cols-fluid gap-x-4 gap-y-6 lg:grid-cols-3">
 								{bundles?.data.length ? (
 									bundles.data.map((subject) => (
 										<ExamCard
 											key={subject.examinationbundle_id}
 											course={subject}
-											className="min-w-[360px]"
+											// className="max-w-[360px]"
 										/>
 									))
 								) : (

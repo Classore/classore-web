@@ -15,7 +15,7 @@ export const ExamCard = ({ course, className }: Props) => {
 		<Link
 			href={`/dashboard/categories/${course.examinationbundle_id}`}
 			className={twMerge(
-				"flex w-full flex-1 flex-col gap-3 rounded-lg border bg-white p-4 transition-all duration-700 hover:shadow-2xl",
+				"flex flex-col gap-3 rounded-lg border bg-white p-4 transition-all duration-700 hover:shadow-2xl",
 				className
 			)}>
 			<Image
