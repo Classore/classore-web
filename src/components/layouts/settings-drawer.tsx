@@ -149,16 +149,16 @@ export const SettingsDrawer = () => {
 						</div>
 						<div className="w-full overflow-hidden">
 							<ScrollArea className="h-full w-full">
-								<TabPanel selected={current} tabValue="profile">
+								<TabPanel selected={current} value="profile">
 									<Profile />
 								</TabPanel>
-								<TabPanel selected={current} tabValue="notification">
+								<TabPanel selected={current} value="notification">
 									<Notification />
 								</TabPanel>
-								<TabPanel selected={current} tabValue="security">
+								<TabPanel selected={current} value="security">
 									<Security />
 								</TabPanel>
-								<TabPanel selected={current} tabValue="points">
+								<TabPanel selected={current} value="points">
 									<Points />
 								</TabPanel>
 							</ScrollArea>

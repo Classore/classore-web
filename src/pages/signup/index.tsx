@@ -1,14 +1,15 @@
-import { AuthLayout } from "@/components/layouts/auth";
-import { ErrorMessage, Seo } from "@/components/shared";
-
-import { AuthGraphic } from "@/assets/icons";
-import { SignupStepper } from "@/components/signup-stepper";
-import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller, useForm } from "react-hook-form";
 import { User01 } from "@untitled-ui/icons-react";
 import { useRouter } from "next/router";
-import { Controller, useForm } from "react-hook-form";
+import Link from "next/link";
 import * as z from "zod";
+
+import { SignupStepper } from "@/components/signup-stepper";
+import { ErrorMessage, Seo } from "@/components/shared";
+import { AuthLayout } from "@/components/layouts/auth";
+import { Button } from "@/components/ui/button";
+import { AuthGraphic } from "@/assets/icons";
 
 const options = [
 	{
@@ -116,6 +117,12 @@ const Page = () => {
 								Next
 							</Button>
 						</form>
+						<div className="flex items-center justify-center gap-x-2 text-sm">
+							<p className="text-neutral-500">Already have an account?</p>
+							<Link href="/signin" className="link font-medium text-primary-400">
+								Signin
+							</Link>
+						</div>
 					</div>
 				</div>
 			</AuthLayout>

@@ -25,7 +25,6 @@ export const ChapterList = () => {
 	React.useEffect(() => {
 		if (chapter) {
 			const current_module = chapter.current_chapter_module ?? chapter.modules[0].id;
-
 			setModule(current_module);
 		}
 	}, [chapter]);
@@ -77,6 +76,7 @@ export const ChapterList = () => {
 				{chapter?.modules.map((module) => (
 					<div
 						key={module.id}
+						onClick={() => setModule(module.id)}
 						className={`flex items-center gap-4 border-b border-b-neutral-200 px-6 py-4 ${currentModule === module.id ? "border-l-4 border-l-primary-300" : ""}`}>
 						<div
 							className={`grid size-8 place-items-center rounded-md ${module.is_completed || currentModule === module.id ? "bg-[rgba(241,236,249,0.5)] text-primary-300" : "bg-neutral-100 text-neutral-400"}`}>
@@ -100,42 +100,6 @@ export const ChapterList = () => {
 					</div>
 				))}
 			</div>
-
-			{/* {chapters.map((chapter) => (
-				<div
-					key={chapter.id}
-					className={`flex w-full cursor-pointer items-center justify-between border-b p-4`}>
-					<div className="flex w-full items-center gap-3">
-						<button
-							onClick={() => setCurrent(chapter)}
-							className={`grid size-8 place-items-center rounded-md ${chapter === current ? "" : ""}`}>
-							{chapter === current ? <RiFolderVideoLine /> : <RiPlayCircleLine />}
-						</button>
-						<div className="flex flex-1 flex-col gap-2">
-							<h5
-								className={`${chapter === current ? "font-medium text-black" : "text-neutral-400"}`}>
-								{chapter.title}
-							</h5>
-							{chapter === current ? (
-								<div className="flex items-center gap-2 text-sm text-neutral-400">
-									<div className="flex items-center gap-1">
-										<RiFileTextLine size={18} /> {chapter.resources.length} Materials
-									</div>
-									<div className="flex items-center gap-1">
-										<RiFileTextLine size={18} /> {chapter.quizzes.length} Quizzes
-									</div>
-								</div>
-							) : (
-								<div className="text-xs text-neutral-400">5:05 minutes</div>
-							)}
-						</div>
-					</div>
-					<div
-						className={`grid size-4 place-items-center rounded-full text-white ${chapter.isRead ? "bg-primary-400" : "bg-neutral-400"}`}>
-						<Check size={8} />
-					</div>
-				</div>
-			))} */}
 		</div>
 	);
 };
