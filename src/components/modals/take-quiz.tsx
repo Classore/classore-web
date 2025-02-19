@@ -1,5 +1,7 @@
 import { useGetCourse } from "@/queries/student";
+import { fetchQuestions } from "@/queries/user";
 import { RiMessage2Line } from "@remixicon/react";
+import { skipToken, usePrefetchQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { Progress } from "../shared";
 import { Button } from "../ui/button";
@@ -20,10 +22,27 @@ export const TakeQuizModal = () => {
 	});
 	const chapter = data?.chapters.find((chapter) => chapter.id === data.current_chapter.id);
 
+	// Prefetch this chapter quiz. Might change this since quiz might be moving to modules.
+	usePrefetchQuery({
+		queryKey: ["questions", { chapter_id: chapter?.id }],
+		queryFn: chapter?.id
+			? () => fetchQuestions({ chapter_id: String(chapter?.id) })
+			: skipToken,
+		staleTime: Infinity,
+		gcTime: Infinity,
+	});
+
+	if (!chapter || !data) return null;
+
+	const attempts_percentage =
+		((chapter?.quiz_attempts_limit - chapter.quiz_attempts_left) /
+			(data.quiz_attempts_limit ?? 3)) *
+		100;
+
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
-				<Button variant="inverse" className="w-32">
+				<Button variant="inverse" className="w-36">
 					Take Quiz
 				</Button>
 			</DialogTrigger>
@@ -44,11 +63,9 @@ export const TakeQuizModal = () => {
 					</div>
 					<hr className="h-9 w-[1px] bg-neutral-300" />
 					<div className="w-[156px] flex-1">
-						<Progress
-							label="Attempts"
-							value={chapter?.no_of_quizes}
-							color="var(--secondary-400)">
-							{chapter?.no_of_quizes ?? "0"}/{data?.quiz_attempts_limit ?? "3"}
+						<Progress label="Attempts" value={attempts_percentage} color="var(--secondary-400)">
+							{chapter.quiz_attempts_limit - chapter.quiz_attempts_left}/
+							{data.quiz_attempts_limit ?? 3}
 						</Progress>
 					</div>
 				</div>
@@ -56,21 +73,30 @@ export const TakeQuizModal = () => {
 					<RiMessage2Line className="size-4" />
 					<p className="max-w-[85%] text-xs">
 						Remark -{" "}
-						{chapter?.quizes.length
-							? `Your need to score ${chapter.bench_mark}% and above to qualify for the next chapter`
-							: "N/A"}
+						{data.score !== 0 && data.score < chapter.bench_mark
+							? `You need to score above ${chapter.bench_mark}% to qualify for next chapter`
+							: chapter.quiz_attempts_left < 0
+								? `You have reached the maximum number of quiz attempts for this chapter. Please try again after ${chapter.attempt_reset} hour${chapter.attempt_reset > 1 ? "s" : ""}`
+								: "N/A"}
 					</p>
 				</div>
-				<div className="flex w-full flex-col gap-4 rounded-lg bg-neutral-100 p-4 transition-all duration-700">
-					<div className="flex w-full items-center justify-between">
-						<p className="text-sm font-medium text-neutral-500">Instructions</p>
-						{/* <button type="button">
-							<RiArrowDropDownLine
-								className={`transition-transform duration-500 ${showInstructions ? "rotate-180" : ""}`}
-							/>
-						</button> */}
-					</div>
-					{/* {showInstructions && <div className="flex w-full flex-col gap-2"></div>} */}
+				<div className="flex w-full flex-col gap-3 rounded-lg bg-neutral-100 p-4 transition-all duration-700">
+					<p className="text-sm font-medium text-neutral-500">Instructions</p>
+
+					<ul className="list-outside list-disc space-y-2 pl-4 text-xs text-neutral-400">
+						<li>
+							Attempts: You have {data.quiz_attempts_limit} attempts for every{" "}
+							{chapter.attempt_reset} hours.
+						</li>
+						<li>
+							Passing Score: Score {chapter.bench_mark}% or higher to unlock the next chapter.
+						</li>
+						<li>
+							Time Limit: Complete the quiz within{" "}
+							{chapter?.timer_hour ? `${chapter.timer_hour}hr` : ""} {chapter?.timer_minute}min.
+						</li>
+						<li>Quiz will be submitted automatically after the time limit expires.</li>
+					</ul>
 				</div>
 
 				<div className="flex w-full items-center justify-end gap-4 border-t border-t-neutral-200 pt-4">

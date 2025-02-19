@@ -219,7 +219,7 @@ export const VideoPlayer = ({ src, moduleId }: Props) => {
 				<video
 					ref={video}
 					src={src}
-					className="size-full rounded-lg"
+					className="ovh h-[400px] rounded-lg object-cover"
 					onTimeUpdate={handleTimeUpdate}
 					onLoadedMetadata={handleLoadedMetadata}
 					onWaiting={() => setIsLoading(true)}

@@ -1,5 +1,3 @@
-import { toast } from "sonner";
-import React from "react";
 import {
 	RiDownload2Line,
 	RiFilePdf2Line,
@@ -10,12 +8,14 @@ import {
 	RiLoaderLine,
 	type RemixiconComponentType,
 } from "@remixicon/react";
+import { toast } from "sonner";
 
-import { useChapterStore } from "@/store/z-store/chapter";
-import { useGetChapter } from "@/queries/student";
-import type { FiletypeProps } from "@/types";
-import { getFileExtension } from "@/lib";
 import { useDownload } from "@/hooks";
+import { getFileExtension } from "@/lib";
+import { useGetChapter } from "@/queries/student";
+import { useChapterStore } from "@/store/z-store/chapter";
+import type { FiletypeProps } from "@/types";
+import * as React from "react";
 import { Spinner } from "../shared";
 
 const fileIcon: Record<FiletypeProps | (string & {}), RemixiconComponentType> = {
