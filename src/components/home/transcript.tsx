@@ -34,7 +34,7 @@ export const Transcript = () => {
 					</div>
 				) : (
 					<div
-						className="w-full p-4 text-sm first-letter:capitalize"
+						className="transcript w-full p-4 text-sm first-letter:capitalize"
 						dangerouslySetInnerHTML={{ __html: sanitizeHtml(currentModule.content) }}></div>
 				)}
 			</div>
