@@ -23,7 +23,7 @@ export const Navbar = () => {
 
 	return (
 		<header
-			className={`fixed left-1/2 top-0 !z-50 flex w-full -translate-x-1/2 items-center justify-between py-6 transition-all duration-500 ${scrolled ? "bg-primary-100 shadow-xl" : "bg-transparent"}`}>
+			className={`fixed left-1/2 top-0 !z-50 flex w-full -translate-x-1/2 items-center justify-between py-4 transition-all duration-500 ${scrolled ? "border-b border-b-neutral-200 bg-white/50 backdrop-blur-sm" : "bg-transparent"}`}>
 			<nav className="container flex items-center justify-between">
 				<Link href="/" className="relative h-[30px] w-[135px]">
 					<Image src="/assets/images/classore.png" alt="classore" fill sizes="100%" />
@@ -39,8 +39,12 @@ export const Navbar = () => {
 					))}
 				</div>
 				<div className="flex items-center gap-x-4">
-					<Button asChild size="sm" variant="ghost" className="shadow-none">
-						<Link href="/signup">Start Learning</Link>
+					<Button
+						asChild
+						size="sm"
+						variant="ghost"
+						className="text-secondary-300 shadow-none hover:shadow-none">
+						<Link href="/signin">Start Learning</Link>
 					</Button>
 					<Button size="sm" variant="outline-primary">
 						<RiDownload2Line /> Download App

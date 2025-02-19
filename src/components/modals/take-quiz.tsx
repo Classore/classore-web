@@ -55,7 +55,7 @@ export const TakeQuizModal = () => {
 						Ready to take your quiz?
 					</DialogDescription>
 				</div>
-				<div className="flex w-full items-center gap-2 rounded-lg border px-4 py-6">
+				<div className="flex w-full items-center gap-2 rounded-lg border bg-white px-4 py-6">
 					<div className="w-[156px] flex-1">
 						<Progress label="Previous Score" value={data?.score} color="var(--primary-400)">
 							{data?.score}%

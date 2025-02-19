@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 
 import type { PersonalizedPlanProps } from "@/constants";
 import { Button } from "../ui/button";
@@ -41,7 +40,7 @@ export const PersonalizedPlanCard = ({ data }: Props) => {
 	}
 
 	return (
-		<div className="aspect-square w-full space-y-3 p-3">
+		<div className="w-full overflow-hidden rounded-lg bg-white p-3">
 			<div className="relative h-[250px] w-full">
 				<Image
 					src={data.image}
@@ -51,7 +50,7 @@ export const PersonalizedPlanCard = ({ data }: Props) => {
 					className="object-cover"
 				/>
 			</div>
-			<div className="">
+			<div className="p-3">
 				<h4 className="font-medium lg:text-lg">{data.title}</h4>
 				<p className="text-sm text-neutral-400">{data.description}</p>
 			</div>

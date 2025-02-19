@@ -4,22 +4,15 @@ import Link from "next/link";
 
 import { PersonalizedPlanCard } from "@/components/home";
 import { MasonryLayout } from "@/components/layouts";
+import { AvatarGroup, Footer, Navbar, ReviewCard, Seo } from "@/components/shared";
 import { Button } from "@/components/ui/button";
-import { useDeviceWidth } from "@/hooks";
-import {
-	AvatarGroup,
-	Footer,
-	Navbar,
-	ReviewCard,
-	Seo,
-	// Ticker,
-} from "@/components/shared";
 import {
 	FREQUENTLY_ASKED_QUESTIONS,
 	INCENTIVES,
 	PERSONALIZED_PLANS,
 	TESTIMONIALS,
 } from "@/constants";
+import { useDeviceWidth } from "@/hooks";
 
 const images = [
 	"/assets/images/avatar-0.png",
@@ -61,7 +54,7 @@ const Page = () => {
 							</div>
 							<div className="flex items-center justify-center gap-x-4 pt-4">
 								<Button asChild variant="outline-primary" className="rounded-lg px-8">
-									<Link href="/signup">Start Learning</Link>
+									<Link href="/signin">Start Learning</Link>
 								</Button>
 								<Button className="rounded-lg px-6">
 									<RiDownload2Line /> Download App
@@ -89,10 +82,11 @@ const Page = () => {
 
 				<section className="w-full bg-neutral-100 lg:py-20">
 					<div className="container flex flex-col items-center gap-y-20">
-						<div className="flex max-w-[650px] flex-col items-center gap-y-6 text-center">
+						<div className="flex max-w-[650px] flex-col items-center gap-y-4 text-center">
 							<p className="text-xs font-medium text-secondary-400 lg:text-sm">WHAT WE OFFER</p>
 							<h4 className="text-2xl font-medium lg:text-4xl">
-								A Personalize Learning for Students, Tracking for Parents
+								<span className="text-neutral-400">A Personalize Learning for</span> Students,
+								<span className="text-neutral-400"> Tracking for</span> Parents
 							</h4>
 						</div>
 						<div className="grid w-full grid-cols-1 gap-5 lg:grid-cols-3">
@@ -134,9 +128,12 @@ const Page = () => {
 				</section>
 				<section className="w-full bg-neutral-100 py-10 lg:py-20">
 					<div className="container flex flex-col items-center gap-y-20">
-						<div className="flex max-w-[450px] flex-col items-center gap-y-6 text-center">
+						<div className="flex max-w-[450px] flex-col items-center gap-y-2 text-center">
 							<p className="text-xs font-medium text-secondary-400 lg:text-sm">TESTIMONIALS</p>
-							<h4 className="text-2xl font-medium lg:text-4xl">Real Stories. Real Impact</h4>
+							<h4 className="text-2xl font-medium lg:text-4xl">
+								<span className="text-neutral-400">Real</span> Stories.{" "}
+								<span className="text-neutral-400">Real</span> Impact
+							</h4>
 						</div>
 						<MasonryLayout breakpointCols={isMobile ? 1 : 3}>
 							{TESTIMONIALS.map((review) => (
@@ -147,7 +144,7 @@ const Page = () => {
 				</section>
 				<section className="w-full bg-primary-100 pt-10 lg:pt-20">
 					<div className="container flex flex-col items-center gap-y-20 overflow-hidden">
-						<div className="flex max-w-[450px] flex-col items-center gap-y-6 text-center">
+						<div className="flex max-w-[450px] flex-col items-center gap-y-4 text-center">
 							<p className="text-xs font-medium text-secondary-400 lg:text-sm">LEADERBOARD</p>
 							<h4 className="text-2xl font-medium lg:text-4xl">Learning As A Game</h4>
 							<p className="text-xs text-neutral-400 lg:text-sm">
@@ -174,7 +171,9 @@ const Page = () => {
 					<div className="container flex flex-col items-center gap-y-20 px-4 lg:px-0">
 						<div className="flex max-w-[450px] flex-col items-center gap-y-6 text-center">
 							<p className="text-xs font-medium text-secondary-400 lg:text-sm">FAQS</p>
-							<h4 className="text-2xl font-medium lg:text-4xl">Frequently Asked Questions</h4>
+							<h4 className="text-2xl font-medium lg:text-4xl">
+								<span className="text-neutral-400">Frequently Asked</span> Questions
+							</h4>
 						</div>
 						<div className="w-full space-y-8 lg:w-[650px]">
 							<div className="flex flex-col items-center gap-y-3">
