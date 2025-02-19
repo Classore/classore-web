@@ -1,16 +1,17 @@
 import { RiStarFill } from "@remixicon/react";
 
-import { getInitials } from "@/lib";
+import { cn, getInitials } from "@/lib";
 import type { SingleBundleResp } from "@/types";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 interface Props {
 	review?: SingleBundleResp["reviews"][number];
+	className?: string;
 }
 
-export const ReviewCard = ({ review }: Props) => {
+export const ReviewCard = ({ review, className }: Props) => {
 	return (
-		<li className="flex w-full flex-col gap-4 rounded-xl bg-white p-4">
+		<li className={cn("flex w-full flex-col gap-4 rounded-xl bg-white p-4", className)}>
 			<div className="flex items-center gap-2">
 				<Stars rating={review?.rating_rating ?? 0} />
 				<p className="text-sm">{review?.rating_rating}</p>
