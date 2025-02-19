@@ -102,7 +102,9 @@ export const CheckoutModal = ({ open, setOpen }: CheckoutModalProps) => {
 					<li>
 						<p className="text-sm text-neutral-400">Grand total:</p>
 						<p className="font-medium">
-							{formatCurrency(Number(values.summary.grand_total ?? 0))}
+							{values.summary.number_of_extra_subjects_added === 0
+								? formatCurrency(Number(values.summary.base_amount))
+								: formatCurrency(values.summary.grand_total)}
 						</p>
 					</li>
 				</ul>
