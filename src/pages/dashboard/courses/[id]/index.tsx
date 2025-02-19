@@ -98,7 +98,7 @@ const Page = () => {
 							<div className="col-span-2 flex w-full flex-col gap-4">
 								{/* <VideoPlayer src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" /> */}
 								<VideoPlayer
-									src={currentModule?.video_array[0].secure_url ?? ""}
+									src={currentModule?.video_array[0]?.secure_url ?? ""}
 									moduleId={module}
 								/>
 								<div className="flex w-full items-center justify-between">

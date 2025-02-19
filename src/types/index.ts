@@ -508,6 +508,7 @@ export type SingleCourseResp = {
 				duration: number;
 				secure_url: string;
 			}>;
+			videos: Array<string>;
 			content: string;
 			tutor?: {
 				first_name: string;
