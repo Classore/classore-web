@@ -4,8 +4,15 @@ import Link from "next/link";
 
 import { PersonalizedPlanCard } from "@/components/home";
 import { MasonryLayout } from "@/components/layouts";
-import { AvatarGroup, Footer, Navbar, ReviewCard, Seo } from "@/components/shared";
 import { Button } from "@/components/ui/button";
+import {
+	AvatarGroup,
+	Footer,
+	Navbar,
+	ReviewCard,
+	Seo,
+	Ticker,
+} from "@/components/shared";
 import {
 	FREQUENTLY_ASKED_QUESTIONS,
 	INCENTIVES,
@@ -78,7 +85,7 @@ const Page = () => {
 					</div>
 				</section>
 
-				{/* <Ticker /> */}
+				<Ticker />
 
 				<section className="w-full bg-neutral-100 lg:py-20">
 					<div className="container flex flex-col items-center gap-y-20">
