@@ -7,7 +7,7 @@ interface Props {
 	speed?: number;
 }
 
-export const Ticker = ({ speed = 200 }: Props) => {
+export const Ticker = ({ speed = 150 }: Props) => {
 	const scroller = React.useRef<HTMLDivElement>(null);
 
 	React.useEffect(() => {
@@ -21,18 +21,17 @@ export const Ticker = ({ speed = 200 }: Props) => {
 				scroller.current.appendChild(duplicatedItem2);
 			}
 		});
+		const itemWidth = scrollerContent[0].clientWidth;
+		const gap = 160;
+		const totalWidth = scrollerContent.length * (itemWidth + gap);
 		const animation = scroller.current.animate(
-			[
-				{ transform: "translateX(0)" },
-				{ transform: `translateX(-${scrollerContent.length * 100}%)` },
-			],
+			[{ transform: "translateX(0)" }, { transform: `translateX(-${totalWidth}px)` }],
 			{
 				duration: scrollerContent.length * speed * 100,
 				iterations: Number.POSITIVE_INFINITY,
 				easing: "linear",
 			}
 		);
-
 		return () => {
 			animation.cancel();
 		};
@@ -44,7 +43,7 @@ export const Ticker = ({ speed = 200 }: Props) => {
 				{EXAMS.map(({ image, label }) => (
 					<div
 						key={label}
-						className="relative size-10 flex-shrink-0 bg-transparent lg:size-20 lg:h-40 lg:w-40">
+						className="relative size-10 flex-shrink-0 bg-transparent lg:size-40">
 						<div className="relative h-full w-full">
 							<Image src={image} alt={label} fill sizes="100%" className="object-contain" />
 						</div>
