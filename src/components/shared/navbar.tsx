@@ -29,13 +29,13 @@ export const Navbar = () => {
 					<Image src="/assets/images/classore.png" alt="classore" fill sizes="100%" />
 				</Link>
 				<div className="flex items-center gap-x-4">
-					{links.map(({ href, name }) => (
-						<Link
+					{links.map(({ name }) => (
+						<p
 							key={name}
-							href={href}
+							// href={href}
 							className="link text-sm font-medium transition-colors duration-500 hover:text-primary-400">
 							{name}
-						</Link>
+						</p>
 					))}
 				</div>
 				<div className="flex items-center gap-x-4">
