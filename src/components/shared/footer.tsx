@@ -21,7 +21,7 @@ export const Footer = () => {
 						</div>
 					</div>
 				</div>
-				<div className="flex flex-1 flex-wrap items-start gap-y-5 lg:justify-between lg:gap-y-0">
+				<div className="flex flex-1 flex-wrap items-start gap-y-5 lg:flex-nowrap lg:justify-between lg:gap-y-0">
 					{footer_links.map(({ label, links }) => (
 						<div key={label} className="flex w-full flex-col gap-y-5 lg:min-w-[200px]">
 							{links.map(({ name, href }) => (
