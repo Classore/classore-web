@@ -15,7 +15,7 @@ export const Appbar = () => {
 
 	return (
 		<>
-			<nav className="flex h-24 w-full items-center justify-between border-b px-8">
+			<nav className="flex h-20 w-full items-center justify-between border-b px-8">
 				<Search />
 				<div className="flex w-fit items-center gap-x-3">
 					<Button className="w-fit" variant="outline">

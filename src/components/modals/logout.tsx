@@ -1,5 +1,6 @@
 import { LogoutGraphic } from "@/assets/icons";
 import { useUserStore } from "@/store/z-store";
+import { useQueryClient } from "@tanstack/react-query";
 import { LogOut04 } from "@untitled-ui/icons-react";
 import { useRouter } from "next/router";
 import { toast } from "sonner";
@@ -7,11 +8,13 @@ import { Button } from "../ui/button";
 import { Dialog, DialogClose, DialogContent, DialogTrigger } from "../ui/dialog";
 
 export const LogoutModal = () => {
+	const queryClient = useQueryClient();
 	const router = useRouter();
 	const { signOut } = useUserStore();
 
 	const logout = () => {
 		signOut();
+		queryClient.clear();
 		toast.success("Logout successful!");
 		router.replace("/signin");
 	};
