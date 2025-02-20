@@ -23,7 +23,7 @@ export const Navbar = () => {
 
 	return (
 		<header
-			className={`fixed left-1/2 top-0 !z-50 flex w-full -translate-x-1/2 items-center justify-between py-4 transition-all duration-500 ${scrolled ? "border-b border-b-neutral-200 bg-white/50 backdrop-blur-sm" : "bg-transparent"}`}>
+			className={`fixed left-1/2 top-0 !z-50 flex w-full -translate-x-1/2 items-center justify-between py-4 transition-all duration-500 ${scrolled ? "border-b border-b-neutral-200 bg-white/75 backdrop-blur-sm" : "bg-transparent"}`}>
 			<nav className="container flex items-center justify-between">
 				<Link href="/" className="relative h-[30px] w-[135px]">
 					<Image src="/assets/images/classore.png" alt="classore" fill sizes="100%" />
