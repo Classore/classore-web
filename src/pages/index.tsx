@@ -50,11 +50,11 @@ const Page = () => {
 								<AvatarGroup images={images} count={4} />
 							</div>
 
-							<div className="flex flex-col gap-3">
-								<h1 className="font-semibold text-primary-900 lg:text-[56px] lg:leading-[100%]">
+							<div className="flex flex-col gap-3 overflow-hidden">
+								<h1 className="animate-slide-from-top font-semibold text-primary-900 lg:text-[56px] lg:leading-[100%]">
 									Ace Your Exams with Effective Online Lessons
 								</h1>
-								<p className="mx-auto max-w-lg text-neutral-500 lg:text-lg">
+								<p className="mx-auto max-w-lg animate-slide-from-bottom text-neutral-500 lg:text-lg">
 									Our platform simulate local and international exams. Prepare in real time. Pass
 									with confidence
 								</p>
