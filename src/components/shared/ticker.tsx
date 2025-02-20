@@ -7,20 +7,20 @@ interface Props {
 	speed?: number;
 }
 
-export const Ticker = ({ speed = 150 }: Props) => {
+export const Ticker = ({ speed = 200 }: Props) => {
 	const scroller = React.useRef<HTMLDivElement>(null);
 
 	React.useEffect(() => {
 		if (!scroller.current) return;
-
 		const scrollerContent = Array.from(scroller.current.children);
 		scrollerContent.forEach((item) => {
-			const duplicatedItem = item.cloneNode(true);
+			const duplicatedItem1 = item.cloneNode(true);
+			const duplicatedItem2 = item.cloneNode(true);
 			if (scroller.current) {
-				scroller.current.appendChild(duplicatedItem);
+				scroller.current.appendChild(duplicatedItem1);
+				scroller.current.appendChild(duplicatedItem2);
 			}
 		});
-
 		const animation = scroller.current.animate(
 			[
 				{ transform: "translateX(0)" },
@@ -29,6 +29,7 @@ export const Ticker = ({ speed = 150 }: Props) => {
 			{
 				duration: scrollerContent.length * speed * 100,
 				iterations: Number.POSITIVE_INFINITY,
+				easing: "linear",
 			}
 		);
 
