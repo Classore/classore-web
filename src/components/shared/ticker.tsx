@@ -1,4 +1,4 @@
-// import Image from "next/image";
+import Image from "next/image";
 import React from "react";
 
 import { EXAMS } from "@/constants";
@@ -40,12 +40,14 @@ export const Ticker = ({ speed = 200 }: Props) => {
 
 	return (
 		<div className="w-full overflow-hidden py-5 lg:py-10">
-			<div ref={scroller} className="flex items-center gap-x-5">
-				{EXAMS.map(({ label }) => (
+			<div ref={scroller} className="flex items-center gap-x-10 lg:gap-x-40">
+				{EXAMS.map(({ image, label }) => (
 					<div
 						key={label}
-						className="relative mx-2 aspect-[3/1] w-20 flex-shrink-0 bg-transparent lg:w-40">
-						<p className="text-lg font-bold uppercase lg:text-2xl">{label}</p>
+						className="relative size-10 flex-shrink-0 bg-transparent lg:size-20 lg:h-40 lg:w-40">
+						<div className="relative h-full w-full">
+							<Image src={image} alt={label} fill sizes="100%" className="object-contain" />
+						</div>
 					</div>
 				))}
 			</div>
