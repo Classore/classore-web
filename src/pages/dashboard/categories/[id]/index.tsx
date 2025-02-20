@@ -114,7 +114,11 @@ const Page = () => {
 
 										<ul className="grid grid-cols-2 gap-4">
 											{bundle?.reviews.map((item) => (
-												<ReviewCard review={item} key={item.rating_id} />
+												<ReviewCard
+													review={item}
+													key={item.rating_id}
+													className="border border-neutral-200"
+												/>
 											))}
 										</ul>
 									</div>
