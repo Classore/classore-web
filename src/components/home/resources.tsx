@@ -62,7 +62,7 @@ export const Resources = () => {
 	}
 
 	return (
-		<div className="flex w-full flex-col rounded-lg border">
+		<div className="mt-4 flex w-full flex-col rounded-lg border">
 			<div className="flex items-center gap-4 p-4">
 				<div className="grid size-8 place-items-center rounded-md bg-neutral-100">
 					<RiFoldersLine className="size-4 text-neutral-700" />
@@ -82,7 +82,7 @@ export const Resources = () => {
 			) : (
 				<div className="flex w-full flex-col">
 					{current_module.attachments.map((resource, index) => (
-						<Resource key={index} resource={resource} />
+						<Resource key={index} index={index} resource={resource} />
 					))}
 				</div>
 			)}
@@ -90,7 +90,7 @@ export const Resources = () => {
 	);
 };
 
-const Resource = ({ resource }: { resource: string }) => {
+const Resource = ({ resource, index }: { resource: string; index: number }) => {
 	const { download, loading } = useDownload({
 		filename: `${resource}.pdf`,
 		url: "/api/download",
@@ -110,18 +110,23 @@ const Resource = ({ resource }: { resource: string }) => {
 				<div className="grid size-8 place-items-center rounded-md bg-neutral-200 text-neutral-400">
 					<Icon size={20} />
 				</div>
-				<a
+
+				<div>
+					<p className="text-sm text-neutral-500">Resources 00{index + 1}</p>
+					<p className="text-xs uppercase text-neutral-400">{getFileExtension(resource)}</p>
+				</div>
+				{/* <a
 					href={resource}
 					target="_blank"
 					className="text-sm text-neutral-400 hover:underline">
 					{resource}
-				</a>
+				</a> */}
 			</div>
 			<button onClick={download}>
 				{loading ? (
-					<RiLoaderLine className="animate-spin text-neutral-400" />
+					<RiLoaderLine size={20} className="animate-spin text-neutral-400" />
 				) : (
-					<RiDownload2Line className="text-neutral-400" />
+					<RiDownload2Line size={20} className="text-neutral-400" />
 				)}
 			</button>
 		</div>

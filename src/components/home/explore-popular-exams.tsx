@@ -30,7 +30,7 @@ export const ExplorePopularExams = () => {
 								<ExamCard
 									key={subject.examinationbundle_id}
 									course={subject}
-									className="min-w-[380px]"
+									className="min-w-[350px]"
 								/>
 							))
 						) : (

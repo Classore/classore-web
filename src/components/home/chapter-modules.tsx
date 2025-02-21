@@ -8,9 +8,12 @@ import {
 	RiPlayCircleLine,
 } from "@remixicon/react";
 import * as React from "react";
+import { QuizAlertModal } from "../modals";
 import { Spinner } from "../shared";
 
 export const ChapterModules = () => {
+	const [open, setOpen] = React.useState(false);
+
 	const currentChapter = useChapterStore((state) => state.chapter);
 	const currentModule = useChapterStore((state) => state.module);
 
@@ -22,9 +25,18 @@ export const ChapterModules = () => {
 		chapter_id: currentChapter,
 	});
 
+	const hasPassedQuiz = React.useMemo(
+		() =>
+			chapter?.modules
+				.find((module) => module.id === currentModule)
+				?.quizes.some((quiz) => quiz.is_passed),
+		[chapter, currentModule]
+	);
+
 	React.useEffect(() => {
-		if (chapter && !currentModule) {
+		if (chapter) {
 			const current_module = chapter.current_chapter_module ?? chapter.modules[0].id;
+
 			setModule(current_module);
 		}
 	}, [chapter, currentModule]);
@@ -48,59 +60,70 @@ export const ChapterModules = () => {
 	}
 
 	return (
-		<div className="flex flex-col gap-6 pt-4">
-			<p className="text-sm leading-relaxed text-neutral-400">
-				{capitalize(chapter?.content ?? "")}
-			</p>
+		<>
+			<div className="flex flex-col gap-6 pt-4">
+				<p className="text-sm leading-relaxed text-neutral-400">
+					{capitalize(chapter?.content ?? "")}
+				</p>
 
-			<div className="w-full rounded-lg border border-neutral-200">
-				<div className="flex items-center gap-4 border-b border-b-neutral-200 px-6 py-4">
-					<div className="grid size-8 place-items-center rounded-md bg-neutral-100">
-						<RiFolderVideoLine className="size-4 text-neutral-700" />
-					</div>
-					<div className="flex flex-col gap-1">
-						<h3 className="font-semibold capitalize">{chapter?.name}</h3>
-						<div className="flex items-center gap-2 text-sm text-neutral-400">
-							<div className="flex items-center gap-1">
-								<RiFileTextLine size={18} />
-								<span>35 Resources</span>
-							</div>
-							<div className="flex items-center gap-1">
-								<RiFileTextLine size={18} />
-								<span>{chapter.no_of_quizes} Quizzes</span>
-							</div>
+				<div className="w-full rounded-lg border border-neutral-200">
+					<div className="flex items-center gap-4 border-b border-b-neutral-200 px-6 py-4">
+						<div className="grid size-8 place-items-center rounded-md bg-neutral-100">
+							<RiFolderVideoLine className="size-4 text-neutral-700" />
 						</div>
-					</div>
-				</div>
-
-				{chapter?.modules.map((module) => (
-					<button
-						type="button"
-						key={module.id}
-						onClick={() => setModule(module.id)}
-						className={`flex w-full items-center gap-4 border-b border-b-neutral-200 px-6 py-4 ${currentModule === module.id ? "border-l-4 border-l-primary-300" : ""}`}>
-						<div
-							className={`grid size-8 place-items-center rounded-md ${module.is_completed || currentModule === module.id ? "bg-[rgba(241,236,249,0.5)] text-primary-300" : "bg-neutral-100 text-neutral-400"}`}>
-							<RiPlayCircleLine className="size-4" />
-						</div>
-
 						<div className="flex flex-col gap-1">
-							<p className="text-sm capitalize text-neutral-500">{module.title}</p>
-							<p className="w-fit text-xs text-neutral-400">
-								{module.video_array.length
-									? `${convertSecondsToMinSec(module.video_array.at(0)?.duration ?? 0)} min`
-									: "--:--"}
-							</p>
+							<h3 className="font-semibold capitalize">{chapter?.name}</h3>
+							<div className="flex items-center gap-2 text-sm text-neutral-400">
+								<div className="flex items-center gap-1">
+									<RiFileTextLine size={18} />
+									<span>35 Resources</span>
+								</div>
+								<div className="flex items-center gap-1">
+									<RiFileTextLine size={18} />
+									<span>{chapter.no_of_quizes} Quizzes</span>
+								</div>
+							</div>
 						</div>
+					</div>
 
-						<div className="ml-auto">
-							<RiCheckboxCircleFill
-								className={`size-5 ${module.is_completed ? "text-primary-300" : "text-neutral-200"}`}
-							/>
-						</div>
-					</button>
-				))}
+					{chapter?.modules.map((module) => (
+						<button
+							type="button"
+							disabled={currentModule === module.id}
+							key={module.id}
+							onClick={() => {
+								if (!hasPassedQuiz) {
+									setOpen(true);
+								} else {
+									setModule(module.id);
+								}
+							}}
+							className={`flex w-full items-center gap-4 border-b border-b-neutral-200 px-6 py-4 ${currentModule === module.id ? "border-l-4 border-l-primary-300" : ""}`}>
+							<div
+								className={`grid size-8 place-items-center rounded-md ${module.is_completed || currentModule === module.id ? "bg-[rgba(241,236,249,0.5)] text-primary-300" : "bg-neutral-100 text-neutral-400"}`}>
+								<RiPlayCircleLine className="size-4" />
+							</div>
+
+							<div className="flex flex-col gap-1">
+								<p className="text-sm capitalize text-neutral-500">{module.title}</p>
+								<p className="w-fit text-xs text-neutral-400">
+									{module.video_array.length
+										? `${convertSecondsToMinSec(module.video_array.at(0)?.duration ?? 0)} min`
+										: "--:--"}
+								</p>
+							</div>
+
+							<div className="ml-auto">
+								<RiCheckboxCircleFill
+									className={`size-5 ${module.is_completed ? "text-primary-300" : "text-neutral-200"}`}
+								/>
+							</div>
+						</button>
+					))}
+				</div>
 			</div>
-		</div>
+
+			<QuizAlertModal open={open} setOpen={setOpen} />
+		</>
 	);
 };

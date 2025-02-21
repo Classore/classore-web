@@ -26,7 +26,7 @@ export const Bundle = ({ bundle }: BundleProps) => {
 			<Tabs value={selected} onValueChange={setSelected}>
 				<div className="flex items-center justify-between">
 					<div className="flex items-center gap-3">
-						<p className="text-xl font-medium capitalize">
+						<p className="text-lg font-medium capitalize">
 							{bundle.exam_bundle_details.name} Prep Bundle
 						</p>
 						<TabsList>

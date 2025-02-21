@@ -1,9 +1,9 @@
 import { RiSpeakLine } from "@remixicon/react";
 import React from "react";
 
-import { useChapterStore } from "@/store/z-store/chapter";
-import { useGetChapter } from "@/queries/student";
 import { sanitizeHtml } from "@/lib";
+import { useGetChapter } from "@/queries/student";
+import { useChapterStore } from "@/store/z-store/chapter";
 
 export const Transcript = () => {
 	const { chapter, module } = useChapterStore();
@@ -17,7 +17,7 @@ export const Transcript = () => {
 	}, [data?.modules, module]);
 
 	return (
-		<div className="flex w-full flex-col rounded-lg border">
+		<div className="mt-4 flex w-full flex-col rounded-lg border">
 			<div className="flex items-center gap-4 p-4">
 				<div className="grid size-8 place-items-center rounded-md bg-neutral-100">
 					<RiSpeakLine className="size-4 text-neutral-700" />

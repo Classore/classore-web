@@ -1,5 +1,6 @@
-import { useGetCourse } from "@/queries/student";
+import { useGetChapter } from "@/queries/student";
 import { fetchQuestions } from "@/queries/user";
+import { useChapterStore } from "@/store/z-store/chapter";
 import { RiMessage2Line } from "@remixicon/react";
 import { skipToken, usePrefetchQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
@@ -17,10 +18,13 @@ import {
 export const TakeQuizModal = () => {
 	const router = useRouter();
 
-	const { data } = useGetCourse({
-		course_id: String(router.query.id),
+	const currentChapter = useChapterStore((state) => state.chapter);
+	const currentModule = useChapterStore((state) => state.module);
+
+	const { data: chapter } = useGetChapter({
+		chapter_id: currentChapter,
 	});
-	const chapter = data?.chapters.find((chapter) => chapter.id === data.current_chapter.id);
+	const lesson = chapter?.modules.find((module) => module.id === currentModule);
 
 	// Prefetch this chapter quiz. Might change this since quiz might be moving to modules.
 	usePrefetchQuery({
@@ -32,24 +36,27 @@ export const TakeQuizModal = () => {
 		gcTime: Infinity,
 	});
 
-	if (!chapter || !data) return null;
+	if (!chapter || !lesson) return null;
 
 	const attempts_percentage =
-		((chapter?.quiz_attempts_limit - chapter.quiz_attempts_left) /
-			(data.quiz_attempts_limit ?? 3)) *
+		((lesson?.quiz_attempts_limit - lesson.quiz_attempts_left) /
+			(lesson.quiz_attempts_limit ?? 3)) *
 		100;
 
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
-				<Button variant="inverse" className="w-36">
+				<Button variant="inverse" className="w-36 py-2">
 					Take Quiz
 				</Button>
 			</DialogTrigger>
 			<DialogContent className="flex w-[400px] flex-col gap-4">
 				<div>
+					<p className="text-[10px] uppercase tracking-widest text-neutral-400">
+						{chapter.name}
+					</p>
 					<DialogTitle className="text-2xl font-bold capitalize">
-						{chapter?.name} Quiz
+						{lesson.title} Quiz
 					</DialogTitle>
 					<DialogDescription className="font-neutral-400 text-sm">
 						Ready to take your quiz?
@@ -57,15 +64,18 @@ export const TakeQuizModal = () => {
 				</div>
 				<div className="flex w-full items-center gap-2 rounded-lg border bg-white px-4 py-6">
 					<div className="w-[156px] flex-1">
-						<Progress label="Previous Score" value={data?.score} color="var(--primary-400)">
-							{data?.score}%
+						<Progress
+							label="Previous Score"
+							value={lesson.quizes.at(-1)?.score ?? 0}
+							color="var(--primary-400)">
+							{lesson.quizes.at(-1)?.score ?? 0}%
 						</Progress>
 					</div>
 					<hr className="h-9 w-[1px] bg-neutral-300" />
 					<div className="w-[156px] flex-1">
 						<Progress label="Attempts" value={attempts_percentage} color="var(--secondary-400)">
-							{chapter.quiz_attempts_limit - chapter.quiz_attempts_left}/
-							{data.quiz_attempts_limit ?? 3}
+							{lesson.quiz_attempts_limit - lesson.quiz_attempts_left}/
+							{lesson.quiz_attempts_limit ?? 3}
 						</Progress>
 					</div>
 				</div>
@@ -73,9 +83,10 @@ export const TakeQuizModal = () => {
 					<RiMessage2Line className="size-4" />
 					<p className="max-w-[85%] text-xs">
 						Remark -{" "}
-						{data.score !== 0 && data.score < chapter.bench_mark
+						{lesson.quizes.at(-1)?.score !== 0 &&
+						Number(lesson.quizes.at(-1)?.score) < chapter.bench_mark
 							? `You need to score above ${chapter.bench_mark}% to qualify for next chapter`
-							: chapter.quiz_attempts_left < 0
+							: lesson.quiz_attempts_left < 0
 								? `You have reached the maximum number of quiz attempts for this chapter. Please try again after ${chapter.attempt_reset} hour${chapter.attempt_reset > 1 ? "s" : ""}`
 								: "N/A"}
 					</p>
@@ -85,7 +96,7 @@ export const TakeQuizModal = () => {
 
 					<ul className="list-outside list-disc space-y-2 pl-4 text-xs text-neutral-400">
 						<li>
-							Attempts: You have {data.quiz_attempts_limit} attempts for every{" "}
+							Attempts: You have {lesson.quiz_attempts_limit} attempts for every{" "}
 							{chapter.attempt_reset} hours.
 						</li>
 						<li>
@@ -105,7 +116,11 @@ export const TakeQuizModal = () => {
 							Cancel
 						</Button>
 					</DialogClose>
-					<Button className="w-32 text-sm">Start Quiz</Button>
+					<Button
+						className="w-32 text-sm"
+						onClick={() => router.push("/dashboard/courses/quiz")}>
+						Start Quiz
+					</Button>
 				</div>
 			</DialogContent>
 		</Dialog>

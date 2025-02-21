@@ -6,9 +6,10 @@ import * as React from "react";
 
 import blockchain from "@/assets/illustrations/blockchain.svg";
 import trophy from "@/assets/illustrations/trophy.svg";
+import { CourseActions } from "@/components/course/course-actions";
 import { ChapterModules, QuizHistory, Resources, Transcript } from "@/components/home";
 import { DashboardLayout } from "@/components/layouts";
-import { JoinCommunityModal, QuizAlertModal, TakeQuizModal } from "@/components/modals";
+import { JoinCommunityModal } from "@/components/modals";
 import {
 	AvatarGroup,
 	BackBtn,
@@ -100,10 +101,8 @@ const Page = () => {
 
 									<h4 className="font-medium capitalize lg:text-xl">{course?.subject_id.name}</h4>
 								</div>
-								<div className="flex items-center gap-4">
-									<TakeQuizModal />
-									<QuizAlertModal />
-								</div>
+
+								<CourseActions chapters={course?.chapters} />
 							</div>
 							<p className="text-xs capitalize text-neutral-400">
 								Categories / {course?.subject_id.name}
