@@ -74,29 +74,8 @@ export const useQuizHandler = ({
 	);
 
 	const handleSubmission = React.useCallback(() => {
-		// // Check if current question is answered
-		// if (!isAnswered(currentQuestion.id)) {
-		// 	toast.error("Please select an answer for the current question")
-		// 	return
-		// }
-
-		const unansweredCount = questions.length - answered.length;
-		let shouldSubmit = true;
-
-		if (unansweredCount > 0) {
-			shouldSubmit = window.confirm(
-				`You have ${unansweredCount} question${
-					unansweredCount > 1 ? "s" : ""
-				} unanswered. Are you sure you want to submit?`
-			);
-		} else {
-			shouldSubmit = window.confirm("Are you sure you want to submit the quiz?");
-		}
-
-		if (shouldSubmit) {
-			onSubmit(answered);
-		}
-	}, [questions?.length, answered, onSubmit]);
+		onSubmit(answered);
+	}, [answered, onSubmit]);
 
 	const startTimer = React.useCallback(() => {
 		let remainingTime = seconds;

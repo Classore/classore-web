@@ -32,6 +32,7 @@ const Page = () => {
 
 	const [result, setResult] = React.useState<SubmitQuizResp | null>(null);
 	const [open, setOpen] = React.useState(false);
+	const [openSubmitQuiz, setOpenSubmitQuiz] = React.useState(false);
 
 	const { user } = useUserStore();
 	const router = useRouter();
@@ -66,6 +67,7 @@ const Page = () => {
 			setResult(data.data);
 
 			setTimeout(() => {
+				setOpenSubmitQuiz(false);
 				setOpen(true);
 			}, 100);
 		},
@@ -234,10 +236,23 @@ const Page = () => {
 											Previous
 										</Button>
 										{questions?.data.meta.itemCount === current + 1 ? (
-											<SubmitQuizModal
-												handleSubmission={handleSubmission}
-												isSubmitting={isSubmitting}
-											/>
+											<>
+												<Button
+													onClick={() => setOpenSubmitQuiz(true)}
+													className="w-40"
+													disabled={isSubmitting}>
+													Submit
+												</Button>
+
+												<SubmitQuizModal
+													handleSubmission={handleSubmission}
+													isSubmitting={isSubmitting}
+													open={openSubmitQuiz}
+													setOpen={setOpenSubmitQuiz}
+													noOfQuestions={questions?.data.data.length || 0}
+													noOfAnswered={answered.length}
+												/>
+											</>
 										) : (
 											<Button className="w-32 text-sm" onClick={() => handleNavigation("next")}>
 												Next

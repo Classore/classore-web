@@ -89,17 +89,27 @@ export const TakeQuizModal = ({ open, setOpen }: TakeQuizModal) => {
 						</Progress>
 					</div>
 				</div>
-				<div className="flex w-full items-center gap-2 rounded-lg border px-4 py-3 text-neutral-400">
-					<RiMessage2Line className="size-4" />
-					<p className="max-w-[85%] text-xs">
-						Remark -{" "}
-						{lesson.quizes.at(-1)?.score !== 0 &&
-						Number(lesson.quizes.at(-1)?.score) < chapter.bench_mark
-							? `You need to score above ${chapter.bench_mark}% to qualify for next chapter`
-							: lesson.quiz_attempts_left < 0
-								? `You have reached the maximum number of quiz attempts for this chapter. Please try again after ${chapter.attempt_reset} hour${chapter.attempt_reset > 1 ? "s" : ""}`
+				<div className="rounded-lg border px-4 py-3 text-neutral-400">
+					<div className="flex w-full items-center gap-2">
+						<RiMessage2Line className="size-4" />
+						<p className="text-xs">Remark(s)</p>
+					</div>
+
+					<ul className="flex flex-col gap-1 pt-2">
+						<li className="text-xs">
+							{lesson.quizes.at(-1)?.score !== 0 &&
+							Number(lesson.quizes.at(-1)?.score) < chapter.bench_mark
+								? `You need to score above ${chapter.bench_mark}% to qualify for next chapter`
 								: "N/A"}
-					</p>
+						</li>
+
+						{lesson.quiz_attempts_left <= 0 ? (
+							<li className="text-xs">
+								You have reached the maximum number of quiz attempts for this chapter. Please try
+								again after {chapter.attempt_reset} hour{chapter.attempt_reset > 1 ? "s" : ""}
+							</li>
+						) : null}
+					</ul>
 				</div>
 				<div className="flex w-full flex-col gap-3 rounded-lg bg-neutral-100 p-4 transition-all duration-700">
 					<p className="text-sm font-medium text-neutral-500">Instructions</p>
@@ -116,7 +126,7 @@ export const TakeQuizModal = ({ open, setOpen }: TakeQuizModal) => {
 							Time Limit: Complete the quiz within{" "}
 							{chapter?.timer_hour ? `${chapter.timer_hour}hr` : ""} {chapter?.timer_minute}min.
 						</li>
-						<li>Quiz will be submitted automatically after the time limit expires.</li>
+						{/* <li>Quiz will be submitted automatically after the time limit expires.</li> */}
 					</ul>
 				</div>
 

@@ -109,21 +109,15 @@ export const QuizResultModal = ({
 						</>
 					) : (
 						<>
-							{/* <DialogClose asChild> */}
 							<Button
 								onClick={() => {
-									if (attempts_percentage === 100) {
-										router.replace("/dashboard/courses");
-										return;
-									}
+									router.replace("/dashboard/courses");
 									resetQuiz();
-									setOpen(false);
 								}}
 								className="w-32 text-sm font-medium text-neutral-400"
 								variant="outline">
 								Cancel
 							</Button>
-							{/* </DialogClose> */}
 							<Button
 								disabled={attempts_percentage === 100}
 								className="w-32 text-sm"
