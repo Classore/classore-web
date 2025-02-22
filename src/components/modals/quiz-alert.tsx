@@ -5,9 +5,10 @@ import { Dialog, DialogClose, DialogContent, DialogTitle } from "../ui/dialog";
 type QuizAlertProps = {
 	open: boolean;
 	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+	setOpenTakeQuiz: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export const QuizAlertModal = ({ open, setOpen }: QuizAlertProps) => {
+export const QuizAlertModal = ({ open, setOpen, setOpenTakeQuiz }: QuizAlertProps) => {
 	const { data: profile } = useGetProfile();
 
 	return (
@@ -36,7 +37,14 @@ export const QuizAlertModal = ({ open, setOpen }: QuizAlertProps) => {
 							Cancel
 						</Button>
 					</DialogClose>
-					<Button className="w-32 text-sm">Start Quiz</Button>
+					<Button
+						className="w-32 text-sm"
+						onClick={() => {
+							setOpen(false);
+							setOpenTakeQuiz(true);
+						}}>
+						Take Quiz
+					</Button>
 				</div>
 			</DialogContent>
 		</Dialog>

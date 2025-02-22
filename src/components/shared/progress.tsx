@@ -7,6 +7,7 @@ interface Props {
 	size?: number;
 	thickness?: number;
 	value?: number;
+	svgFill: string;
 }
 
 const Progress = ({
@@ -16,13 +17,14 @@ const Progress = ({
 	size = 81,
 	thickness = 25,
 	value = 0,
+	svgFill,
 }: Props) => {
 	const axis = size / 2;
 	const radius = size / 2;
 	const circumference = 2 * Math.PI * radius;
 	const offset = circumference - (value / 100) * circumference;
 
-	const fill = value > 0 ? "#c00c0020" : "#F6F8FA";
+	const fill = value > 0 ? svgFill : "#F6F8FA";
 
 	return (
 		<div className="flex flex-col items-center justify-center gap-3">

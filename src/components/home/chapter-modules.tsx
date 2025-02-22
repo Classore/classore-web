@@ -8,11 +8,12 @@ import {
 	RiPlayCircleLine,
 } from "@remixicon/react";
 import * as React from "react";
-import { QuizAlertModal } from "../modals";
+import { QuizAlertModal, TakeQuizModal } from "../modals";
 import { Spinner } from "../shared";
 
 export const ChapterModules = () => {
 	const [open, setOpen] = React.useState(false);
+	const [openTakeQuiz, setOpenTakeQuiz] = React.useState(false);
 
 	const currentChapter = useChapterStore((state) => state.chapter);
 	const currentModule = useChapterStore((state) => state.module);
@@ -123,7 +124,8 @@ export const ChapterModules = () => {
 				</div>
 			</div>
 
-			<QuizAlertModal open={open} setOpen={setOpen} />
+			<QuizAlertModal open={open} setOpen={setOpen} setOpenTakeQuiz={setOpenTakeQuiz} />
+			<TakeQuizModal open={openTakeQuiz} setOpen={setOpenTakeQuiz} />
 		</>
 	);
 };

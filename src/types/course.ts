@@ -81,7 +81,7 @@ export type NewQuestionProps = {
 	question_chapter: string;
 	question_module: null;
 	question_score: number;
-	options: [];
+	options: NewOptionProps[];
 };
 
 export type NewOptionProps = {

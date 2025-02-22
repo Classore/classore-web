@@ -14,6 +14,7 @@ export const CourseActions = ({ chapters }: CourseActionsProps) => {
 	const currentModule = useChapterStore((state) => state.module);
 
 	const [openQuitQuiz, setOpenQuitQuiz] = React.useState(false);
+	const [openTakeQuiz, setOpenTakeQuiz] = React.useState(false);
 
 	/**
 	 * Checks if any quiz has been passed in the current module. If yes, navigates to next lesson.
@@ -51,15 +52,22 @@ export const CourseActions = ({ chapters }: CourseActionsProps) => {
 	return (
 		<>
 			<div className="flex items-center gap-4">
-				<TakeQuizModal />
+				<Button variant="inverse" className="w-36 py-2" onClick={() => setOpenTakeQuiz(true)}>
+					Take Quiz
+				</Button>
 
-				<Button onClick={goToNextLesson} className="w-48 text-sm">
-					<span>Go to Next Chapter</span>
+				<Button onClick={goToNextLesson} className="w-44 text-sm">
+					<span>Go to Next Lesson</span>
 					<RiArrowRightSLine className="size-4" />
 				</Button>
 			</div>
 
-			<QuizAlertModal open={openQuitQuiz} setOpen={setOpenQuitQuiz} />
+			<QuizAlertModal
+				open={openQuitQuiz}
+				setOpen={setOpenQuitQuiz}
+				setOpenTakeQuiz={setOpenTakeQuiz}
+			/>
+			<TakeQuizModal open={openTakeQuiz} setOpen={setOpenTakeQuiz} />
 		</>
 	);
 };

@@ -1,4 +1,4 @@
-import { RiArrowRightSLine } from "@remixicon/react";
+import { Spinner } from "../shared";
 import { Button } from "../ui/button";
 import {
 	Dialog,
@@ -8,13 +8,20 @@ import {
 	DialogTrigger,
 } from "../ui/dialog";
 
-export const QuitQuizModal = () => {
+type SubmitQuizModalProps = {
+	handleSubmission: () => void;
+	isSubmitting: boolean;
+};
+
+export const SubmitQuizModal = ({
+	handleSubmission,
+	isSubmitting,
+}: SubmitQuizModalProps) => {
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
-				<Button className="w-48 text-sm">
-					<span>Go to Next Chapter</span>
-					<RiArrowRightSLine className="size-4" />
+				<Button className="w-40" disabled={isSubmitting}>
+					Submit
 				</Button>
 			</DialogTrigger>
 			<DialogContent className="flex w-[400px] flex-col gap-4">
@@ -31,7 +38,9 @@ export const QuitQuizModal = () => {
 							Cancel
 						</Button>
 					</DialogClose>
-					<Button className="w-32 text-sm">Submit Quiz</Button>
+					<Button className="w-32 text-sm" disabled={isSubmitting} onClick={handleSubmission}>
+						{isSubmitting ? <Spinner /> : "Submit"}
+					</Button>
 				</div>
 			</DialogContent>
 		</Dialog>

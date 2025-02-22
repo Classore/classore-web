@@ -12,11 +12,16 @@ import {
 	DialogContent,
 	DialogDescription,
 	DialogTitle,
-	DialogTrigger,
 } from "../ui/dialog";
 
-export const TakeQuizModal = () => {
+type TakeQuizModal = {
+	open: boolean;
+	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+export const TakeQuizModal = ({ open, setOpen }: TakeQuizModal) => {
 	const router = useRouter();
+	const { id: course_id } = router.query;
 
 	const currentChapter = useChapterStore((state) => state.chapter);
 	const currentModule = useChapterStore((state) => state.module);
@@ -28,9 +33,9 @@ export const TakeQuizModal = () => {
 
 	// Prefetch this chapter quiz. Might change this since quiz might be moving to modules.
 	usePrefetchQuery({
-		queryKey: ["questions", { chapter_id: chapter?.id }],
-		queryFn: chapter?.id
-			? () => fetchQuestions({ chapter_id: String(chapter?.id) })
+		queryKey: ["questions", { module_id: lesson?.id }],
+		queryFn: lesson?.id
+			? () => fetchQuestions({ module_id: String(lesson?.id) })
 			: skipToken,
 		staleTime: Infinity,
 		gcTime: Infinity,
@@ -44,12 +49,12 @@ export const TakeQuizModal = () => {
 		100;
 
 	return (
-		<Dialog>
-			<DialogTrigger asChild>
+		<Dialog open={open} onOpenChange={setOpen}>
+			{/* <DialogTrigger asChild>
 				<Button variant="inverse" className="w-36 py-2">
 					Take Quiz
 				</Button>
-			</DialogTrigger>
+			</DialogTrigger> */}
 			<DialogContent className="flex w-[400px] flex-col gap-4">
 				<div>
 					<p className="text-[10px] uppercase tracking-widest text-neutral-400">
@@ -67,13 +72,18 @@ export const TakeQuizModal = () => {
 						<Progress
 							label="Previous Score"
 							value={lesson.quizes.at(-1)?.score ?? 0}
-							color="var(--primary-400)">
+							color="#6F42C1"
+							svgFill="#F1ECF9">
 							{lesson.quizes.at(-1)?.score ?? 0}%
 						</Progress>
 					</div>
 					<hr className="h-9 w-[1px] bg-neutral-300" />
 					<div className="w-[156px] flex-1">
-						<Progress label="Attempts" value={attempts_percentage} color="var(--secondary-400)">
+						<Progress
+							label="Attempts"
+							value={attempts_percentage}
+							color="#F67F36"
+							svgFill="#FEF3EB">
 							{lesson.quiz_attempts_limit - lesson.quiz_attempts_left}/
 							{lesson.quiz_attempts_limit ?? 3}
 						</Progress>
@@ -118,7 +128,13 @@ export const TakeQuizModal = () => {
 					</DialogClose>
 					<Button
 						className="w-32 text-sm"
-						onClick={() => router.push("/dashboard/courses/quiz")}>
+						disabled={attempts_percentage === 100}
+						onClick={() =>
+							router.push({
+								pathname: "/dashboard/courses/[id]/quiz",
+								query: { id: course_id, module_id: lesson.id },
+							})
+						}>
 						Start Quiz
 					</Button>
 				</div>

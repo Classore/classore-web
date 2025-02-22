@@ -162,8 +162,8 @@ export type QuizProps = Node & {
 	title: string;
 };
 
-export type QuestionProps = Node & {
-	__typename?: "Question";
+export type QuestionProps = {
+	id: string;
 	answers: string[];
 	correct_answer: string;
 	question: string;
@@ -172,6 +172,7 @@ export type QuestionProps = Node & {
 export type AnsweredQuestionProps = {
 	questionId: string;
 	selectedAnswer: string;
+	input_content?: string;
 };
 
 export type MessageProps = Node & {
