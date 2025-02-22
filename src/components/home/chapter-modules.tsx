@@ -74,7 +74,7 @@ export const ChapterModules = () => {
 						</div>
 						<div className="flex flex-col gap-1">
 							<h3 className="font-semibold capitalize">{chapter?.name}</h3>
-							<div className="flex items-center gap-2 text-sm text-neutral-400">
+							<div className="flex flex-wrap items-center gap-2 text-sm text-neutral-400">
 								<div className="flex items-center gap-1">
 									<RiFileTextLine size={18} />
 									<span>35 Resources</span>
@@ -106,7 +106,7 @@ export const ChapterModules = () => {
 							</div>
 
 							<div className="flex flex-col gap-1">
-								<p className="text-sm capitalize text-neutral-500">{module.title}</p>
+								<p className="text-left text-sm capitalize text-neutral-500">{module.title}</p>
 								<p className="w-fit text-xs text-neutral-400">
 									{module.video_array.length
 										? `${convertSecondsToMinSec(module.video_array.at(0)?.duration ?? 0)} min`

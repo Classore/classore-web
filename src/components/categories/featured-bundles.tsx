@@ -33,7 +33,7 @@ export const FeaturedBundles = () => {
 								<Link
 									href={`/dashboard/categories/${bundle.examinationbundle_id}`}
 									key={bundle.examinationbundle_id}
-									className="flex h-[300px] w-[800px] flex-shrink-0 cursor-pointer items-center gap-x-6 rounded-lg border p-4 transition-all duration-700 hover:drop-shadow-xl">
+									className="flex h-full max-w-[800px] flex-shrink-0 cursor-pointer items-center gap-x-6 rounded-lg border p-4 transition-all duration-700 hover:drop-shadow-xl md:h-[300px]">
 									<div className="relative aspect-square h-full rounded-lg bg-secondary-400">
 										<Image
 											src={

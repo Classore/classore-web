@@ -25,7 +25,7 @@ export const Bundle = ({ bundle }: BundleProps) => {
 		<div className="flex w-full flex-col gap-4">
 			<Tabs value={selected} onValueChange={setSelected}>
 				<div className="flex items-center justify-between">
-					<div className="flex items-center gap-3">
+					<div className="flex flex-col gap-2 md:flex-row md:gap-4 lg:items-center">
 						<p className="text-lg font-medium capitalize">
 							{bundle.exam_bundle_details.name} Prep Bundle
 						</p>

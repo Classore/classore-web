@@ -55,7 +55,7 @@ export const TakeQuizModal = ({ open, setOpen }: TakeQuizModal) => {
 					Take Quiz
 				</Button>
 			</DialogTrigger> */}
-			<DialogContent className="flex w-[400px] flex-col gap-4">
+			<DialogContent className="flex flex-col gap-4">
 				<div>
 					<p className="text-[10px] uppercase tracking-widest text-neutral-400">
 						{chapter.name}

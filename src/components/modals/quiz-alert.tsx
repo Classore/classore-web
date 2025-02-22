@@ -20,7 +20,7 @@ export const QuizAlertModal = ({ open, setOpen, setOpenTakeQuiz }: QuizAlertProp
 				</Button>
 			</DialogTrigger> */}
 
-			<DialogContent className="flex w-[400px] flex-col gap-4">
+			<DialogContent className="flex flex-col gap-4">
 				<DialogTitle className="text-2xl font-bold">Quiz Alert</DialogTitle>
 
 				<div className="flex flex-col gap-2 rounded-lg bg-neutral-100 p-4 text-sm text-neutral-400">

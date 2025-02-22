@@ -3,6 +3,7 @@ import { DashboardLayout } from "@/components/layouts";
 import { AddMoreCourseModal, EnrollModal, ShareReview } from "@/components/modals";
 import { BackBtn, EmptyState, ReviewCard, Seo, Spinner } from "@/components/shared";
 import { Button } from "@/components/ui/button";
+import { useDeviceWidth } from "@/hooks";
 import { capitalize, formatCurrency, formatNumber } from "@/lib";
 import { useGetSingleExamBundleQuery } from "@/queries/school";
 import { RiStarFill } from "@remixicon/react";
@@ -21,6 +22,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 
 const Page = () => {
+	const { isMobile } = useDeviceWidth();
 	const router = useRouter();
 
 	const { data: bundle, isPending } = useGetSingleExamBundleQuery({
@@ -34,7 +36,7 @@ const Page = () => {
 					bundle?.name ? `${capitalize(bundle?.name)} Exam Prep Bundle` : "Bundle Details"
 				}
 			/>
-			<DashboardLayout className="px-8 py-6">
+			<DashboardLayout>
 				{isPending ? (
 					<div className="flex w-full flex-col items-center justify-center gap-1 py-4">
 						<Spinner variant="primary" />
@@ -42,9 +44,9 @@ const Page = () => {
 					</div>
 				) : (
 					<>
-						<header className="flex items-center justify-between gap-2">
+						<header className="flex flex-col justify-between gap-2 md:flex-row md:items-center">
 							<div className="flex flex-col gap-2">
-								<div className="flex items-center gap-4">
+								<div className="flex flex-col gap-4 sm:flex-row sm:items-center">
 									<BackBtn />
 
 									<h2 className="text-xl font-medium capitalize text-neutral-900">
@@ -57,15 +59,17 @@ const Page = () => {
 								</p>
 							</div>
 
-							<button
-								type="button"
-								className="flex items-center gap-2 self-start rounded-lg border bg-neutral-100 px-3 py-2 text-neutral-500">
-								<span className="text-sm">Share</span>
-								<Share className="size-4" />
-							</button>
+							{!isMobile ? (
+								<button
+									type="button"
+									className="flex items-center gap-2 self-start rounded-lg border bg-neutral-100 px-3 py-2 text-neutral-500">
+									<span className="text-sm">Share</span>
+									<Share className="size-4" />
+								</button>
+							) : null}
 						</header>
 
-						<section className="grid grid-cols-8 gap-10 py-6">
+						<section className="flex flex-col gap-10 lg:grid lg:grid-cols-8">
 							<div className="col-span-5 flex flex-col gap-4">
 								<Image
 									src="https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
@@ -86,7 +90,7 @@ const Page = () => {
 									<h3 className="text-sm font-medium text-neutral-900">Subject Includes:</h3>
 								</div>
 
-								<div className="flex items-center justify-between gap-2 rounded-xl border border-neutral-200 p-4">
+								<div className="flex flex-col items-center justify-between gap-2 rounded-xl border border-neutral-200 p-4 sm:flex-row">
 									<div>
 										<div className="flex items-center gap-2">
 											<RiStarFill className="size-4 text-[#FFBB0A]" />
@@ -112,7 +116,7 @@ const Page = () => {
 											<ShareReview />
 										</div>
 
-										<ul className="grid grid-cols-2 gap-4">
+										<ul className="grid gap-4 md:grid-cols-2">
 											{bundle?.reviews.map((item) => (
 												<ReviewCard
 													review={item}
@@ -132,7 +136,7 @@ const Page = () => {
 							</div>
 
 							{/* sidebar */}
-							<div className="col-span-3 flex h-max flex-col gap-4 rounded-xl border border-neutral-200 p-6">
+							<div className="col-span-3 flex h-max flex-col gap-4 rounded-xl border border-neutral-200 p-4 md:p-6">
 								<div className="flex items-center justify-between border-b border-b-neutral-200 pb-4">
 									<p className="font-bold text-neutral-700">Bundle Highlight</p>
 

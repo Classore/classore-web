@@ -1,5 +1,3 @@
-import React from "react";
-
 import { DashboardLayout } from "@/components/layouts";
 import { Seo } from "@/components/shared";
 
@@ -8,7 +6,7 @@ const Page = () => {
 		<>
 			<Seo title="Test Center" />
 			<DashboardLayout>
-				<div className="flex h-full w-full p-8"></div>
+					<p>Take exam</p>
 			</DashboardLayout>
 		</>
 	);

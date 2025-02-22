@@ -19,7 +19,7 @@ export const MyCourses = () => {
 		<Tabs defaultValue={tabs[0]} value={selected} onValueChange={setSelected}>
 			<div className="flex w-full flex-col gap-4">
 				<div className="flex items-center justify-between">
-					<div className="flex items-center gap-4">
+					<div className="flex flex-col gap-4 md:flex-row lg:items-center">
 						<p className="text-xl font-medium">My courses</p>
 
 						<TabsList>
