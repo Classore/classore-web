@@ -1,21 +1,25 @@
-import { toast } from "sonner";
 import React from "react";
+import { toast } from "sonner";
 
-import type { AnsweredQuestionProps, QuestionProps } from "@/types";
+import type { AnsweredQuestionProps } from "@/types";
+import type { NewQuestionProps } from "@/types/course";
 
 interface UseQuizProps {
-	questions: QuestionProps[];
+	questions: NewQuestionProps[];
 	onSubmit: (answered: AnsweredQuestionProps[]) => void;
 	initialQuestion?: number;
+	seconds: number;
 }
 
 export const useQuizHandler = ({
 	questions,
 	onSubmit,
 	initialQuestion = 0,
+	seconds = 0,
 }: UseQuizProps) => {
 	const [answered, setAnswered] = React.useState<AnsweredQuestionProps[]>([]);
 	const [current, setCurrent] = React.useState(initialQuestion);
+	const [time, setTime] = React.useState("00:00:00");
 
 	const currentQuestion = questions?.[current];
 
@@ -26,21 +30,22 @@ export const useQuizHandler = ({
 
 	const isAnswer = React.useCallback(
 		(answer: string) =>
-			answered.find((answers) => answers.questionId === currentQuestion.id)
+			answered.find((answers) => answers.questionId === currentQuestion.question_id)
 				?.selectedAnswer === answer,
-		[answered, currentQuestion?.id]
+		[answered, currentQuestion?.question_id]
 	);
 
 	const selectAnswer = React.useCallback(
-		(answer: string) => {
+		(answer: string, input_content?: string) => {
 			const answeredQuestion = {
-				questionId: currentQuestion.id,
+				questionId: currentQuestion.question_id,
 				selectedAnswer: answer,
+				input_content: input_content || "",
 			};
 
 			setAnswered((prev) => {
 				const existingAnswerIndex = prev.findIndex(
-					(a) => a.questionId === currentQuestion.id
+					(a) => a.questionId === currentQuestion.question_id
 				);
 				if (existingAnswerIndex !== -1) {
 					return prev.map((a, i) => (i === existingAnswerIndex ? answeredQuestion : a));
@@ -48,12 +53,12 @@ export const useQuizHandler = ({
 				return [...prev, answeredQuestion];
 			});
 		},
-		[currentQuestion?.id]
+		[currentQuestion?.question_id]
 	);
 
 	const handleNavigation = React.useCallback(
 		(direction: "next" | "previous" | "skip") => {
-			if (direction === "next" && !isAnswered(currentQuestion.id)) {
+			if (direction === "next" && !isAnswered(currentQuestion.question_id)) {
 				toast.error("Please select an answer");
 				return;
 			}
@@ -65,33 +70,50 @@ export const useQuizHandler = ({
 				return prev;
 			});
 		},
-		[currentQuestion?.id, isAnswered, questions?.length]
+		[currentQuestion?.question_id, isAnswered, questions?.length]
 	);
 
 	const handleSubmission = React.useCallback(() => {
-		// // Check if current question is answered
-		// if (!isAnswered(currentQuestion.id)) {
-		// 	toast.error("Please select an answer for the current question")
-		// 	return
-		// }
+		onSubmit(answered);
+	}, [answered, onSubmit]);
 
-		const unansweredCount = questions.length - answered.length;
-		let shouldSubmit = true;
+	const startTimer = React.useCallback(() => {
+		let remainingTime = seconds;
 
-		if (unansweredCount > 0) {
-			shouldSubmit = window.confirm(
-				`You have ${unansweredCount} question${
-					unansweredCount > 1 ? "s" : ""
-				} unanswered. Are you sure you want to submit?`
-			);
-		} else {
-			shouldSubmit = window.confirm("Are you sure you want to submit the quiz?");
-		}
+		const interval = setInterval(() => {
+			if (remainingTime <= 0) {
+				clearInterval(interval);
+				// setIsRunning(false);
+				setTime("00:00:00");
+			} else {
+				remainingTime--;
+				const hours = String(Math.floor(remainingTime / 3600)).padStart(2, "0");
+				const minutes = String(Math.floor((remainingTime % 3600) / 60)).padStart(2, "0");
+				const seconds = String(remainingTime % 60).padStart(2, "0");
 
-		if (shouldSubmit) {
-			onSubmit(answered);
-		}
-	}, [questions?.length, answered, onSubmit]);
+				if (hours === "00" && minutes === "00" && seconds === "00") {
+					// setIsRunning(false);
+					setTime("00:00:00");
+					clearInterval(interval);
+
+					// TODO: submit quiz automatically
+					return;
+				}
+
+				setTime(`${hours}:${minutes}:${seconds}`);
+			}
+		}, 1000);
+
+		return interval;
+	}, [seconds]);
+
+	const resetQuiz = React.useCallback(() => {
+		setCurrent(0);
+		setTime("00:00:00");
+		startTimer();
+		setAnswered([]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	return {
 		current,
@@ -103,5 +125,8 @@ export const useQuizHandler = ({
 		selectAnswer,
 		handleNavigation,
 		handleSubmission,
+		resetQuiz,
+		startTimer,
+		time,
 	};
 };

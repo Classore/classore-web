@@ -42,36 +42,35 @@ const Page = () => {
 		<>
 			<Seo title="Dashboard" />
 			<DashboardLayout>
-				<div className="flex w-full flex-col gap-6 overflow-y-auto px-8 py-6">
-					<div className="flex w-full items-center justify-between gap-[177px] rounded-2xl bg-dashboard bg-cover bg-center bg-no-repeat px-10 py-[52px] text-white">
-						<div className="flex min-w-[323px] flex-col gap-2">
-							<h1 className="font-medium capitalize lg:text-[32px]">
-								{greetUser()}, {user?.first_name}
-							</h1>
-							<p className="">
-								Welcome to your dashboard-let&apos;s make progress today. Check your latest
-								achievements, track ongoing courses, and take on new challenges to keep learning
-								strong!
-							</p>
-						</div>
-						<Button className="w-[182px] px-6 py-3" variant="primary">
-							<Link href="/dashboard/categories">Browse Categories</Link>
-						</Button>
+				<div className="flex w-full flex-col justify-between gap-4 rounded-2xl bg-dashboard bg-cover bg-center bg-no-repeat p-6 text-white md:items-center md:px-10 md:py-[52px] lg:flex-row lg:gap-[177px]">
+					<div className="flex flex-col gap-2">
+						<h1 className="text-2xl font-semibold capitalize">
+							{greetUser()}, {user?.first_name}
+						</h1>
+						<p className="text-balance text-sm md:text-base">
+							Welcome to your dashboard-let&apos;s make progress today. Check your latest
+							achievements, track ongoing courses, and take on new challenges to keep learning
+							strong!
+						</p>
 					</div>
 
-					<div className="flex w-full flex-col gap-4">
-						<p className="text-xl font-medium">Overview</p>
-						<div className="grid grid-cols-3 gap-4">
-							<Learning exam_type="JAMB" />
-							<Challenge challenges={challenges} />
-							<Leaderboard position={1} />
-						</div>
-					</div>
+					<Button className="max-w-[182px] px-6 py-3" variant="primary">
+						<Link href="/dashboard/categories">Browse Categories</Link>
+					</Button>
+				</div>
 
-					<div className="flex flex-col gap-10 pb-10">
-						<MyCourses />
-						<ExplorePopularExams />
+				<div className="flex w-full flex-col gap-4">
+					<p className="text-xl font-medium">Overview</p>
+					<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+						<Learning exam_type="JAMB" />
+						<Challenge challenges={challenges} />
+						<Leaderboard position={1} />
 					</div>
+				</div>
+
+				<div className="flex flex-col gap-10 pb-10">
+					<MyCourses />
+					<ExplorePopularExams />
 				</div>
 			</DashboardLayout>
 		</>

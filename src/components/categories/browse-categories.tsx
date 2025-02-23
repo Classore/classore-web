@@ -18,7 +18,7 @@ export const BrowseCategories = () => {
 	return (
 		<Tabs defaultValue="all" value={tab} onValueChange={setTab}>
 			<div className="flex w-full flex-col gap-6">
-				<div className="flex items-center gap-4">
+				<div className="flex flex-col gap-4 md:flex-row lg:items-center">
 					<p className="text-xl font-medium">Browse Categories</p>
 					<TabsList>
 						<TabsTrigger value="all">All</TabsTrigger>

@@ -1,12 +1,12 @@
-import type { HttpResponse, PaginatedResponse, PaginationProps } from "@/types";
-import type { ExamCourseProps } from "@/types/type";
 import { endpoints } from "@/config";
 import { axios } from "@/lib";
+import type { HttpResponse, PaginatedResponse, PaginationProps } from "@/types";
 import type {
 	LeaderboardItemProps,
 	NewQuestionProps,
 	ViewCourseProps,
 } from "@/types/course";
+import type { ExamCourseProps } from "@/types/type";
 
 interface StartCourseDto {
 	chapter_id: string;
@@ -14,10 +14,11 @@ interface StartCourseDto {
 }
 
 interface SubmitQuizDto {
-	chapter: string;
+	module: string;
 	answers: {
 		question: string;
 		option: string;
+		input_content?: string;
 	}[];
 }
 
@@ -89,34 +90,62 @@ const viewLeaderboard = async (
 		.then((res) => res.data);
 };
 
-const fetchQuestions = async (params?: PaginationProps & { chapter_id: string }) => {
-	if (params) {
-		for (const key in params) {
-			if (
-				!params[key as keyof typeof params] ||
-				params[key as keyof typeof params] === undefined
-			) {
-				delete params[key as keyof typeof params];
-			}
-		}
-	}
+const fetchQuestions = async ({ module_id }: { module_id: string }) => {
 	return axios
-		.get<
-			HttpResponse<PaginatedResponse<NewQuestionProps>>
-		>(endpoints().user.fetch_questions)
+		.get<HttpResponse<PaginatedResponse<NewQuestionProps>>>(
+			endpoints().user.fetch_questions,
+			{
+				params: {
+					module_id,
+					page: 1,
+					limit: 100,
+				},
+			}
+		)
 		.then((res) => res.data);
 };
 
+export type SubmitQuizResp = {
+	user_id: string;
+	module: string;
+	chapter: string;
+	attempts: number;
+	course: string;
+	bench_mark: number;
+	isDeleted: boolean;
+	isBlocked: boolean;
+	score: number;
+	is_recorded: boolean;
+	id: string;
+	createdOn: string;
+	updatedOn: string;
+	is_passed: boolean;
+	details: Array<{
+		question: {
+			id: string;
+			number: number;
+		};
+		chosen_option: {
+			id: string;
+			content: string;
+		};
+		is_correct: boolean;
+	}>;
+	attempts_left: number;
+	attempts_limit: number;
+	chapter_name: string;
+	module_name: string;
+};
 const submitQuiz = async (data: SubmitQuizDto) => {
 	return axios
-		.post<HttpResponse<{ message: string }>>(endpoints().user.submit_quiz, data)
+		.post<HttpResponse<SubmitQuizResp>>(endpoints().user.submit_quiz, data)
 		.then((res) => res.data);
 };
 
 export {
+	fetchQuestions,
 	getMyCourses,
 	getUpcomingEvents,
-	fetchQuestions,
 	startCourse,
 	submitQuiz,
 	viewCourse,
