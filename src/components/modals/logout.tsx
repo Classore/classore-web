@@ -30,7 +30,7 @@ export const LogoutModal = () => {
 				</button>
 			</DialogTrigger>
 
-			<DialogContent className="w-96">
+			<DialogContent className="flex flex-col gap-4">
 				<LogoutGraphic />
 
 				<h3 className="text-2xl font-bold">Log Out?</h3>

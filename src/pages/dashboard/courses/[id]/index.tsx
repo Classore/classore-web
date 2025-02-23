@@ -6,9 +6,10 @@ import * as React from "react";
 
 import blockchain from "@/assets/illustrations/blockchain.svg";
 import trophy from "@/assets/illustrations/trophy.svg";
+import { CourseActions } from "@/components/course/course-actions";
 import { ChapterModules, QuizHistory, Resources, Transcript } from "@/components/home";
 import { DashboardLayout } from "@/components/layouts";
-import { JoinCommunityModal, QuizAlertModal, TakeQuizModal } from "@/components/modals";
+import { JoinCommunityModal } from "@/components/modals";
 import {
 	AvatarGroup,
 	BackBtn,
@@ -92,24 +93,24 @@ const Page = () => {
 						<p className="text-xs text-primary-300">Getting course details...</p>
 					</div>
 				) : (
-					<div className="flex w-full flex-col gap-6 px-8 py-6">
+					<>
 						<div className="flex w-full flex-col gap-2">
-							<div className="flex items-center justify-between">
-								<div className="flex items-center gap-4">
-									<BackBtn />
+							<div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
+								<div className="flex flex-col gap-2">
+									<div className="flex items-center gap-4">
+										<BackBtn />
 
-									<h4 className="font-medium capitalize lg:text-xl">{course?.subject_id.name}</h4>
+										<h4 className="font-medium capitalize lg:text-xl">{course?.subject_id.name}</h4>
+									</div>
+									<p className="text-xs capitalize text-neutral-400">
+										Categories / {course?.subject_id.name}
+									</p>
 								</div>
-								<div className="flex items-center gap-4">
-									<TakeQuizModal />
-									<QuizAlertModal />
-								</div>
+
+								<CourseActions chapters={course?.chapters} />
 							</div>
-							<p className="text-xs capitalize text-neutral-400">
-								Categories / {course?.subject_id.name}
-							</p>
 						</div>
-						<div className="grid w-full grid-cols-3 gap-8">
+						<div className="flex w-full flex-col gap-8 lg:grid lg:grid-cols-3">
 							<div className="col-span-2 flex w-full flex-col gap-4">
 								{/* <VideoPlayer src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" /> */}
 								<VideoPlayer
@@ -232,7 +233,7 @@ const Page = () => {
 								</div>
 							</div>
 						</div>
-					</div>
+					</>
 				)}
 			</DashboardLayout>
 		</>

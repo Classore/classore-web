@@ -1,5 +1,6 @@
-import { useGetCourse } from "@/queries/student";
+import { useGetChapter } from "@/queries/student";
 import { fetchQuestions } from "@/queries/user";
+import { useChapterStore } from "@/store/z-store/chapter";
 import { RiMessage2Line } from "@remixicon/react";
 import { skipToken, usePrefetchQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
@@ -11,45 +12,56 @@ import {
 	DialogContent,
 	DialogDescription,
 	DialogTitle,
-	DialogTrigger,
 } from "../ui/dialog";
 
-export const TakeQuizModal = () => {
-	const router = useRouter();
+type TakeQuizModal = {
+	open: boolean;
+	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
-	const { data } = useGetCourse({
-		course_id: String(router.query.id),
+export const TakeQuizModal = ({ open, setOpen }: TakeQuizModal) => {
+	const router = useRouter();
+	const { id: course_id } = router.query;
+
+	const currentChapter = useChapterStore((state) => state.chapter);
+	const currentModule = useChapterStore((state) => state.module);
+
+	const { data: chapter } = useGetChapter({
+		chapter_id: currentChapter,
 	});
-	const chapter = data?.chapters.find((chapter) => chapter.id === data.current_chapter.id);
+	const lesson = chapter?.modules.find((module) => module.id === currentModule);
 
 	// Prefetch this chapter quiz. Might change this since quiz might be moving to modules.
 	usePrefetchQuery({
-		queryKey: ["questions", { chapter_id: chapter?.id }],
-		queryFn: chapter?.id
-			? () => fetchQuestions({ chapter_id: String(chapter?.id) })
+		queryKey: ["questions", { module_id: lesson?.id }],
+		queryFn: lesson?.id
+			? () => fetchQuestions({ module_id: String(lesson?.id) })
 			: skipToken,
 		staleTime: Infinity,
 		gcTime: Infinity,
 	});
 
-	if (!chapter || !data) return null;
+	if (!chapter || !lesson) return null;
 
 	const attempts_percentage =
-		((chapter?.quiz_attempts_limit - chapter.quiz_attempts_left) /
-			(data.quiz_attempts_limit ?? 3)) *
+		((lesson?.quiz_attempts_limit - lesson.quiz_attempts_left) /
+			(lesson.quiz_attempts_limit ?? 3)) *
 		100;
 
 	return (
-		<Dialog>
-			<DialogTrigger asChild>
-				<Button variant="inverse" className="w-36">
+		<Dialog open={open} onOpenChange={setOpen}>
+			{/* <DialogTrigger asChild>
+				<Button variant="inverse" className="w-36 py-2">
 					Take Quiz
 				</Button>
-			</DialogTrigger>
-			<DialogContent className="flex w-[400px] flex-col gap-4">
+			</DialogTrigger> */}
+			<DialogContent className="flex flex-col gap-4">
 				<div>
+					<p className="text-[10px] uppercase tracking-widest text-neutral-400">
+						{chapter.name}
+					</p>
 					<DialogTitle className="text-2xl font-bold capitalize">
-						{chapter?.name} Quiz
+						{lesson.title} Quiz
 					</DialogTitle>
 					<DialogDescription className="font-neutral-400 text-sm">
 						Ready to take your quiz?
@@ -57,35 +69,54 @@ export const TakeQuizModal = () => {
 				</div>
 				<div className="flex w-full items-center gap-2 rounded-lg border bg-white px-4 py-6">
 					<div className="w-[156px] flex-1">
-						<Progress label="Previous Score" value={data?.score} color="var(--primary-400)">
-							{data?.score}%
+						<Progress
+							label="Previous Score"
+							value={lesson.quizes.at(-1)?.score ?? 0}
+							color="#6F42C1"
+							svgFill="#F1ECF9">
+							{lesson.quizes.at(-1)?.score ?? 0}%
 						</Progress>
 					</div>
 					<hr className="h-9 w-[1px] bg-neutral-300" />
 					<div className="w-[156px] flex-1">
-						<Progress label="Attempts" value={attempts_percentage} color="var(--secondary-400)">
-							{chapter.quiz_attempts_limit - chapter.quiz_attempts_left}/
-							{data.quiz_attempts_limit ?? 3}
+						<Progress
+							label="Attempts"
+							value={attempts_percentage}
+							color="#F67F36"
+							svgFill="#FEF3EB">
+							{lesson.quiz_attempts_limit - lesson.quiz_attempts_left}/
+							{lesson.quiz_attempts_limit ?? 3}
 						</Progress>
 					</div>
 				</div>
-				<div className="flex w-full items-center gap-2 rounded-lg border px-4 py-3 text-neutral-400">
-					<RiMessage2Line className="size-4" />
-					<p className="max-w-[85%] text-xs">
-						Remark -{" "}
-						{data.score !== 0 && data.score < chapter.bench_mark
-							? `You need to score above ${chapter.bench_mark}% to qualify for next chapter`
-							: chapter.quiz_attempts_left < 0
-								? `You have reached the maximum number of quiz attempts for this chapter. Please try again after ${chapter.attempt_reset} hour${chapter.attempt_reset > 1 ? "s" : ""}`
+				<div className="rounded-lg border px-4 py-3 text-neutral-400">
+					<div className="flex w-full items-center gap-2">
+						<RiMessage2Line className="size-4" />
+						<p className="text-xs">Remark(s)</p>
+					</div>
+
+					<ul className="flex flex-col gap-1 pt-2">
+						<li className="text-xs">
+							{lesson.quizes.at(-1)?.score !== 0 &&
+							Number(lesson.quizes.at(-1)?.score) < chapter.bench_mark
+								? `You need to score above ${chapter.bench_mark}% to qualify for next chapter`
 								: "N/A"}
-					</p>
+						</li>
+
+						{lesson.quiz_attempts_left <= 0 ? (
+							<li className="text-xs">
+								You have reached the maximum number of quiz attempts for this chapter. Please try
+								again after {chapter.attempt_reset} hour{chapter.attempt_reset > 1 ? "s" : ""}
+							</li>
+						) : null}
+					</ul>
 				</div>
 				<div className="flex w-full flex-col gap-3 rounded-lg bg-neutral-100 p-4 transition-all duration-700">
 					<p className="text-sm font-medium text-neutral-500">Instructions</p>
 
 					<ul className="list-outside list-disc space-y-2 pl-4 text-xs text-neutral-400">
 						<li>
-							Attempts: You have {data.quiz_attempts_limit} attempts for every{" "}
+							Attempts: You have {lesson.quiz_attempts_limit} attempts for every{" "}
 							{chapter.attempt_reset} hours.
 						</li>
 						<li>
@@ -95,7 +126,7 @@ export const TakeQuizModal = () => {
 							Time Limit: Complete the quiz within{" "}
 							{chapter?.timer_hour ? `${chapter.timer_hour}hr` : ""} {chapter?.timer_minute}min.
 						</li>
-						<li>Quiz will be submitted automatically after the time limit expires.</li>
+						{/* <li>Quiz will be submitted automatically after the time limit expires.</li> */}
 					</ul>
 				</div>
 
@@ -105,7 +136,17 @@ export const TakeQuizModal = () => {
 							Cancel
 						</Button>
 					</DialogClose>
-					<Button className="w-32 text-sm">Start Quiz</Button>
+					<Button
+						className="w-32 text-sm"
+						disabled={attempts_percentage === 100}
+						onClick={() =>
+							router.push({
+								pathname: "/dashboard/courses/[id]/quiz",
+								query: { id: course_id, module_id: lesson.id },
+							})
+						}>
+						Start Quiz
+					</Button>
 				</div>
 			</DialogContent>
 		</Dialog>

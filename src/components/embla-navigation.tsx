@@ -54,7 +54,7 @@ export const NextPrevButtons = ({ emblaApi }: PropType) => {
 		usePrevNextButtons(emblaApi);
 
 	return (
-		<div className="flex flex-row gap-4">
+		<div className="hidden md:flex md:flex-row md:gap-4">
 			<button
 				type="button"
 				disabled={prevBtnDisabled}

@@ -1,4 +1,5 @@
-import { RiArrowRightSLine } from "@remixicon/react";
+import { RiArrowLeftSLine } from "@remixicon/react";
+import { useRouter } from "next/router";
 import { Button } from "../ui/button";
 import {
 	Dialog,
@@ -9,14 +10,17 @@ import {
 } from "../ui/dialog";
 
 export const QuitQuizModal = () => {
+	const router = useRouter();
+
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
-				<Button className="w-48 text-sm">
-					<span>Go to Next Chapter</span>
-					<RiArrowRightSLine className="size-4" />
+				<Button className="h-fit w-fit" size="cmd" variant="cmd">
+					<RiArrowLeftSLine />
+					<span>Quit</span>
 				</Button>
 			</DialogTrigger>
+
 			<DialogContent className="flex w-[400px] flex-col gap-4">
 				<DialogTitle className="text-2xl font-bold">Quit Quiz</DialogTitle>
 
@@ -31,7 +35,9 @@ export const QuitQuizModal = () => {
 							Cancel
 						</Button>
 					</DialogClose>
-					<Button className="w-32 text-sm">Start Quiz</Button>
+					<Button className="w-40 text-sm" onClick={() => router.push("/dashboard/courses")}>
+						I Understand, Quit
+					</Button>
 				</div>
 			</DialogContent>
 		</Dialog>
