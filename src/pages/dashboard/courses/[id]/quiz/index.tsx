@@ -170,8 +170,8 @@ const Page = () => {
 										{capitalize(currentQuestion?.question_content) ?? ""}
 									</p>
 
-									{currentQuestion.question_images.length ? (
-										currentQuestion.question_images.length > 1 ? (
+									{currentQuestion?.question_images.length ? (
+										currentQuestion?.question_images.length > 1 ? (
 											<div className="grid grid-cols-2 gap-4 p-4">
 												{currentQuestion.question_images.map((image, index) => (
 													<div key={index} className="relative rounded-md p-2">
@@ -200,19 +200,19 @@ const Page = () => {
 									) : null}
 								</div>
 
-								{currentQuestion.question_question_type.trim() === "MULTICHOICE" ? (
+								{currentQuestion?.question_question_type.trim() === "MULTICHOICE" ? (
 									<SingleChoiceAnswerType
 										options={currentQuestion.options}
 										selectAnswer={selectAnswer}
 										isAnswer={isAnswer}
 									/>
-								) : currentQuestion.question_question_type.trim() === "YES_OR_NO" ? (
+								) : currentQuestion?.question_question_type.trim() === "YES_OR_NO" ? (
 									<BooleanChoiceAnswerType
 										options={currentQuestion.options}
 										selectAnswer={selectAnswer}
 										isAnswer={isAnswer}
 									/>
-								) : currentQuestion.question_question_type.trim() === "FILL_IN_THE_GAP" ? (
+								) : currentQuestion?.question_question_type.trim() === "FILL_IN_THE_GAP" ? (
 									<ShortAnswerAnswerType
 										answered={answered}
 										selectAnswer={selectAnswer}

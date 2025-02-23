@@ -26,7 +26,6 @@ const fileIcon: Record<FiletypeProps | (string & {}), RemixiconComponentType> = 
 	txt: RiFileTextLine,
 };
 
-
 export const Resources = () => {
 	const currentChapter = useChapterStore((state) => state.chapter);
 	const currentModule = useChapterStore((state) => state.module);

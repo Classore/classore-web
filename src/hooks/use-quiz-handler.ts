@@ -58,7 +58,7 @@ export const useQuizHandler = ({
 
 	const handleNavigation = React.useCallback(
 		(direction: "next" | "previous" | "skip") => {
-			if (direction === "next" && !isAnswered(currentQuestion.question_id)) {
+			if (direction === "next" && !isAnswered(currentQuestion?.question_id)) {
 				toast.error("Please select an answer");
 				return;
 			}
