@@ -1,3 +1,4 @@
+import { ModalArt } from "@/assets/illustrations";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { dashboard_links } from "@/config";
 import { getInitials, normalize } from "@/lib";
@@ -41,8 +42,12 @@ export const MobileAppbar = () => {
 					</button>
 				</SheetTrigger>
 
-				<SheetContent className="flex w-[90%] flex-col gap-4 py-4">
-					<SheetClose className="z-50 ml-auto grid size-7 place-items-center rounded-full bg-neutral-200">
+				<SheetContent className="modal-primary flex w-[90%] flex-col gap-4 py-4">
+					<div className="absolute -top-80 left-0 z-30">
+						<ModalArt />
+					</div>
+
+					<SheetClose className="z-50 ml-auto grid size-7 place-items-center rounded-full bg-white">
 						<XClose height={18} width={18} />
 					</SheetClose>
 

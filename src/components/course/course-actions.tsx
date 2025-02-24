@@ -56,7 +56,7 @@ export const CourseActions = ({ chapters }: CourseActionsProps) => {
 					Take Quiz
 				</Button>
 
-				<Button onClick={goToNextLesson} className="w-44 text-sm">
+				<Button onClick={goToNextLesson} className="w-48 text-sm">
 					<span>Go to Next Lesson</span>
 					<RiArrowRightSLine className="size-4" />
 				</Button>

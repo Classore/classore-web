@@ -46,7 +46,7 @@ const Page = () => {
 		<>
 			<Seo title="Categories" />
 			<DashboardLayout>
-				<div className="relative flex w-full items-center justify-between overflow-hidden rounded-2xl bg-[#F8F5FF] p-4 text-black md:px-10 md:py-[52px] lg:h-[297px] lg:gap-[177px]">
+				<div className="relative flex w-full items-center justify-between overflow-hidden rounded-2xl bg-[#F8F5FF] p-4 text-black md:px-10 md:py-[52px] lg:min-h-[297px] lg:gap-[177px]">
 					<div className="flex max-w-[559px] flex-col gap-4">
 						<h1 className="text-2xl font-bold lg:text-4xl">
 							Let&apos;s get started with your learning journey
