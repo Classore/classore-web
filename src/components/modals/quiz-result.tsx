@@ -98,7 +98,7 @@ export const QuizResultModal = ({
 						<>
 							<Button
 								onClick={retakeQuiz}
-								disabled={attempts_percentage === 100}
+								disabled={result.attempts_left <= 0}
 								className="w-32 text-sm font-medium text-neutral-400"
 								variant="outline">
 								Retake Quiz
@@ -119,7 +119,7 @@ export const QuizResultModal = ({
 								Cancel
 							</Button>
 							<Button
-								disabled={attempts_percentage === 100}
+								disabled={result.attempts_left <= 0}
 								className="w-32 text-sm"
 								onClick={retakeQuiz}>
 								Retake Quiz

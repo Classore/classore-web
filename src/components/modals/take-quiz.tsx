@@ -111,7 +111,7 @@ export const TakeQuizModal = ({ open, setOpen }: TakeQuizModal) => {
 						) : null}
 					</ul>
 				</div>
-				<div className="flex w-full flex-col gap-3 rounded-lg bg-neutral-100 p-4 transition-all duration-700">
+				<div className="flex w-full flex-col gap-2 rounded-lg bg-neutral-100 p-4 transition-all duration-700">
 					<p className="text-sm font-medium text-neutral-500">Instructions</p>
 
 					<ul className="list-outside list-disc space-y-2 pl-4 text-xs text-neutral-400">
@@ -126,7 +126,7 @@ export const TakeQuizModal = ({ open, setOpen }: TakeQuizModal) => {
 							Time Limit: Complete the quiz within{" "}
 							{chapter?.timer_hour ? `${chapter.timer_hour}hr` : ""} {chapter?.timer_minute}min.
 						</li>
-						{/* <li>Quiz will be submitted automatically after the time limit expires.</li> */}
+						<li>Quiz will be submitted automatically after the time limit expires.</li>
 					</ul>
 				</div>
 
@@ -138,7 +138,7 @@ export const TakeQuizModal = ({ open, setOpen }: TakeQuizModal) => {
 					</DialogClose>
 					<Button
 						className="w-32 text-sm"
-						disabled={attempts_percentage === 100}
+						disabled={lesson.quiz_attempts_left <= 0}
 						onClick={() =>
 							router.push({
 								pathname: "/dashboard/courses/[id]/quiz",
