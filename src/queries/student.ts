@@ -47,6 +47,7 @@ export type MyCoursesResp = PaginatedResponse<{
 	no_of_videos: number;
 	no_of_attachments: number;
 	examBundle_banner: string;
+	total_hours: number;
 }>;
 type Params = Partial<
 	PaginationProps & {

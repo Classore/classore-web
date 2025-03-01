@@ -84,8 +84,9 @@ export const footer_links = [
 		label: "2",
 		links: [
 			{ name: "What We Offer", href: "/what-we-offer" },
-			{ name: "Testimomnials", href: "/testimonials" },
+			{ name: "Testimonials", href: "/testimonials" },
 			{ name: "FAQs", href: "/frequently-asked-questions" },
+			{ name: "Privacy Policy", href: "/privacy-policy" },
 		],
 	},
 ];

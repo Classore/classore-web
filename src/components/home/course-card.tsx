@@ -17,7 +17,9 @@ export const CourseCard = ({ course }: Props) => {
 			<div className="relative aspect-[1.96/1] w-full rounded-lg">
 				<div className="absolute right-[10px] top-2 !z-[5] flex items-center gap-1 rounded bg-white p-1">
 					<RiTimeLine size={18} />
-					<span className="text-sm">15hrs</span>
+					<span className="text-sm">
+						{course.total_hours}hr{course.total_hours > 1 && "s"}
+					</span>
 				</div>
 
 				<Image
