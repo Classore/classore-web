@@ -39,7 +39,11 @@ const Page = () => {
 
 	const { id, module_id } = router.query;
 
-	const { data: course } = useGetCourse({
+	const {
+		data: course,
+		isError,
+		error,
+	} = useGetCourse({
 		course_id: String(id),
 	});
 	const { data: chapter } = useGetChapter({
@@ -148,6 +152,25 @@ const Page = () => {
 					<div className="flex w-full items-center justify-center gap-2 p-4 text-primary-300">
 						<Spinner variant="primary" />
 						<p className="text-sm">Getting lesson quiz...</p>
+					</div>
+				) : isError ? (
+					<div className="mx-auto flex w-full max-w-96 flex-col items-center justify-center gap-2 p-4">
+						{error?.status === 403 ? (
+							<>
+								<p className="font-semibold">Access denied</p>
+								<p className="text-center text-sm text-neutral-400">
+									Your bundle plan has expired. Please renew your subscription to continue
+									accessing this bundle.
+								</p>
+							</>
+						) : (
+							<>
+								<p className="font-semibold">Error fetching chapter details</p>
+								<p className="text-sm text-neutral-400">
+									Please refresh the page to try again {error.status}
+								</p>
+							</>
+						)}
 					</div>
 				) : (
 					<div className="h-full w-full py-8">

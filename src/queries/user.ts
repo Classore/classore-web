@@ -1,6 +1,12 @@
 import { endpoints } from "@/config";
 import { axios } from "@/lib";
-import type { HttpResponse, PaginatedResponse, PaginationProps } from "@/types";
+import type {
+	HttpResponse,
+	MyPlan,
+	PaginatedResponse,
+	PaginationProps,
+	SinglePlan,
+} from "@/types";
 import type {
 	LeaderboardItemProps,
 	NewQuestionProps,
@@ -142,12 +148,49 @@ const submitQuiz = async (data: SubmitQuizDto) => {
 		.then((res) => res.data);
 };
 
+// GET MY PLANS
+const getMyPlans = async () => {
+	return axios
+		.get<HttpResponse<PaginatedResponse<MyPlan>>>(endpoints().user.get_my_plans, {
+			params: {
+				limit: 15,
+				page: 1,
+			},
+		})
+		.then((res) => res.data);
+};
+
+// Get single plan
+const getSinglePlan = async (id: string) => {
+	return axios
+		.get<HttpResponse<SinglePlan>>(endpoints(id).user.get_single_plan)
+		.then((res) => res.data);
+};
+
+// renew plan
+type RenewPlanResp = {
+	authorization_url: string;
+	access_code: string;
+	reference: string;
+	amount: number;
+};
+const renewPlan = async (id: string) => {
+	return axios
+		.put<HttpResponse<RenewPlanResp>>(endpoints(id).user.renew_plan)
+		.then((res) => res.data);
+};
+
+
 export {
 	fetchQuestions,
 	getMyCourses,
+	getMyPlans,
+	getSinglePlan,
 	getUpcomingEvents,
+	renewPlan,
 	startCourse,
 	submitQuiz,
 	viewCourse,
 	viewLeaderboard,
 };
+
