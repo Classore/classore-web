@@ -39,6 +39,13 @@ export const endpoints = (id?: string) => {
 		get_leaderboard: "/student/leaderboard/fetch-all",
 	} as const;
 
+	const test_center = {
+		get_all: "/test-center",
+		get_one: `/test-center/${id}`,
+		get_questions: `/test-center/questions/${id}`,
+		submit: `/test-center/submit/${id}`,
+	} as const;
+
 	const user = {
 		my_courses: "student/my-courses",
 		view_course: `/student/view-course/${id}`,
@@ -55,5 +62,5 @@ export const endpoints = (id?: string) => {
 		get: `/mail/fetch-waitlist`,
 	};
 
-	return { auth, courses, school, user, waitlist, student };
+	return { auth, courses, school, user, waitlist, student, test_center };
 };
