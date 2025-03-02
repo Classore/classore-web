@@ -6,10 +6,15 @@ import { Bundle } from "@/components/course";
 import { DashboardLayout } from "@/components/layouts";
 import { Seo, Spinner } from "@/components/shared";
 import { Button } from "@/components/ui/button";
-import { useGetProfile } from "@/queries/student";
+import { getMyPlans } from "@/queries/user";
+import { useQuery } from "@tanstack/react-query";
 
 const Page = () => {
-	const { data, isPending } = useGetProfile();
+	const { data, isPending } = useQuery({
+		queryKey: ["my-plans"],
+		queryFn: getMyPlans,
+		select: (data) => data.data.data,
+	});
 
 	return (
 		<>
@@ -47,7 +52,7 @@ const Page = () => {
 							<Spinner variant="primary" />
 						</div>
 					) : (
-						data?.time_line.map((bundle) => <Bundle key={bundle.id} bundle={bundle} />)
+						data?.map((bundle) => <Bundle key={bundle.id} bundle={bundle} />)
 					)}
 				</div>
 			</DashboardLayout>

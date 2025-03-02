@@ -98,11 +98,18 @@ const getChapter = async (id: string) => {
 		>(endpoints(id).student.get_chapter)
 		.then((res) => res.data);
 };
-export const useGetChapter = ({ chapter_id }: { chapter_id: string }) => {
+export const useGetChapter = ({
+	chapter_id,
+	enabled,
+}: {
+	chapter_id: string;
+	enabled?: boolean;
+}) => {
 	return useQuery({
 		queryKey: ["chapter", { chapter_id }],
 		queryFn: chapter_id ? () => getChapter(chapter_id) : skipToken,
 		select: (data) => data.data,
+		enabled,
 	});
 };
 

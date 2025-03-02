@@ -9,10 +9,25 @@ export const queryClient = new QueryClient({
 	defaultOptions: {
 		queries: {
 			staleTime,
-			refetchOnWindowFocus: true,
+			refetchOnWindowFocus: false,
 			refetchOnMount: true,
 			refetchOnReconnect: true,
-			retry: true,
+			/**
+			 * Determines whether a query should be retried based on the failure count and error status.
+			 * Retries are not attempted if the error status is 400 or 401.
+			 * Allows a maximum of 2 retries for other errors.
+			 */
+			retry: (failureCount, error) => {
+				if (
+					error?.response?.status === 400 ||
+					error?.response?.status === 401 ||
+					error?.response?.status === 403
+				) {
+					return false;
+				}
+
+				return failureCount <= 2;
+			},
 			retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 3000),
 		},
 		mutations: {

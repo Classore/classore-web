@@ -11,6 +11,7 @@ const tabs = ["ongoing", "pending", "completed"];
 export const MyCourses = () => {
 	const [selected, setSelected] = React.useState(tabs[0] ?? "");
 	const [emblaRef, emblaApi] = useEmblaCarousel();
+
 	const { data: courses, isPending } = useGetMyCourses({
 		status: selected.toUpperCase() as "ONGOING" | "PENDING" | "COMPLETED",
 	});

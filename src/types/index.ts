@@ -570,3 +570,58 @@ export type ChapterResp = {
 	no_of_quizes: number;
 	overall_attempts: number;
 };
+
+export type MyPlan = {
+	id: string;
+	user_id: string;
+	time_line_id: string;
+	status: string;
+	exam_type: {
+		id: string;
+		name: string;
+	};
+	chosen_bundle: {
+		id: string;
+		name: string;
+		banner: string;
+	};
+	number_of_subjects: number;
+	start_date: string;
+	end_date: string;
+	amount_paid: number;
+	renewal_amount: number;
+};
+
+export type SinglePlan = {
+	id: string;
+	createdOn: string;
+	user_id: string;
+	exam_type: {
+		id: string;
+		name: string;
+	};
+	chosen_bundle: {
+		id: string;
+		name: string;
+		banner: string;
+		amount: number;
+		max_subjects: number;
+		allowed_subjects: number;
+		amount_per_subject: number;
+	};
+	study_timeline: string;
+	timelines: Array<string>;
+	transaction_log: string;
+	subjects: Array<{
+		id: string;
+		name: string;
+		banner: string;
+		rating: string;
+	}>;
+	start_date: string;
+	end_date: string;
+	status: string;
+	is_paid: boolean;
+	amount_paid: number;
+	renewal_amount: number;
+};
