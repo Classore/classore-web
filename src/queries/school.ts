@@ -102,6 +102,29 @@ export const useGetSubjects = () => {
 	return useQuery(getSubjectsQueryOptions);
 };
 
+// GET A SUBJECT
+type SubjectResp = {
+	subject_id: string;
+	subject_name: string;
+	subject_class: string;
+	subject_examination: string;
+	subject_examination_bundle: string;
+};
+const getSubject = async (id: string) => {
+	return axios
+		.get<HttpResponse<SubjectResp>>(endpoints(id).school.get_subject)
+		.then((res) => res.data);
+};
+export const useGetSubject = (id: string) => {
+	return useQuery({
+		queryKey: ["subject", { id }],
+		queryFn: () => getSubject(id),
+		select: (data) => data.data,
+		staleTime: Infinity,
+		gcTime: Infinity,
+	});
+};
+
 // <-- GET CLASSES -->
 type ClassesResp = PaginatedResponse<{
 	class_id: string;

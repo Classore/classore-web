@@ -6,7 +6,7 @@ const Page = () => {
 		<>
 			<Seo title="Test Center" />
 			<DashboardLayout>
-					<p>Take exam</p>
+				<p>Take exam</p>
 			</DashboardLayout>
 		</>
 	);

@@ -25,6 +25,7 @@ export const endpoints = (id?: string) => {
 		get_exam_bundles: "/school/exams/fetch-exam-bundles",
 		get_single_exam_bundle: `/school/exams/exam-bundle/view-one/${id}`,
 		get_subjects: "/school/subject/fetch-all",
+		get_subject: `/school/subject/view-one/${id}`,
 		get_classes: "/school/subject/fetch-classes",
 		create_study_timeline: "/school/exams/create-study-timeline",
 		vet_study_pack: "/school/exams/vet-study-pack-options",
@@ -39,6 +40,13 @@ export const endpoints = (id?: string) => {
 		get_leaderboard: "/student/leaderboard/fetch-all",
 	} as const;
 
+	const test_center = {
+		get_all: "/test-center",
+		get_one: `/test-center/${id}`,
+		get_questions: `/test-center/questions/${id}`,
+		submit: `/test-center/submit/${id}`,
+	} as const;
+
 	const user = {
 		my_courses: "student/my-courses",
 		view_course: `/student/view-course/${id}`,
@@ -48,6 +56,9 @@ export const endpoints = (id?: string) => {
 		leaderboard: "/student/leaderboard/fetch-all",
 		fetch_questions: "/school/subject/fetch-questions",
 		submit_quiz: "/school/subject/submit-quiz",
+		get_my_plans: "/student/my-plans",
+		get_single_plan: `/student/my-plans/view-one/${id}`,
+		renew_plan: `/student/my-plans/renew/${id}`,
 	} as const;
 
 	const waitlist = {
@@ -55,5 +66,5 @@ export const endpoints = (id?: string) => {
 		get: `/mail/fetch-waitlist`,
 	};
 
-	return { auth, courses, school, user, waitlist, student };
+	return { auth, courses, school, user, waitlist, student, test_center };
 };

@@ -9,7 +9,7 @@ import trophy from "@/assets/illustrations/trophy.svg";
 import { CourseActions } from "@/components/course/course-actions";
 import { ChapterModules, QuizHistory, Resources, Transcript } from "@/components/home";
 import { DashboardLayout } from "@/components/layouts";
-import { JoinCommunityModal } from "@/components/modals";
+import { JoinCommunityModal, RenewalModal } from "@/components/modals";
 import {
 	AvatarGroup,
 	BackBtn,
@@ -23,7 +23,9 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { capitalize, getInitials } from "@/lib";
 import { useGetChapter, useGetCourse } from "@/queries/student";
+import { getMyPlans } from "@/queries/user";
 import { setChapter, useChapterStore } from "@/store/z-store/chapter";
+import { useQuery } from "@tanstack/react-query";
 
 const tabs = ["summary", "transcript", "resources", "quiz history"] as const;
 type Tabs = (typeof tabs)[number];
@@ -44,11 +46,24 @@ const images = [
 
 const Page = () => {
 	const router = useRouter();
-	const { id } = router.query;
+	const { id, bundle: bundle_id } = router.query;
+	const [open, setOpen] = React.useState(false);
 
 	const { module } = useChapterStore();
 
-	const { data: course, isPending } = useGetCourse({
+	const { data: plans } = useQuery({
+		queryKey: ["my-plans"],
+		queryFn: getMyPlans,
+		select: (data) => data.data.data,
+	});
+	const bundle = plans?.find((plan) => plan.chosen_bundle.id === bundle_id);
+
+	const {
+		data: course,
+		isPending,
+		isError,
+		error,
+	} = useGetCourse({
 		course_id: id as string,
 	});
 
@@ -82,6 +97,12 @@ const Page = () => {
 		return currentModule?.tutor;
 	}, [course]);
 
+	React.useEffect(() => {
+		if (isError && error?.status === 403) {
+			setOpen(true);
+		}
+	}, [isError, error]);
+
 	return (
 		<>
 			<Seo title={capitalize(course?.subject_id.name ?? "Course Details")} />
@@ -91,6 +112,27 @@ const Page = () => {
 					<div className="flex w-full flex-col items-center justify-center gap-1 py-4">
 						<Spinner variant="primary" />
 						<p className="text-xs text-primary-300">Getting course details...</p>
+					</div>
+				) : isError ? (
+					<div className="mx-auto flex w-full max-w-96 flex-col items-center justify-center gap-2 p-4">
+						{error?.status === 403 ? (
+							<>
+								<p className="font-semibold">Access denied</p>
+								<p className="text-center text-sm text-neutral-400">
+									Your bundle plan has expired. Please renew your subscription to continue
+									accessing this bundle.
+								</p>
+
+								<Button onClick={() => setOpen(true)}>Renew Plan</Button>
+							</>
+						) : (
+							<>
+								<p className="font-semibold">Error fetching chapter details</p>
+								<p className="text-sm text-neutral-400">
+									Please refresh the page to try again {error.status}
+								</p>
+							</>
+						)}
 					</div>
 				) : (
 					<>
@@ -236,6 +278,8 @@ const Page = () => {
 					</>
 				)}
 			</DashboardLayout>
+
+			{bundle && <RenewalModal open={open} setOpen={setOpen} bundle={bundle} />}
 		</>
 	);
 };

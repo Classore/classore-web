@@ -7,12 +7,52 @@ import type { MyCoursesResp } from "@/queries/student";
 
 interface Props {
 	course: MyCoursesResp["data"][number];
+	onClick?: () => void;
 }
 
-export const CourseCard = ({ course }: Props) => {
+const Component = ({
+	children,
+	onClick,
+	className,
+	id,
+	bundle,
+}: {
+	children: React.ReactNode;
+	onClick?: () => void;
+	className: string;
+	id: string;
+	bundle: string;
+}) => {
+	if (onClick) {
+		return (
+			<button type="button" onClick={onClick} className={className} id={id}>
+				{children}
+			</button>
+		);
+	}
 	return (
 		<Link
-			href={`/dashboard/courses/${course.course_id}`}
+			href={{
+				pathname: `/dashboard/courses/${id}`,
+				query: {
+					bundle,
+				},
+			}}
+			className={className}
+			id={id}>
+			{children}
+		</Link>
+	);
+};
+
+// "ONGOING" | "PENDING" | "COMPLETED" | "EXPIRED";
+
+export const CourseCard = ({ course, onClick }: Props) => {
+	return (
+		<Component
+			id={course.course_id}
+			bundle={course.course_chosen_bundle}
+			onClick={onClick}
 			className="flex flex-col gap-3 rounded-lg border p-2.5 transition-all duration-700 hover:shadow-2xl md:w-96 md:min-w-[350px] md:p-4">
 			<div className="relative aspect-[1.96/1] w-full rounded-lg">
 				<div className="absolute right-[10px] top-2 !z-[5] flex items-center gap-1 rounded bg-white p-1">
@@ -34,7 +74,7 @@ export const CourseCard = ({ course }: Props) => {
 				/>
 			</div>
 
-			<div className="flex w-full flex-col">
+			<div className="flex w-full flex-col text-left">
 				<h5 className="font-medium capitalize">{course.subject_name} Tutorials</h5>
 				<p className="truncate text-sm text-neutral-400">
 					{capitalize(course.subject_description)}
@@ -64,6 +104,6 @@ export const CourseCard = ({ course }: Props) => {
 						className="h-full rounded-3xl bg-primary-400"></div>
 				</div>
 			</div>
-		</Link>
+		</Component>
 	);
 };

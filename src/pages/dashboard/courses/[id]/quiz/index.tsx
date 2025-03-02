@@ -39,7 +39,11 @@ const Page = () => {
 
 	const { id, module_id } = router.query;
 
-	const { data: course } = useGetCourse({
+	const {
+		data: course,
+		isError,
+		error,
+	} = useGetCourse({
 		course_id: String(id),
 	});
 	const { data: chapter } = useGetChapter({
@@ -149,6 +153,25 @@ const Page = () => {
 						<Spinner variant="primary" />
 						<p className="text-sm">Getting lesson quiz...</p>
 					</div>
+				) : isError ? (
+					<div className="mx-auto flex w-full max-w-96 flex-col items-center justify-center gap-2 p-4">
+						{error?.status === 403 ? (
+							<>
+								<p className="font-semibold">Access denied</p>
+								<p className="text-center text-sm text-neutral-400">
+									Your bundle plan has expired. Please renew your subscription to continue
+									accessing this bundle.
+								</p>
+							</>
+						) : (
+							<>
+								<p className="font-semibold">Error fetching chapter details</p>
+								<p className="text-sm text-neutral-400">
+									Please refresh the page to try again {error.status}
+								</p>
+							</>
+						)}
+					</div>
 				) : (
 					<div className="h-full w-full py-8">
 						<div className="container mx-auto grid h-full w-full grid-cols-4 gap-5">
@@ -170,8 +193,8 @@ const Page = () => {
 										{capitalize(currentQuestion?.question_content) ?? ""}
 									</p>
 
-									{currentQuestion.question_images.length ? (
-										currentQuestion.question_images.length > 1 ? (
+									{currentQuestion?.question_images.length ? (
+										currentQuestion?.question_images.length > 1 ? (
 											<div className="grid grid-cols-2 gap-4 p-4">
 												{currentQuestion.question_images.map((image, index) => (
 													<div key={index} className="relative rounded-md p-2">
@@ -200,19 +223,19 @@ const Page = () => {
 									) : null}
 								</div>
 
-								{currentQuestion.question_question_type.trim() === "MULTICHOICE" ? (
+								{currentQuestion?.question_question_type.trim() === "MULTICHOICE" ? (
 									<SingleChoiceAnswerType
 										options={currentQuestion.options}
 										selectAnswer={selectAnswer}
 										isAnswer={isAnswer}
 									/>
-								) : currentQuestion.question_question_type.trim() === "YES_OR_NO" ? (
+								) : currentQuestion?.question_question_type.trim() === "YES_OR_NO" ? (
 									<BooleanChoiceAnswerType
 										options={currentQuestion.options}
 										selectAnswer={selectAnswer}
 										isAnswer={isAnswer}
 									/>
-								) : currentQuestion.question_question_type.trim() === "FILL_IN_THE_GAP" ? (
+								) : currentQuestion?.question_question_type.trim() === "FILL_IN_THE_GAP" ? (
 									<ShortAnswerAnswerType
 										answered={answered}
 										selectAnswer={selectAnswer}
