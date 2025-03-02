@@ -1,14 +1,22 @@
 import { RiArrowDropDownLine, RiGiftLine, RiNotificationLine } from "@remixicon/react";
 
-import { Search } from "@/components/shared";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { AppStore, PlayStore } from "../shared/app-download";
 import { Separator } from "@/components/ui/separator";
-import { getInitials } from "@/lib";
-import { useUserStore } from "@/store/z-store";
-import { LogoutModal } from "../modals";
 import { SettingsDrawer } from "./settings-drawer";
+import { Button } from "@/components/ui/button";
+import { useUserStore } from "@/store/z-store";
+import { Search } from "@/components/shared";
+import { LogoutModal } from "../modals";
+import { getInitials } from "@/lib";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogTitle,
+	DialogTrigger,
+} from "../ui/dialog";
 
 export const Appbar = () => {
 	const { user } = useUserStore();
@@ -18,9 +26,31 @@ export const Appbar = () => {
 			<nav className="flex h-20 w-full items-center justify-between border-b border-b-neutral-200 bg-white/75 px-8 py-6 backdrop-blur-sm">
 				<Search />
 				<div className="flex w-fit items-center gap-x-3">
-					<Button className="w-fit" variant="outline">
-						<RiGiftLine size={24} /> Claim Points
-					</Button>
+					<Dialog>
+						<DialogTrigger asChild>
+							<button className="flex h-8 w-fit items-center gap-x-2 rounded-md border border-primary-400 px-3 text-sm text-primary-400 transition-all duration-300 hover:bg-primary-50 active:scale-95">
+								Download App
+							</button>
+						</DialogTrigger>
+						<DialogContent className="w-[400px]">
+							<div className="w-full space-y-4">
+								<div>
+									<DialogTitle>Download Mobile App</DialogTitle>
+									<DialogDescription>
+										Download the mobile app for a seamless experience on the go.
+									</DialogDescription>
+								</div>
+								<div className="h-[200px]"></div>
+								<div className="flex w-full items-center gap-x-5">
+									<AppStore />
+									<PlayStore />
+								</div>
+							</div>
+						</DialogContent>
+					</Dialog>
+					<button className="flex h-8 w-fit items-center gap-x-2 rounded-md border border-primary-400 px-3 text-sm text-primary-400 transition-all duration-300 hover:bg-primary-50 active:scale-95">
+						<RiGiftLine size={16} /> Claim Points
+					</button>
 					<Separator orientation="vertical" className="h-11 bg-neutral-300" />
 
 					<Popover>

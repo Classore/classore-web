@@ -23,7 +23,7 @@ export function DashboardLayout({ children, className }: DashboardLayoutProps) {
 
 	return (
 		<>
-			<main className="hidden lg:flex lg:h-screen lg:w-screen lg:items-center lg:bg-white">
+			<main className="hidden overflow-hidden lg:flex lg:h-screen lg:w-screen lg:items-center lg:bg-white">
 				<aside className="flex h-full w-[256px] min-w-[256px] flex-col justify-between border-r border-neutral-300 py-8">
 					<div className="flex w-full flex-col gap-8">
 						<div className="relative h-[30px] w-[135px] px-6">
@@ -79,12 +79,12 @@ export function DashboardLayout({ children, className }: DashboardLayoutProps) {
 					</div>
 				</aside>
 
-				<section className="flex h-full max-w-[calc(100vw-256px)] flex-1 flex-col">
+				<section className="flex h-screen max-w-[calc(100vw-256px)] flex-1 flex-col">
 					<Appbar />
 
 					<div
 						className={cn(
-							"flex w-full flex-col gap-6 overflow-y-auto px-3 py-6 md:px-8",
+							"flex h-[calc(100vh-80px)] w-full flex-col gap-6 overflow-y-auto px-3 py-6 md:px-8",
 							className
 						)}>
 						{children}
