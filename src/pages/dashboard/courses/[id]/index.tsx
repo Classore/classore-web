@@ -22,10 +22,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { capitalize, getInitials } from "@/lib";
-import { useGetChapter, useGetCourse } from "@/queries/student";
-import { getMyPlans } from "@/queries/user";
+import { useGetChapter, useGetCourse, useGetProfile } from "@/queries/student";
 import { setChapter, useChapterStore } from "@/store/z-store/chapter";
-import { useQuery } from "@tanstack/react-query";
 
 const tabs = ["summary", "transcript", "resources", "quiz history"] as const;
 type Tabs = (typeof tabs)[number];
@@ -50,13 +48,9 @@ const Page = () => {
 	const [open, setOpen] = React.useState(false);
 
 	const { module } = useChapterStore();
-
-	const { data: plans } = useQuery({
-		queryKey: ["my-plans"],
-		queryFn: getMyPlans,
-		select: (data) => data.data.data,
-	});
-	const bundle = plans?.find((plan) => plan.chosen_bundle.id === bundle_id);
+	const { data: profile } = useGetProfile();
+	const bundle =
+		profile && profile.time_line.find((item) => item.exam_bundle_details.id === bundle_id);
 
 	const {
 		data: course,

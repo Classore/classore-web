@@ -1,5 +1,5 @@
 import { useGetMyCourses } from "@/queries/student";
-import type { MyPlan } from "@/types";
+import type { UserProfileResp } from "@/types";
 import useEmblaCarousel from "embla-carousel-react";
 import * as React from "react";
 import { NextPrevButtons } from "../embla-navigation";
@@ -9,7 +9,7 @@ import { Spinner } from "../shared";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
 type BundleProps = {
-	bundle: MyPlan;
+	bundle: UserProfileResp["time_line"][number];
 };
 
 const tabs = ["ongoing", "completed", "pending"];
@@ -20,7 +20,7 @@ export const Bundle = ({ bundle }: BundleProps) => {
 	const [emblaRef, emblaApi] = useEmblaCarousel();
 
 	const { data: courses, isPending } = useGetMyCourses({
-		examination_bundle: bundle.chosen_bundle.id,
+		examination_bundle: bundle.exam_bundle_details.id,
 		status: selected as "ONGOING" | "PENDING" | "COMPLETED",
 	});
 
@@ -31,7 +31,7 @@ export const Bundle = ({ bundle }: BundleProps) => {
 					<div className="flex items-center justify-between">
 						<div className="flex flex-col gap-2 md:flex-row md:gap-4 lg:items-center">
 							<p className="text-lg font-medium capitalize">
-								{bundle.chosen_bundle.name} Prep Bundle
+								{bundle.exam_bundle_details.name} Prep Bundle
 							</p>
 							<TabsList>
 								{tabs?.map((tab) => (

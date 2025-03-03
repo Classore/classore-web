@@ -450,6 +450,11 @@ export type UserProfileResp = {
 			id: string;
 			name: string;
 		};
+		exam: {
+			id: string;
+			name: string;
+		};
+		renewal_amount: number;
 	}>;
 };
 
