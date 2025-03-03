@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import { formatCurrency } from "@/lib";
 import { renewPlan } from "@/queries/user";
-import type { MyPlan } from "@/types";
+import type { UserProfileResp } from "@/types";
 import { useMutation } from "@tanstack/react-query";
 import { Lock02 } from "@untitled-ui/icons-react";
 import * as React from "react";
@@ -11,11 +11,13 @@ import { Button } from "../ui/button";
 interface RenewalProps {
 	open: boolean;
 	setOpen: (open: boolean) => void;
-	bundle: MyPlan;
+	bundle: UserProfileResp["time_line"][number];
 }
 
 export const RenewalModal = ({ open, setOpen, bundle }: RenewalProps) => {
 	const [visible, setVisible] = React.useState(false);
+
+	console.log("bundle", bundle);
 
 	const { mutate, isPending } = useMutation({
 		mutationKey: ["renew"],
@@ -42,15 +44,17 @@ export const RenewalModal = ({ open, setOpen, bundle }: RenewalProps) => {
 				<ul className="flex flex-col gap-4">
 					<li>
 						<p className="text-sm text-neutral-400">Exam type:</p>
-						<p className="font-medium capitalize">{bundle.exam_type.name}</p>
+						<p className="font-medium capitalize">{bundle.exam.name}</p>
 					</li>
 					<li>
 						<p className="text-sm text-neutral-400">Bundle:</p>
-						<p className="font-medium capitalize">{bundle.chosen_bundle.name} Prep Bundle</p>
+						<p className="font-medium capitalize">
+							{bundle.exam_bundle_details.name} Prep Bundle
+						</p>
 					</li>
 					<li>
 						<p className="text-sm text-neutral-400">Number of subjects:</p>
-						<p className="font-medium capitalize">{bundle.number_of_subjects}</p>
+						<p className="font-medium capitalize">{bundle.subjects.length}</p>
 					</li>
 					<li>
 						<p className="text-sm text-neutral-400">Renewal amount:</p>
