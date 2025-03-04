@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { setToken } from "@/lib/cookies";
 import { SignUpMutation } from "@/queries";
+import { useUserStore } from "@/store/z-store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
@@ -53,6 +54,7 @@ const onboardSchema = z.object({
 type OnboardFormValues = z.infer<typeof onboardSchema>;
 
 const Page = () => {
+	const { setUser } = useUserStore();
 	const router = useRouter();
 	const {
 		control,
@@ -92,6 +94,7 @@ const Page = () => {
 
 			setToken(access_token);
 			localStorage.setItem("CLASSORE_USER", JSON.stringify(rest));
+			setUser(data.data.user_details);
 
 			router.push({
 				pathname: "/signup/student/verify-email",
@@ -154,6 +157,7 @@ const Page = () => {
 								className="col-span-full"
 								control={control}
 								name="password"
+								desc="Password must be 8 characters, 1 uppercase letter, 1 lowercase letter and 1 number"
 							/>
 							<Input
 								type="text"
