@@ -1,6 +1,6 @@
-import React from "react";
-import Image from "next/image";
 import { EXAMS } from "@/constants";
+import Image from "next/image";
+import React from "react";
 
 interface Props {
 	speed?: number;
