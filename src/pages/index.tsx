@@ -4,7 +4,6 @@ import Link from "next/link";
 
 import { PersonalizedPlanCard } from "@/components/home";
 import { MasonryLayout } from "@/components/layouts";
-import { Button } from "@/components/ui/button";
 import {
 	AvatarGroup,
 	Footer,
@@ -13,6 +12,7 @@ import {
 	Seo,
 	Ticker,
 } from "@/components/shared";
+import { Button } from "@/components/ui/button";
 import {
 	FREQUENTLY_ASKED_QUESTIONS,
 	INCENTIVES,
@@ -33,7 +33,7 @@ const Page = () => {
 
 	return (
 		<>
-			<Seo title="" />
+			<Seo title="Welcome to Classore" />
 
 			<Navbar />
 

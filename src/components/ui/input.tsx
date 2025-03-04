@@ -17,6 +17,7 @@ interface InputProps<T extends FieldValues>
 	control: Control<T>;
 	name: Path<T>;
 	type: React.HTMLInputTypeAttribute;
+	desc?: string;
 }
 
 const Input = <T extends FieldValues>({
@@ -26,6 +27,7 @@ const Input = <T extends FieldValues>({
 	control,
 	name,
 	type,
+	desc,
 	...props
 }: InputProps<T>) => {
 	const [togglePassword, setTogglePassword] = React.useState(false);
@@ -58,7 +60,7 @@ const Input = <T extends FieldValues>({
 				{type === "password" ? (
 					<button
 						type="button"
-						className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-300"
+						className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400"
 						onClick={() => setTogglePassword(!togglePassword)}>
 						{!togglePassword ? <Eye /> : <EyeSlash />}
 
@@ -68,6 +70,7 @@ const Input = <T extends FieldValues>({
 					</button>
 				) : null}
 			</div>
+			<p className="text-[10px] text-neutral-400">{desc}</p>
 
 			{error ? <ErrorMessage message={error.message} /> : null}
 		</div>

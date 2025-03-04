@@ -1,4 +1,4 @@
-import { capitalize, convertSecondsToMinSec } from "@/lib";
+import { convertSecondsToMinSec, sanitizeHtml } from "@/lib";
 import { useGetChapter } from "@/queries/student";
 import { setModule, useChapterStore } from "@/store/z-store/chapter";
 import {
@@ -63,9 +63,15 @@ export const ChapterModules = () => {
 	return (
 		<>
 			<div className="flex flex-col gap-6 pt-4">
-				<p className="text-sm leading-relaxed text-neutral-400">
+				<div
+					className="text-sm leading-relaxed text-neutral-400"
+					dangerouslySetInnerHTML={{
+						__html: sanitizeHtml(chapter?.content).replace(/\n/g, "<br />"),
+					}}
+				/>
+				{/* <p className="text-sm leading-relaxed text-neutral-400">
 					{capitalize(chapter?.content ?? "")}
-				</p>
+				</p> */}
 
 				<div className="w-full rounded-lg border border-neutral-200">
 					<div className="flex items-center gap-4 border-b border-b-neutral-200 px-6 py-4">
