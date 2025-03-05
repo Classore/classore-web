@@ -17,8 +17,6 @@ interface RenewalProps {
 export const RenewalModal = ({ open, setOpen, bundle }: RenewalProps) => {
 	const [visible, setVisible] = React.useState(false);
 
-	console.log("bundle", bundle);
-
 	const { mutate, isPending } = useMutation({
 		mutationKey: ["renew"],
 		mutationFn: () => renewPlan(bundle.id),

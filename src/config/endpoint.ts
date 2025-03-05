@@ -52,6 +52,7 @@ export const endpoints = (id?: string) => {
 		get_my_plans: "/student/my-plans",
 		get_single_plan: `/student/my-plans/view-one/${id}`,
 		renew_plan: `/student/my-plans/renew/${id}`,
+		update_course_progress: `/student/update-course-progress/${id}`,
 	} as const;
 
 	const waitlist = {
