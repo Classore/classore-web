@@ -198,7 +198,6 @@ const updateModuleProgress = async ({
 		.then((res) => res.data);
 };
 
-
 export {
 	fetchQuestions,
 	getMyCourses,
@@ -212,4 +211,3 @@ export {
 	viewCourse,
 	viewLeaderboard,
 };
-
