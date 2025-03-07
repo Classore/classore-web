@@ -69,27 +69,36 @@ export const ChapterModules = () => {
 						__html: sanitizeHtml(chapter?.content).replace(/\n/g, "<br />"),
 					}}
 				/>
-				{/* <p className="text-sm leading-relaxed text-neutral-400">
-					{capitalize(chapter?.content ?? "")}
-				</p> */}
 
 				<div className="w-full rounded-lg border border-neutral-200">
-					<div className="flex items-center gap-4 border-b border-b-neutral-200 px-6 py-4">
-						<div className="grid size-8 place-items-center rounded-md bg-neutral-100">
-							<RiFolderVideoLine className="size-4 text-neutral-700" />
-						</div>
-						<div className="flex flex-col gap-1">
-							<h3 className="font-semibold capitalize">{chapter?.name}</h3>
-							<div className="flex flex-wrap items-center gap-2 text-sm text-neutral-400">
-								<div className="flex items-center gap-1">
-									<RiFileTextLine size={18} />
-									<span>35 Resources</span>
-								</div>
-								<div className="flex items-center gap-1">
-									<RiFileTextLine size={18} />
-									<span>{chapter.no_of_quizes} Quizzes</span>
+					<div className="flex items-center justify-between gap-4 border-b border-b-neutral-200 px-6 py-4">
+						<div className="flex items-center gap-4">
+							<div className="grid size-8 place-items-center rounded-md bg-neutral-100">
+								<RiFolderVideoLine className="size-4 text-neutral-700" />
+							</div>
+							<div className="flex flex-col gap-1">
+								<h3 className="font-semibold capitalize">{chapter?.name}</h3>
+								<div className="flex flex-wrap items-center gap-2 text-sm text-neutral-400">
+									<div className="flex items-center gap-1">
+										<RiFileTextLine size={18} />
+										<span>35 Resources</span>
+									</div>
+									<div className="flex items-center gap-1">
+										<RiFileTextLine size={18} />
+										<span>{chapter.no_of_quizes} Quizzes</span>
+									</div>
 								</div>
 							</div>
+						</div>
+
+						<div className="flex items-center gap-2">
+							<div className="flex h-[6px] w-16 items-center overflow-hidden rounded-3xl bg-[#efefef]">
+								<div
+									style={{ width: `${chapter.current_chapter_progress_percentage}%` }}
+									className="h-full rounded-3xl bg-primary-400"
+								/>
+							</div>
+							<p className="text-xs font-bold">{chapter.current_chapter_progress_percentage}%</p>
 						</div>
 					</div>
 

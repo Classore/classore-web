@@ -148,10 +148,10 @@ const Page = () => {
 						</div>
 						<div className="flex w-full flex-col gap-8 lg:grid lg:grid-cols-3">
 							<div className="col-span-2 flex w-full flex-col gap-4">
-								{/* <VideoPlayer src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" /> */}
 								<VideoPlayer
 									src={currentModule?.video_array.at(0)?.secure_url ?? ""}
 									moduleId={module}
+									moduleProgress={chapter?.current_module_progress_percentage}
 								/>
 								<div className="flex w-full items-center justify-between">
 									<h3 className="text-balance text-xl font-semibold capitalize">
