@@ -180,6 +180,24 @@ const renewPlan = async (id: string) => {
 		.then((res) => res.data);
 };
 
+type UpdateModulePayload = {
+	course_id: string;
+	current_progress: number;
+	module_id: string;
+};
+const updateModuleProgress = async ({
+	course_id,
+	current_progress,
+	module_id,
+}: UpdateModulePayload) => {
+	return axios
+		.put<HttpResponse<null>>(endpoints(course_id).user.update_course_progress, {
+			current_progress,
+			module_id,
+		})
+		.then((res) => res.data);
+};
+
 
 export {
 	fetchQuestions,
@@ -190,6 +208,7 @@ export {
 	renewPlan,
 	startCourse,
 	submitQuiz,
+	updateModuleProgress,
 	viewCourse,
 	viewLeaderboard,
 };

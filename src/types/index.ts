@@ -512,6 +512,16 @@ export type ChapterResp = {
 	attempt_reset: number;
 	current_chapter_module: string;
 	is_completed: boolean;
+	current_chapter_progress_percentage: number;
+	current_module_progress_percentage: number;
+	current_chapter_module_details: {
+		id: string;
+		title: string;
+		sequence: number;
+		content: string;
+		attachments: Array<string>;
+		progress: number;
+	};
 	modules: Array<{
 		id: string;
 		createdOn: string;
