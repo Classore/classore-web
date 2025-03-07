@@ -223,7 +223,8 @@ export const VideoPlayer = ({ src, moduleId, moduleProgress }: Props) => {
 		}
 	}, [video, isLoading, moduleProgress]);
 
-	const mutation = useMutation({
+	// *this should be refactored*
+	useMutation({
 		mutationFn: updateModuleProgress,
 		onMutate: () => {
 			// Generate a unique identifier for this mutation (e.g., timestamp)
@@ -238,23 +239,24 @@ export const VideoPlayer = ({ src, moduleId, moduleProgress }: Props) => {
 			}
 		},
 	});
-	const handleUpdate = async () => {
-		if (!video.current) return;
 
-		// Generate a unique identifier for this mutation (e.g., timestamp)
-		const mutationId = crypto.randomUUID();
-		latestMutationRef.current = mutationId;
+	// const handleUpdate = async () => {
+	// 	if (!video.current) return;
 
-		const percentage = Math.floor(
-			(video.current.currentTime / video.current.duration) * 100
-		);
-		// Call the mutation with the unique identifier as context
-		await mutation.mutateAsync({
-			course_id: "",
-			current_progress: percentage,
-			module_id: "",
-		});
-	};
+	// 	// Generate a unique identifier for this mutation (e.g., timestamp)
+	// 	const mutationId = crypto.randomUUID();
+	// 	latestMutationRef.current = mutationId;
+
+	// 	const percentage = Math.floor(
+	// 		(video.current.currentTime / video.current.duration) * 100
+	// 	);
+	// 	// Call the mutation with the unique identifier as context
+	// 	await mutation.mutateAsync({
+	// 		course_id: "",
+	// 		current_progress: percentage,
+	// 		module_id: "",
+	// 	});
+	// };
 
 	return (
 		<div
