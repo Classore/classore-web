@@ -11,16 +11,21 @@ import { LoaderCircle } from "lucide-react";
 import React from "react";
 
 import { formatTime } from "@/lib";
+import { updateModuleProgress } from "@/queries/user";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface Props {
 	src: string;
 	moduleId?: string;
+	moduleProgress: number | undefined;
 }
 
-export const VideoPlayer = ({ src, moduleId }: Props) => {
+export const VideoPlayer = ({ src, moduleId, moduleProgress }: Props) => {
+	const queryClient = useQueryClient();
 	const container = React.useRef<HTMLDivElement>(null)!;
 	const video = React.useRef<HTMLVideoElement>(null)!;
 	const scrub = React.useRef<HTMLDivElement>(null)!;
+	const latestMutationRef = React.useRef<string | null>(null);
 
 	const [showControls, setShowControls] = React.useState(false);
 	const [isFullscreen, setIsFullscreen] = React.useState(false);
@@ -208,6 +213,48 @@ export const VideoPlayer = ({ src, moduleId }: Props) => {
 			document.removeEventListener("mouseup", handleScrubEnd);
 		};
 	}, [handleScrubDrag, handleScrubEnd, video]);
+
+	// FIXME: This is not smooth, but does the job
+	React.useEffect(() => {
+		if (video.current && !isLoading && moduleProgress) {
+			const currentProgress = ((moduleProgress ?? 0) / 100) * (video.current?.duration ?? 0);
+			video.current.currentTime = currentProgress;
+			// video.current.NETWORK_LOADING
+		}
+	}, [video, isLoading, moduleProgress]);
+
+	const mutation = useMutation({
+		mutationFn: updateModuleProgress,
+		onMutate: () => {
+			// Generate a unique identifier for this mutation (e.g., timestamp)
+			const mutationId = crypto.randomUUID();
+			return { mutationId };
+		},
+		onSuccess: (_data, _variables, context) => {
+			// only refetch the course and chapter when the mutation is the latest one
+			if (context?.mutationId === latestMutationRef.current) {
+				queryClient.invalidateQueries({ queryKey: ["course"] });
+				queryClient.invalidateQueries({ queryKey: ["chapter"] });
+			}
+		},
+	});
+	const handleUpdate = async () => {
+		if (!video.current) return;
+
+		// Generate a unique identifier for this mutation (e.g., timestamp)
+		const mutationId = crypto.randomUUID();
+		latestMutationRef.current = mutationId;
+
+		const percentage = Math.floor(
+			(video.current.currentTime / video.current.duration) * 100
+		);
+		// Call the mutation with the unique identifier as context
+		await mutation.mutateAsync({
+			course_id: "",
+			current_progress: percentage,
+			module_id: "",
+		});
+	};
 
 	return (
 		<div

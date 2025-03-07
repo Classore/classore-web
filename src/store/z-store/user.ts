@@ -8,16 +8,25 @@ interface UserStore {
 	user: Maybe<UserProps>;
 	signIn: (user: UserProps, token: string) => void;
 	signOut: () => void;
+	setUser: (user: UserProps) => void;
 }
 
 const initialState: UserStore = {
 	user: null,
 	signIn: () => {},
 	signOut: () => {},
+	setUser: () => {},
 };
 
 const useUserStore = createPersistMiddleware<UserStore>("classore-user", (set) => ({
 	...initialState,
+	setUser: (user) => {
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const { access_token, password, ...rest } = user;
+
+		// @ts-expect-error nil
+		set(() => ({ user: rest }));
+	},
 	signIn: (user, token) => {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const { access_token, password, ...rest } = user;
