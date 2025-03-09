@@ -459,36 +459,37 @@ export type UserProfileResp = {
 };
 
 export type SingleCourseResp = {
-	id: string;
-	user_id: string;
+	id: string
+	user_id: string
 	subject_id: {
-		id: string;
-		name: string;
-		description: string;
-		banner: string;
-	};
-	chosen_bundle: string;
-	progress: number;
-	status: string;
+		id: string
+		name: string
+		description: string
+		banner: string
+		chapter_dripping: "YES" | "NO"
+	}
+	chosen_bundle: string
+	progress: number
+	status: string
 	current_chapter: {
-		id: string;
-		name: string;
-		shuffle_questions: "YES" | "NO";
-		skip_questions: "YES" | "NO";
-		timer_minute: number;
-		timer_hour: number;
-		attempt_limit: number;
-		attempt_reset: number;
-	};
-	current_progress_percentage: number;
-	current_chapter_progress_percentage: number;
-	current_chapter_module: string;
-	current_module_progress_percentage: number;
-	score: number;
-	cut_off: number;
-	quiz_attempts_limit: number;
-	chapters: ChapterResp[];
-};
+		id: string
+		name: string
+		shuffle_questions: 'YES' | 'NO'
+		skip_questions: 'YES' | 'NO'
+		timer_minute: number
+		timer_hour: number
+		attempt_limit: number
+		attempt_reset: number
+	}
+	current_progress_percentage: number
+	current_chapter_progress_percentage: number
+	current_chapter_module: string
+	current_module_progress_percentage: number
+	score: number
+	cut_off: number
+	quiz_attempts_limit: number
+	chapters: ChapterResp[]
+}
 
 export type ChapterResp = {
 	id: string;

@@ -10,6 +10,7 @@ export const endpoints = (id?: string) => {
 		profile: "/auth/profile",
 		google_auth: "/auth/google",
 		add_wards: "/auth/add-my-wards",
+		update_profile: "/auth/update-profile",
 	} as const;
 
 	const courses = {

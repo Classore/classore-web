@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { getInitials } from "@/lib";
 import { useUserStore } from "@/store/z-store";
 import { LogoutModal } from "../modals";
-import { SettingsDrawer } from "./settings-drawer";
+import { AccountSettingsDrawer } from "../settings/account-settings-drawer";
 
 export const Appbar = () => {
 	const { user } = useUserStore();
@@ -50,7 +50,7 @@ export const Appbar = () => {
 						</PopoverTrigger>
 
 						<PopoverContent className="w-40 rounded-lg px-2">
-							<SettingsDrawer />
+							<AccountSettingsDrawer />
 
 							<LogoutModal />
 						</PopoverContent>

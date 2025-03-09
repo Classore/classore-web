@@ -11,29 +11,29 @@ interface Props {
 
 export const ReviewCard = ({ review, className }: Props) => {
 	return (
-		<li className={cn("flex w-full flex-col gap-4 rounded-xl bg-white p-4", className)}>
-			<div className="flex items-center gap-2">
+		<li className={cn('flex flex-col gap-4 rounded-xl bg-white p-4', className)}>
+			<div className='flex items-center gap-2'>
 				<Stars rating={review?.rating_rating ?? 0} />
-				<p className="text-sm">{review?.rating_rating}</p>
+				<p className='text-sm'>{review?.rating_rating}</p>
 			</div>
 
-			<p className="text-sm leading-relaxed text-neutral-400">{review?.rating_comment}</p>
+			<p className='text-sm leading-relaxed text-neutral-400'>{review?.rating_comment}</p>
 
-			<div className="flex items-center gap-2">
-				<Avatar className="size-10 rounded-md bg-neutral-200">
-					<AvatarImage src="" />
-					<AvatarFallback className="uppercase">
+			<div className='flex items-center gap-2'>
+				<Avatar className='size-10 rounded-md bg-neutral-200'>
+					<AvatarImage src='' />
+					<AvatarFallback className='uppercase'>
 						{getInitials(`${review?.user_first_name} ${review?.user_last_name}`)}
 					</AvatarFallback>
 				</Avatar>
 
 				<div>
-					<p className="text-sm capitalize text-neutral-700">{`${review?.user_first_name} ${review?.user_last_name}`}</p>
-					<p className="text-xs text-neutral-400">Student</p>
+					<p className='text-sm capitalize text-neutral-700'>{`${review?.user_first_name} ${review?.user_last_name}`}</p>
+					<p className='text-xs text-neutral-400'>Student</p>
 				</div>
 			</div>
 		</li>
-	);
+	)
 };
 
 const Stars = ({ rating }: { rating: number }) => {

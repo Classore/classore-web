@@ -112,7 +112,7 @@ const Resource = ({ resource, index }: { resource: string; index: number }) => {
 				</div>
 
 				<div>
-					<p className="text-sm text-neutral-500">Resources 00{index + 1}</p>
+					<p className="text-sm text-neutral-500">Resource 00{index + 1}</p>
 					<p className="text-xs uppercase text-neutral-400">{getFileExtension(resource)}</p>
 				</div>
 				{/* <a
