@@ -10,20 +10,15 @@ import { CourseActions } from '@/components/course/course-actions'
 import { ChapterModules, QuizHistory, Resources, Transcript } from '@/components/home'
 import { DashboardLayout } from '@/components/layouts'
 import { JoinCommunityModal, RenewalModal } from '@/components/modals'
-import {
-	AvatarGroup,
-	BackBtn,
-	CourseChapters,
-	Seo,
-	Spinner,
-	VideoPlayer,
-} from '@/components/shared'
+import { AvatarGroup, BackBtn, CourseChapters, Seo, Spinner } from '@/components/shared'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { capitalize, getInitials } from '@/lib'
 import { useGetChapter, useGetCourse, useGetProfile } from '@/queries/student'
 import { setChapter, useChapterStore } from '@/store/z-store/chapter'
+import type { VideoPlayerProps } from '@/types/type'
+import dynamic from 'next/dynamic'
 
 const tabs = ['summary', 'transcript', 'resources', 'quiz history'] as const
 type Tabs = (typeof tabs)[number]
@@ -41,6 +36,15 @@ const images = [
 	'/assets/images/avatar.png',
 	'/assets/images/avatar.png',
 ]
+
+const DynamicVideoPlayer = dynamic<VideoPlayerProps>(
+	// @ts-expect-error dynamic typing issue
+	() => import('../../../../components/shared/video-player'),
+	{
+		ssr: false,
+		loading: () => <Spinner variant='primary' />,
+	}
+)
 
 const Page = () => {
 	const router = useRouter()
@@ -156,7 +160,7 @@ const Page = () => {
 							}}
 							className='flex w-full flex-col gap-8 lg:grid lg:grid-cols-3'>
 							{currentModule?.video_array.at(0)?.secure_url ?
-								<VideoPlayer
+								<DynamicVideoPlayer
 									className={`row-start-1 ${theatreMode ? 'col-span-3' : 'col-start-1 col-span-2'}`}
 									theatreMode={theatreMode}
 									setTheatreMode={setTheatreMode}
@@ -166,7 +170,8 @@ const Page = () => {
 							:	<div className='bg-neutral-200 flex flex-col items-center justify-center rounded col-start-1 col-span-2 row-start-1 p-10'>
 									<RiCloseCircleLine className='text-neutral-400' size={48} />
 									<p className='text-sm text-neutral-500 text-center'>
-										This module currently has no video. <br /> Please check back later.
+										This module currently has no video. <br /> Please check back
+										later.
 									</p>
 								</div>
 							}

@@ -27,7 +27,7 @@ const formatTime = (timeInSeconds: number): string => {
 	return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
 }
 
-export interface VideoPlayerProps {
+interface VideoPlayerProps {
 	src: string
 	moduleProgress?: number
 	autoPlay?: boolean
