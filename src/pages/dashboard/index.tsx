@@ -1,6 +1,11 @@
 import { useQueries } from "@tanstack/react-query";
 import Link from "next/link";
 
+import { DashboardLayout } from "@/components/layouts";
+import { Button } from "@/components/ui/button";
+import { useUserStore } from "@/store/z-store";
+import type { ChallengeProps } from "@/types";
+import { Seo } from "@/components/shared";
 import {
 	Challenge,
 	ExplorePopularExams,
@@ -8,11 +13,6 @@ import {
 	Learning,
 	MyCourses,
 } from "@/components/home";
-import { DashboardLayout } from "@/components/layouts";
-import { Seo } from "@/components/shared";
-import { Button } from "@/components/ui/button";
-import { useUserStore } from "@/store/z-store";
-import type { ChallengeProps } from "@/types";
 
 const challenges: ChallengeProps[] = [];
 
@@ -42,35 +42,37 @@ const Page = () => {
 		<>
 			<Seo title="Dashboard" />
 			<DashboardLayout>
-				<div className="flex w-full flex-col justify-between gap-4 rounded-2xl bg-dashboard bg-cover bg-center bg-no-repeat p-6 text-white md:items-center md:px-10 md:py-[52px] lg:flex-row lg:gap-[177px]">
-					<div className="flex flex-col gap-2">
-						<h1 className="text-2xl font-semibold capitalize">
-							{greetUser()}, {user?.first_name}
-						</h1>
-						<p className="text-balance text-sm md:text-base">
-							Welcome to your dashboard-let&apos;s make progress today. Check your latest
-							achievements, track ongoing courses, and take on new challenges to keep learning
-							strong!
-						</p>
+				<div className="w-full space-y-6 overflow-y-auto">
+					<div className="flex w-full flex-col justify-between gap-4 overflow-y-auto rounded-2xl bg-dashboard bg-cover bg-center bg-no-repeat p-6 text-white md:items-center md:px-10 md:py-[52px] lg:flex-row lg:gap-[177px]">
+						<div className="flex flex-col gap-2">
+							<h1 className="text-2xl font-semibold capitalize">
+								{greetUser()}, {user?.first_name}
+							</h1>
+							<p className="text-balance text-sm md:text-base">
+								Welcome to your dashboard-let&apos;s make progress today. Check your latest
+								achievements, track ongoing courses, and take on new challenges to keep learning
+								strong!
+							</p>
+						</div>
+
+						<Button className="max-w-[182px] px-6 py-3" variant="primary">
+							<Link href="/dashboard/categories">Browse Categories</Link>
+						</Button>
 					</div>
 
-					<Button className="max-w-[182px] px-6 py-3" variant="primary">
-						<Link href="/dashboard/categories">Browse Categories</Link>
-					</Button>
-				</div>
-
-				<div className="flex w-full flex-col gap-4">
-					<p className="text-xl font-medium">Overview</p>
-					<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-						<Learning exam_type="JAMB" />
-						<Challenge challenges={challenges} />
-						<Leaderboard position={1} />
+					<div className="flex w-full flex-col gap-4">
+						<p className="text-xl font-medium">Overview</p>
+						<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+							<Learning exam_type="JAMB" />
+							<Challenge challenges={challenges} />
+							<Leaderboard position={1} />
+						</div>
 					</div>
-				</div>
 
-				<div className="flex flex-col gap-10 pb-10">
-					<MyCourses />
-					<ExplorePopularExams />
+					<div className="flex flex-col gap-10 pb-10">
+						<MyCourses />
+						<ExplorePopularExams />
+					</div>
 				</div>
 			</DashboardLayout>
 		</>
