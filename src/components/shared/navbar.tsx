@@ -45,12 +45,11 @@ export const Navbar = () => {
 				<div className='flex items-center gap-x-4'>
 					<Button
 						asChild
-						size='sm'
 						variant='ghost'
-						className='text-secondary-300 shadow-none hover:shadow-none'>
+						className='text-secondary-300 md:!text-sm hover:bg-secondary-100'>
 						<Link href='/signin'>Start Learning</Link>
 					</Button>
-					<Button size='sm' variant='outline-primary'>
+					<Button variant='outline-primary' className='md:!text-sm py-2'>
 						<RiDownload2Line /> Download App
 					</Button>
 				</div>

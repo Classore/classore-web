@@ -1,15 +1,15 @@
-import { RiThumbDownLine, RiThumbUpLine } from "@remixicon/react";
-import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import * as React from "react";
+import { RiCloseCircleLine, RiThumbDownLine, RiThumbUpLine } from '@remixicon/react'
+import Image from 'next/image'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import * as React from 'react'
 
-import blockchain from "@/assets/illustrations/blockchain.svg";
-import trophy from "@/assets/illustrations/trophy.svg";
-import { CourseActions } from "@/components/course/course-actions";
-import { ChapterModules, QuizHistory, Resources, Transcript } from "@/components/home";
-import { DashboardLayout } from "@/components/layouts";
-import { JoinCommunityModal, RenewalModal } from "@/components/modals";
+import blockchain from '@/assets/illustrations/blockchain.svg'
+import trophy from '@/assets/illustrations/trophy.svg'
+import { CourseActions } from '@/components/course/course-actions'
+import { ChapterModules, QuizHistory, Resources, Transcript } from '@/components/home'
+import { DashboardLayout } from '@/components/layouts'
+import { JoinCommunityModal, RenewalModal } from '@/components/modals'
 import {
 	AvatarGroup,
 	BackBtn,
@@ -17,41 +17,41 @@ import {
 	Seo,
 	Spinner,
 	VideoPlayer,
-} from '@/components/shared';
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { capitalize, getInitials } from "@/lib";
-import { useGetChapter, useGetCourse, useGetProfile } from "@/queries/student";
-import { setChapter, useChapterStore } from "@/store/z-store/chapter";
+} from '@/components/shared'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { capitalize, getInitials } from '@/lib'
+import { useGetChapter, useGetCourse, useGetProfile } from '@/queries/student'
+import { setChapter, useChapterStore } from '@/store/z-store/chapter'
 
-const tabs = ["summary", "transcript", "resources", "quiz history"] as const;
-type Tabs = (typeof tabs)[number];
+const tabs = ['summary', 'transcript', 'resources', 'quiz history'] as const
+type Tabs = (typeof tabs)[number]
 
 const images = [
-	"/assets/images/avatar.png",
-	"/assets/images/avatar.png",
-	"/assets/images/avatar.png",
-	"/assets/images/avatar.png",
-	"/assets/images/avatar.png",
-	"/assets/images/avatar.png",
-	"/assets/images/avatar.png",
-	"/assets/images/avatar.png",
-	"/assets/images/avatar.png",
-	"/assets/images/avatar.png",
-	"/assets/images/avatar.png",
-];
+	'/assets/images/avatar.png',
+	'/assets/images/avatar.png',
+	'/assets/images/avatar.png',
+	'/assets/images/avatar.png',
+	'/assets/images/avatar.png',
+	'/assets/images/avatar.png',
+	'/assets/images/avatar.png',
+	'/assets/images/avatar.png',
+	'/assets/images/avatar.png',
+	'/assets/images/avatar.png',
+	'/assets/images/avatar.png',
+]
 
 const Page = () => {
-	const router = useRouter();
-	const { id, bundle: bundle_id } = router.query;
-	const [open, setOpen] = React.useState(false);
+	const router = useRouter()
+	const { id, bundle: bundle_id } = router.query
+	const [open, setOpen] = React.useState(false)
 	const [theatreMode, setTheatreMode] = React.useState(false)
 
-	const { module } = useChapterStore();
-	const { data: profile } = useGetProfile();
+	const { module } = useChapterStore()
+	const { data: profile } = useGetProfile()
 	const bundle =
-		profile && profile.time_line.find((item) => item.exam_bundle_details.id === bundle_id);
+		profile && profile.time_line.find(item => item.exam_bundle_details.id === bundle_id)
 
 	const {
 		data: course,
@@ -60,43 +60,41 @@ const Page = () => {
 		error,
 	} = useGetCourse({
 		course_id: id as string,
-	});
+	})
 
 	const { data: chapter } = useGetChapter({
-		chapter_id: course?.current_chapter.id ?? "",
-	});
+		chapter_id: course?.current_chapter.id ?? '',
+	})
 
 	React.useEffect(() => {
 		if (course) {
-			setChapter(course.current_chapter.id);
+			setChapter(course.current_chapter.id)
 		}
-	}, [course]);
+	}, [course])
 
 	const currentModule = React.useMemo(() => {
-		return chapter?.modules.find((item) => item.id === module);
-	}, [chapter, module]);
+		return chapter?.modules.find(item => item.id === module)
+	}, [chapter, module])
 
 	const tutor = React.useMemo(() => {
-		const chapter = course?.chapters.find(
-			(chapter) => chapter.id === course?.current_chapter.id
-		);
+		const chapter = course?.chapters.find(chapter => chapter.id === course?.current_chapter.id)
 
 		// find the tutor of the current module and if no module is current, find the tutor of the first module
 		const currentModule = chapter?.modules.find(
-			(module) =>
+			module =>
 				module.id ===
-				(course?.current_chapter_module
-					? course?.current_chapter_module
-					: chapter?.modules[0].id)
-		);
-		return currentModule?.tutor;
-	}, [course]);
+				(course?.current_chapter_module ?
+					course?.current_chapter_module
+				:	chapter?.modules[0].id)
+		)
+		return currentModule?.tutor
+	}, [course])
 
 	React.useEffect(() => {
 		if (isError && error?.status === 403) {
-			setOpen(true);
+			setOpen(true)
 		}
-	}, [isError, error]);
+	}, [isError, error])
 
 	return (
 		<>
@@ -157,13 +155,21 @@ const Page = () => {
 									`,
 							}}
 							className='flex w-full flex-col gap-8 lg:grid lg:grid-cols-3'>
-							<VideoPlayer
-								className={`row-start-1 ${theatreMode ? 'col-span-3' : 'col-start-1 col-span-2'}`}
-								theatreMode={theatreMode}
-								setTheatreMode={setTheatreMode}
-								moduleProgress={chapter?.current_module_progress_percentage}
-								src='https://storage.googleapis.com/classore-be-bucket-1/videos/hls_7a0d58f2-f2aa-413c-8fff-952315fe36f3/master.m3u8'
-							/>
+							{currentModule?.video_array.at(0)?.secure_url ?
+								<VideoPlayer
+									className={`row-start-1 ${theatreMode ? 'col-span-3' : 'col-start-1 col-span-2'}`}
+									theatreMode={theatreMode}
+									setTheatreMode={setTheatreMode}
+									moduleProgress={chapter?.current_module_progress_percentage}
+									src={currentModule?.video_array.at(0)?.secure_url ?? ''}
+								/>
+							:	<div className='bg-neutral-200 flex flex-col items-center justify-center rounded col-start-1 col-span-2 row-start-1 p-10'>
+									<RiCloseCircleLine className='text-neutral-400' size={48} />
+									<p className='text-sm text-neutral-500 text-center'>
+										This module currently has no video. <br /> Please check back later.
+									</p>
+								</div>
+							}
 
 							<div className='flex w-full col-start-1 col-span-2 flex-col gap-4'>
 								<div className='flex w-full items-center justify-between'>
@@ -299,6 +305,6 @@ const Page = () => {
 			{bundle && <RenewalModal open={open} setOpen={setOpen} bundle={bundle} />}
 		</>
 	)
-};
+}
 
-export default Page;
+export default Page
