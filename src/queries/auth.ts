@@ -116,6 +116,38 @@ const GetWaitlistQuery = async (params: PaginationProps) => {
 		.then((res) => res.data);
 };
 
+type UpdateProfilePayload = {
+	first_name: string;
+	last_name: string;
+	email: string;
+	phone_number: string;
+	description: string;
+	birthday: string;
+	profile_image: string | File;
+};
+
+const UpdateProfileMutation = async (payload: UpdateProfilePayload) => {
+	const formdata = new FormData();
+
+	formdata.append("first_name", payload.first_name);
+	formdata.append("last_name", payload.last_name);
+	formdata.append("email", payload.email);
+	formdata.append("phone_number", payload.phone_number);
+	formdata.append("description", payload.description);
+	formdata.append("birthday", payload.birthday);
+	if (payload.profile_image instanceof File) {
+		formdata.append("profile_image", payload.profile_image);
+	}
+
+	return axios
+		.put<HttpResponse<null>>(endpoints().auth.update_profile, formdata, {
+			headers: {
+				"Content-Type": "multipart/form-data",
+			},
+		})
+		.then((res) => res.data);
+};
+
 export {
 	AddWardsMutation,
 	ForgotPasswordMutation,
@@ -125,6 +157,8 @@ export {
 	ResetPasswordMutation,
 	SignInMutation,
 	SignUpMutation,
+	UpdateProfileMutation,
 	VerifyEmailMutation,
 	WaitlistMutation,
 };
+
