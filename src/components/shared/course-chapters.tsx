@@ -71,7 +71,7 @@ export const CourseChapters = ({
 				{hasMoreChapters && (
 					<button
 						onClick={() => setShowAllChapters(!showAllChapters)}
-						className="flex w-full items-center justify-center gap-4 rounded-b-lg p-4 text-sm text-primary-400">
+						className="flex w-full items-center justify-center gap-2 rounded-b-lg p-4 text-sm text-primary-400">
 						{showAllChapters ? "Show Less" : "See All Chapters"}
 						<RiArrowDropDownLine
 							className={`transition-all duration-500 ${showAllChapters ? "rotate-180" : ""}`}

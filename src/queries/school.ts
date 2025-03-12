@@ -1,7 +1,7 @@
 import { endpoints } from "@/config";
 import { axios } from "@/lib";
 import type { HttpResponse, PaginatedResponse, SingleBundleResp } from "@/types";
-import { queryOptions, useMutation, useQuery } from "@tanstack/react-query";
+import { queryOptions, skipToken, useMutation, useQuery } from '@tanstack/react-query'
 import { toast } from "sonner";
 
 const params = {
@@ -219,10 +219,10 @@ const getExamBundle = async (id: string) => {
 };
 export const useGetSingleExamBundleQuery = ({ bundle_id }: { bundle_id: string }) => {
 	return useQuery({
-		queryKey: ["exam-bundle", { bundle_id }],
-		queryFn: () => getExamBundle(bundle_id),
+		queryKey: ['exam-bundle', { bundle_id }],
+		queryFn: bundle_id ? () => getExamBundle(bundle_id) : skipToken,
 		staleTime: Infinity,
 		gcTime: Infinity,
-		select: (data) => data.data,
-	});
+		select: data => data.data,
+	})
 };

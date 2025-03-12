@@ -70,7 +70,7 @@ const Input = <T extends FieldValues>({
 					</button>
 				) : null}
 			</div>
-			<p className="text-[10px] text-neutral-400">{desc}</p>
+			{desc ? <p className="text-[10px] text-neutral-400">{desc}</p> : null}
 
 			{error ? <ErrorMessage message={error.message} /> : null}
 		</div>

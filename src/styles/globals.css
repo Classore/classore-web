@@ -169,7 +169,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	bottom: 0;
 	width: 0;
 	height: 2px;
-	background: var(--neutral-500);
+	background: var(--primary-300);
 	transition: width 0.7s cubic-bezier(0.25, 1, 0.5, 1);
 	-moz-transition: width 0.7s cubic-bezier(0.25, 1, 0.5, 1);
 	-webkit-transition: width 0.7s cubic-bezier(0.25, 1, 0.5, 1);
@@ -322,4 +322,19 @@ h6 {
 	background: #ecdada;
 	padding: 2px 4px;
 	border-radius: 4px;
+}
+
+
+/* Video grid */
+.theatre-mode {
+	@apply lg:grid lg:grid-cols-3
+}
+.theatre-mode .video {
+	@apply col-start-1 row-start-1 col-span-2
+}
+.theatre-mode .module {
+	@apply col-start-1 col-span-2
+}
+.theatre-mode .chapter {
+	@apply col-start-3 row-span-full
 }

@@ -47,13 +47,13 @@ export const MobileAppbar = () => {
 						<ModalArt />
 					</div>
 
-					<SheetClose className="z-50 ml-auto grid size-7 place-items-center rounded-full bg-white">
+					<SheetClose className="z-30 ml-auto grid size-7 place-items-center rounded-full bg-white">
 						<XClose height={18} width={18} />
 					</SheetClose>
 
 					<div className="flex w-full flex-col gap-2">
 						<p className="text-xs text-neutral-500">MENU</p>
-						<ul className="flex w-full flex-col">
+						<ul className="relative z-50 flex w-full flex-col">
 							{dashboard_links.map(({ label, links }) => (
 								<li
 									key={label}
