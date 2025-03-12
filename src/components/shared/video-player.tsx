@@ -49,7 +49,7 @@ export const VideoPlayer = React.memo(
 		onError,
 		setTheatreMode,
 		theatreMode,
-		moduleProgress,
+		// moduleProgress,
 	}: VideoPlayerProps) => {
 		const [isPlaying, setIsPlaying] = React.useState(false)
 		const [progress, setProgress] = React.useState(0)
@@ -390,7 +390,7 @@ export const VideoPlayer = React.memo(
 					clearTimeout(controlsTimeoutRef.current)
 				}
 			}
-		}, [])
+		}, [updateBufferProgress])
 
 		// Auto-hide controls when playing
 		React.useEffect(() => {
