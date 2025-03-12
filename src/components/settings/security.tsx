@@ -32,14 +32,14 @@ const Security = () => {
 				<Button
 					type="button"
 					variant="text"
-					className="h-9 w-fit text-sm text-red-500 hover:text-red-700">
+					className="w-fit !text-sm text-red-500 hover:bg-red-50 hover:text-red-700">
 					Delete Account
 				</Button>
 				<div className="flex items-center gap-2">
-					<Button type="button" variant="outline" className="h-9 w-fit text-sm">
+					<Button type="button" variant="outline" className="w-fit !text-sm text-neutral-400">
 						Reset Changes
 					</Button>
-					<Button type="submit" className="h-9 w-fit text-sm">
+					<Button type="submit" className="w-fit !text-sm font-bold">
 						Save Changes
 					</Button>
 				</div>
