@@ -90,7 +90,7 @@ export const AddMoreCourseModal = ({
     control,
     name: "subjects",
   });
-  const selectedSubjectsArray = splitIntoArray(selectedSubjects);
+  const selectedSubjectsArray = selectedSubjects ? splitIntoArray(selectedSubjects) : []
 
   /**
    * Memoized array of subjects that belong to the current examination bundle
