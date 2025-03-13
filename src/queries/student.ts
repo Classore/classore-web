@@ -26,29 +26,30 @@ export const useGetProfile = () => {
 };
 
 export type MyCoursesResp = PaginatedResponse<{
-	course_id: string;
-	course_createdOn: string;
-	course_user_id: string;
-	course_subject_id: string;
-	course_chosen_bundle: string;
-	course_progress: number;
-	course_status: string;
-	course_current_chapter?: string;
-	course_current_progress_percentage: number;
-	subject_id: string;
-	subject_name: string;
-	examBundle_id: string;
-	examBundle_name: string;
-	examBundle_start_date: string;
-	examBundle_end_date: string;
-	subject_description: string;
-	chapter_id?: string;
-	chapter_name?: string;
-	no_of_videos: number;
-	no_of_attachments: number;
-	examBundle_banner: string;
-	total_hours: number;
-}>;
+	course_id: string
+	course_createdOn: string
+	course_user_id: string
+	course_subject_id: string
+	course_chosen_bundle: string
+	course_progress: number
+	course_status: string
+	course_current_chapter?: string
+	course_current_progress_percentage: number
+	subject_id: string
+	subject_name: string
+	subject_banner: string
+	examBundle_id: string
+	examBundle_name: string
+	examBundle_start_date: string
+	examBundle_end_date: string
+	subject_description: string
+	chapter_id?: string
+	chapter_name?: string
+	no_of_videos: number
+	no_of_attachments: number
+	examBundle_banner: string
+	total_hours: number
+}>
 type Params = Partial<
 	PaginationProps & {
 		status: "PENDING" | "ONGOING" | "COMPLETED";
