@@ -181,7 +181,7 @@ export const VideoPlayer = React.memo(
       const bufferPercentage = (bufferedEnd / duration) * 100;
 
       setBufferProgress(bufferPercentage);
-    },[duration]);
+    }, [duration]);
 
     const preventContextMenu = (e: React.MouseEvent) => {
       e.preventDefault();
