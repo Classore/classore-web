@@ -9,12 +9,13 @@ import { Seo } from "@/components/shared";
 import type { EventProps } from "@/types";
 
 const events: EventProps[] = [];
-
 const HOURS = Array.from({ length: 24 }, (_, i) => i);
-const TIME_HEIGHT = 48; // Height for each hour slot in pixels
+const TIME_HEIGHT = 48;
+
+type EventStatus = "past" | "upcoming" | "current";
 
 type DayEventProps = EventProps & {
-  status: "past" | "upcoming" | "current";
+  status: EventStatus;
 };
 
 type DayProps = {
@@ -22,11 +23,12 @@ type DayProps = {
   events: DayEventProps[];
 };
 
-const Page = () => {
+const CalendarPage = () => {
   const router = useRouter();
   const { id } = router.query;
   const scrollContainerRef = React.useRef<HTMLDivElement>(null);
 
+  // Date calculations
   const current = React.useMemo(() => {
     if (!id || typeof id !== "string") return new Date();
     const date = new Date();
@@ -36,15 +38,16 @@ const Page = () => {
     return date;
   }, [id]);
 
+  // Scroll to current time on mount
   React.useEffect(() => {
-    // Scroll to current time on load
     if (scrollContainerRef.current) {
       const currentHour = new Date().getHours();
       scrollContainerRef.current.scrollTop = currentHour * TIME_HEIGHT - 200;
     }
   }, []);
 
-  const getEventStatus = React.useCallback((event: EventProps) => {
+  // Event status helper
+  const getEventStatus = React.useCallback((event: EventProps): EventStatus => {
     const today = new Date();
     const firstDate = new Date(event.date[0]);
     const lastDate = new Date(event.date[event.date.length - 1]);
@@ -54,6 +57,7 @@ const Page = () => {
     return "current";
   }, []);
 
+  // Calendar helper functions
   const getDaysInMonth = (year: number, month: number) => {
     return new Date(year, month + 1, 0).getDate();
   };
@@ -62,6 +66,7 @@ const Page = () => {
     return new Date(year, month, 1).getDay();
   };
 
+  // Process events for the current month
   const processedEvents = React.useMemo(() => {
     const monthEvents: Record<string, EventProps[]> = {};
     events.forEach((event) => {
@@ -79,10 +84,10 @@ const Page = () => {
         }
       });
     });
-
     return monthEvents;
   }, [current]);
 
+  // Calculate calendar days
   const calendarDays = React.useMemo(() => {
     const year = current.getFullYear();
     const month = current.getMonth();
@@ -90,16 +95,14 @@ const Page = () => {
     const firstDay = getFirstDayOfMonth(year, month);
     const days: DayProps[] = [];
 
+    // Add empty days for the start of the month
     for (let i = 0; i < firstDay; i++) {
-      days.push({
-        day: null,
-        events: [],
-      });
+      days.push({ day: null, events: [] });
     }
 
+    // Add days with events
     for (let day = 1; day <= daysInMonth; day++) {
       const eventForDay = processedEvents[day] || [];
-
       days.push({
         day,
         events: eventForDay.map((event) => ({
@@ -114,6 +117,7 @@ const Page = () => {
 
   const dayItems = calendarDays.find((dayItem) => dayItem.day === Number(id));
 
+  // Calculate event position
   const getEventPosition = (event: DayEventProps) => {
     const startDate = new Date(event.date[0]);
     if (!isSameDay(startDate, current)) return null;
@@ -132,6 +136,48 @@ const Page = () => {
     return { top, height };
   };
 
+  // Render time column
+  const renderTimeColumn = () => (
+    <div className="sticky left-0 w-16 bg-white pr-2">
+      {HOURS.map((hour) => (
+        <div
+          key={hour}
+          className="relative h-12 border-r text-xs text-gray-500"
+        >
+          {hour !== 0 && (
+            <span className="absolute -top-2 right-2">
+              {format(new Date().setHours(hour, 0), "ha")}
+            </span>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+
+  // Render events
+  const renderEvents = () => (
+    dayItems?.events.map((event) => {
+      const position = getEventPosition(event);
+      if (!position) return null;
+      return (
+        <div
+          key={event.id}
+          className="absolute left-1 right-1 rounded bg-blue-100 p-2 text-sm"
+          style={{
+            top: `${position.top}px`,
+            height: `${position.height}px`,
+          }}
+        >
+          <div className="font-medium">{event.title}</div>
+          <div className="text-xs text-gray-600">
+            {format(new Date(event.date[0]), "h:mm a")} -
+            {format(addHours(new Date(event.date[0]), 1), "h:mm a")}
+          </div>
+        </div>
+      );
+    })
+  );
+
   return (
     <>
       <Seo />
@@ -147,21 +193,7 @@ const Page = () => {
               ref={scrollContainerRef}
               className="relative flex flex-1 overflow-y-auto"
             >
-              {/* Time column */}
-              <div className="sticky left-0 w-16 bg-white pr-2">
-                {HOURS.map((hour) => (
-                  <div
-                    key={hour}
-                    className="relative h-12 border-r text-xs text-gray-500"
-                  >
-                    {hour !== 0 && (
-                      <span className="absolute -top-2 right-2">
-                        {format(new Date().setHours(hour, 0), "ha")}
-                      </span>
-                    )}
-                  </div>
-                ))}
-              </div>
+              {renderTimeColumn()}
               <div className="relative flex-1">
                 {HOURS.map((hour) => (
                   <div key={hour} className="h-12 border-b border-gray-100" />
@@ -179,26 +211,7 @@ const Page = () => {
                     <div className="absolute -left-2 -top-[7px] h-3 w-3 rounded-full bg-red-500" />
                   </div>
                 )}
-                {dayItems?.events.map((event) => {
-                  const position = getEventPosition(event);
-                  if (!position) return null;
-                  return (
-                    <div
-                      key={event.id}
-                      className="absolute left-1 right-1 rounded bg-blue-100 p-2 text-sm"
-                      style={{
-                        top: `${position.top}px`,
-                        height: `${position.height}px`,
-                      }}
-                    >
-                      <div className="font-medium">{event.title}</div>
-                      <div className="text-xs text-gray-600">
-                        {format(new Date(event.date[0]), "h:mm a")} -
-                        {format(addHours(new Date(event.date[0]), 1), "h:mm a")}
-                      </div>
-                    </div>
-                  );
-                })}
+                {renderEvents()}
               </div>
             </div>
           </div>
@@ -208,4 +221,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default CalendarPage;
