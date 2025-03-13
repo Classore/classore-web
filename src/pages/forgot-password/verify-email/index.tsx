@@ -19,124 +19,135 @@ import { toast } from "sonner";
 import * as z from "zod";
 
 const pageSchema = z.object({
-	verification_code: z
-		.string()
-		.min(1, { message: "Please enter your verification code" })
-		.regex(/^[0-9]+$/, { message: "Must be only digits" })
-		.min(4, { message: "Verification code must be 4 digits" })
-		.max(4, { message: "Verification code must be 4 digits" })
-		.trim(),
+  verification_code: z
+    .string()
+    .min(1, { message: "Please enter your verification code" })
+    .regex(/^[0-9]+$/, { message: "Must be only digits" })
+    .min(4, { message: "Verification code must be 4 digits" })
+    .max(4, { message: "Verification code must be 4 digits" })
+    .trim(),
 });
 
 type FormValues = z.infer<typeof pageSchema>;
 
 export const getServerSideProps = (async (req) => {
-	const email = req.query.email ?? "";
+  const email = req.query.email ?? "";
 
-	return {
-		props: {
-			email: typeof email === "string" ? formatEmail(decodeURIComponent(email)) : "",
-		},
-	};
+  return {
+    props: {
+      email:
+        typeof email === "string" ? formatEmail(decodeURIComponent(email)) : "",
+    },
+  };
 }) satisfies GetServerSideProps<{ email: string }>;
 
-const Page = ({ email }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-	const router = useRouter();
-	const { counter, reset } = useCountDown({ total: 60, ms: 1000 });
-	const { control, handleSubmit } = useForm<FormValues>({
-		defaultValues: {
-			verification_code: "",
-		},
-		resolver: zodResolver(pageSchema),
-	});
+const Page = ({
+  email,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+  const router = useRouter();
+  const { counter, reset } = useCountDown({ total: 60, ms: 1000 });
+  const { control, handleSubmit } = useForm<FormValues>({
+    defaultValues: {
+      verification_code: "",
+    },
+    resolver: zodResolver(pageSchema),
+  });
 
-	const { isPending, mutate } = useMutation({
-		mutationKey: ["login"],
-		mutationFn: () =>
-			ForgotPasswordMutation({
-				email_or_phone_number: email,
-			}),
-		onSuccess: () => {
-			toast.success("OTP resent successfully!", {
-				description: "Please check your email to verify your account",
-			});
-			reset();
-		},
-	});
+  const { isPending, mutate } = useMutation({
+    mutationKey: ["login"],
+    mutationFn: () =>
+      ForgotPasswordMutation({
+        email_or_phone_number: email,
+      }),
+    onSuccess: () => {
+      toast.success("OTP resent successfully!", {
+        description: "Please check your email to verify your account",
+      });
+      reset();
+    },
+  });
 
-	const onSubmit = (values: FormValues) => {
-		sessionStorage.setItem("temp_classore", JSON.stringify(values));
-		router.push("/forgot-password/reset");
-	};
+  const onSubmit = (values: FormValues) => {
+    sessionStorage.setItem("temp_classore", JSON.stringify(values));
+    router.push("/forgot-password/reset");
+  };
 
-	return (
-		<>
-			<Seo title="Verify Email" />
+  return (
+    <>
+      <Seo title="Verify Email" />
 
-			<AuthLayout screen="forgot-password">
-				<div className="flex max-w-96 flex-col gap-10 font-body lg:gap-20">
-					<Link href="/" className="w-fit lg:hidden">
-						<Image src={classore} alt="classore" width={120} height={25} />
-					</Link>
+      <AuthLayout screen="forgot-password">
+        <div className="flex max-w-96 flex-col gap-10 font-body lg:gap-20">
+          <Link href="/" className="w-fit lg:hidden">
+            <Image src={classore} alt="classore" width={120} height={25} />
+          </Link>
 
-					<div className="flex flex-col gap-8 pt-10 lg:pt-20">
-						<button
-							onClick={() => router.back()}
-							type="button"
-							className="mb-8 flex w-fit items-center gap-1 rounded-lg border border-neutral-200 bg-neutral-100 px-2 py-1 text-sm text-neutral-700 transition-colors hover:bg-neutral-200">
-							<ChevronLeft width={16} />
-							<span>Back</span>
-						</button>
+          <div className="flex flex-col gap-8 pt-10 lg:pt-20">
+            <button
+              onClick={() => router.back()}
+              type="button"
+              className="mb-8 flex w-fit items-center gap-1 rounded-lg border border-neutral-200 bg-neutral-100 px-2 py-1 text-sm text-neutral-700 transition-colors hover:bg-neutral-200"
+            >
+              <ChevronLeft width={16} />
+              <span>Back</span>
+            </button>
 
-						<header className="flex flex-col gap-4">
-							<VerifyEmailGraphic />
+            <header className="flex flex-col gap-4">
+              <VerifyEmailGraphic />
 
-							<div>
-								<h2 className="font-body text-2xl font-bold text-neutral-900">
-									Verify your email address
-								</h2>
-								<p className="pt-1 text-sm text-neutral-500">
-									A 4 digit code has been sent to{" "}
-									<span className="font-bold text-neutral-900">{email}</span>
-								</p>
-							</div>
-						</header>
+              <div>
+                <h2 className="font-body text-2xl font-bold text-neutral-900">
+                  Verify your email address
+                </h2>
+                <p className="pt-1 text-sm text-neutral-500">
+                  A 4 digit code has been sent to{" "}
+                  <span className="font-bold text-neutral-900">{email}</span>
+                </p>
+              </div>
+            </header>
 
-						<form
-							onSubmit={handleSubmit(onSubmit)}
-							className="flex flex-col gap-6 font-body font-normal">
-							<OTPInput control={control} name="verification_code" />
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="flex flex-col gap-6 font-body font-normal"
+            >
+              <OTPInput control={control} name="verification_code" />
 
-							<div className="col-span-full flex flex-col gap-2">
-								<Button type="submit" disabled={isPending}>
-									{isPending ? <Spinner /> : "Verify"}
-								</Button>
+              <div className="col-span-full flex flex-col gap-2">
+                <Button type="submit" disabled={isPending}>
+                  {isPending ? <Spinner /> : "Verify"}
+                </Button>
 
-								<div className="flex items-center justify-center gap-2">
-									<p className="text-center text-sm text-neutral-500">Didn’t receive a mail? </p>
+                <div className="flex items-center justify-center gap-2">
+                  <p className="text-center text-sm text-neutral-500">
+                    Didn’t receive a mail?{" "}
+                  </p>
 
-									{counter ? (
-										<span className="text-center text-sm">
-											Resend in <span className="font-black text-secondary-300">{counter}s</span>
-										</span>
-									) : (
-										<Button
-											disabled={isPending}
-											onClick={() => mutate()}
-											type="button"
-											variant="link"
-											className="w-fit px-1 text-sm font-medium text-secondary-300 shadow-none hover:underline">
-											{isPending ? "Resending..." : "Resend"}
-										</Button>
-									)}
-								</div>
-							</div>
-						</form>
-					</div>
-				</div>
-			</AuthLayout>
-		</>
-	);
+                  {counter ? (
+                    <span className="text-center text-sm">
+                      Resend in{" "}
+                      <span className="font-black text-secondary-300">
+                        {counter}s
+                      </span>
+                    </span>
+                  ) : (
+                    <Button
+                      disabled={isPending}
+                      onClick={() => mutate()}
+                      type="button"
+                      variant="link"
+                      className="w-fit px-1 text-sm font-medium text-secondary-300 shadow-none hover:underline"
+                    >
+                      {isPending ? "Resending..." : "Resend"}
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </AuthLayout>
+    </>
+  );
 };
 
 export default Page;
