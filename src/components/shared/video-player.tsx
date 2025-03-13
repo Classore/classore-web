@@ -506,10 +506,10 @@ export const VideoPlayer = React.memo(
 
 				{/* Controls */}
 				<div
-					className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent px-4 py-2 transition-opacity duration-300 ${
+					className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4 transition-opacity duration-300 ${
 						showControls ? 'opacity-100' : 'pointer-events-none opacity-0'
 					}`}>
-					<div className='relative'>
+					<div className='relative mb-2'>
 						{/* progress bar */}
 						<Slider.Root
 							className='relative flex h-5 w-full touch-none select-none items-center'
@@ -611,10 +611,10 @@ export const VideoPlayer = React.memo(
 								className='text-white p-1.5 focus:bg-white/20 hover:bg-white/20 rounded-full'>
 								<RiSettings2Line size={16} />
 							</button> */}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+						</div>
+					</div>
+				</div>
+			</div>
+		)
   },
 );
