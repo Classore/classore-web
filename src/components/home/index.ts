@@ -7,4 +7,4 @@ export * from "./overview";
 export * from "./personalized-plan";
 export * from "./quiz-history";
 export * from "./resources";
-export * from "./transcript";
+
