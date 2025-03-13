@@ -4,21 +4,23 @@ import { Footer, Navbar, Seo } from "@/components/shared";
 // import { FREQUENTLY_ASKED_QUESTIONS } from "@/constants";
 
 const Page = () => {
-	return (
-		<>
-			<Seo title="Frequently Asked Questions" />
-			<Navbar />
-			<main className="w-full">
-				<section className="h-screen bg-gradient-to-b from-primary-100 to-white py-20 lg:py-40">
-					<div className="container mx-auto flex flex-col items-center justify-center gap-20 px-4 lg:px-0">
-						<h1 className="font-semibold lg:text-4xl">Frequently Asked Questions</h1>
-						<div className="w-full space-y-5"></div>
-					</div>
-				</section>
-			</main>
-			<Footer />
-		</>
-	);
+  return (
+    <>
+      <Seo title="Frequently Asked Questions" />
+      <Navbar />
+      <main className="w-full">
+        <section className="h-screen bg-gradient-to-b from-primary-100 to-white py-20 lg:py-40">
+          <div className="container mx-auto flex flex-col items-center justify-center gap-20 px-4 lg:px-0">
+            <h1 className="font-semibold lg:text-4xl">
+              Frequently Asked Questions
+            </h1>
+            <div className="w-full space-y-5"></div>
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </>
+  );
 };
 
 export default Page;
