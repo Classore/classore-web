@@ -1,13 +1,13 @@
-import { RiFileTextLine, RiPlayCircleLine, RiTimeLine } from "@remixicon/react";
-import Image from "next/image";
-import Link from "next/link";
+import { RiFileTextLine, RiPlayCircleLine, RiTimeLine } from '@remixicon/react'
+import Image from 'next/image'
+import Link from 'next/link'
 
-import { capitalize, formatNumber } from "@/lib";
-import type { MyCoursesResp } from "@/queries/student";
+import { capitalize, formatNumber } from '@/lib'
+import type { MyCoursesResp } from '@/queries/student'
 
 interface Props {
-	course: MyCoursesResp["data"][number];
-	onClick?: () => void;
+	course: MyCoursesResp['data'][number]
+	onClick?: () => void
 }
 
 const Component = ({
@@ -17,18 +17,18 @@ const Component = ({
 	id,
 	bundle,
 }: {
-	children: React.ReactNode;
-	onClick?: () => void;
-	className: string;
-	id: string;
-	bundle: string;
+	children: React.ReactNode
+	onClick?: () => void
+	className: string
+	id: string
+	bundle: string
 }) => {
 	if (onClick) {
 		return (
-			<button type="button" onClick={onClick} className={className} id={id}>
+			<button type='button' onClick={onClick} className={className} id={id}>
 				{children}
 			</button>
-		);
+		)
 	}
 	return (
 		<Link
@@ -42,8 +42,8 @@ const Component = ({
 			id={id}>
 			{children}
 		</Link>
-	);
-};
+	)
+}
 
 // "ONGOING" | "PENDING" | "COMPLETED" | "EXPIRED";
 
@@ -107,4 +107,4 @@ export const CourseCard = ({ course, onClick }: Props) => {
 			</div>
 		</Component>
 	)
-};
+}

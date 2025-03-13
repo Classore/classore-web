@@ -42,15 +42,6 @@ const images = [
 	'/assets/images/avatar.png',
 ]
 
-// const DynamicVideoPlayer = dynamic<VideoPlayerProps>(
-// 	// @ts-expect-error dynamic typing issue
-// 	() => import('../../../../components/shared/video-player'),
-// 	{
-// 		ssr: false,
-// 		loading: () => <Spinner variant='primary' />,
-// 	}
-// )
-
 const Page = () => {
 	const router = useRouter()
 	const { id, bundle: bundle_id } = router.query
@@ -104,8 +95,6 @@ const Page = () => {
 			setOpen(true)
 		}
 	}, [isError, error])
-
-	console.log('currentModule', currentModule?.video_array.at(0)?.derived_url)
 
 	return (
 		<>
@@ -172,7 +161,7 @@ const Page = () => {
 									theatreMode={theatreMode}
 									setTheatreMode={setTheatreMode}
 									moduleProgress={chapter?.current_module_progress_percentage}
-									src={currentModule?.video_array.at(0)?.derived_url}
+									src={currentModule?.video_array.at(0)?.secure_url ?? ''}
 								/>
 							:	<div className='bg-neutral-200 flex flex-col items-center justify-center rounded col-start-1 col-span-2 row-start-1 p-10'>
 									<RiCloseCircleLine className='text-neutral-400' size={48} />
