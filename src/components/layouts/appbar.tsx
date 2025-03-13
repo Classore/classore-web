@@ -4,6 +4,7 @@ import {
   RiNotificationLine,
 } from "@remixicon/react";
 
+import MobileAppImg from "@/assets/images/mobile-img.webp";
 import { Search } from "@/components/shared";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -15,6 +16,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { getInitials } from "@/lib";
 import { useUserStore } from "@/store/z-store";
+import Image from "next/image";
 import { LogoutModal } from "../modals";
 import { AccountSettingsDrawer } from "../settings/account-settings-drawer";
 import { AppStore, PlayStore } from "../shared/app-download";
@@ -22,6 +24,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
@@ -41,14 +44,24 @@ export const Appbar = () => {
               </button>
             </DialogTrigger>
             <DialogContent className="w-[400px]">
-              <div className="w-full space-y-4">
-                <div>
+              <div className="w-full flex flex-col gap-6">
+                <DialogHeader className="space-y-1">
                   <DialogTitle>Download Mobile App</DialogTitle>
                   <DialogDescription>
                     Download the mobile app for a seamless experience on the go.
                   </DialogDescription>
+                </DialogHeader>
+                <div>
+                  <Image
+                    src={MobileAppImg}
+                    alt="mobile-app"
+                    width={200}
+                    height={200}
+                    // fill
+                    // sizes='100%'
+                    className="object-cover"
+                  />
                 </div>
-                <div className="h-[200px]"></div>
                 <div className="flex w-full items-center gap-x-5">
                   <AppStore />
                   <PlayStore />

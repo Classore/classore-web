@@ -11,12 +11,7 @@ import * as React from "react";
 import blockchain from "@/assets/illustrations/blockchain.svg";
 import trophy from "@/assets/illustrations/trophy.svg";
 import { CourseActions } from "@/components/course/course-actions";
-import {
-  ChapterModules,
-  QuizHistory,
-  Resources,
-  Transcript,
-} from "@/components/home";
+import { ChapterModules, QuizHistory, Resources } from "@/components/home";
 import { DashboardLayout } from "@/components/layouts";
 import { JoinCommunityModal, RenewalModal } from "@/components/modals";
 import {
@@ -35,7 +30,7 @@ import { setChapter, useChapterStore } from "@/store/z-store/chapter";
 import type { VideoPlayerProps } from "@/types/type";
 import dynamic from "next/dynamic";
 
-const tabs = ["summary", "transcript", "resources", "quiz history"] as const;
+const tabs = ["summary", "resources", "quiz history"] as const;
 type Tabs = (typeof tabs)[number];
 
 const images = [
@@ -226,9 +221,6 @@ const Page = () => {
 
                   <TabsContent value="summary">
                     <ChapterModules />
-                  </TabsContent>
-                  <TabsContent value="transcript">
-                    <Transcript />
                   </TabsContent>
                   <TabsContent value="resources">
                     <Resources />
