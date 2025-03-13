@@ -49,7 +49,6 @@ export const VideoPlayer = React.memo(
     onError,
     setTheatreMode,
     theatreMode,
-    moduleProgress,
   }: VideoPlayerProps) => {
     const [isPlaying, setIsPlaying] = React.useState(false);
     const [progress, setProgress] = React.useState(0);
