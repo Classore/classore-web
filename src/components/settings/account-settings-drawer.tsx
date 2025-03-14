@@ -3,9 +3,7 @@ import { useUserStore } from "@/store/z-store";
 import {
   RiCloseLine,
   RiLock2Line,
-  RiNotification4Line,
-  RiUser3Line,
-  RiUserAddLine,
+  RiUser3Line
 } from "@remixicon/react";
 import { User03 } from "@untitled-ui/icons-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -18,8 +16,6 @@ import {
   SheetTrigger,
 } from "../ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import Notification from "./notification";
-import Points from "./points";
 import Profile from "./profile";
 import Security from "./security";
 
@@ -29,21 +25,21 @@ const tabs = [
     name: "profile",
     icon: RiUser3Line,
   },
-  {
-    label: "Notifications",
-    name: "notification",
-    icon: RiNotification4Line,
-  },
+  // {
+  //   label: "Notifications",
+  //   name: "notification",
+  //   icon: RiNotification4Line,
+  // },
   {
     label: "Security",
     name: "security",
     icon: RiLock2Line,
   },
-  {
-    label: "Points and Referral",
-    name: "points",
-    icon: RiUserAddLine,
-  },
+  // {
+  //   label: "Points and Referral",
+  //   name: "points",
+  //   icon: RiUserAddLine,
+  // },
 ];
 
 export const AccountSettingsDrawer = () => {
@@ -107,15 +103,15 @@ export const AccountSettingsDrawer = () => {
           <TabsContent value="profile">
             <Profile />
           </TabsContent>
-          <TabsContent value="notification">
+          {/* <TabsContent value="notification">
             <Notification />
-          </TabsContent>
+          </TabsContent> */}
           <TabsContent value="security">
             <Security />
           </TabsContent>
-          <TabsContent value="points">
+          {/* <TabsContent value="points">
             <Points />
-          </TabsContent>
+          </TabsContent> */}
         </Tabs>
       </SheetContent>
     </Sheet>
