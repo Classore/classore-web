@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
-import { cn } from "@/lib";
-import * as Slider from "@radix-ui/react-slider";
+import { cn } from '@/lib'
+import * as Slider from '@radix-ui/react-slider'
 import {
 	RiCollapseHorizontalLine,
 	RiExpandWidthLine,
@@ -14,29 +14,29 @@ import {
 	RiReplay10Line,
 	RiVolumeMuteLine,
 	RiVolumeUpLine,
-} from "@remixicon/react";
-import Hls from "hls.js";
-import { LoaderCircle } from "lucide-react";
-import * as React from "react";
+} from '@remixicon/react'
+import Hls from 'hls.js'
+import { LoaderCircle } from 'lucide-react'
+import * as React from 'react'
 
 const formatTime = (timeInSeconds: number): string => {
-  if (isNaN(timeInSeconds)) return "0:00";
+	if (isNaN(timeInSeconds)) return '0:00'
 
-  const minutes = Math.floor(timeInSeconds / 60);
-  const seconds = Math.floor(timeInSeconds % 60);
-  return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-};
+	const minutes = Math.floor(timeInSeconds / 60)
+	const seconds = Math.floor(timeInSeconds % 60)
+	return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
+}
 
 interface VideoPlayerProps {
-  src: string;
-  moduleProgress?: number;
-  autoPlay?: boolean;
-  className?: string;
-  poster?: string;
-  theatreMode?: boolean;
-  setTheatreMode?: React.Dispatch<React.SetStateAction<boolean>>;
-  onReady?: () => void;
-  onError?: (error: unknown) => void;
+	src: string
+	moduleProgress?: number
+	autoPlay?: boolean
+	className?: string
+	poster?: string
+	theatreMode?: boolean
+	setTheatreMode?: React.Dispatch<React.SetStateAction<boolean>>
+	onReady?: () => void
+	onError?: (error: unknown) => void
 }
 
 export const VideoPlayer = React.memo(
@@ -49,7 +49,6 @@ export const VideoPlayer = React.memo(
 		onError,
 		setTheatreMode,
 		theatreMode,
-		moduleProgress,
 	}: VideoPlayerProps) => {
 		const [isPlaying, setIsPlaying] = React.useState(false)
 		const [progress, setProgress] = React.useState(0)
@@ -616,5 +615,5 @@ export const VideoPlayer = React.memo(
 				</div>
 			</div>
 		)
-  },
-);
+	}
+)
