@@ -37,6 +37,7 @@ export type MyCoursesResp = PaginatedResponse<{
   course_current_progress_percentage: number;
   subject_id: string;
   subject_name: string;
+  subject_banner: string;
   examBundle_id: string;
   examBundle_name: string;
   examBundle_start_date: string;

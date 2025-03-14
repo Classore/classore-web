@@ -66,7 +66,7 @@ export const CourseCard = ({ course, onClick }: Props) => {
 
         <Image
           src={
-            course.examBundle_banner ??
+            course.subject_banner ??
             "https://images.unsplash.com/photo-1510070112810-d4e9a46d9e91?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjA0fHxlZHVjYXRpb24lMjBhcnR8ZW58MHx8MHx8fDA%3D"
           }
           alt={course.subject_name}

@@ -11,6 +11,7 @@ interface Props {
 }
 
 export const ExamCard = ({ course, className }: Props) => {
+  console.log("course", course);
   return (
     <Link
       href={`/dashboard/categories/${course.examinationbundle_id}`}
@@ -24,7 +25,7 @@ export const ExamCard = ({ course, className }: Props) => {
           course.examinationbundle_banner ??
           "https://images.unsplash.com/photo-1446329360995-b4642a139973?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
         }
-        alt=""
+        alt={course.examinationbundle_name}
         width={318}
         height={172}
         className="h-52 w-full rounded-md object-cover"
