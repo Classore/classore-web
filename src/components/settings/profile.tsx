@@ -15,32 +15,33 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 
-const schema = z.object({
-  first_name: z.string().min(1, { message: "Please enter your first name" }),
-  last_name: z.string().min(1, { message: "Please enter your last name" }),
-  email: z
-    .string()
-    .min(1, { message: "Please enter your email address" })
-    .email("Please enter a valid email"),
-  phone_number: z
-    .string()
-    .min(1, { message: "Please enter your phone number" })
-    .min(11, { message: "Phone number must be at least 11 characters" })
-    .max(11, { message: "Phone number must be at most 11 characters" }),
-  description: z
-    .string()
-    .min(1, { message: "Please enter your description" })
-    .or(z.literal("")),
-  birthday: z
-    .string({ required_error: "Please enter your date of birth" })
-    .min(1, { message: "Please enter your date of birth" })
-    .transform((d) => format(d, "MM/dd/yyyy")),
-  profile_image: z.instanceof(File).or(z.string()),
-});
-
-type FormValues = z.infer<typeof schema>;
 
 const Profile = () => {
+  const schema = z.object({
+    first_name: z.string().min(1, { message: "Please enter your first name" }),
+    last_name: z.string().min(1, { message: "Please enter your last name" }),
+    email: z
+      .string()
+      .min(1, { message: "Please enter your email address" })
+      .email("Please enter a valid email"),
+    phone_number: z
+      .string()
+      .min(1, { message: "Please enter your phone number" })
+      .min(11, { message: "Phone number must be at least 11 characters" })
+      .max(11, { message: "Phone number must be at most 11 characters" }),
+    description: z
+      .string()
+      .min(1, { message: "Please enter your description" })
+      .or(z.literal("")),
+    birthday: z
+      .string({ required_error: "Please enter your date of birth" })
+      .min(1, { message: "Please enter your date of birth" })
+      .transform((d) => format(d, "MM/dd/yyyy")),
+    profile_image: z.instanceof(File).or(z.string()),
+  });
+  
+  type FormValues = z.infer<typeof schema>;
+  
   const queryClient = useQueryClient();
   const { data: user, isPending } = useGetProfile();
 
