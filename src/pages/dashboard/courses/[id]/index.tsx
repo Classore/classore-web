@@ -1,4 +1,8 @@
-import { RiCloseCircleLine, RiThumbDownLine, RiThumbUpLine } from '@remixicon/react'
+import {
+  RiCloseCircleLine,
+  RiThumbDownLine,
+  RiThumbUpLine,
+} from "@remixicon/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -11,13 +15,13 @@ import { ChapterModules, QuizHistory, Resources } from "@/components/home";
 import { DashboardLayout } from "@/components/layouts";
 import { JoinCommunityModal, RenewalModal } from "@/components/modals";
 import {
-	AvatarGroup,
-	BackBtn,
-	CourseChapters,
-	Seo,
-	Spinner,
-	VideoPlayer,
-} from '@/components/shared'
+  AvatarGroup,
+  BackBtn,
+  CourseChapters,
+  Seo,
+  Spinner,
+  VideoPlayer,
+} from "@/components/shared";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -63,9 +67,9 @@ const Page = () => {
     course_id: id as string,
   });
 
-	const { data: chapter, isPending: isChapterPending } = useGetChapter({
-		chapter_id: course?.current_chapter.id ?? '',
-	})
+  const { data: chapter, isPending: isChapterPending } = useGetChapter({
+    chapter_id: course?.current_chapter.id ?? "",
+  });
 
   React.useEffect(() => {
     if (course) {
@@ -100,11 +104,13 @@ const Page = () => {
   }, [isError, error]);
 
   React.useEffect(() => {
-		const saveMode = JSON.parse(localStorage.getItem('classore-theatre') ?? 'false')
-		if (saveMode) {
-			setTheatreMode(saveMode)
-		}
-  }, [])
+    const saveMode = JSON.parse(
+      localStorage.getItem("classore-theatre") ?? "false",
+    );
+    if (saveMode) {
+      setTheatreMode(saveMode);
+    }
+  }, []);
 
   return (
     <>
@@ -160,36 +166,38 @@ const Page = () => {
               </div>
             </div>
 
-						<div
-							style={{
-								gridTemplateAreas: `
+            <div
+              style={{
+                gridTemplateAreas: `
 										"video column-2"
 										"column-1 column-2"
 									`,
-							}}
-							className='flex w-full flex-col gap-8 lg:grid lg:grid-cols-3'>
-							{isChapterPending ?
-								<div className='bg-neutral-200 flex flex-col items-center justify-center rounded col-start-1 col-span-2 row-start-1 p-10'>
-									<p className='text-sm text-neutral-500 text-center'>
-										Loading...
-									</p>
-								</div>
-							: currentModule?.video_array.at(0)?.secure_url ?
-								<VideoPlayer
-									className={`row-start-1 ${theatreMode ? 'col-span-3' : 'col-start-1 col-span-2'}`}
-									theatreMode={theatreMode}
-									setTheatreMode={setTheatreMode}
-									moduleProgress={chapter?.current_module_progress_percentage}
-									src={currentModule?.video_array.at(0)?.secure_url ?? ''}
-								/>
-							:	<div className='bg-neutral-200 flex flex-col items-center justify-center rounded col-start-1 col-span-2 row-start-1 p-10'>
-									<RiCloseCircleLine className='text-neutral-400' size={48} />
-									<p className='text-sm text-neutral-500 text-center'>
-										This lesson currently has no video. <br /> Please check back
-										later.
-									</p>
-								</div>
-							}
+              }}
+              className="flex w-full flex-col gap-8 lg:grid lg:grid-cols-3"
+            >
+              {isChapterPending ? (
+                <div className="bg-neutral-200 flex flex-col items-center justify-center rounded col-start-1 col-span-2 row-start-1 p-10">
+                  <p className="text-sm text-neutral-500 text-center">
+                    Loading...
+                  </p>
+                </div>
+              ) : currentModule?.video_array.at(0)?.secure_url ? (
+                <VideoPlayer
+                  className={`row-start-1 ${theatreMode ? "col-span-3" : "col-start-1 col-span-2"}`}
+                  theatreMode={theatreMode}
+                  setTheatreMode={setTheatreMode}
+                  moduleProgress={chapter?.current_module_progress_percentage}
+                  src={currentModule?.video_array.at(0)?.secure_url ?? ""}
+                />
+              ) : (
+                <div className="bg-neutral-200 flex flex-col items-center justify-center rounded col-start-1 col-span-2 row-start-1 p-10">
+                  <RiCloseCircleLine className="text-neutral-400" size={48} />
+                  <p className="text-sm text-neutral-500 text-center">
+                    This lesson currently has no video. <br /> Please check back
+                    later.
+                  </p>
+                </div>
+              )}
 
               <div className="flex w-full col-start-1 col-span-2 flex-col gap-4">
                 <div className="flex w-full items-center justify-between">
@@ -227,14 +235,15 @@ const Page = () => {
                 </Tabs>
               </div>
 
-							<div
-								className={`flex col-start-3 h-fit w-full flex-col gap-2 ${theatreMode ? 'row-start-2' : 'row-span-full'}`}>
-								<CourseChapters
-									current_chapter_id={course?.current_chapter.id}
-									progress={course?.current_progress_percentage ?? 0}
-									chapters={course?.chapters ?? []}
-									dripping={course.subject_id.chapter_dripping ?? 'NO'}
-								/>
+              <div
+                className={`flex col-start-3 h-fit w-full flex-col gap-2 ${theatreMode ? "row-start-2" : "row-span-full"}`}
+              >
+                <CourseChapters
+                  current_chapter_id={course?.current_chapter.id}
+                  progress={course?.current_progress_percentage ?? 0}
+                  chapters={course?.chapters ?? []}
+                  dripping={course.subject_id.chapter_dripping ?? "NO"}
+                />
 
                 <div className="relative flex min-h-[99px] w-full flex-col gap-3 overflow-hidden rounded-lg border bg-gradient-to-r from-white to-primary-100 p-4">
                   <p className="text-sm font-bold">Earn 10 Points</p>
