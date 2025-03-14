@@ -1,10 +1,6 @@
 import { getInitials } from "@/lib";
 import { useUserStore } from "@/store/z-store";
-import {
-  RiCloseLine,
-  RiLock2Line,
-  RiUser3Line
-} from "@remixicon/react";
+import { RiCloseLine, RiLock2Line, RiUser3Line } from "@remixicon/react";
 import { User03 } from "@untitled-ui/icons-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
