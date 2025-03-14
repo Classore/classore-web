@@ -539,7 +539,7 @@ export const VideoPlayer = React.memo(
 					</div>
 
 					{/* Time and controls */}
-					<div className='flex items-center justify-between px-1'>
+					<div className='flex items-center justify-between'>
 						<div className='flex items-center gap-2'>
 							<div className='flex items-center gap-0.5'>
 								{/* Skip backward */}

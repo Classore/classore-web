@@ -62,7 +62,7 @@ const Page = () => {
 		course_id: id as string,
 	})
 
-	const { data: chapter } = useGetChapter({
+	const { data: chapter, isPending: isChapterPending } = useGetChapter({
 		chapter_id: course?.current_chapter.id ?? '',
 	})
 
@@ -148,14 +148,19 @@ const Page = () => {
 
 						<div
 							style={{
-								// DO NOT REMOVE: I don't yet understand why it work but it does
 								gridTemplateAreas: `
 										"video column-2"
 										"column-1 column-2"
 									`,
 							}}
 							className='flex w-full flex-col gap-8 lg:grid lg:grid-cols-3'>
-							{currentModule?.video_array.at(0)?.secure_url ?
+							{isChapterPending ?
+								<div className='bg-neutral-200 flex flex-col items-center justify-center rounded col-start-1 col-span-2 row-start-1 p-10'>
+									<p className='text-sm text-neutral-500 text-center'>
+										Loading...
+									</p>
+								</div>
+							: currentModule?.video_array.at(0)?.secure_url ?
 								<VideoPlayer
 									className={`row-start-1 ${theatreMode ? 'col-span-3' : 'col-start-1 col-span-2'}`}
 									theatreMode={theatreMode}
@@ -166,7 +171,7 @@ const Page = () => {
 							:	<div className='bg-neutral-200 flex flex-col items-center justify-center rounded col-start-1 col-span-2 row-start-1 p-10'>
 									<RiCloseCircleLine className='text-neutral-400' size={48} />
 									<p className='text-sm text-neutral-500 text-center'>
-										This module currently has no video. <br /> Please check back
+										This lesson currently has no video. <br /> Please check back
 										later.
 									</p>
 								</div>
@@ -214,6 +219,7 @@ const Page = () => {
 									current_chapter_id={course?.current_chapter.id}
 									progress={course?.current_progress_percentage ?? 0}
 									chapters={course?.chapters ?? []}
+									dripping={course.subject_id.chapter_dripping ?? 'NO'}
 								/>
 
 								<div className='relative flex min-h-[99px] w-full flex-col gap-3 overflow-hidden rounded-lg border bg-gradient-to-r from-white to-primary-100 p-4'>
