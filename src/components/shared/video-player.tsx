@@ -209,7 +209,7 @@ export const VideoPlayer = React.memo(
 
       // Check if the source is an HLS stream or a regular video file
       const isHLSStream = src.includes(".m3u8");
-      
+
       // Handle HLS streams
       if (isHLSStream) {
         if (Hls.isSupported()) {

@@ -20,7 +20,7 @@ export const CheckoutAddWardsModal = ({
 }: CheckoutModalProps) => {
   const [visible, setVisible] = React.useState(false);
   const values = useMiscStore((state) => state.payload);
-  
+
   const chosen_subjects = values.vettings.reduce(
     (acc, item) => acc + item.allowed_subjects,
     0,
