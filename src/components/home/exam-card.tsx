@@ -11,7 +11,6 @@ interface Props {
 }
 
 export const ExamCard = ({ course, className }: Props) => {
-  console.log("course", course);
   return (
     <Link
       href={`/dashboard/categories/${course.examinationbundle_id}`}

@@ -82,7 +82,6 @@ const Profile = () => {
   });
   const onSubmit = (data: FormValues) => {
     mutate(data);
-    console.log(data);
   };
 
   return (
