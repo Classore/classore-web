@@ -49,6 +49,7 @@ export const VideoPlayer = React.memo(
 		onError,
 		setTheatreMode,
 		theatreMode,
+		moduleProgress,
 	}: VideoPlayerProps) => {
 		const [isPlaying, setIsPlaying] = React.useState(false)
 		const [progress, setProgress] = React.useState(0)
@@ -60,6 +61,7 @@ export const VideoPlayer = React.memo(
 		const [isLoading, setIsLoading] = React.useState(false)
 		const [wasPlayingBeforeSeeking, setWasPlayingBeforeSeeking] = React.useState(false)
 		const [bufferProgress, setBufferProgress] = React.useState(0)
+		const [loadingHls, setLoadingHls] = React.useState(false)
 
 		const videoRef = React.useRef<HTMLVideoElement | null>(null)
 		const hlsRef = React.useRef<Hls | null>(null)
@@ -191,6 +193,9 @@ export const VideoPlayer = React.memo(
 
 		const toggleTheatreMode = () => {
 			setTheatreMode?.(prev => !prev)
+			if (typeof window !== 'undefined') {
+				localStorage.setItem('classore-theatre', JSON.stringify(theatreMode))
+			}
 		}
 
 		// useEffect to handle video playing (hls or not) and errors
@@ -206,11 +211,11 @@ export const VideoPlayer = React.memo(
 
 			// Check if the source is an HLS stream or a regular video file
 			const isHLSStream = src.includes('.m3u8')
-			console.log('isHLSStream', isHLSStream)
 
 			// Handle HLS streams
 			if (isHLSStream) {
 				if (Hls.isSupported()) {
+					setLoadingHls(true)
 					const hls = new Hls({
 						enableWorker: true,
 						lowLatencyMode: true,
@@ -222,6 +227,7 @@ export const VideoPlayer = React.memo(
 					hls.attachMedia(video)
 
 					hls.on(Hls.Events.MANIFEST_PARSED, () => {
+						setLoadingHls(false)
 						if (autoPlay) {
 							video.play().catch(handleMediaError)
 						}
@@ -229,7 +235,7 @@ export const VideoPlayer = React.memo(
 					})
 
 					hls.on(Hls.Events.ERROR, (_event, data) => {
-						console.error('HLS error:', data)
+						setLoadingHls(false)
 						onError?.(data)
 
 						if (data.fatal) {
@@ -312,13 +318,6 @@ export const VideoPlayer = React.memo(
 			const onPause = () => setIsPlaying(false)
 
 			const onTimeUpdate = () => {
-				// if (moduleProgress && !isLoading) {
-				// 	const currentProgress = ((moduleProgress ?? 0) / 100) * (video.duration ?? 0)
-				// 	console.log("module progress", moduleProgress)
-				// 	console.log("current progress", currentProgress)
-				// 	video.currentTime = currentProgress
-				// }
-				// console.log('currentTime', video.currentTime)
 				setCurrentTime(video.currentTime)
 				setProgress((video.currentTime / video.duration) * 100 || 0)
 				updateBufferProgress()
@@ -326,6 +325,14 @@ export const VideoPlayer = React.memo(
 			const onLoadedMetadata = () => {
 				setDuration(video.duration)
 				setIsLoading(false)
+
+				// Start the video from where it was paused
+				const currentProgress =
+					moduleProgress && moduleProgress !== 100 ?
+						((moduleProgress ?? 0) / 100) * (video.duration ?? 0)
+					:	0
+				setProgress(currentProgress)
+				video.currentTime = currentProgress
 			}
 			const onEnded = () => {
 				setIsPlaying(false)
@@ -390,7 +397,8 @@ export const VideoPlayer = React.memo(
 					clearTimeout(controlsTimeoutRef.current)
 				}
 			}
-		}, [])
+			// eslint-disable-next-line react-hooks/exhaustive-deps
+		}, [moduleProgress])
 
 		// Auto-hide controls when playing
 		React.useEffect(() => {
@@ -488,7 +496,7 @@ export const VideoPlayer = React.memo(
 				/>
 
 				{/* Buffering indicator */}
-				{isLoading ?
+				{isLoading || loadingHls ?
 					<div className='absolute inset-0 flex items-center justify-center bg-neutral-900 bg-opacity-30'>
 						<LoaderCircle className='animate-spin text-white' size={64} />
 					</div>
@@ -505,20 +513,20 @@ export const VideoPlayer = React.memo(
 
 				{/* Controls */}
 				<div
-					className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4 transition-opacity duration-300 ${
+					className={`absolute bottom-0 left-0 right-0 px-4 py-2.5 bg-gradient-to-t from-black to-transparent transition-opacity duration-300 ${
 						showControls ? 'opacity-100' : 'pointer-events-none opacity-0'
 					}`}>
-					<div className='relative mb-2'>
+					<div className='relative'>
 						{/* progress bar */}
 						<Slider.Root
-							className='relative flex h-5 w-full touch-none select-none items-center'
+							className='relative flex cursor-pointer h-5 w-full touch-none select-none items-center'
 							value={[currentTime]}
 							max={duration || 100}
 							step={0.01}
 							onValueChange={handleProgressChange}
 							onPointerDown={handleSeekStart}
 							onPointerUp={handleSeekEnd}>
-							<Slider.Track className='relative h-1 w-full grow rounded-full bg-white/30'>
+							<Slider.Track className='relative h-[3px] w-full grow rounded-full bg-white/30'>
 								<Slider.Range
 									className='absolute h-full rounded-full bg-white'
 									style={{ width: `${progress}%` }}
@@ -530,7 +538,7 @@ export const VideoPlayer = React.memo(
 							/>
 						</Slider.Root>
 						{/* Buffer progress indicator - positioned behind the playback progress bar */}
-						<div className='absolute pointer-events-none top-1/2 left-0 w-full h-1 -translate-y-1/2 rounded-full overflow-hidden'>
+						<div className='absolute pointer-events-none top-1/2 left-0 w-full h-[3px] -translate-y-1/2 rounded-full overflow-hidden'>
 							<div
 								className='h-full bg-white/30'
 								style={{ width: `${bufferProgress}%` }}></div>
@@ -539,7 +547,7 @@ export const VideoPlayer = React.memo(
 
 					{/* Time and controls */}
 					<div className='flex items-center justify-between'>
-						<div className='flex items-center gap-2'>
+						<div className='flex items-center gap-4'>
 							<div className='flex items-center gap-0.5'>
 								{/* Skip backward */}
 								<button
@@ -555,8 +563,8 @@ export const VideoPlayer = React.memo(
 									onClick={togglePlay}
 									aria-label={isPlaying ? 'Pause' : 'Play'}>
 									{isPlaying ?
-										<RiPauseLargeFill size={18} />
-									:	<RiPlayLargeFill size={18} />}
+										<RiPauseLargeFill size={24} />
+									:	<RiPlayLargeFill size={24} />}
 								</button>
 
 								{/* Skip forward */}
@@ -569,7 +577,8 @@ export const VideoPlayer = React.memo(
 							</div>
 
 							<p className='text-xs font-semibold text-white'>
-								{formatTime(currentTime)} / {formatTime(duration)}
+								{formatTime(currentTime)}{' '}
+								<span className='text-neutral-300'>/ {formatTime(duration)}</span>
 							</p>
 						</div>
 

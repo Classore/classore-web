@@ -1,8 +1,4 @@
-import {
-	RiCloseCircleLine,
-	RiThumbDownLine,
-	RiThumbUpLine,
-} from "@remixicon/react";
+import { RiCloseCircleLine, RiThumbDownLine, RiThumbUpLine } from '@remixicon/react'
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -21,7 +17,7 @@ import {
 	Seo,
 	Spinner,
 	VideoPlayer,
-} from "@/components/shared";
+} from '@/components/shared'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -102,6 +98,13 @@ const Page = () => {
       setOpen(true);
     }
   }, [isError, error]);
+
+  React.useEffect(() => {
+		const saveMode = JSON.parse(localStorage.getItem('classore-theatre') ?? 'false')
+		if (saveMode) {
+			setTheatreMode(saveMode)
+		}
+  }, [])
 
   return (
     <>
