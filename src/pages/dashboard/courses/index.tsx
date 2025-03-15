@@ -41,7 +41,7 @@ const Page = () => {
 					</div>
 				</div>
 
-				<div className='flex flex-col gap-10'>
+				<div className='flex flex-col gap-10 pt-6 pb-10'>
 					{isPending ?
 						<div className='mx-auto py-4'>
 							<Spinner variant='primary' />
