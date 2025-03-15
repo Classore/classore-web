@@ -6,9 +6,9 @@ import { DashboardLayout } from "@/components/layouts";
 import { Seo } from "@/components/shared";
 import { Button } from "@/components/ui/button";
 
+import { dehydrate, QueryClient } from "@tanstack/react-query";
 import { BrowseCategories } from "@/components/categories";
 import { getExamsQueryOptions } from "@/queries/school";
-import { dehydrate, QueryClient } from "@tanstack/react-query";
 import type { GetStaticProps } from "next";
 
 export const getStaticProps = (async () => {
