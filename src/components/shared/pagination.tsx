@@ -88,8 +88,8 @@ export const Pagination = (props: Props) => {
   };
 
   return (
-    <div className="flex w-full items-center justify-between">
-      <div className="flex items-center gap-2">
+    <div className="flex flex-col lg:flex-row w-full items-center justify-between">
+      <div className="flex flex-col lg:flex-row items-center gap-2">
         <div className="flex items-center gap-5">
           <Button
             className="h-8 text-xs"
@@ -111,7 +111,7 @@ export const Pagination = (props: Props) => {
             <RiArrowRightSLine size={16} />
           </Button>
         </div>
-        <div className="text-xl text-neutral-400">/</div>
+        <div className="text-xl text-neutral-400 hidden lg:flex">/</div>
         <div className="flex items-center gap-2">
           <p className="text-sm text-neutral-400">Go to page</p>
           <input
