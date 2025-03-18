@@ -110,7 +110,11 @@ const Page = () => {
 
       signIn(data.data, access_token);
       toast.success("Login successful!");
-      router.replace("/dashboard");
+      if (isStudent) {
+        router.replace("/dashboard");
+      } else {
+        router.replace("parents/dashboard");
+      }
     },
   });
 
