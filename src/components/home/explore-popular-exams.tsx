@@ -34,7 +34,10 @@ export const ExplorePopularExams = () => {
                 />
               ))
             ) : (
-              <p className="text-sm text-neutral-400">No bundles found</p>
+              <p className="text-sm text-neutral-400">
+                {" "}
+                No bundles found. We are working on adding more bundles.
+              </p>
             )}
           </div>
         </div>

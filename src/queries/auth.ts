@@ -150,16 +150,28 @@ const UpdateProfileMutation = async (payload: UpdateProfilePayload) => {
     .then((res) => res.data);
 };
 
+type ChangePasswordPayload = {
+	old_password: string
+	new_password: string
+}
+const ChangePasswordMutation = async (payload: ChangePasswordPayload) => {
+	return axios
+		.put<HttpResponse<null>>(endpoints().auth.change_password, payload)
+		.then(res => res.data)
+}
+
 export {
-  AddWardsMutation,
-  ForgotPasswordMutation,
-  GetWaitlistQuery,
-  GoogleSignInQuery,
-  ResendVerificationCodeMutation,
-  ResetPasswordMutation,
-  SignInMutation,
-  SignUpMutation,
-  UpdateProfileMutation,
-  VerifyEmailMutation,
-  WaitlistMutation,
-};
+	AddWardsMutation,
+	ChangePasswordMutation,
+	ForgotPasswordMutation,
+	GetWaitlistQuery,
+	GoogleSignInQuery,
+	ResendVerificationCodeMutation,
+	ResetPasswordMutation,
+	SignInMutation,
+	SignUpMutation,
+	UpdateProfileMutation,
+	VerifyEmailMutation,
+	WaitlistMutation,
+}
+
