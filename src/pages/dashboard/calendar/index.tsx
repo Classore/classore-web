@@ -38,6 +38,16 @@ const daysOfWeek = [
   "Saturday",
 ];
 
+const daysOfWeekS = [
+  "Su",
+  "Mo",
+  "Tu",
+  "We",
+  "Th",
+  "Fr",
+  "Sa",
+];
+
 const Page = () => {
   const [current, setCurrent] = React.useState(new Date());
 
@@ -159,8 +169,18 @@ const Page = () => {
           </div>
 
           <div className="flex w-full flex-col border">
-            <div className="grid w-full grid-cols-7 border-b">
+            <div className="hidden lg:grid w-full grid-cols-7 border-b">
               {daysOfWeek.map((day, index) => (
+                <div
+                  key={index}
+                  className="flex h-[49px] w-full items-center justify-center border-r text-sm text-neutral-400 last:border-r-0"
+                >
+                  {day}
+                </div>
+              ))}
+            </div>
+            <div className="grid lg:hidden w-full grid-cols-7 border-b">
+              {daysOfWeekS.map((day, index) => (
                 <div
                   key={index}
                   className="flex h-[49px] w-full items-center justify-center border-r text-sm text-neutral-400 last:border-r-0"
