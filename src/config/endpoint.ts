@@ -1,17 +1,18 @@
 export const endpoints = (id?: string) => {
   const auth = {
-    signup: "/auth/signup",
-    signin: "/auth/login",
-    google_signin: "/auth/google",
-    verify: "/auth/signup/verify",
-    resend_code: "/auth/signup/resend-verification-code",
-    forgot_password: "/auth/forgot-password",
-    reset_password: "/auth/reset-password",
-    profile: "/auth/profile",
-    google_auth: "/auth/google",
-    add_wards: "/auth/add-my-wards",
-    update_profile: "/auth/update-profile",
-  } as const;
+		signup: '/auth/signup',
+		signin: '/auth/login',
+		google_signin: '/auth/google',
+		verify: '/auth/signup/verify',
+		resend_code: '/auth/signup/resend-verification-code',
+		forgot_password: '/auth/forgot-password',
+		reset_password: '/auth/reset-password',
+		profile: '/auth/profile',
+		google_auth: '/auth/google',
+		add_wards: '/auth/add-my-wards',
+		update_profile: '/auth/update-profile',
+		change_password: '/auth/change-password',
+  } as const
 
   const courses = {
     get_all: "/courses",

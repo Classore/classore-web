@@ -165,7 +165,7 @@ const Page = () => {
             </div>
           </div>
           <div className="flex w-full flex-col gap-y-4">
-            <div className="flex w-full items-center justify-between">
+            <div className="flex  w-full items-center justify-between">
               <div className="flex items-center gap-x-2">
                 {exams?.map((exam) => (
                   <button
@@ -210,7 +210,7 @@ const Page = () => {
                 </button>
               ))}
             </div>
-            <div className="flex w-full items-start gap-6">
+            <div className="flex flex-col lg:flex-row w-full items-start gap-6">
               <div className="flex w-full flex-col gap-4">
                 {isLoading ? (
                   <div className="grid h-[400px] w-full place-items-center">

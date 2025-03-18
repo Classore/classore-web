@@ -51,7 +51,10 @@ export const BrowseCategories = () => {
                     />
                   ))
                 ) : (
-                  <p className="text-sm text-neutral-400">No bundles found</p>
+                  <p className="text-sm text-neutral-400 col-span-full">
+                    {" "}
+                    No bundles found. We are working on adding more bundles.
+                  </p>
                 )}
               </TabsContent>
             )}
@@ -71,7 +74,7 @@ export const BrowseCategories = () => {
                     />
                   ))
                 ) : (
-                  <p className="text-sm text-neutral-400">No bundles found</p>
+                  <p className="text-sm text-neutral-400">No bundles found.</p>
                 )}
               </TabsContent>
             ))}
