@@ -1,14 +1,14 @@
+import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import React from "react";
 
 import meeting from "@/assets/illustrations/meeting.svg";
+import { MobileAppbar } from "./mobile-appbar";
 import { dashboard_links } from "@/config";
 import { cn, normalize } from "@/lib";
 import { Button } from "../ui/button";
 import { Appbar } from "./appbar";
-import { MobileAppbar } from "./mobile-appbar";
 
 type DashboardLayoutProps = {
   children: React.ReactNode;

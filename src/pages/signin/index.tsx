@@ -78,39 +78,43 @@ const Page = () => {
       setToken(access_token);
       const isStudent = data.data.user_type === "STUDENT";
 
-      if (!data.data.is_verified) {
-        toast.success("Verify your email to complete registration", {
-          description: "Please check your email to verify your account",
-        });
+      if (isStudent) {
+        if (!data.data.is_verified) {
+          toast.success("Verify your email to complete registration", {
+            description: "Please check your email to verify your account",
+          });
 
-        router.push({
-          pathname: isStudent
-            ? "/signup/student/verify-email"
-            : "/signup/parent/verify-email",
-          query: {
-            email: encodeURIComponent(data.data.email.trim()),
-            step: "3",
-          },
-        });
-        return;
+          router.push({
+            pathname: isStudent
+              ? "/signup/student/verify-email"
+              : "/signup/parent/verify-email",
+            query: {
+              email: encodeURIComponent(data.data.email.trim()),
+              step: "3",
+            },
+          });
+          return;
+        }
+        if (!data.data.chosen_study_plan && isStudent) {
+          toast.success("Choose your study plan", {
+            description:
+              "Please choose your study plan to complete registration",
+          });
+          router.push({
+            pathname: "/signup/student/studying-for",
+            query: {
+              step: "4",
+            },
+          });
+          return;
+        }
+
+        signIn(data.data, access_token);
+        toast.success("Login successful!");
+        router.replace("/dashboard");
+      } else {
+        router.replace("parents/dashboard");
       }
-
-      if (!data.data.chosen_study_plan && isStudent) {
-        toast.success("Choose your study plan", {
-          description: "Please choose your study plan to complete registration",
-        });
-        router.push({
-          pathname: "/signup/student/studying-for",
-          query: {
-            step: "4",
-          },
-        });
-        return;
-      }
-
-      signIn(data.data, access_token);
-      toast.success("Login successful!");
-      router.replace("/dashboard");
     },
   });
 
