@@ -12,33 +12,28 @@ import { Toaster } from "@/components/ui/sonner";
 import { analytics, pageview } from "@/lib";
 
 export default function App({ Component, pageProps }: AppProps) {
-  const router = useRouter();
+	const router = useRouter();
 
-  React.useEffect(() => {
-    const handleRouteChange = (url: string) => {
-      analytics.pageView(url);
-      pageview();
-    };
-    router.events.on("routeChangeComplete", handleRouteChange);
-    return () => router.events.off("routeChangeComplete", handleRouteChange);
-  }, [router.events]);
+	React.useEffect(() => {
+		const handleRouteChange = (url: string) => {
+			analytics.pageView(url);
+			pageview();
+		};
+		router.events.on("routeChangeComplete", handleRouteChange);
+		return () => router.events.off("routeChangeComplete", handleRouteChange);
+	}, [router.events]);
 
-  return (
-    <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
-      <QueryProvider>
-        <SSRProvider>
-          <PostHogProvider client={posthog}>
-            <Component {...pageProps} />
-            <Toaster
-              position="top-right"
-              richColors
-              theme="light"
-              closeButton
-            />
-            <FacebookPixel />
-          </PostHogProvider>
-        </SSRProvider>
-      </QueryProvider>
-    </GoogleOAuthProvider>
-  );
+	return (
+		<GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
+			<QueryProvider>
+				<SSRProvider>
+					<PostHogProvider client={posthog}>
+						<Component {...pageProps} />
+						<Toaster position="top-right" richColors theme="light" closeButton />
+						<FacebookPixel />
+					</PostHogProvider>
+				</SSRProvider>
+			</QueryProvider>
+		</GoogleOAuthProvider>
+	);
 }

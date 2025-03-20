@@ -5,3 +5,4 @@ export * from "./use-file-handler";
 export * from "./use-interval";
 export * from "./use-prevent-navigation";
 export * from "./use-quiz-handler";
+export * from "./use-test-handler";

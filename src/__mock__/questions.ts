@@ -1,0 +1,177 @@
+import type { QuestionProps } from "@/types/test";
+
+export const mock_questions: QuestionProps[] = [
+	{
+		content:
+			"A ball falls from rest from a height of 20 meters. Neglecting air resistance, the equation for its position is y(t) = 20 - 4.9t². Calculate the time it takes for the ball to reach the _____ meters mark.",
+		id: "phys-fill-001",
+		media: "",
+		images: [],
+		instructions: "Fill in the blank with the appropriate number.",
+		options: [
+			{
+				id: "option-fill-1",
+				sequence_number: 1,
+				content: "10",
+				images: [],
+				videos: [],
+				media: null,
+			},
+		],
+		question_type: "FILL_IN_THE_GAP",
+		sequence: 1,
+		test_section: "kinematics",
+		videos: [],
+	},
+	{
+		content:
+			"Listen to the audio explanation about Newton's Second Law of Motion and identify the correct mathematical expression.",
+		id: "phys-list-001",
+		media: "/assets/sounds/sample.mp3",
+		images: [],
+		instructions:
+			"Listen to the audio recording and select the correct mathematical expression that represents Newton's Second Law as described.",
+		options: [
+			{
+				id: "option-list-1",
+				sequence_number: 1,
+				content: "F = ma",
+				images: [],
+				videos: [],
+				media: null,
+			},
+			{
+				id: "option-list-2",
+				sequence_number: 2,
+				content: "F = m/a",
+				images: [],
+				videos: [],
+				media: null,
+			},
+			{
+				id: "option-list-3",
+				sequence_number: 3,
+				content: "F = mg",
+				images: [],
+				videos: [],
+				media: null,
+			},
+			{
+				id: "option-list-4",
+				sequence_number: 4,
+				content: "F = mv²/r",
+				images: [],
+				videos: [],
+				media: null,
+			},
+		],
+		question_type: "LISTENING",
+		sequence: 2,
+		test_section: "dynamics",
+		videos: [],
+	},
+	{
+		content:
+			"A 2 kg object moving at 5 m/s collides with a stationary 3 kg object. If the collision is perfectly elastic, what is the velocity of the 2 kg object after the collision?",
+		id: "phys-mc-001",
+		media: "",
+		images: [],
+		instructions:
+			"Select the correct answer based on conservation of momentum and energy principles.",
+		options: [
+			{
+				id: "option-mc-1",
+				sequence_number: 1,
+				content: "-1 m/s",
+				images: [],
+				videos: [],
+				media: null,
+			},
+			{
+				id: "option-mc-2",
+				sequence_number: 2,
+				content: "0 m/s",
+				images: [],
+				videos: [],
+				media: null,
+			},
+			{
+				id: "option-mc-3",
+				sequence_number: 3,
+				content: "1 m/s",
+				images: [],
+				videos: [],
+				media: null,
+			},
+			{
+				id: "option-mc-4",
+				sequence_number: 4,
+				content: "3 m/s",
+				images: [],
+				videos: [],
+				media: null,
+			},
+		],
+		question_type: "MULTIPLE_CHOICE",
+		sequence: 3,
+		test_section: "momentum",
+		videos: [],
+	},
+	{
+		content:
+			"Calculate the electric potential at a distance of 0.5 meters from a point charge of 2.0 × 10⁻⁶ C. The electric constant k = 9.0 × 10⁹ N·m²/C².",
+		id: "phys-sa-001",
+		media: "",
+		images: [],
+		instructions: "Solve the problem showing your work and provide the final answer in volts.",
+		options: [],
+		question_type: "SHORT_ANSWER",
+		sequence: 4,
+		test_section: "electromagnetism",
+		videos: [],
+	},
+	{
+		content:
+			"Explain the concept of wave-particle duality and describe an experiment that demonstrates this phenomenon.",
+		id: "phys-speak-001",
+		media: "",
+		images: [],
+		instructions:
+			"Record your response explaining wave-particle duality and describe either the double-slit experiment or another relevant experiment that demonstrates this concept.",
+		options: [],
+		question_type: "SPEAKING",
+		sequence: 5,
+		test_section: "quantum_physics",
+		videos: [],
+	},
+	{
+		content:
+			"According to the principle of equivalence in general relativity, is it possible to distinguish between the effects of gravity and the effects of acceleration in a small enough region of spacetime?",
+		id: "phys-yn-001",
+		media: "",
+		images: [],
+		instructions: "Based on Einstein's principle of equivalence, select yes or no.",
+		options: [
+			{
+				id: "option-yn-1",
+				sequence_number: 1,
+				content: "Yes",
+				images: [],
+				videos: [],
+				media: null,
+			},
+			{
+				id: "option-yn-2",
+				sequence_number: 2,
+				content: "No",
+				images: [],
+				videos: [],
+				media: null,
+			},
+		],
+		question_type: "YES_OR_NO",
+		sequence: 6,
+		test_section: "relativity",
+		videos: [],
+	},
+];

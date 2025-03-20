@@ -1,4 +1,6 @@
 export * from "./appbar";
+export * from "./audio-player";
+export * from "./audio-recorder";
 export * from "./avatar-group";
 export * from "./back-btn";
 export * from "./backdrop";
