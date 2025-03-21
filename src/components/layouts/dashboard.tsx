@@ -16,7 +16,6 @@ type DashboardLayoutProps = {
 };
 
 export function DashboardLayout({ children, className }: DashboardLayoutProps) {
-	// const { isDesktop } = useDeviceWidth();
 	const router = useRouter();
 
 	const isOnRoute = (href: string) => normalize(router.pathname) === href;
