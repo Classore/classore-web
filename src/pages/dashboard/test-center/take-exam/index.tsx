@@ -29,6 +29,15 @@ const Page = () => {
 		answers
 	);
 
+	const isAnswered = React.useCallback(
+		(index: number) => {
+			const answer = answers[index];
+			if (!answer) return false;
+			return !!answer.option || !!answer.input_content || !!answer.media_upload;
+		},
+		[answers]
+	);
+
 	React.useEffect(() => {
 		startTimer();
 	}, []);
@@ -65,7 +74,7 @@ const Page = () => {
 									<button
 										key={index}
 										onClick={() => onQuestionChange(index, true)}
-										className={`grid size-6 place-items-center rounded-full text-sm ${index === currentQuestionIndex ? "bg-primary-100 text-primary-400" : "bg-neutral-100 text-neutral-400"}`}>
+										className={`grid size-6 place-items-center rounded-full text-sm ${isAnswered(index) ? "bg-primary-100 text-primary-400" : "bg-neutral-100 text-neutral-400"}`}>
 										{index + 1}
 									</button>
 								))}

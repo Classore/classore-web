@@ -3,7 +3,13 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 export const config = {
-	matcher: ["/dashboard/:path*", "/signin", "/signup", "/forgot-password/:path*"],
+	matcher: [
+		"/dashboard/:path*",
+		"/parents/dashboard/:path*",
+		"/signin",
+		"/signup",
+		"/forgot-password/:path*",
+	],
 	name: "auth-middleware",
 };
 
@@ -21,14 +27,17 @@ const authPathnames = [
 ];
 
 export function middleware(req: NextRequest) {
-	const requestHeaders = new Headers(req.headers); // Init new request headers
-	requestHeaders.set("x-next-pathname", req.nextUrl.pathname); // Set the new header for pathname
+	const requestHeaders = new Headers(req.headers);
+	requestHeaders.set("x-next-pathname", req.nextUrl.pathname);
 
 	const hasToken = req.cookies.has("CLASSORE_TOKEN");
-	const url = req.nextUrl.clone(); // Clone the URL to modify it
+	const user = req.cookies.get("CLASSORE_USER_TYPE")?.value;
+	const url = req.nextUrl.clone();
 
+	const isOnParentsDashboard = url.pathname.startsWith("/parents/dashboard");
 	const isOnDashboard = url.pathname.startsWith("/dashboard");
 	const isOnAuth = authPathnames.includes(url.pathname);
+	const isStudent = user === undefined ? true : user === "STUDENT";
 
 	const redirectResponse = (url: string | NextURL) => {
 		const response = NextResponse.redirect(url);
@@ -36,21 +45,25 @@ export function middleware(req: NextRequest) {
 		return response;
 	};
 
-	// // If in test mode, always redirect to the homepage
-	// if (isWaitlist && url.pathname !== "/") {
-	// 	url.pathname = "/"
-	// 	return redirectResponse(url)
-	// }
-
 	// If user is not logged in and is on dashboard, redirect to signin
-	if (!hasToken && isOnDashboard) {
+	if (!hasToken && (isOnDashboard || isOnParentsDashboard)) {
 		url.pathname = "/signin";
 		return redirectResponse(url);
 	}
 
 	// If user is logged in and is on signin or signup, redirect to dashboard
 	if (hasToken && isOnAuth) {
+		url.pathname = isStudent ? "/dashboard" : "/parents/dashoard";
+		return redirectResponse(url);
+	}
+
+	if (isStudent && isOnParentsDashboard) {
 		url.pathname = "/dashboard";
+		return redirectResponse(url);
+	}
+
+	if (!isStudent && isOnDashboard) {
+		url.pathname = "/parents/dashboard";
 		return redirectResponse(url);
 	}
 
