@@ -2,13 +2,13 @@ import { RiArrowLeftSLine } from "@remixicon/react";
 import { useRouter } from "next/router";
 import React from "react";
 
+import { usePreventNavigation, useTestHandler } from "@/hooks";
 import { useGetQuestions } from "@/queries/test-center";
 import { QuestionCard } from "@/components/test-center";
 import { useTestCenterStore } from "@/store/z-store";
 import { Appbar } from "@/components/layouts/appbar";
 import { Button } from "@/components/ui/button";
 import { Seo } from "@/components/shared";
-import { useTestHandler } from "@/hooks";
 
 import { mock_questions } from "@/__mock__/questions";
 
@@ -16,17 +16,23 @@ const Page = () => {
 	const router = useRouter();
 	const id = router.query.id as string;
 
-	const {} = useGetQuestions(id);
+	usePreventNavigation(true);
 
-	const handleRouteChange = () => {
-		router.events.on("routeChangeStart", () => {});
-		router.back();
-	};
+	const {} = useGetQuestions(id);
 
 	const { answers, startTimer } = useTestCenterStore();
 	const { currentQuestion, currentQuestionIndex, onQuestionChange, totalQuestions } = useTestHandler(
 		mock_questions,
 		answers
+	);
+
+	const isAnswered = React.useCallback(
+		(index: number) => {
+			const answer = answers[index];
+			if (!answer) return false;
+			return !!answer.option || !!answer.input_content || !!answer.media_upload;
+		},
+		[answers]
 	);
 
 	React.useEffect(() => {
@@ -41,7 +47,7 @@ const Page = () => {
 				<div className="h-[calc(100vh-80px)] w-full py-8">
 					<div className="container mx-auto grid grid-cols-4 gap-x-5">
 						<div className="w-full">
-							<Button className="w-fit" onClick={handleRouteChange} size="sm" variant="outline">
+							<Button className="w-fit" onClick={() => router.back()} size="sm" variant="outline">
 								<RiArrowLeftSLine className="size-4" /> Quit
 							</Button>
 						</div>
@@ -65,7 +71,7 @@ const Page = () => {
 									<button
 										key={index}
 										onClick={() => onQuestionChange(index, true)}
-										className={`grid size-6 place-items-center rounded-full text-sm ${index === currentQuestionIndex ? "bg-primary-100 text-primary-400" : "bg-neutral-100 text-neutral-400"}`}>
+										className={`grid size-6 place-items-center rounded-full text-sm ${isAnswered(index) ? "bg-primary-100 text-primary-400" : "bg-neutral-100 text-neutral-400"}`}>
 										{index + 1}
 									</button>
 								))}

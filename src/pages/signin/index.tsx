@@ -54,7 +54,12 @@ const Page = () => {
 				const { access_token } = data.data;
 				signIn(data.data, access_token);
 				toast.success(`Welcome ${capitalize(data.data.first_name)}`);
-				router.push("/dashboard");
+				const isStudent = data.data.user_type === "STUDENT";
+				if (isStudent) {
+					router.push("/dashboard");
+				} else {
+					router.push("parents/dashboard");
+				}
 			} catch (error: unknown) {
 				const {
 					response: {

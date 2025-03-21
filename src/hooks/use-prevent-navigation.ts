@@ -1,43 +1,53 @@
+import { useRouter } from "next/router";
 import React from "react";
 
-export const usePreventNavigation = (shouldPrevent: boolean, redirectUrl?: string) => {
+export function usePreventNavigation(
+	shouldPreventNavigation: boolean | (() => boolean),
+	message: string = "You have unsaved changes. Are you sure you want to leave this page?"
+) {
+	const router = useRouter();
+	const shouldPrevent = React.useCallback((): boolean => {
+		return typeof shouldPreventNavigation === "function"
+			? shouldPreventNavigation()
+			: shouldPreventNavigation;
+	}, [shouldPreventNavigation]);
+
 	React.useEffect(() => {
 		const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-			if (shouldPrevent) {
-				e.preventDefault();
-				// !do not remove deprecated value
-				e.returnValue = "";
-				const shouldClose = window.confirm(
-					"Are you sure you want to leave this page? Your progress will not be saved."
-				);
+			if (!shouldPrevent()) return;
 
-				if (!shouldClose) {
-					return;
-				}
-
-				if (redirectUrl) {
-					window.location.href = redirectUrl;
-				} else {
-					window.history.pushState(null, "", window.location.href);
-				}
-			}
-		};
-
-		const handlePopState = (e: PopStateEvent) => {
-			if (shouldPrevent) {
-				e.preventDefault();
-				window.history.pushState(null, "", window.location.href);
-			}
+			e.preventDefault();
+			e.returnValue = message;
+			return message;
 		};
 
 		window.addEventListener("beforeunload", handleBeforeUnload);
-		window.addEventListener("popstate", handlePopState);
-
-		window.history.pushState(null, "", window.location.href);
-
 		return () => {
 			window.removeEventListener("beforeunload", handleBeforeUnload);
-			window.removeEventListener("popstate", handlePopState);
 		};
-	}, [shouldPrevent, redirectUrl]);
-};
+	}, [message, shouldPrevent]);
+
+	React.useEffect(() => {
+		const handleRouteChangeStart = () => {
+			if (!shouldPrevent()) return;
+
+			if (!window.confirm(message)) {
+				router.events.emit("routeChangeError");
+				throw "Navigation cancelled by user";
+			}
+		};
+
+		router.events.on("routeChangeStart", handleRouteChangeStart);
+		return () => {
+			router.events.off("routeChangeStart", handleRouteChangeStart);
+		};
+	}, [message, router.events, shouldPrevent]);
+
+	const removePreventNavigation = React.useCallback(() => {
+		if (typeof shouldPreventNavigation === "boolean") {
+			return false;
+		}
+	}, [shouldPreventNavigation]);
+
+	return { removePreventNavigation };
+}
