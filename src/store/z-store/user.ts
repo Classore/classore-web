@@ -1,8 +1,8 @@
 import Cookies from "js-cookie";
 
-import { setToken, setUserType } from "@/lib/cookies";
-import type { Maybe, UserProps } from "@/types";
 import { createPersistMiddleware } from "../middleware";
+import type { Maybe, UserProps } from "@/types";
+import { setToken } from "@/lib/cookies";
 
 interface UserStore {
 	user: Maybe<UserProps>;
@@ -34,14 +34,12 @@ const useUserStore = createPersistMiddleware<UserStore>("classore-user", (set) =
 		// @ts-expect-error nil
 		set(() => ({ user: rest }));
 		setToken(token);
-		setUserType(rest.user_type);
 	},
 	signOut: () => {
 		set(() => ({ user: null }));
 		localStorage.removeItem("classore-user");
 		localStorage.removeItem("CLASSORE_USER");
 		Cookies.remove("CLASSORE_TOKEN");
-		Cookies.remove("CLASSORE_USER_TYPE");
 	},
 }));
 
