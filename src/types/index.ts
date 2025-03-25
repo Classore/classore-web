@@ -642,3 +642,18 @@ export type SinglePlan = {
 	amount_paid: number;
 	renewal_amount: number;
 };
+
+export type ReferralProps = Node & {
+	__typename?: "Referral";
+	fullName: string;
+	email: string;
+	points: number;
+	status: "active" | "inactive";
+};
+
+export type WithdrawalProps = Node & {
+	__typename?: "Withdrawal";
+	amount: number;
+	date: Date | string;
+	status: "pending" | "successful" | "failed";
+};

@@ -5,7 +5,9 @@ import Link from "next/link";
 import React from "react";
 
 import meeting from "@/assets/illustrations/meeting.svg";
+import { useGetParentHome } from "@/queries/parent";
 import { parents_dashboard_links } from "@/config";
+import { WardItem } from "../dashboard/ward-item";
 import { MobileAppbar } from "./mobile-appbar";
 import { cn, normalize } from "@/lib";
 import { Button } from "../ui/button";
@@ -18,10 +20,13 @@ type DashboardLayoutProps = {
 	title?: string;
 };
 
-export function ParentPashboardLayout({ children, className, title }: DashboardLayoutProps) {
+export function ParentDashboardLayout({ children, className, title }: DashboardLayoutProps) {
 	const router = useRouter();
 
 	const isOnRoute = (href: string) => normalize(router.pathname) === href;
+
+	const { data: parentHome } = useGetParentHome();
+
 	return (
 		<>
 			<Seo title={title} />
@@ -56,12 +61,15 @@ export function ParentPashboardLayout({ children, className, title }: DashboardL
 							</div>
 						</div>
 						{/* WARDS */}
-						<div className="w-full border-t px-6 py-5">
+						<div className="w-full space-y-4 border-t px-6 py-5">
 							<div className="flex w-full items-center justify-between">
 								<p className="text-sm text-neutral-400">My Wards</p>
 								<button className="grid size-6 place-items-center rounded-md bg-neutral-200">
 									<RiUserAddLine className="size-4" />
 								</button>
+							</div>
+							<div className="w-full space-y-2">
+								{parentHome?.my_wards.map((ward) => <WardItem key={ward.id} ward={ward} />)}
 							</div>
 						</div>
 					</div>

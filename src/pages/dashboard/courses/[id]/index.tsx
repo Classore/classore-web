@@ -78,8 +78,6 @@ const Page = () => {
 
 	const tutor = React.useMemo(() => {
 		const chapter = course?.chapters.find((chapter) => chapter.id === course?.current_chapter.id);
-
-		// find the tutor of the current module and if no module is current, find the tutor of the first module
 		const currentModule = chapter?.modules.find(
 			(module) =>
 				module.id ===
