@@ -1,12 +1,14 @@
 import { RiAddLine, RiFileCopyLine } from "@remixicon/react";
-import { useQueries } from "@tanstack/react-query";
+import Link from "next/link";
 import React from "react";
 
-import { ParentPashboardLayout } from "@/components/layouts";
-import { WithdrawPoints } from "@/components/dashboard";
-import { Seo, Sharer } from "@/components/shared";
+import { ReferralItem, WithdrawPoints, WithdrawalItem } from "@/components/dashboard";
+import { ParentDashboardLayout } from "@/components/layouts";
+import { Seo, Sharer, TabPanel } from "@/components/shared";
+import { useGetParentHome } from "@/queries/parent";
 import { Button } from "@/components/ui/button";
 import { useUserStore } from "@/store/z-store";
+import { Ward } from "@/components/parents";
 import { Coin } from "@/assets/svgs/coin";
 import { formatCurrency } from "@/lib";
 import { TAB_OPTIONS } from "@/config";
@@ -38,12 +40,83 @@ const Page = () => {
 		setModalStates((prev) => ({ ...prev, [modal]: state }));
 	};
 
-	const [] = useQueries({ queries: [] });
+	const { data: parentHome } = useGetParentHome();
+
+	const renderTabContent = () => {
+		if (tab === "referral") {
+			return (
+				<TabPanel selected={tab} value="referral">
+					{renderReferrals()}
+				</TabPanel>
+			);
+		}
+		return (
+			<TabPanel selected={tab} value="withdrawal">
+				{renderWithdrawals()}
+			</TabPanel>
+		);
+	};
+
+	const renderReferrals = () => {
+		const data = React.useMemo(() => {
+			if (!parentHome?.referral_history) return [];
+			return parentHome.referral_history.data;
+		}, [parentHome]);
+
+		if (!data.length) {
+			return (
+				<div className="grid min-h-[300px] w-full place-items-center">
+					<p className="text-sm text-primary-400">No referrals to display.</p>
+				</div>
+			);
+		}
+
+		return (
+			<>
+				{data.map((referral, index) => (
+					<ReferralItem key={index} referral={referral} />
+				))}
+				<div className="flex items-center justify-center">
+					<Link href="/dashboard/referrals" className="link text-sm">
+						See all referrals
+					</Link>
+				</div>
+			</>
+		);
+	};
+
+	const renderWithdrawals = () => {
+		const data = React.useMemo(() => {
+			if (!parentHome?.withdrawal_history) return [];
+			return parentHome?.withdrawal_history.data;
+		}, [parentHome]);
+
+		if (!data.length) {
+			return (
+				<div className="grid min-h-[300px] w-full place-items-center">
+					<p className="text-sm text-primary-400">No withdrawals to display.</p>
+				</div>
+			);
+		}
+
+		return (
+			<>
+				{data.map((withdrawal) => (
+					<WithdrawalItem key={withdrawal.withdrawal_id} withdrawal={withdrawal} />
+				))}
+				<div className="flex items-center justify-center">
+					<Link href="/dashboard/withdrawals" className="link text-sm">
+						See all withdrawals
+					</Link>
+				</div>
+			</>
+		);
+	};
 
 	return (
 		<>
 			<Seo title="Parent's Dashboard" />
-			<ParentPashboardLayout>
+			<ParentDashboardLayout>
 				<div className="h-full w-full space-y-6 overflow-y-auto bg-[#F6F8FA]">
 					<div className="flex w-full flex-col justify-between gap-4 overflow-y-auto rounded-2xl bg-gradient-to-r from-secondary-50 via-primary-100 to-primary-50 p-6 md:items-center md:px-10 md:py-[52px] lg:flex-row lg:gap-[177px]">
 						<div className="flex flex-col gap-2">
@@ -58,11 +131,23 @@ const Page = () => {
 						<div className="space-y-4 rounded-2xl bg-white p-5">
 							<div className="flex w-full items-center justify-between">
 								<p className="font-semibold">My Wards</p>
-								<Button className="w-fit" size="sm">
-									<RiAddLine /> Add New Ward
+								<Button className="w-fit" size="sm" asChild>
+									<Link href="/parents/dashboard/add-ward">
+										<RiAddLine /> Add Ward
+									</Link>
 								</Button>
 							</div>
-							<div className="grid w-full grid-cols-1 gap-2 bg-[#F6F8FA] p-2 lg:grid-cols-2"></div>
+							{!parentHome?.my_wards ? (
+								<div className="grid min-h-[300px] w-full place-items-center">
+									<p className="text-sm text-primary-400">No wards to display.</p>
+								</div>
+							) : (
+								<div className="grid w-full grid-cols-1 gap-2 bg-[#F6F8FA] p-2 lg:grid-cols-2">
+									{parentHome.my_wards.map((ward) => (
+										<Ward key={ward.id} ward={ward} />
+									))}
+								</div>
+							)}
 						</div>
 						<div className="space-y-4 rounded-2xl bg-white p-5">
 							<div className="flex w-full items-center justify-between">
@@ -79,8 +164,12 @@ const Page = () => {
 												<Coin className="size-6 text-red-500" />
 											</div>
 											<div className="w-full space-y-1">
-												<h3 className="text-2xl font-semibold text-white">0 Points</h3>
-												<p className="text-sm text-neutral-100">Your points equals {formatCurrency(0)}</p>
+												<h3 className="text-2xl font-semibold text-white">
+													{parentHome?.referral_points.referral_points} Points
+												</h3>
+												<p className="text-sm text-neutral-100">
+													Your points equals {formatCurrency(parentHome?.referral_points.monetary_value || 0)}
+												</p>
 											</div>
 											<WithdrawPoints
 												onOpenChange={(withdraw) => handleModalStateChange("withdraw", withdraw)}
@@ -92,7 +181,7 @@ const Page = () => {
 										<div className="space-y-8 py-1">
 											<div>
 												<p className="text-sm text-neutral-400">Referral Code</p>
-												<h4 className="text-2xl">{"REFERRAL CODE"}</h4>
+												<h4 className="text-2xl">{parentHome?.referral_code}</h4>
 											</div>
 											<div className="flex items-center gap-x-2">
 												<Sharer
@@ -122,13 +211,13 @@ const Page = () => {
 											</button>
 										))}
 									</div>
-									<div className="min-h-[300px] w-full space-y-4"></div>
+									<div className="min-h-[300px] w-full space-y-4">{renderTabContent()}</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</ParentPashboardLayout>
+			</ParentDashboardLayout>
 		</>
 	);
 };

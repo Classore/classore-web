@@ -37,7 +37,7 @@ const Page = () => {
 							</Button>
 
 							<Button asChild variant="link" className="text-secondary-300">
-								<Link href="/dashboard" replace>
+								<Link href="/parents/dashboard" replace>
 									Go to Dashboard
 								</Link>
 							</Button>

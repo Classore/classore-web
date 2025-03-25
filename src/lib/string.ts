@@ -250,3 +250,14 @@ export const getFormattedTime = (timeInSeconds: number) => {
 
 	return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
 };
+
+export const generateRandomColor = (opacity: number = 1) => {
+	const clampedOpacity = Math.max(0, Math.min(1, opacity));
+
+	const hex = ((Math.random() * 0xffffff) << 0).toString(16).padStart(6, "0");
+	const r = parseInt(hex.slice(0, 2), 16);
+	const g = parseInt(hex.slice(2, 4), 16);
+	const b = parseInt(hex.slice(4, 6), 16);
+
+	return `rgba(${r}, ${g}, ${b}, ${clampedOpacity})`;
+};

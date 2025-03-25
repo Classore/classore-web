@@ -23,7 +23,10 @@ export const endpoints = (id?: string) => {
 	} as const;
 
 	const parents = {
+		home: "/parent/home",
 		add_ward: "/auth/add-my-wards",
+		get_ward: `/parent/view-a-ward/${id}`,
+		delete_ward: `/parent/delete-a-ward/${id}`,
 	} as const;
 
 	const school = {
