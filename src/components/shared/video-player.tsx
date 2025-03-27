@@ -2,8 +2,6 @@
 import { cn } from "@/lib";
 import * as Slider from "@radix-ui/react-slider";
 import {
-	RiCollapseHorizontalLine,
-	RiExpandWidthLine,
 	RiForward10Line,
 	RiFullscreenExitLine,
 	RiFullscreenLine,
@@ -13,7 +11,7 @@ import {
 	RiPlayLargeFill,
 	RiReplay10Line,
 	RiVolumeMuteLine,
-	RiVolumeUpLine,
+	RiVolumeUpLine
 } from "@remixicon/react";
 import Hls from "hls.js";
 import { LoaderCircle } from "lucide-react";
@@ -33,8 +31,6 @@ interface VideoPlayerProps {
 	autoPlay?: boolean;
 	className?: string;
 	poster?: string;
-	theatreMode?: boolean;
-	setTheatreMode?: React.Dispatch<React.SetStateAction<boolean>>;
 	onReady?: () => void;
 	onError?: (error: unknown) => void;
 }
@@ -47,8 +43,6 @@ export const VideoPlayer = React.memo(
 		poster,
 		onReady,
 		onError,
-		setTheatreMode,
-		theatreMode,
 		moduleProgress,
 	}: VideoPlayerProps) => {
 		const [isPlaying, setIsPlaying] = React.useState(false);
@@ -189,13 +183,6 @@ export const VideoPlayer = React.memo(
 		const preventContextMenu = (e: React.MouseEvent) => {
 			e.preventDefault();
 			return false;
-		};
-
-		const toggleTheatreMode = () => {
-			setTheatreMode?.((prev) => !prev);
-			if (typeof window !== "undefined") {
-				localStorage.setItem("classore-theatre", JSON.stringify(theatreMode));
-			}
 		};
 
 		// useEffect to handle video playing (hls or not) and errors
@@ -434,10 +421,6 @@ export const VideoPlayer = React.memo(
 						e.preventDefault();
 						toggleMute();
 						break;
-					case "t":
-						e.preventDefault();
-						toggleTheatreMode();
-						break;
 					case "p":
 						if (
 							typeof document.exitPictureInPicture !== "undefined" &&
@@ -474,7 +457,7 @@ export const VideoPlayer = React.memo(
 				tabIndex={0}
 				onMouseEnter={() => setShowControls(true)}
 				className={cn(
-					"relative h-72 w-full overflow-hidden rounded-lg bg-neutral-900 md:h-full",
+					`relative h-80 w-full overflow-hidden md:rounded-lg bg-neutral-900 md:h-[425px]`,
 					className
 				)}>
 				<video
@@ -488,7 +471,7 @@ export const VideoPlayer = React.memo(
 					poster={poster}
 					preload="metadata"
 					controlsList="nodownload"
-					className="h-full w-full max-w-full rounded-lg object-cover"
+					className="h-full max-w-full rounded-lg object-cover"
 				/>
 
 				{/* Buffering indicator */}
@@ -502,14 +485,14 @@ export const VideoPlayer = React.memo(
 				{!isLoading && !isPlaying ? (
 					<div className="absolute inset-0 flex items-center justify-center bg-black/30">
 						<button onClick={togglePlay}>
-							<RiPlayCircleFill className="text-white" size={48} />
+							<RiPlayCircleFill className="text-white" size={62} />
 						</button>
 					</div>
 				) : null}
 
 				{/* Controls */}
 				<div
-					className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent px-4 py-2.5 transition-opacity duration-300 ${
+					className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black px-2 to-transparent md:px-4 py-2.5 transition-opacity duration-300 ${
 						showControls ? "opacity-100" : "pointer-events-none opacity-0"
 					}`}>
 					<div className="relative">
@@ -584,14 +567,8 @@ export const VideoPlayer = React.memo(
 							<button
 								title="Toggle picture-in-picture mode (p)"
 								onClick={togglePiPMode}
-								className="hidden rounded-full p-1.5 text-white hover:bg-white/20 focus:bg-white/20 md:block">
+								className="rounded-full p-1.5 text-white hover:bg-white/20 focus:bg-white/20">
 								<RiPictureInPictureLine size={16} />
-							</button>
-							<button
-								onClick={toggleTheatreMode}
-								title="Toggle theatre mode (t)"
-								className="hidden rounded-full p-1.5 text-white hover:bg-white/20 focus:bg-white/20 lg:block">
-								{!theatreMode ? <RiExpandWidthLine size={16} /> : <RiCollapseHorizontalLine size={16} />}
 							</button>
 							<button
 								title="Toggle fullscreen (f)"
