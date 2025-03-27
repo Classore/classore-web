@@ -27,11 +27,7 @@ export const ExplorePopularExams = () => {
 					<div className="flex touch-pan-y touch-pinch-zoom flex-col items-center gap-4 md:flex-row">
 						{bundles?.data.length ? (
 							bundles.data.map((subject) => (
-								<ExamCard
-									key={subject.examinationbundle_id}
-									course={subject}
-									className="md:min-w-[350px]"
-								/>
+								<ExamCard key={subject.examinationbundle_id} course={subject} />
 							))
 						) : (
 							<p className="text-sm text-neutral-400">

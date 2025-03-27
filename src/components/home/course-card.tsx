@@ -47,14 +47,15 @@ const Component = ({
 
 // "ONGOING" | "PENDING" | "COMPLETED" | "EXPIRED";
 
+
 export const CourseCard = ({ course, onClick }: Props) => {
 	return (
 		<Component
 			id={course.course_id}
 			bundle={course.course_chosen_bundle}
 			onClick={onClick}
-			className="flex flex-col gap-3 rounded-lg border p-2.5 transition-all duration-700 hover:shadow-2xl md:w-96 md:min-w-[350px] md:p-4">
-			<div className="relative aspect-[1.96/1] w-full rounded-lg">
+			className="flex w-full flex-col gap-3 rounded-lg border p-2.5 transition-all duration-700 hover:shadow-2xl md:w-96 md:min-w-[350px] md:p-4">
+			<div className="relative w-full rounded-lg">
 				<div className="absolute right-[10px] top-2 !z-[5] flex items-center gap-1 rounded bg-white p-1">
 					<RiTimeLine size={18} />
 					<span className="text-sm">
