@@ -46,7 +46,6 @@ const Page = () => {
 	const router = useRouter();
 	const { id, bundle: bundle_id } = router.query;
 	const [open, setOpen] = React.useState(false);
-	const [theatreMode, setTheatreMode] = React.useState(false);
 
 	const { module } = useChapterStore();
 	const { data: profile } = useGetProfile();
@@ -76,28 +75,11 @@ const Page = () => {
 		return chapter?.modules.find((item) => item.id === module);
 	}, [chapter, module]);
 
-	const tutor = React.useMemo(() => {
-		const chapter = course?.chapters.find((chapter) => chapter.id === course?.current_chapter.id);
-		const currentModule = chapter?.modules.find(
-			(module) =>
-				module.id ===
-				(course?.current_chapter_module ? course?.current_chapter_module : chapter?.modules[0].id)
-		);
-		return currentModule?.tutor;
-	}, [course]);
-
 	React.useEffect(() => {
 		if (isError && error?.status === 403) {
 			setOpen(true);
 		}
 	}, [isError, error]);
-
-	React.useEffect(() => {
-		const saveMode = JSON.parse(localStorage.getItem("classore-theatre") ?? "false");
-		if (saveMode) {
-			setTheatreMode(saveMode);
-		}
-	}, []);
 
 	return (
 		<>
@@ -149,73 +131,66 @@ const Page = () => {
 							</div>
 						</div>
 
-						<div
-							style={{
-								gridTemplateAreas: `
-										"video column-2"
-										"column-1 column-2"
-									`,
-							}}
-							className="flex w-full flex-col gap-8 lg:grid lg:grid-cols-3">
-							{isChapterPending ? (
-								<div className="col-span-2 col-start-1 row-start-1 flex flex-col items-center justify-center rounded bg-neutral-200 p-10">
-									<p className="text-center text-sm text-neutral-500">Loading...</p>
-								</div>
-							) : currentModule?.video_array.at(0)?.secure_url ? (
-								<VideoPlayer
-									className={`row-start-1 ${theatreMode ? "col-span-3" : "col-span-2 col-start-1"}`}
-									theatreMode={theatreMode}
-									setTheatreMode={setTheatreMode}
-									moduleProgress={chapter?.current_module_progress_percentage}
-									src={currentModule?.video_array.at(0)?.secure_url ?? ""}
-								/>
-							) : (
-								<div className="col-span-2 col-start-1 row-start-1 flex flex-col items-center justify-center rounded bg-neutral-200 p-10">
-									<RiCloseCircleLine className="text-neutral-400" size={48} />
-									<p className="text-center text-sm text-neutral-500">
-										This lesson currently has no video. <br /> Please check back later.
-									</p>
-								</div>
-							)}
-
-							<div className="col-span-2 col-start-1 flex w-full flex-col gap-4">
-								<div className="flex w-full items-center justify-between">
-									<h3 className="text-balance text-xl font-semibold capitalize">
-										{course?.current_chapter?.name}
-									</h3>
-									<div className="flex items-center gap-3">
-										<div className="flex items-center px-2 py-1">
-											<RiThumbUpLine size={20} />
+						<div className="flex w-full flex-col gap-8 lg:grid lg:grid-cols-3">
+							<div className="col-span-2 col-start-1 flex flex-col gap-8">
+								<div className="absolute left-0 right-0 md:static">
+									{isChapterPending ? (
+										<div className="flex h-80 w-full flex-col items-center justify-center rounded bg-neutral-200 p-10">
+											<p className="text-center text-sm text-neutral-500">Loading...</p>
 										</div>
-										<div className="flex items-center px-2 py-1">
-											<RiThumbDownLine size={20} />
+									) : currentModule?.video_array.at(0)?.secure_url ? (
+										<VideoPlayer
+											moduleProgress={chapter?.current_module_progress_percentage}
+											src={currentModule?.video_array.at(0)?.secure_url ?? ""}
+										/>
+									) : (
+										<div className="flex h-80 w-full flex-col items-center justify-center rounded bg-neutral-200 p-10">
+											<RiCloseCircleLine className="text-neutral-400" size={48} />
+											<p className="text-center text-sm text-neutral-500">
+												This lesson currently has no video. <br /> Please check back later.
+											</p>
+										</div>
+									)}
+								</div>
+
+								<div className="about-course relative z-50 flex w-full flex-col gap-4">
+									<div className="flex w-full items-center justify-between">
+										<h3 className="text-balance text-xl font-semibold capitalize">
+											{course?.current_chapter?.name}
+										</h3>
+										<div className="flex items-center gap-3">
+											<div className="flex items-center px-2 py-1">
+												<RiThumbUpLine size={20} />
+											</div>
+											<div className="flex items-center px-2 py-1">
+												<RiThumbDownLine size={20} />
+											</div>
 										</div>
 									</div>
+
+									<Tabs defaultValue="summary">
+										<TabsList>
+											{tabs.map((item) => (
+												<TabsTrigger key={item} value={item}>
+													{item}
+												</TabsTrigger>
+											))}
+										</TabsList>
+
+										<TabsContent value="summary">
+											<ChapterModules />
+										</TabsContent>
+										<TabsContent value="resources">
+											<Resources />
+										</TabsContent>
+										<TabsContent value="quiz history">
+											<QuizHistory />
+										</TabsContent>
+									</Tabs>
 								</div>
-
-								<Tabs defaultValue="summary">
-									<TabsList>
-										{tabs.map((item) => (
-											<TabsTrigger key={item} value={item}>
-												{item}
-											</TabsTrigger>
-										))}
-									</TabsList>
-
-									<TabsContent value="summary">
-										<ChapterModules />
-									</TabsContent>
-									<TabsContent value="resources">
-										<Resources />
-									</TabsContent>
-									<TabsContent value="quiz history">
-										<QuizHistory />
-									</TabsContent>
-								</Tabs>
 							</div>
 
-							<div
-								className={`col-start-3 flex h-fit w-full flex-col gap-2 ${theatreMode ? "row-start-2" : "row-span-full"}`}>
+							<div className={`col-start-3 flex h-fit w-full flex-col gap-2`}>
 								<CourseChapters
 									current_chapter_id={course?.current_chapter.id}
 									progress={course?.current_progress_percentage ?? 0}
@@ -264,20 +239,21 @@ const Page = () => {
 
 									<JoinCommunityModal />
 								</div>
+
 								<div className="flex w-full flex-col gap-3 rounded-lg border p-4">
 									<p className="text-sm">Course Instructor</p>
 									<div className="flex w-full items-center justify-between">
 										<div className="flex items-center gap-2">
 											<Avatar className="size-8 rounded-lg">
 												<AvatarImage src="" alt="" className="rounded-lg object-cover" />
-												<AvatarFallback className="rounded-lg bg-primary-100 uppercase text-primary-400">
+												<AvatarFallback className="rounded-lg font-bold bg-primary-100 text-primary-400">
 													{getInitials(
-														tutor?.first_name ? `${tutor?.first_name} ${tutor?.last_name}` : "Anonymous"
+														currentModule?.tutor?.first_name ? `${currentModule?.tutor?.first_name} ${currentModule?.tutor?.last_name}` : "Anonymous"
 													)}
 												</AvatarFallback>
 											</Avatar>
 											<p className="text-sm font-semibold capitalize">
-												{tutor?.first_name ? `${tutor?.first_name} ${tutor?.last_name}` : "Anonymous"}
+												{currentModule?.tutor?.first_name ? `${currentModule?.tutor?.first_name} ${currentModule?.tutor?.last_name}` : "Anonymous"}
 											</p>
 										</div>
 										<Button size="special" variant="special">
@@ -285,6 +261,7 @@ const Page = () => {
 										</Button>
 									</div>
 								</div>
+
 								<div className="flex w-full flex-col gap-3 rounded-lg border p-4">
 									<p className="text-sm">Tags</p>
 								</div>

@@ -12,10 +12,11 @@ interface Props {
 
 export const ExamCard = ({ course, className }: Props) => {
 	return (
+		// className=""
 		<Link
 			href={`/dashboard/categories/${course.examinationbundle_id}`}
 			className={twMerge(
-				"flex flex-col gap-3 rounded-lg border bg-white p-2.5 transition-all duration-700 hover:shadow-2xl md:p-4",
+				"flex w-full flex-col gap-3 rounded-lg border p-2.5 transition-all duration-700 hover:shadow-2xl md:w-96 md:min-w-[350px] md:p-4",
 				className
 			)}>
 			<Image
