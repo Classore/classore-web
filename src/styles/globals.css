@@ -326,15 +326,12 @@ h6 {
 
 
 /* Video grid */
-.theatre-mode {
-	@apply lg:grid lg:grid-cols-3
+.about-course {
+	margin-top: 350px;
 }
-.theatre-mode .video {
-	@apply col-start-1 row-start-1 col-span-2
-}
-.theatre-mode .module {
-	@apply col-start-1 col-span-2
-}
-.theatre-mode .chapter {
-	@apply col-start-3 row-span-full
+
+@media screen and (min-width: 768px) {
+	.about-course {
+		margin-top: 0px;
+	}
 }
