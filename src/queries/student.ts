@@ -109,6 +109,8 @@ export const useGetChapter = ({
 		queryFn: chapter_id ? () => getChapter(chapter_id) : skipToken,
 		select: (data) => data.data,
 		enabled,
+		staleTime: 10 * 1000, // 10 seconds
+		gcTime: 10 * 1000, // 10 seconds
 	});
 };
 

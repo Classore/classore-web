@@ -18,7 +18,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 		res.setHeader("Content-Disposition", "attachment; filename=classore.pdf");
 		return res.status(200).send(file);
 	} catch (error) {
-		console.log(error);
 		return res.status(500).json({ error: "Internal server error" });
 	}
 }

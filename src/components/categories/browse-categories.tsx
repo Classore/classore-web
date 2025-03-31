@@ -7,8 +7,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
 export const BrowseCategories = () => {
 	const [tab, setTab] = React.useState("all");
-	const { data: exams } = useGetExams();
 
+	const { data: exams } = useGetExams();
 	const { data: bundles, isPending } = useGetExamBundles({
 		limit: 15,
 		page: 1,
@@ -48,7 +48,6 @@ export const BrowseCategories = () => {
 								)}
 							</TabsContent>
 						)}
-
 						{exams?.map((exam) => (
 							<TabsContent
 								key={exam.examination_id}

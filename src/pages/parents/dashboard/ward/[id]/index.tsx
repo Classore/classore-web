@@ -1,3 +1,4 @@
+import { Target04 } from "@untitled-ui/icons-react";
 import { useRouter } from "next/router";
 import { format } from "date-fns";
 import React from "react";
@@ -20,7 +21,9 @@ import { AnalyticsChart } from "@/components/dashboard/chart";
 import { ParentDashboardLayout } from "@/components/layouts";
 import { WardEvent } from "@/components/dashboard/event";
 import type { Period } from "@/constants/period";
+import { columns } from "@/components/dashboard";
 import { Button } from "@/components/ui/button";
+import { DataTable } from "@/components/shared";
 import { useGetWard } from "@/queries/parent";
 import { getInitials } from "@/lib";
 
@@ -40,11 +43,14 @@ const Page = () => {
 	return (
 		<ParentDashboardLayout title={``}>
 			{isLoading ? (
-				<div className="grid h-full w-full place-items-center">
-					<RiLoaderLine className="size-12 animate-spin" />
+				<div className="flex w-full items-center justify-center">
+					<div className="flex items-center gap-x-2">
+						<p className="text-sm text-primary-400">Fetching ward</p>
+						<RiLoaderLine className="size-5 animate-spin" />
+					</div>
 				</div>
 			) : (
-				<div className="h-full w-full space-y-5">
+				<div className="h-full w-full space-y-5 pb-6">
 					<div className="w-full space-y-3 rounded-lg bg-white p-5">
 						<div className="flex items-center gap-x-4">
 							<Button className="w-fit" size="sm" variant="outline">
@@ -91,7 +97,7 @@ const Page = () => {
 								<AnalyticsCard icon={RiTrophyLine} label="Leaderboard Ranking" value="0" />
 								<AnalyticsCard icon={RiUserFollowLine} label="Total avg. Quiz Score" value="0" />
 								<AnalyticsCard icon={RiFlashlightLine} label="Streak" value="0" />
-								<AnalyticsCard icon={RiLoaderLine} label="Quiz Points" value="0" />
+								<AnalyticsCard icon={Target04} label="Quiz Points" value="0" />
 							</div>
 							<div className="grid w-full grid-cols-4 gap-4">
 								<div className="col-span-3 rounded-md border p-4 lg:h-[286px]">
@@ -127,15 +133,19 @@ const Page = () => {
 							<p className="font-semibold">Upcoming Events</p>
 							<p className="text-sm text-neutral-400">{format(new Date(), "MMMM dd, yyyy")}</p>
 						</div>
-						<div className="grid w-full grid-cols-4 gap-4">
-							{[...Array(4)].map((_, i) => (
-								<WardEvent key={i} />
-							))}
-						</div>
+						{ward?.upcoming_events.length === 0 ? (
+							<div className="flex h-[74px] w-full items-center justify-center">
+								<p className="text-sm text-neutral-400">No upcoming events</p>
+							</div>
+						) : (
+							<div className="grid w-full grid-cols-4 gap-4">
+								{ward?.upcoming_events.map((event) => <WardEvent event={event} key={event.id} />)}
+							</div>
+						)}
 					</div>
 
 					{/* course progress */}
-					<div className="w-full space-y-3 rounded-lg bg-white p-5">
+					<div className="w-full space-y-4 rounded-lg bg-white p-5">
 						<div className="flex items-center gap-x-5">
 							<p className="font-semibold">Course Progress</p>
 							<div className="flex items-center gap-x-4">
@@ -162,12 +172,8 @@ const Page = () => {
 							</div>
 						</div>
 						<div>
-							<Pagination
-								current={page}
-								onPageChange={setPage}
-								pageSize={10}
-								total={ward?.analytic_report.meta.itemCount || 0}
-							/>
+							<DataTable columns={columns} data={[]} headerClassName="bg-neutral-200" />
+							<Pagination current={page} onPageChange={setPage} pageSize={10} total={0} />
 						</div>
 					</div>
 				</div>

@@ -64,7 +64,7 @@ export const ChapterModules = () => {
 		<>
 			<div className="flex flex-col gap-6 pt-4">
 				<div
-					className="text-sm leading-relaxed text-neutral-400 first-letter:capitalize"
+					className="markdown-content text-sm leading-relaxed text-neutral-400 first-letter:capitalize"
 					dangerouslySetInnerHTML={{
 						__html: sanitizeHtml(chapter?.content).replace(/\n/g, "<br />"),
 					}}

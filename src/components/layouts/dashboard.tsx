@@ -4,11 +4,11 @@ import { useRouter } from "next/router";
 import React from "react";
 
 import meeting from "@/assets/illustrations/meeting.svg";
+import { MobileAppbar } from "./mobile-appbar";
 import { dashboard_links } from "@/config";
 import { cn, normalize } from "@/lib";
-import { Button } from "../ui/button";
+import { Invite } from "../invite";
 import { Appbar } from "./appbar";
-import { MobileAppbar } from "./mobile-appbar";
 
 type DashboardLayoutProps = {
 	children: React.ReactNode;
@@ -65,12 +65,12 @@ export function DashboardLayout({ children, className }: DashboardLayoutProps) {
 									className="object-contain"
 								/>
 							</div>
-							<div className="flex h-full w-full flex-col justify-between">
-								<h6 className="text-sm font-medium">Invite</h6>
-								<p className="w-32 text-xs text-neutral-400">Earn 550 points from inviting a friend</p>
-								<Button className="w-fit px-5 py-2" variant="dark">
-									<Link href="/dashboard/courses">Invite</Link>
-								</Button>
+							<div className="flex h-full w-full flex-col justify-between gap-y-4">
+								<div>
+									<h6 className="text-sm font-medium">Invite</h6>
+									<p className="w-32 text-xs text-neutral-400">Earn 550 points from inviting a friend</p>
+								</div>
+								<Invite />
 							</div>
 						</div>
 					</div>

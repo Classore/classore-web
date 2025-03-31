@@ -207,39 +207,23 @@ input[type="search"]::-webkit-search-results-decoration {
 
 /* modals */
 .modal-primary {
-	background: linear-gradient(
-			180deg,
-			rgba(111, 66, 193, 0.098) 2.11%,
-			rgba(111, 66, 193, 0) 48.08%
-		),
-		white;
+	background:
+		linear-gradient(180deg, rgba(111, 66, 193, 0.098) 2.11%, rgba(111, 66, 193, 0) 48.08%), white;
 }
 
 .modal-secondary {
-	background: linear-gradient(
-			360deg,
-			rgba(111, 66, 193, 0) 47.43%,
-			rgba(246, 127, 54, 0.12) 100%
-		),
-		white;
+	background:
+		linear-gradient(360deg, rgba(111, 66, 193, 0) 47.43%, rgba(246, 127, 54, 0.12) 100%), white;
 }
 
 .modal-destructive {
-	background: linear-gradient(
-			180deg,
-			rgba(223, 28, 65, 0.092) 2.11%,
-			rgba(223, 28, 65, 0) 21.34%
-		),
-		white;
+	background:
+		linear-gradient(180deg, rgba(223, 28, 65, 0.092) 2.11%, rgba(223, 28, 65, 0) 21.34%), white;
 }
 
 .modal-success {
-	background: linear-gradient(
-			180deg,
-			rgba(49, 159, 67, 0.098) 2.11%,
-			rgba(49, 159, 67, 0) 48.08%
-		),
-		white;
+	background:
+		linear-gradient(180deg, rgba(49, 159, 67, 0.098) 2.11%, rgba(49, 159, 67, 0) 48.08%), white;
 }
 
 .transcript h1 {
@@ -324,7 +308,6 @@ h6 {
 	border-radius: 4px;
 }
 
-
 /* Video grid */
 .about-course {
 	margin-top: 350px;
@@ -334,4 +317,83 @@ h6 {
 	.about-course {
 		margin-top: 0px;
 	}
+}
+
+.markdown-content {
+	line-height: 1.6;
+	max-width: 800px;
+	margin: 0 auto;
+	padding: 2rem;
+	display: flex;
+	flex-direction: column;
+	color: red;
+}
+
+/* Typography */
+.markdown-content p {
+	margin-bottom: 1.5rem;
+	font-size: 1rem;
+}
+
+.markdown-content strong {
+	font-weight: 600;
+	color: red;
+}
+
+/* Headings */
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4 {
+	margin-top: 2rem;
+	margin-bottom: 1rem;
+	font-weight: 700;
+	line-height: 1.3;
+}
+
+.markdown-content h1 {
+	font-size: 2rem;
+	color: #2c3e50;
+	border-bottom: 2px solid #eaecef;
+	padding-bottom: 0.5rem;
+}
+
+.markdown-content h2 {
+	font-size: 1.5rem;
+	color: #2c3e50;
+}
+
+.markdown-content h3 {
+	font-size: 1.25rem;
+	color: #3a5169;
+}
+
+.markdown-content h4 {
+	font-size: 1.1rem;
+	color: #3a5169;
+}
+
+/* First letter capitalization properly implemented */
+.markdown-content p:first-of-type::first-letter {
+	font-size: 1.5em;
+	font-weight: 600;
+}
+
+/* Definition terms */
+.markdown-content strong + strong {
+	display: block;
+	margin-top: 1.5rem;
+	color: #2c3e50;
+	font-size: 1.15rem;
+}
+
+/* Lists */
+.markdown-content ul,
+.markdown-content ol {
+	padding-left: 1.5rem;
+	margin-bottom: 1.5rem;
+}
+
+.markdown-content li {
+	margin-bottom: 0.5rem;
 }

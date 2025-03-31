@@ -6,3 +6,4 @@ export * from "./use-interval";
 export * from "./use-prevent-navigation";
 export * from "./use-quiz-handler";
 export * from "./use-test-handler";
+export * from "./use-window-size";

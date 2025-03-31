@@ -1,14 +1,8 @@
-import { BundleSubjects } from "@/components/categories";
-import { DashboardLayout } from "@/components/layouts";
-import { AddMoreCourseModal, EnrollModal, RenewalModal, ShareReview } from "@/components/modals";
-import { BackBtn, EmptyState, ReviewCard, Seo, Spinner } from "@/components/shared";
-import { Button } from "@/components/ui/button";
-import { useDeviceWidth } from "@/hooks";
-import { capitalize, formatCurrency, formatNumber } from "@/lib";
-import { useGetSingleExamBundleQuery } from "@/queries/school";
-import { useGetProfile } from "@/queries/student";
 import { RiStarFill } from "@remixicon/react";
+import { useRouter } from "next/router";
 import { Devices } from "iconsax-react";
+import Image from "next/image";
+import * as React from "react";
 import {
 	FolderArchive,
 	List,
@@ -19,9 +13,16 @@ import {
 	User,
 	Wifi,
 } from "lucide-react";
-import Image from "next/image";
-import { useRouter } from "next/router";
-import * as React from "react";
+
+import { AddMoreCourseModal, EnrollModal, RenewalModal, ShareReview } from "@/components/modals";
+import { BackBtn, EmptyState, ReviewCard, Seo, Spinner } from "@/components/shared";
+import { capitalize, formatCurrency, formatNumber } from "@/lib";
+import { useGetSingleExamBundleQuery } from "@/queries/school";
+import { BundleSubjects } from "@/components/categories";
+import { DashboardLayout } from "@/components/layouts";
+import { useGetProfile } from "@/queries/student";
+import { Button } from "@/components/ui/button";
+import { useDeviceWidth } from "@/hooks";
 
 const PLAN_STATUS = {
 	ONGOING: {
@@ -156,9 +157,9 @@ const Page = () => {
 									{bundle?.is_bought ? (
 										<p
 											className={`rounded-full ${
-												PLAN_STATUS[currentBundle?.status as keyof typeof PLAN_STATUS].color
+												PLAN_STATUS[currentBundle?.status as keyof typeof PLAN_STATUS]?.color
 											} px-4 py-1.5 text-sm`}>
-											{PLAN_STATUS[currentBundle?.status as keyof typeof PLAN_STATUS].text}
+											{PLAN_STATUS[currentBundle?.status as keyof typeof PLAN_STATUS]?.text}
 										</p>
 									) : (
 										<p className="text-xl font-bold text-neutral-700">

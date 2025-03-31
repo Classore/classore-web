@@ -246,14 +246,18 @@ const Page = () => {
 										<div className="flex items-center gap-2">
 											<Avatar className="size-8 rounded-lg">
 												<AvatarImage src="" alt="" className="rounded-lg object-cover" />
-												<AvatarFallback className="rounded-lg font-bold bg-primary-100 text-primary-400">
+												<AvatarFallback className="rounded-lg bg-primary-100 font-bold text-primary-400">
 													{getInitials(
-														currentModule?.tutor?.first_name ? `${currentModule?.tutor?.first_name} ${currentModule?.tutor?.last_name}` : "Anonymous"
+														currentModule?.tutor?.first_name
+															? `${currentModule?.tutor?.first_name} ${currentModule?.tutor?.last_name}`
+															: "Anonymous"
 													)}
 												</AvatarFallback>
 											</Avatar>
 											<p className="text-sm font-semibold capitalize">
-												{currentModule?.tutor?.first_name ? `${currentModule?.tutor?.first_name} ${currentModule?.tutor?.last_name}` : "Anonymous"}
+												{currentModule?.tutor?.first_name
+													? `${currentModule?.tutor?.first_name} ${currentModule?.tutor?.last_name}`
+													: "Anonymous"}
 											</p>
 										</div>
 										<Button size="special" variant="special">

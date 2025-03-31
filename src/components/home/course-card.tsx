@@ -47,7 +47,6 @@ const Component = ({
 
 // "ONGOING" | "PENDING" | "COMPLETED" | "EXPIRED";
 
-
 export const CourseCard = ({ course, onClick }: Props) => {
 	return (
 		<Component

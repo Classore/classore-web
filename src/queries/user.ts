@@ -1,8 +1,17 @@
-import { endpoints } from "@/config";
-import { axios } from "@/lib";
-import type { HttpResponse, MyPlan, PaginatedResponse, PaginationProps, SinglePlan } from "@/types";
+import { useQuery } from "@tanstack/react-query";
+
 import type { LeaderboardItemProps, NewQuestionProps, ViewCourseProps } from "@/types/course";
 import type { ExamCourseProps } from "@/types/type";
+import { endpoints } from "@/config";
+import { axios } from "@/lib";
+import type {
+	HttpResponse,
+	MyPlan,
+	PaginatedResponse,
+	PaginationProps,
+	SinglePlan,
+	UserProps,
+} from "@/types";
 
 interface StartCourseDto {
 	chapter_id: string;
@@ -17,6 +26,19 @@ interface SubmitQuizDto {
 		input_content?: string;
 	}[];
 }
+
+const getProfile = async () => {
+	return axios.get<HttpResponse<UserProps>>(endpoints().auth.profile).then((res) => res.data);
+};
+export const useGetProfile = () => {
+	return useQuery({
+		queryKey: ["profile"],
+		queryFn: () => getProfile(),
+		staleTime: Infinity,
+		gcTime: Infinity,
+		select: (data) => data.data,
+	});
+};
 
 const getMyCourses = async (
 	params?: PaginationProps & {

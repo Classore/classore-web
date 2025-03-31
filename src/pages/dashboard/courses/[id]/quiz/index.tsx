@@ -131,7 +131,7 @@ const Page = () => {
 
 						<div className="flex items-center gap-2">
 							<Avatar className="size-10 bg-black">
-								<AvatarImage src={user?.image} alt={user?.first_name} />
+								<AvatarImage src={user?.profile_image} alt={user?.first_name} />
 								<AvatarFallback className="text-white">
 									{getInitials(`${user?.first_name} ${user?.last_name}`)}
 								</AvatarFallback>
