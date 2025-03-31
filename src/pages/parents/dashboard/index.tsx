@@ -185,7 +185,7 @@ const Page = () => {
 											</div>
 											<div className="flex items-center gap-x-2">
 												<Sharer
-													onClose={(share) => handleModalStateChange("share", share)}
+													onOpenChange={(share) => handleModalStateChange("share", share)}
 													open={modalStates.share}
 													url={`https://classore.com/signup?step=1&referral_code=${""}` || ""}
 												/>

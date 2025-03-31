@@ -1,17 +1,18 @@
-import { RiArrowDropDownLine, RiGiftLine, RiNotificationLine } from "@remixicon/react";
-
-import MobileAppImg from "@/assets/images/mobile-img.webp";
-import { Search } from "@/components/shared";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Separator } from "@/components/ui/separator";
-import { getInitials } from "@/lib";
-import { useUserStore } from "@/store/z-store";
+import { RiArrowDropDownLine, RiNotificationLine } from "@remixicon/react";
 import Image from "next/image";
-import { LogoutModal } from "../modals";
+
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AccountSettingsDrawer } from "../settings/account-settings-drawer";
 import { AppStore, PlayStore } from "../shared/app-download";
+import MobileAppImg from "@/assets/images/mobile-img.webp";
+import { Separator } from "@/components/ui/separator";
+import { ClaimPoints } from "../home/claim-points";
+import { Button } from "@/components/ui/button";
+import { useUserStore } from "@/store/z-store";
+import { Search } from "@/components/shared";
+import { LogoutModal } from "../modals";
+import { getInitials } from "@/lib";
 import {
 	Dialog,
 	DialogContent,
@@ -61,9 +62,7 @@ export const Appbar = () => {
 							</div>
 						</DialogContent>
 					</Dialog>
-					<button className="flex h-8 w-fit items-center gap-x-2 rounded-md border border-primary-400 px-3 text-sm text-primary-400 transition-all duration-300 hover:bg-primary-50 active:scale-95">
-						<RiGiftLine size={16} /> Claim Points
-					</button>
+					<ClaimPoints />
 					<Separator orientation="vertical" className="h-11 bg-neutral-300" />
 					<Popover>
 						<PopoverTrigger asChild>
@@ -76,7 +75,7 @@ export const Appbar = () => {
 					<Popover>
 						<PopoverTrigger className="flex items-center gap-2">
 							<Avatar className="size-10 bg-black">
-								<AvatarImage src={user?.image} alt={user?.first_name} />
+								<AvatarImage src={user?.profile_image} alt={user?.first_name} />
 								<AvatarFallback className="uppercase text-white">
 									{getInitials(`${user?.first_name} ${user?.last_name}`)}
 								</AvatarFallback>

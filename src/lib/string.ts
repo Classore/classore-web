@@ -61,15 +61,13 @@ export const getInitials = (value: string) =>
 
 export const sanitize = (value: string) => value.toLowerCase().split("_").join(" ");
 
-export const normalize = (path: string) => {
-	let normalPath: string;
-	if (path.split("/").length > 2) {
-		const pathParts = `/${path.split("/")[1]}/${path.split("/")[2]}`;
-		normalPath = pathParts;
-	} else {
-		normalPath = path;
+export const normalize = (path: string, parts = 2): string => {
+	if (!path) {
+		return "";
 	}
-	return normalPath;
+
+	const pathSegments = path.split("/").filter(Boolean);
+	return pathSegments.length >= parts ? "/" + pathSegments.slice(0, parts).join("/") : path;
 };
 
 export const formatCurrency = (amount: number) => {

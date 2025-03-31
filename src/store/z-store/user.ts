@@ -1,14 +1,14 @@
 import Cookies from "js-cookie";
 
+import type { Maybe, UserProfileResp, UserProps } from "@/types";
 import { createPersistMiddleware } from "../middleware";
-import type { Maybe, UserProps } from "@/types";
 import { setToken } from "@/lib/cookies";
 
 interface UserStore {
-	user: Maybe<UserProps>;
-	signIn: (user: UserProps, token: string) => void;
+	user: Maybe<UserProps | UserProfileResp>;
+	signIn: (user: UserProps | UserProfileResp, token: string) => void;
 	signOut: () => void;
-	setUser: (user: UserProps) => void;
+	setUser: (user: UserProps | UserProfileResp) => void;
 }
 
 const initialState: UserStore = {

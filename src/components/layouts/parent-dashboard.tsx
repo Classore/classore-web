@@ -10,7 +10,7 @@ import { parents_dashboard_links } from "@/config";
 import { WardItem } from "../dashboard/ward-item";
 import { MobileAppbar } from "./mobile-appbar";
 import { cn, normalize } from "@/lib";
-import { Button } from "../ui/button";
+import { Invite } from "../invite";
 import { Appbar } from "./appbar";
 import { Seo } from "../shared";
 
@@ -23,7 +23,7 @@ type DashboardLayoutProps = {
 export function ParentDashboardLayout({ children, className, title }: DashboardLayoutProps) {
 	const router = useRouter();
 
-	const isOnRoute = (href: string) => normalize(router.pathname) === href;
+	const isOnRoute = (href: string) => normalize(router.pathname, 3) === href;
 
 	const { data: parentHome } = useGetParentHome();
 
@@ -84,12 +84,12 @@ export function ParentDashboardLayout({ children, className, title }: DashboardL
 									className="object-contain"
 								/>
 							</div>
-							<div className="flex h-full w-full flex-col justify-between">
-								<h6 className="text-sm font-medium">Invite</h6>
-								<p className="w-32 text-xs text-neutral-400">Earn 550 points from inviting a friend</p>
-								<Button className="w-fit px-5 py-2" variant="dark">
-									<Link href="/dashboard/courses">Invite</Link>
-								</Button>
+							<div className="flex h-full w-full flex-col justify-between gap-y-4">
+								<div>
+									<h6 className="text-sm font-medium">Invite</h6>
+									<p className="w-32 text-xs text-neutral-400">Earn 550 points from inviting a friend</p>
+								</div>
+								<Invite />
 							</div>
 						</div>
 					</div>

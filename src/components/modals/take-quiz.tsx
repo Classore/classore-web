@@ -125,7 +125,8 @@ export const TakeQuizModal = ({ open, setOpen }: TakeQuizModal) => {
 					</DialogClose>
 					<Button
 						className="w-32 text-sm"
-						disabled={lesson.quiz_attempts_left <= 0 || chapter.current_module_progress_percentage < 50}
+						// disabled={lesson.quiz_attempts_left <= 0 || chapter.current_module_progress_percentage < 50}
+						disabled={lesson.quiz_attempts_left <= 0}
 						onClick={() =>
 							router.push({
 								pathname: "/dashboard/courses/[id]/quiz",

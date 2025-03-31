@@ -1,8 +1,21 @@
-import { getInitials } from "@/lib";
-import { useUserStore } from "@/store/z-store";
-import { RiCloseLine, RiLock2Line, RiUser3Line } from "@remixicon/react";
 import { User03 } from "@untitled-ui/icons-react";
+import React from "react";
+import {
+	RiCloseLine,
+	RiLock2Line,
+	RiNotification4Line,
+	RiUser3Line,
+	RiUserAddLine,
+} from "@remixicon/react";
+
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { useUserStore } from "@/store/z-store";
+import Notification from "./notification";
+import { TabPanel } from "../shared";
+import { getInitials } from "@/lib";
+import Security from "./security";
+import Profile from "./profile";
+import Points from "./points";
 import {
 	Sheet,
 	SheetClose,
@@ -11,9 +24,6 @@ import {
 	SheetTitle,
 	SheetTrigger,
 } from "../ui/sheet";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import Profile from "./profile";
-import Security from "./security";
 
 const tabs = [
 	{
@@ -21,24 +31,25 @@ const tabs = [
 		name: "profile",
 		icon: RiUser3Line,
 	},
-	// {
-	//   label: "Notifications",
-	//   name: "notification",
-	//   icon: RiNotification4Line,
-	// },
+	{
+		label: "Notifications",
+		name: "notification",
+		icon: RiNotification4Line,
+	},
 	{
 		label: "Security",
 		name: "security",
 		icon: RiLock2Line,
 	},
-	// {
-	//   label: "Points and Referral",
-	//   name: "points",
-	//   icon: RiUserAddLine,
-	// },
+	{
+		label: "Points and Referral",
+		name: "points",
+		icon: RiUserAddLine,
+	},
 ];
 
 export const AccountSettingsDrawer = () => {
+	const [tab, setTab] = React.useState("profile");
 	const { user } = useUserStore();
 
 	return (
@@ -67,7 +78,7 @@ export const AccountSettingsDrawer = () => {
 
 					<div className="flex gap-4 px-4">
 						<Avatar className="-mt-12 size-28 bg-primary-500">
-							<AvatarImage src="" />
+							<AvatarImage src={user?.profile_image} />
 							<AvatarFallback className="text-5xl font-semibold text-white">
 								{getInitials(`${user?.first_name} ${user?.last_name}`)}
 							</AvatarFallback>
@@ -81,29 +92,32 @@ export const AccountSettingsDrawer = () => {
 					</div>
 				</div>
 
-				<Tabs defaultValue={tabs[0].name} className="pt-4">
-					<TabsList className="overflow-x-auto overflow-y-hidden">
+				<div className="pt-4">
+					<div className="flex w-full items-center pb-4">
 						{tabs.map(({ label, name, icon: Icon }) => (
-							<TabsTrigger key={name} value={name} className="flex items-center gap-2">
+							<button
+								key={name}
+								onClick={() => setTab(name)}
+								className={`flex h-8 items-center gap-2 rounded-md px-3 text-sm ${name === tab ? "bg-primary-100 text-primary-400" : "text-neutral-400"}`}>
 								<Icon size={18} />
 								<span>{label}</span>
-							</TabsTrigger>
+							</button>
 						))}
-					</TabsList>
+					</div>
 
-					<TabsContent value="profile">
+					<TabPanel selected={tab} value="profile">
 						<Profile />
-					</TabsContent>
-					{/* <TabsContent value="notification">
-            <Notification />
-          </TabsContent> */}
-					<TabsContent value="security">
+					</TabPanel>
+					<TabPanel selected={tab} value="notification">
+						<Notification />
+					</TabPanel>
+					<TabPanel selected={tab} value="security">
 						<Security />
-					</TabsContent>
-					{/* <TabsContent value="points">
-            <Points />
-          </TabsContent> */}
-				</Tabs>
+					</TabPanel>
+					<TabPanel selected={tab} value="points">
+						<Points />
+					</TabPanel>
+				</div>
 			</SheetContent>
 		</Sheet>
 	);
