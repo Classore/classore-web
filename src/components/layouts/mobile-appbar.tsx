@@ -78,7 +78,7 @@ export const MobileAppbar = () => {
 
 					<div className="mt-auto flex items-center gap-2 rounded-md bg-neutral-50 px-2 py-3">
 						<Avatar className="size-10 bg-black">
-							<AvatarImage src={user?.image} alt={user?.first_name} />
+							<AvatarImage src={user?.profile_image} alt={user?.first_name} />
 							<AvatarFallback className="text-white">
 								{getInitials(`${user?.first_name} ${user?.last_name}`)}
 							</AvatarFallback>
