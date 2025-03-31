@@ -56,16 +56,10 @@ const Page = () => {
 		control,
 	});
 
-	const { data: bundles } = useGetExamBundles({});
 	const { data: exams } = useGetExams();
+	const { data: bundles } = useGetExamBundles({ examination: form.exam_type });
 	const { data: subjects } = useGetSubjects();
 
-	// filters
-	const examBundles = bundles?.data.filter(
-		(bundle) => bundle.examinationbundle_examination === form.exam_type
-	);
-
-	// MAYBE: might memorize this to avoid unnecessary re-filtering this
 	const bundleSubjects = subjects
 		?.filter((subject) => subject.subject_examination_bundle === form.chosen_bundle)
 		?.map((subject) => ({
@@ -73,9 +67,12 @@ const Page = () => {
 			value: subject.subject_id,
 		}));
 
-	const maxBundleSubject = bundles?.data.find(
-		(b) => b.examinationbundle_id === form.chosen_bundle
-	)?.examinationbundle_max_subjects;
+	const maxBundleSubject = React.useMemo(() => {
+		if (!form.chosen_bundle) return 0;
+		const bundle = bundles?.data.find((b) => b.examinationbundle_id === form.chosen_bundle);
+		if (!bundle) return 0;
+		return bundle.examinationbundle_max_subjects;
+	}, [bundles, form.chosen_bundle]);
 
 	const { isPending, mutate } = useVetStudyPack();
 	const onSubmit = (values: StudyingForFormValues) => {
@@ -128,7 +125,7 @@ const Page = () => {
 							</Select>
 
 							<Select label="Select prep bundle" control={control} name="chosen_bundle">
-								{examBundles?.map((bundle) => (
+								{bundles?.data?.map((bundle) => (
 									<SelectItem key={bundle.examinationbundle_id} value={bundle.examinationbundle_id}>
 										{bundle.examinationbundle_name} Exam Prep Bundle (
 										{formatCurrency(bundle.examinationbundle_amount)})

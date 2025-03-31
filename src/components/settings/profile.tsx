@@ -1,19 +1,21 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { RiDeleteBin6Line, RiImageLine } from "@remixicon/react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm, useWatch } from "react-hook-form";
+import { format } from "date-fns";
+import { toast } from "sonner";
+import React from "react";
+import { z } from "zod";
 
-import { useFileHandler } from "@/hooks";
+import { Avatar, AvatarImage } from "../ui/avatar";
 import { UpdateProfileMutation } from "@/queries";
 import { useGetProfile } from "@/queries/student";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { format } from "date-fns";
-import { useForm, useWatch } from "react-hook-form";
-import { toast } from "sonner";
-import { z } from "zod";
-import { Spinner } from "../shared";
-import { Avatar, AvatarImage } from "../ui/avatar";
+import { useUserStore } from "@/store/z-store";
+import { Textarea } from "../ui/textarea";
+import { useFileHandler } from "@/hooks";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
+import { Spinner } from "../shared";
 
 const schema = z.object({
 	first_name: z.string().min(1, { message: "Please enter your first name" }),
@@ -36,10 +38,16 @@ const schema = z.object({
 });
 
 const Profile = () => {
-	type FormValues = z.infer<typeof schema>;
-
-	const queryClient = useQueryClient();
 	const { data: user, isPending } = useGetProfile();
+	type FormValues = z.infer<typeof schema>;
+	const queryClient = useQueryClient();
+	const { setUser } = useUserStore();
+
+	React.useEffect(() => {
+		if (user) {
+			setUser(user);
+		}
+	}, [user]);
 
 	const { control, handleSubmit, setValue, reset } = useForm<FormValues>({
 		resolver: zodResolver(schema),
@@ -63,7 +71,6 @@ const Profile = () => {
 	const { handleClick, handleFileChange, inputRef } = useFileHandler({
 		onFilesChange: (files) => {
 			const file = files[0];
-			// URL.createObjectURL(file);
 			setValue("profile_image", file);
 		},
 	});
@@ -77,6 +84,7 @@ const Profile = () => {
 			});
 		},
 	});
+
 	const onSubmit = (data: FormValues) => {
 		mutate(data);
 	};

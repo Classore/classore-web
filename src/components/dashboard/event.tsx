@@ -1,6 +1,12 @@
 import React from "react";
 
-export const WardEvent = () => {
+import type { WardEventProps } from "@/types/parent";
+
+interface Props {
+	event: WardEventProps;
+}
+
+export const WardEvent = ({}: Props) => {
 	return (
 		<div className="flex w-full items-center gap-x-2 rounded-md border px-3 py-4">
 			<div className="size-10">

@@ -8,6 +8,7 @@ import {
 	useReactTable,
 } from "@tanstack/react-table";
 
+import { cn } from "@/lib";
 import {
 	Table,
 	TableBody,
@@ -20,9 +21,18 @@ import {
 interface Props<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
+	bodyCellClassName?: string;
+	bodyRowClassName?: string;
+	headerClassName?: string;
 }
 
-export function DataTable<TData, TValue>({ columns, data }: Props<TData, TValue>) {
+export function DataTable<TData, TValue>({
+	columns,
+	data,
+	bodyCellClassName,
+	bodyRowClassName,
+	headerClassName,
+}: Props<TData, TValue>) {
 	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
 	const [sorting, setSorting] = React.useState<SortingState>([]);
 	const [rowSelection, setRowSelection] = React.useState({});
@@ -46,7 +56,7 @@ export function DataTable<TData, TValue>({ columns, data }: Props<TData, TValue>
 	return (
 		<div className="w-full">
 			<Table>
-				<TableHeader>
+				<TableHeader className={headerClassName}>
 					{table.getHeaderGroups().map((headerGroup) => (
 						<TableRow key={headerGroup.id}>
 							{headerGroup.headers.map((header) => {
@@ -64,9 +74,12 @@ export function DataTable<TData, TValue>({ columns, data }: Props<TData, TValue>
 				<TableBody>
 					{table.getRowModel().rows?.length ? (
 						table.getRowModel().rows.map((row) => (
-							<TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+							<TableRow
+								key={row.id}
+								className={bodyRowClassName}
+								data-state={row.getIsSelected() && "selected"}>
 								{row.getVisibleCells().map((cell) => (
-									<TableCell key={cell.id} className="whitespace-nowrap">
+									<TableCell key={cell.id} className={cn("whitespace-nowrap", bodyCellClassName)}>
 										{flexRender(cell.column.columnDef.cell, cell.getContext())}
 									</TableCell>
 								))}

@@ -13,19 +13,19 @@ import {
 } from "@/components/ui/dialog";
 
 interface Props {
-	onClose: (open: boolean) => void;
+	onOpenChange: (open: boolean) => void;
 	open: boolean;
 	url: string;
 }
 
-export const Sharer = ({ onClose, open, url }: Props) => {
+export const Sharer = ({ onOpenChange, open, url }: Props) => {
 	const handleCopy = (url: string) => {
 		navigator.clipboard.writeText(url);
 		toast.success("Link copied!");
 	};
 
 	return (
-		<Dialog open={open} onOpenChange={(value) => onClose(value)}>
+		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogTrigger asChild>
 				<button className="flex h-10 w-[90px] items-center justify-center gap-x-2 rounded-3xl bg-white px-4 py-3 text-xs">
 					Share <RiShareLine className="size-4" />

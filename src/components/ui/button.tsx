@@ -24,6 +24,7 @@ const buttonVariants = cva(
 				"text-destructive": "bg-transparent text-red-500 hover:bg-neutral-50",
 				cmd: "bg-[#f6f8fa] text-black hover:bg-[#f6f8fa]/75",
 				special: "bg-primary-100 text-primary-400 hover:bg-primary-100",
+				pill: "bg-white text-neutral-800",
 			},
 			size: {
 				default: "px-4 py-2.5",
@@ -32,6 +33,7 @@ const buttonVariants = cva(
 				icon: "h-10 w-10",
 				cmd: "px-3 py-2 text-sm w-fit",
 				special: "px-3 py-1 text-sm font-normal rounded w-fit",
+				pill: "rounded-full px-4",
 			},
 		},
 		defaultVariants: {

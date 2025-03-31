@@ -11,7 +11,7 @@ import {
 	RiPlayLargeFill,
 	RiReplay10Line,
 	RiVolumeMuteLine,
-	RiVolumeUpLine
+	RiVolumeUpLine,
 } from "@remixicon/react";
 import Hls from "hls.js";
 import { LoaderCircle } from "lucide-react";
@@ -457,7 +457,7 @@ export const VideoPlayer = React.memo(
 				tabIndex={0}
 				onMouseEnter={() => setShowControls(true)}
 				className={cn(
-					`relative h-80 w-full overflow-hidden md:rounded-lg bg-neutral-900 md:h-[425px]`,
+					`relative h-80 w-full overflow-hidden bg-neutral-900 md:h-[425px] md:rounded-lg`,
 					className
 				)}>
 				<video
@@ -492,7 +492,7 @@ export const VideoPlayer = React.memo(
 
 				{/* Controls */}
 				<div
-					className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black px-2 to-transparent md:px-4 py-2.5 transition-opacity duration-300 ${
+					className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent px-2 py-2.5 transition-opacity duration-300 md:px-4 ${
 						showControls ? "opacity-100" : "pointer-events-none opacity-0"
 					}`}>
 					<div className="relative">

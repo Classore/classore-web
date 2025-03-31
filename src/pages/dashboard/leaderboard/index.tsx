@@ -134,6 +134,17 @@ const Page = () => {
 		defaultValues: { timeline: "today" },
 	});
 
+	const userOrdinal = React.useCallback(
+		(index: number) => {
+			if (!leaderboards?.meta.itemCount) return 0;
+			const itemsPerPage = leaderboards.meta.take || 10;
+			const currentPage = page;
+			const position = (currentPage - 1) * itemsPerPage + index + 1;
+			return position;
+		},
+		[leaderboards?.meta]
+	);
+
 	const background = (index: number) => {
 		if (index === 1) return "bg-gradient-to-r from-[#fcf4d5] to-white";
 		if (index === 2) return "bg-gradient-to-r from-[#f4f5f5] to-white";
@@ -221,9 +232,9 @@ const Page = () => {
 												{leaderboards?.leaderboard.map((user, index) => (
 													<div key={user.leaderboard_id} className="flex w-full items-center gap-4 border-b">
 														<div
-															className={`grid w-full grid-cols-4 gap-4 rounded-md px-3 py-4 transition-all ${background(index + 1)}`}>
+															className={`grid w-full grid-cols-4 gap-4 rounded-md px-3 py-4 transition-all ${background(userOrdinal(index))}`}>
 															<div className="col-span-2 flex w-full items-center gap-5">
-																{index + 1}
+																{userOrdinal(index)}
 																<div className="flex items-center gap-2">
 																	<div className="size-10 rounded-lg border-2 border-white"></div>
 																	<div className="flex flex-col gap-1">
@@ -265,8 +276,8 @@ const Page = () => {
 								<div className="flex w-full flex-col items-center gap-4 rounded-md border p-4">
 									<div className="flex w-full flex-col items-center gap-2">
 										<div className="flex flex-col items-center gap-2">
-											<Avatar className="size-12 rounded bg-[#bfdbfe]">
-												<AvatarImage src={user?.image} alt={user?.first_name} />
+											<Avatar className="size-12 rounded border-2 bg-[#bfdbfe]">
+												<AvatarImage src={user?.profile_image} alt={user?.first_name} />
 												<AvatarFallback className="text-xl font-semibold">
 													{getInitials(`${user?.first_name} ${user?.last_name}`)}
 												</AvatarFallback>

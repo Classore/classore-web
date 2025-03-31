@@ -43,13 +43,13 @@ export const DeleteWard = ({ wardId }: Props) => {
 				</Button>
 			</DialogTrigger>
 			<DialogContent>
-				<IconLabel icon={RiDeleteBin6Line} />
+				<IconLabel icon={RiDeleteBin6Line} variant="destructive" />
 				<div>
 					<DialogTitle>Delete Ward</DialogTitle>
 					<DialogDescription>
 						Are you sure you want to delete this ward? This action cannot be undone.
 					</DialogDescription>
-					<div className="mt-4 flex w-full justify-end gap-x-4">
+					<div className="mt-6 flex w-full justify-end gap-x-4">
 						<Button className="w-fit" size="sm" variant="outline" onClick={() => setOpen(false)}>
 							Cancel
 						</Button>

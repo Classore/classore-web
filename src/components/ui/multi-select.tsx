@@ -1,3 +1,13 @@
+import { useController, type Control, type FieldValues, type Path } from "react-hook-form";
+import { PopoverClose } from "@radix-ui/react-popover";
+import { ChevronDown } from "@untitled-ui/icons-react";
+import { toast } from "sonner";
+import * as React from "react";
+
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { ErrorMessage } from "../shared";
+import { Button } from "./button";
+import { cn } from "@/lib";
 import {
 	Command,
 	CommandEmpty,
@@ -6,15 +16,6 @@ import {
 	CommandItem,
 	CommandList,
 } from "@/components/ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { cn } from "@/lib";
-import { PopoverClose } from "@radix-ui/react-popover";
-import { ChevronDown } from "@untitled-ui/icons-react";
-import * as React from "react";
-import { useController, type Control, type FieldValues, type Path } from "react-hook-form";
-import { toast } from "sonner";
-import { ErrorMessage } from "../shared";
-import { Button } from "./button";
 
 type Option = {
 	label: string;
@@ -24,25 +25,27 @@ type Option = {
 type Options = Option[];
 
 type MultiSelectProps<T extends FieldValues> = {
-	label: string;
-	options: Options;
-	name: Path<T>;
 	control: Control<T>;
-	placeholder?: string;
+	label: string;
+	name: Path<T>;
+	options: Options;
 	className?: string;
+	disabled?: boolean;
 	info?: string;
 	maxSelectable?: number;
+	placeholder?: string;
 };
 
 export const MultiSelect = <T extends FieldValues>({
-	label,
-	placeholder,
-	options,
-	name,
 	control,
+	label,
+	name,
+	options,
 	className,
+	disabled,
 	info,
 	maxSelectable,
+	placeholder,
 }: MultiSelectProps<T>) => {
 	const inputRef = React.useRef<HTMLInputElement>(null);
 	const {
@@ -99,7 +102,7 @@ export const MultiSelect = <T extends FieldValues>({
 			</div>
 
 			<Popover>
-				<PopoverTrigger asChild>
+				<PopoverTrigger asChild disabled={disabled}>
 					<button
 						type="button"
 						ref={ref}

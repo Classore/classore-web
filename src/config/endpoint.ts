@@ -14,6 +14,11 @@ export const endpoints = (id?: string) => {
 		change_password: "/auth/change-password",
 	} as const;
 
+	const bank = {
+		get_banks: "/admin/payment/get-banks",
+		add_details: "/admin/payment/add-bank-details",
+	} as const;
+
 	const courses = {
 		get_all: "/courses",
 		get_one: `/courses/${id}`,
@@ -27,6 +32,8 @@ export const endpoints = (id?: string) => {
 		add_ward: "/auth/add-my-wards",
 		get_ward: `/parent/view-a-ward/${id}`,
 		delete_ward: `/parent/delete-a-ward/${id}`,
+		get_subjects: "/school/subject/fetch-all",
+		vet_pack: "/school/exams/vet-study-pack-options",
 	} as const;
 
 	const school = {
@@ -76,5 +83,5 @@ export const endpoints = (id?: string) => {
 		get: `/mail/fetch-waitlist`,
 	};
 
-	return { auth, courses, school, user, waitlist, student, test_center, parents };
+	return { auth, bank, courses, school, user, waitlist, student, test_center, parents };
 };

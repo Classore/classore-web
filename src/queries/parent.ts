@@ -1,13 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
 
-import type { HttpResponse } from "@/types";
+import type { HttpResponse, PaginatedResponse, PaginationProps } from "@/types";
 import { endpoints } from "@/config";
 import { axios } from "@/lib";
 import type {
 	ParentLeaderboard,
 	ParentReferralProps,
 	ParentWithdrawalProps,
+	WardAnalyticsProps,
+	WardEventProps,
 	WardProps,
+	WardSubjectProps,
 } from "@/types/parent";
 
 export interface ParentHome {
@@ -29,6 +32,7 @@ export interface ParentHome {
 
 interface GetWardResponse {
 	analytic_report: {
+		report: WardAnalyticsProps[];
 		my_leader_board: [];
 		data: ParentLeaderboard[];
 		meta: {
@@ -40,7 +44,7 @@ interface GetWardResponse {
 			hasNextPage: true;
 		};
 	};
-	upcoming_events: [];
+	upcoming_events: WardEventProps[];
 }
 
 export interface ReferralProps {
@@ -65,6 +69,30 @@ export interface AddWardResponse {
 		access_code: string;
 		reference: string;
 	};
+}
+
+export type StudyPackDto = {
+	chosen_bundle: string;
+	subject_length: number;
+};
+
+export interface VetStudyPackDto {
+	vettings: StudyPackDto[];
+}
+
+export interface VetStudyPackResponse {
+	summary: {
+		base_amount: number;
+		number_of_extra_subjects_added: number;
+		grand_total: number;
+	};
+	vettings: {
+		base_amount: number;
+		allowed_subjects: number;
+		allow_extra_subjects: "YES" | "NO";
+		number_of_extra_subjects_added: number;
+		grand_total: number;
+	}[];
 }
 
 const getParentHome = async () => {
@@ -102,4 +130,28 @@ export const useGetWard = (wardId: string) => {
 	});
 };
 
-export { addWard, getWard };
+const getSubjects = async (params: PaginationProps & { examination_bundle: string }) => {
+	return axios
+		.get<
+			HttpResponse<PaginatedResponse<WardSubjectProps>>
+		>(endpoints().parents.get_subjects, { params })
+		.then((res) => res.data);
+};
+export const useGetSubjects = (params: PaginationProps & { examination_bundle: string }) => {
+	return useQuery({
+		queryKey: ["get-subjects", params],
+		queryFn: () => getSubjects(params),
+		enabled: !!params.examination_bundle,
+		select: (data) => data.data,
+		staleTime: Infinity,
+		gcTime: Infinity,
+	});
+};
+
+const vetStudyPack = async (payload: VetStudyPackDto) => {
+	return axios
+		.post<HttpResponse<VetStudyPackResponse>>(endpoints().parents.vet_pack, payload)
+		.then((res) => res.data);
+};
+
+export { addWard, getParentHome, getSubjects, getWard, vetStudyPack };

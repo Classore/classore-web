@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { classore } from "@/assets/images";
 import { queryClient } from "@/providers";
+import { formatCurrency } from "@/lib";
 
 const schema = z.object({
 	first_name: z.string().min(1, { message: "First name is required" }),
@@ -166,14 +167,11 @@ const Page = () => {
 							control={control}
 							name="examination_bundle"
 							disabled={!values.examination}
-							label="Select Prep Bundle"
-							className="uppercase">
+							label="Select Prep Bundle">
 							{examination_bundles?.data.map((bundle) => (
-								<SelectItem
-									key={bundle.examinationbundle_id}
-									value={bundle.examinationbundle_id}
-									className="uppercase">
-									{bundle.examinationbundle_name}
+								<SelectItem key={bundle.examinationbundle_id} value={bundle.examinationbundle_id}>
+									{bundle.examinationbundle_name} Exam Prep Bundle (
+									{formatCurrency(bundle.examinationbundle_amount)})
 								</SelectItem>
 							))}
 						</Select>

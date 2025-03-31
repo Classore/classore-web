@@ -1,11 +1,17 @@
-// import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
+import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
 import React from "react";
 
+import type { WardAnalyticsProps } from "@/types/parent";
 import { type Period, PERIOD_OPTIONS } from "@/constants/period";
-import { type ChartConfig } from "@/components/ui/chart";
+import {
+	type ChartConfig,
+	ChartContainer,
+	ChartTooltip,
+	ChartTooltipContent,
+} from "@/components/ui/chart";
 
 interface AnalyticsProps {
-	data: [];
+	data: WardAnalyticsProps[];
 	hoursSpent: number;
 	onTimeLineChange: (period: Period) => void;
 	timeLine: Period;
@@ -23,7 +29,6 @@ export const AnalyticsChart = ({
 			color: "var(--primary-400)",
 		},
 	} satisfies ChartConfig;
-	console.log({ config, data });
 
 	return (
 		<div className="w-full space-y-3">
@@ -40,7 +45,28 @@ export const AnalyticsChart = ({
 					))}
 				</select>
 			</div>
-			<div className="h-52 w-full"></div>
+			<div className="h-52 w-full">
+				<ChartContainer className="h-full w-full" config={config}>
+					<LineChart accessibilityLayer data={data}>
+						<CartesianGrid vertical={false} />
+						<XAxis
+							dataKey="date"
+							tickLine={false}
+							axisLine={false}
+							tickMargin={8}
+							tickFormatter={(value) => value.slice(0, 3)}
+						/>
+						<ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+						<Line
+							dataKey="time_spent"
+							type="linear"
+							stroke="var(--primary-400)"
+							strokeWidth={1}
+							dot={false}
+						/>
+					</LineChart>
+				</ChartContainer>
+			</div>
 		</div>
 	);
 };

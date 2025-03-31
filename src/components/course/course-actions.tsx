@@ -1,8 +1,10 @@
-import { setChapter, setModule, useChapterStore } from "@/store/z-store/chapter";
-import type { SingleCourseResp } from "@/types";
 import { RiArrowRightSLine } from "@remixicon/react";
 import * as React from "react";
+
+import { setChapter, setModule, useChapterStore } from "@/store/z-store/chapter";
 import { QuizAlertModal, TakeQuizModal } from "../modals";
+// import { useGetChapter } from "@/queries/student";
+import type { SingleCourseResp } from "@/types";
 import { Button } from "../ui/button";
 
 type CourseActionsProps = {
@@ -52,7 +54,7 @@ export const CourseActions = ({ chapters }: CourseActionsProps) => {
 	return (
 		<>
 			<div className="flex items-center gap-4">
-				<Button variant="inverse" className="w-36 py-2" onClick={() => setOpenTakeQuiz(true)}>
+				<Button variant="inverse" disabled className="w-36 py-2" onClick={() => setOpenTakeQuiz(true)}>
 					Take Quiz
 				</Button>
 

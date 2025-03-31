@@ -24,7 +24,6 @@ export const CourseChapters = ({
 
 	const hasMoreChapters = chapters.length > MIN_CHAPTERS;
 	const Component = dripping === "YES" ? "button" : "div";
-	console.log("dripping", dripping);
 
 	return (
 		<>
