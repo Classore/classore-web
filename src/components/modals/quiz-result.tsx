@@ -6,6 +6,8 @@ import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "../ui/dialog";
 
 type QuizResultModalProps = {
+	currentChapter: string;
+	nextModule: string;
 	open: boolean;
 	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 	result: SubmitQuizResp | null;
@@ -79,15 +81,18 @@ export const QuizResultModal = ({ open, setOpen, result, resetQuiz }: QuizResult
 					{result.is_passed ? (
 						<>
 							<Button
-								onClick={retakeQuiz}
+								className="w-fit text-sm font-medium text-neutral-400"
 								disabled={result.attempts_left <= 0}
-								className="w-32 text-sm font-medium text-neutral-400"
+								onClick={retakeQuiz}
+								size="sm"
 								variant="outline">
 								Retake Quiz
 							</Button>
 
 							{/* TODO: redirect to course page and set the next module */}
-							<Button className="w-32 text-sm">Go to Next Lesson</Button>
+							<Button className="w-fit text-sm" size="sm">
+								Go to Next Lesson
+							</Button>
 						</>
 					) : (
 						<>
@@ -96,11 +101,16 @@ export const QuizResultModal = ({ open, setOpen, result, resetQuiz }: QuizResult
 									router.replace("/dashboard/courses");
 									resetQuiz();
 								}}
-								className="w-32 text-sm font-medium text-neutral-400"
+								className="w-fit text-sm font-medium text-neutral-400"
+								size="sm"
 								variant="outline">
 								Cancel
 							</Button>
-							<Button disabled={result.attempts_left <= 0} className="w-32 text-sm" onClick={retakeQuiz}>
+							<Button
+								disabled={result.attempts_left <= 0}
+								className="w-fit text-sm"
+								size="sm"
+								onClick={retakeQuiz}>
 								Retake Quiz
 							</Button>
 						</>

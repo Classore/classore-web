@@ -1,6 +1,8 @@
 /* eslint-disable react/display-name */
-import { cn } from "@/lib";
+import { useMutation } from "@tanstack/react-query";
 import * as Slider from "@radix-ui/react-slider";
+import { LoaderCircle } from "lucide-react";
+import * as React from "react";
 import {
 	RiForward10Line,
 	RiFullscreenExitLine,
@@ -14,8 +16,9 @@ import {
 	RiVolumeUpLine,
 } from "@remixicon/react";
 import Hls from "hls.js";
-import { LoaderCircle } from "lucide-react";
-import * as React from "react";
+
+import { updateModuleProgress } from "@/queries/user";
+import { cn } from "@/lib";
 
 const formatTime = (timeInSeconds: number): string => {
 	if (isNaN(timeInSeconds)) return "0:00";
@@ -26,17 +29,21 @@ const formatTime = (timeInSeconds: number): string => {
 };
 
 interface VideoPlayerProps {
+	courseId: string;
+	moduleId: string;
 	src: string;
-	moduleProgress?: number;
 	autoPlay?: boolean;
 	className?: string;
-	poster?: string;
-	onReady?: () => void;
+	moduleProgress?: number;
 	onError?: (error: unknown) => void;
+	onReady?: () => void;
+	poster?: string;
 }
 
 export const VideoPlayer = React.memo(
 	({
+		courseId,
+		moduleId,
 		src,
 		autoPlay = false,
 		className,
@@ -61,6 +68,15 @@ export const VideoPlayer = React.memo(
 		const hlsRef = React.useRef<Hls | null>(null);
 		const playerRef = React.useRef<HTMLDivElement>(null);
 		const controlsTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+
+		const { mutate } = useMutation({
+			mutationFn: updateModuleProgress,
+			mutationKey: ["update-module-progress", courseId, moduleId, progress],
+		});
+
+		React.useEffect(() => {
+			mutate({ course_id: courseId, module_id: moduleId, current_progress: Math.round(progress) });
+		}, [progress]);
 
 		const hideControlsTimer = React.useCallback(() => {
 			if (controlsTimeoutRef.current) {

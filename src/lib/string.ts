@@ -2,33 +2,159 @@ import DOMPurify from "isomorphic-dompurify";
 
 import type { ReviewProps } from "@/types";
 
-const SANITIZE_CONFIG = {
+export const SANITIZE_CONFIG = {
 	ALLOWED_TAGS: ["b", "i", "em", "strong", "a"],
 	ALLOWED_ATTR: ["href"],
 };
 
-const memoizedSanitize = new Map<string, string>();
+export const memoizedSanitize = new Map<string, string>();
 
-export const sanitizeHtml = (html: string) => {
-	if (!html || typeof html !== "string") {
+interface SanitizeOptions {
+	ALLOWED_TAGS?: string[];
+	ALLOWED_ATTR?: string[];
+	ALLOW_DATA_ATTR?: boolean;
+	USE_PROFILES?: {
+		html?: boolean;
+		svg?: boolean;
+		svgFilters?: boolean;
+	};
+}
+
+const defaultOptions: SanitizeOptions = {
+	ALLOWED_TAGS: [
+		"p",
+		"div",
+		"span",
+		"br",
+		"hr",
+		"h1",
+		"h2",
+		"h3",
+		"h4",
+		"h5",
+		"h6",
+		"b",
+		"strong",
+		"i",
+		"em",
+		"u",
+		"strike",
+		"sub",
+		"sup",
+		"ul",
+		"ol",
+		"li",
+		"table",
+		"thead",
+		"tbody",
+		"tr",
+		"td",
+		"th",
+		"blockquote",
+		"pre",
+		"code",
+	],
+	ALLOWED_ATTR: ["id", "class", "style", "align", "dir", "colspan", "rowspan", "aria-label", "role"],
+	ALLOW_DATA_ATTR: true,
+	USE_PROFILES: {
+		html: true,
+		svg: false,
+		svgFilters: false,
+	},
+};
+
+export const sanitizeHtml = (
+	html: string | undefined | null,
+	options: SanitizeOptions = defaultOptions
+) => {
+	if (!html) return "";
+
+	try {
+		const sanitized = DOMPurify.sanitize(html, {
+			...options,
+			RETURN_DOM: false,
+			RETURN_DOM_FRAGMENT: false,
+			RETURN_TRUSTED_TYPE: true,
+			SANITIZE_DOM: true,
+		}).toString();
+
+		const parser = new DOMParser();
+		const doc = parser.parseFromString(sanitized, "text/html");
+
+		const removeEmptyElements = (node: Node) => {
+			const children = Array.from(node.childNodes);
+
+			children.forEach((child) => {
+				if (child.nodeType === Node.ELEMENT_NODE) {
+					removeEmptyElements(child);
+
+					const element = child as HTMLElement;
+					const tagName = element.tagName.toLowerCase();
+
+					if (
+						tagName !== "br" &&
+						tagName !== "hr" &&
+						!element.textContent?.trim() &&
+						!element.querySelector("img, br, hr")
+					) {
+						element.remove();
+					}
+				}
+			});
+		};
+
+		removeEmptyElements(doc.body);
+
+		const convertToListItems = (node: Node) => {
+			const children = Array.from(node.childNodes);
+
+			children.forEach((child) => {
+				if (child.nodeType === Node.TEXT_NODE) {
+					const pattern = /^(\d+\.|\.|\s*o)\s+(.+)$/;
+					const text = child.textContent?.trim() || "";
+					if (pattern.test(text)) {
+						const li = doc.createElement("li");
+						li.textContent = text.replace(pattern, "$2");
+						let list = child.previousSibling;
+						if (!list || !(list instanceof Element) || (list.tagName !== "UL" && list.tagName !== "OL")) {
+							if (text.match(/^\d+\./)) {
+								list = doc.createElement("ol");
+							} else {
+								list = doc.createElement("ul");
+							}
+							child.parentNode?.insertBefore(list, child);
+						}
+
+						list.appendChild(li);
+						child.remove();
+					}
+				} else if (child.nodeType === Node.ELEMENT_NODE) {
+					convertToListItems(child);
+				}
+			});
+		};
+
+		convertToListItems(doc.body);
+
+		const normalizeWhitespace = (node: Node) => {
+			const children = Array.from(node.childNodes);
+
+			children.forEach((child) => {
+				if (child.nodeType === Node.TEXT_NODE) {
+					child.textContent = child.textContent?.replace(/\s+/g, " ").trim() ?? "";
+				} else if (child.nodeType === Node.ELEMENT_NODE) {
+					normalizeWhitespace(child);
+				}
+			});
+		};
+
+		normalizeWhitespace(doc.body);
+
+		return doc.body.innerHTML;
+	} catch (error) {
+		console.error("Error sanitizing HTML:", error);
 		return "";
 	}
-
-	if (memoizedSanitize.has(html)) {
-		return memoizedSanitize.get(html)!;
-	}
-
-	const sanitized = DOMPurify.sanitize(html, SANITIZE_CONFIG);
-	memoizedSanitize.set(html, sanitized);
-
-	if (memoizedSanitize.size > 1000) {
-		const firstKey = memoizedSanitize.keys().next().value;
-		if (firstKey !== undefined) {
-			memoizedSanitize.delete(firstKey);
-		}
-	}
-
-	return sanitized;
 };
 
 export const capitalize = (value?: string) => {

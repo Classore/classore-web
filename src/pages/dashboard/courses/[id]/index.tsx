@@ -1,15 +1,23 @@
 import { RiCloseCircleLine, RiThumbDownLine, RiThumbUpLine } from "@remixicon/react";
-import Image from "next/image";
-import Link from "next/link";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/router";
+import Image from "next/image";
 import * as React from "react";
+import Link from "next/link";
 
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useGetChapter, useGetCourse, useGetProfile } from "@/queries/student";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ChapterModules, QuizHistory, Resources } from "@/components/home";
+import { JoinCommunityModal, RenewalModal } from "@/components/modals";
+import { setChapter, useChapterStore } from "@/store/z-store/chapter";
+import { CourseActions } from "@/components/course/course-actions";
+import { type StartCourseDto, startCourse } from "@/queries/user";
 import blockchain from "@/assets/illustrations/blockchain.svg";
 import trophy from "@/assets/illustrations/trophy.svg";
-import { CourseActions } from "@/components/course/course-actions";
-import { ChapterModules, QuizHistory, Resources } from "@/components/home";
 import { DashboardLayout } from "@/components/layouts";
-import { JoinCommunityModal, RenewalModal } from "@/components/modals";
+import { Button } from "@/components/ui/button";
+import { capitalize, getInitials } from "@/lib";
 import {
 	AvatarGroup,
 	BackBtn,
@@ -18,12 +26,11 @@ import {
 	Spinner,
 	VideoPlayer,
 } from "@/components/shared";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { capitalize, getInitials } from "@/lib";
-import { useGetChapter, useGetCourse, useGetProfile } from "@/queries/student";
-import { setChapter, useChapterStore } from "@/store/z-store/chapter";
+
+type UseMutationProps = {
+	courseId: string;
+	payload: StartCourseDto;
+};
 
 const tabs = ["summary", "resources", "quiz history"] as const;
 type Tabs = (typeof tabs)[number];
@@ -46,6 +53,11 @@ const Page = () => {
 	const router = useRouter();
 	const { id, bundle: bundle_id } = router.query;
 	const [open, setOpen] = React.useState(false);
+
+	const { mutate } = useMutation({
+		mutationFn: ({ courseId, payload }: UseMutationProps) => startCourse(courseId, payload),
+		mutationKey: ["start-course", id],
+	});
 
 	const { module } = useChapterStore();
 	const { data: profile } = useGetProfile();
@@ -75,11 +87,63 @@ const Page = () => {
 		return chapter?.modules.find((item) => item.id === module);
 	}, [chapter, module]);
 
+	const isFirstChapter = React.useMemo(() => {
+		const currentChapterIndex = course?.chapters.findIndex(
+			(chapter) => chapter.id === String(chapter.id)
+		);
+		return currentChapterIndex === 0;
+	}, [course]);
+
+	const isQuizPassed = React.useMemo(() => {
+		if (!chapter) return false;
+		const findModule = chapter?.modules.find((mod) => mod.id === module);
+		if (!findModule) return false;
+		return findModule.is_passed || false;
+	}, [chapter]);
+
+	const hasNextModule = React.useMemo(() => {
+		if (!chapter) return false;
+		const currentModuleIndex = chapter?.modules.findIndex((mod) => mod.id === module);
+		return currentModuleIndex !== -1 && currentModuleIndex < chapter?.modules.length - 1;
+	}, [chapter]);
+
+	const canProceed = React.useMemo(
+		() =>
+			Boolean((course?.current_module_progress_percentage || 0) >= 50 || currentModule?.is_passed),
+		[course?.current_module_progress_percentage, currentModule]
+	);
+
+	const courseProgress = React.useMemo(() => {
+		if (!course) return 0;
+		if (!course.chapters.length || !chapter) return 0;
+		const totalChapters = course.chapters.flatMap((chapter) => chapter);
+		const total = totalChapters.length;
+		const currentChapterIndex = totalChapters.indexOf(chapter);
+		return Math.round((currentChapterIndex / total) * 100);
+	}, [chapter, course]);
+
+	React.useEffect(() => {
+		if (isFirstChapter) {
+			mutate({
+				courseId: String(id),
+				payload: {
+					chapter_id: String(course?.current_chapter.id),
+					current_progress: courseProgress,
+				},
+			});
+		}
+	}, [courseProgress, isFirstChapter]);
+
 	React.useEffect(() => {
 		if (isError && error?.status === 403) {
 			setOpen(true);
 		}
 	}, [isError, error]);
+
+	const currentModuleProgress = React.useMemo(() => {
+		if (!chapter) return 0;
+		return chapter.current_module_progress_percentage;
+	}, [chapter]);
 
 	return (
 		<>
@@ -127,7 +191,12 @@ const Page = () => {
 									</p>
 								</div>
 
-								<CourseActions chapters={course?.chapters} />
+								<CourseActions
+									canProceed={canProceed}
+									chapters={course?.chapters}
+									hasNextModule={hasNextModule}
+									isQuizPassed={isQuizPassed}
+								/>
 							</div>
 						</div>
 
@@ -140,7 +209,9 @@ const Page = () => {
 										</div>
 									) : currentModule?.video_array.at(0)?.secure_url ? (
 										<VideoPlayer
-											moduleProgress={chapter?.current_module_progress_percentage}
+											courseId={String(id)}
+											moduleId={currentModule.id}
+											moduleProgress={currentModuleProgress}
 											src={currentModule?.video_array.at(0)?.secure_url ?? ""}
 										/>
 									) : (

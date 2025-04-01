@@ -69,8 +69,8 @@ export const QuizHistory = () => {
 							</div>
 
 							<div
-								className={`flex items-center gap-1 rounded-2xl px-3 py-1 text-xs ${quiz.is_passed ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"}`}>
-								{quiz.is_passed ? <RiCloseLine size={14} /> : <RiCheckLine size={14} />}
+								className={`flex items-center gap-1 rounded-2xl px-3 py-1 text-xs ${quiz.is_passed ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+								{quiz.is_passed ? <RiCheckLine size={14} /> : <RiCloseLine size={14} />}
 								{quiz.is_passed ? "Passed" : "Failed"}
 							</div>
 						</div>

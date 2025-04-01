@@ -524,50 +524,7 @@ export type ChapterResp = {
 		attachments: Array<string>;
 		progress: number;
 	};
-	modules: Array<{
-		id: string;
-		createdOn: string;
-		updatedOn: string;
-		chapter: string;
-		title: string;
-		sequence: number;
-		images: Array<string>;
-		video_array: Array<{
-			duration: number;
-			secure_url: string;
-			derived_url: string;
-		}>;
-		content: string;
-		tutor?: {
-			first_name: string;
-			last_name: string;
-			phone_number: string;
-			email: string;
-		};
-		attachments: Array<string>;
-		progress?: number;
-		is_completed?: boolean;
-		quizes: Array<{
-			id: string;
-			createdOn: string;
-			updatedOn: string;
-			isDeleted: boolean;
-			isBlocked: boolean;
-			user_id: string;
-			course: string;
-			chapter: string;
-			module: string;
-			score: number;
-			bench_mark: number;
-			is_passed: boolean;
-			attempts: number;
-			is_recorded: boolean;
-		}>;
-		overall_attempts: number;
-		attempts: number;
-		quiz_attempts_limit: number;
-		quiz_attempts_left: number;
-	}>;
+	modules: Array<ChapterModuleProps>;
 	quizes: Array<{
 		id: string;
 		createdOn: string;
@@ -586,6 +543,52 @@ export type ChapterResp = {
 	}>;
 	no_of_quizes: number;
 	overall_attempts: number;
+};
+
+export type ChapterModuleProps = {
+	attachments: Array<string>;
+	attempts: number;
+	chapter: string;
+	content: string;
+	createdOn: string;
+	id: string;
+	images: Array<string>;
+	is_completed?: boolean;
+	is_passed?: boolean;
+	overall_attempts: number;
+	progress?: number;
+	quiz_attempts_left: number;
+	quiz_attempts_limit: number;
+	quizes: Array<{
+		id: string;
+		createdOn: string;
+		updatedOn: string;
+		isDeleted: boolean;
+		isBlocked: boolean;
+		user_id: string;
+		course: string;
+		chapter: string;
+		module: string;
+		score: number;
+		bench_mark: number;
+		is_passed: boolean;
+		attempts: number;
+		is_recorded: boolean;
+	}>;
+	sequence: number;
+	title: string;
+	tutor?: {
+		first_name: string;
+		last_name: string;
+		phone_number: string;
+		email: string;
+	};
+	updatedOn: string;
+	video_array: Array<{
+		duration: number;
+		secure_url: string;
+		derived_url: string;
+	}>;
 };
 
 export type MyPlan = {

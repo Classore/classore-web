@@ -321,23 +321,24 @@ h6 {
 
 .markdown-content {
 	line-height: 1.6;
-	max-width: 800px;
 	margin: 0 auto;
-	padding: 2rem;
-	display: flex;
-	flex-direction: column;
-	color: red;
 }
 
 /* Typography */
 .markdown-content p {
-	margin-bottom: 1.5rem;
 	font-size: 1rem;
+}
+
+.markdown-content p:first-child:is(".") {
+	display: list-item;
+	list-style-type: disc;
+	margin-left: 1.5rem;
 }
 
 .markdown-content strong {
 	font-weight: 600;
-	color: red;
+	color: #303030;
+	margin-right: 0.25rem;
 }
 
 /* Headings */
@@ -373,12 +374,6 @@ h6 {
 	color: #3a5169;
 }
 
-/* First letter capitalization properly implemented */
-.markdown-content p:first-of-type::first-letter {
-	font-size: 1.5em;
-	font-weight: 600;
-}
-
 /* Definition terms */
 .markdown-content strong + strong {
 	display: block;
@@ -391,9 +386,11 @@ h6 {
 .markdown-content ul,
 .markdown-content ol {
 	padding-left: 1.5rem;
-	margin-bottom: 1.5rem;
+}
+
+.markdown-content ul {
+	list-style-type: disc;
 }
 
 .markdown-content li {
-	margin-bottom: 0.5rem;
 }
