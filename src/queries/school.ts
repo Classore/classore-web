@@ -1,8 +1,9 @@
-import { endpoints } from "@/config";
-import { axios } from "@/lib";
-import type { HttpResponse, PaginatedResponse, SingleBundleResp } from "@/types";
 import { queryOptions, skipToken, useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
+
+import type { HttpResponse, PaginatedResponse, SingleBundleResp } from "@/types";
+import { endpoints } from "@/config";
+import { axios } from "@/lib";
 
 const params = {
 	page: 1,
@@ -223,4 +224,21 @@ export const useGetSingleExamBundleQuery = ({ bundle_id }: { bundle_id: string }
 		gcTime: Infinity,
 		select: (data) => data.data,
 	});
+};
+
+// <-- PAYMENT CALLBACK -->
+export interface PaymentCallbackDto {
+	event: "charge.success";
+	data: {
+		metadata: {
+			narration_id: string;
+			narration: "RESERVATION";
+		};
+		reference: string;
+	};
+}
+export const paymentCallback = async (payload: PaymentCallbackDto) => {
+	return axios
+		.post<HttpResponse<null>>(endpoints().school.payment_callback, payload)
+		.then((res) => res.data);
 };

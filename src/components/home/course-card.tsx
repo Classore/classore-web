@@ -2,8 +2,8 @@ import { RiFileTextLine, RiPlayCircleLine, RiTimeLine } from "@remixicon/react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { capitalize, formatNumber } from "@/lib";
 import type { MyCoursesResp } from "@/queries/student";
+import { formatNumber } from "@/lib";
 
 interface Props {
 	course: MyCoursesResp["data"][number];
@@ -76,7 +76,9 @@ export const CourseCard = ({ course, onClick }: Props) => {
 
 			<div className="flex w-full flex-col text-left">
 				<h5 className="font-medium capitalize">{course.subject_name} Tutorials</h5>
-				<p className="truncate text-sm text-neutral-400">{capitalize(course.subject_description)}</p>
+				<p
+					className="truncate text-sm text-neutral-400 first-letter:capitalize"
+					dangerouslySetInnerHTML={{ __html: course.subject_description }}></p>
 			</div>
 
 			<hr className="w-full bg-neutral-300" />
