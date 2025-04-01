@@ -1,26 +1,26 @@
+import { skipToken, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { RiQuestionLine } from "@remixicon/react";
-import Image from "next/image";
 import { useRouter } from "next/router";
+import Image from "next/image";
+import * as React from "react";
+import { toast } from "sonner";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { usePreventNavigation, useQuizHandler } from "@/hooks";
-import { useUserStore } from "@/store/z-store";
-// import type { ChapterProps } from "@/types";
 import { BooleanChoiceAnswerType } from "@/components/course/answers-type/boolean-choice";
 import { ShortAnswerAnswerType } from "@/components/course/answers-type/short-answer";
 import { SingleChoiceAnswerType } from "@/components/course/answers-type/single-choice";
-import { QuizTimer } from "@/components/course/quiz-timer";
-import { QuitQuizModal } from "@/components/modals/quit-quiz";
+import { fetchQuestions, submitQuiz, type SubmitQuizResp } from "@/queries/user";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { QuizResultModal } from "@/components/modals/quiz-result";
 import { SubmitQuizModal } from "@/components/modals/submit-quiz";
-import { Seo, Spinner } from "@/components/shared";
-import { capitalize, getInitials } from "@/lib";
 import { useGetChapter, useGetCourse } from "@/queries/student";
-import { fetchQuestions, submitQuiz, type SubmitQuizResp } from "@/queries/user";
-import { skipToken, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import * as React from "react";
-import { toast } from "sonner";
+import { usePreventNavigation, useQuizHandler } from "@/hooks";
+import { QuitQuizModal } from "@/components/modals/quit-quiz";
+import { QuizTimer } from "@/components/course/quiz-timer";
+import { Seo, Spinner } from "@/components/shared";
+import type { ChapterModuleProps } from "@/types";
+import { Button } from "@/components/ui/button";
+import { capitalize, getInitials } from "@/lib";
+import { useUserStore } from "@/store/z-store";
 
 const items = [
 	{ label: "answered", color: "var(--primary-400)" },
@@ -50,6 +50,27 @@ const Page = () => {
 		chapter_id: String(course?.current_chapter.id),
 	});
 	const lesson = chapter?.modules.find((module) => module.id === String(module_id));
+
+	const chapterId = React.useMemo(() => {
+		if (!chapter) return "";
+		return chapter.id;
+	}, [chapter]);
+
+	const modules = React.useMemo(() => {
+		if (!course) return [];
+		return course.chapters.reduce((acc, chapter) => {
+			if (!chapter.modules.length) return acc;
+			const modules = chapter.modules.map((module) => module);
+			return [...acc, ...modules];
+		}, [] as ChapterModuleProps[]);
+	}, []);
+
+	const nextModule = React.useMemo(() => {
+		if (!modules.length || !lesson) return "";
+		const currentIndex = modules.findIndex((module) => module.id === lesson.id);
+		if (currentIndex === modules.length - 1) return "";
+		return modules[currentIndex + 1]?.id ?? "";
+	}, [modules, lesson]);
 
 	const { data: questions, isPending } = useQuery({
 		queryKey: ["questions", { module_id: lesson?.id }],
@@ -309,7 +330,14 @@ const Page = () => {
 				)}
 			</div>
 
-			<QuizResultModal open={open} result={result} setOpen={setOpen} resetQuiz={resetQuiz} />
+			<QuizResultModal
+				currentChapter={chapterId}
+				nextModule={nextModule}
+				open={open}
+				result={result}
+				setOpen={setOpen}
+				resetQuiz={resetQuiz}
+			/>
 		</>
 	);
 };

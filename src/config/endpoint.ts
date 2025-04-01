@@ -46,6 +46,7 @@ export const endpoints = (id?: string) => {
 		create_study_timeline: "/school/exams/create-study-timeline",
 		vet_study_pack: "/school/exams/vet-study-pack-options",
 		get_my_courses: "/student/my-courses",
+		payment_callback: "/transaction/paystack-callback",
 	} as const;
 
 	const student = {
@@ -67,6 +68,7 @@ export const endpoints = (id?: string) => {
 		my_courses: "student/my-courses",
 		view_course: `/student/view-course/${id}`,
 		start_course: `/student/start-course/${id}`,
+		update_course: `/student/update-course-progress/${id}`,
 		create_courses: "/student/create-courses",
 		upcoming_events: "/student/upcoming-events",
 		leaderboard: "/student/leaderboard/fetch-all",

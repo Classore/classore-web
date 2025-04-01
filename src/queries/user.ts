@@ -13,7 +13,7 @@ import type {
 	UserProps,
 } from "@/types";
 
-interface StartCourseDto {
+export interface StartCourseDto {
 	chapter_id: string;
 	current_progress: number;
 }

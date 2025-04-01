@@ -1,12 +1,14 @@
+import { skipToken, usePrefetchQuery } from "@tanstack/react-query";
+import { RiMessage2Line } from "@remixicon/react";
+import { useRouter } from "next/router";
+import React from "react";
+
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from "../ui/dialog";
+import { useChapterStore } from "@/store/z-store/chapter";
 import { useGetChapter } from "@/queries/student";
 import { fetchQuestions } from "@/queries/user";
-import { useChapterStore } from "@/store/z-store/chapter";
-import { RiMessage2Line } from "@remixicon/react";
-import { skipToken, usePrefetchQuery } from "@tanstack/react-query";
-import { useRouter } from "next/router";
-import { Progress } from "../shared";
 import { Button } from "../ui/button";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from "../ui/dialog";
+import { Progress } from "../shared";
 
 type TakeQuizModal = {
 	open: boolean;
@@ -39,13 +41,12 @@ export const TakeQuizModal = ({ open, setOpen }: TakeQuizModal) => {
 		((lesson?.quiz_attempts_limit - lesson.quiz_attempts_left) / (lesson.quiz_attempts_limit ?? 3)) *
 		100;
 
+	const lastQuizAttempt = React.useMemo(() => {
+		return lesson.quizes[lesson.quizes.length - 1];
+	}, [lesson.quizes]);
+
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
-			{/* <DialogTrigger asChild>
-				<Button variant="inverse" className="w-36 py-2">
-					Take Quiz
-				</Button>
-			</DialogTrigger> */}
 			<DialogContent className="flex flex-col gap-4">
 				<div>
 					<p className="text-[10px] uppercase tracking-widest text-neutral-400">{chapter.name}</p>
@@ -58,10 +59,10 @@ export const TakeQuizModal = ({ open, setOpen }: TakeQuizModal) => {
 					<div className="w-[156px] flex-1">
 						<Progress
 							label="Previous Score"
-							value={lesson.quizes.at(-1)?.score ?? 0}
+							value={lastQuizAttempt?.score ?? 0}
 							color="#6F42C1"
 							svgFill="#F1ECF9">
-							{lesson.quizes.at(-1)?.score ?? 0}%
+							{lastQuizAttempt?.score ?? 0}%
 						</Progress>
 					</div>
 					<hr className="h-9 w-[1px] bg-neutral-300" />
@@ -78,8 +79,7 @@ export const TakeQuizModal = ({ open, setOpen }: TakeQuizModal) => {
 					</div>
 
 					<ul className="flex flex-col gap-1 pt-2">
-						{lesson.quizes.at(-1)?.score !== 0 &&
-						Number(lesson.quizes.at(-1)?.score) < chapter.bench_mark ? (
+						{lastQuizAttempt?.score !== 0 && Number(lastQuizAttempt?.score) < chapter.bench_mark ? (
 							<li className="text-xs">
 								You need to score above ${chapter.bench_mark}% to qualify for next chapter
 							</li>
@@ -119,14 +119,14 @@ export const TakeQuizModal = ({ open, setOpen }: TakeQuizModal) => {
 
 				<div className="flex w-full items-center justify-end gap-4 border-t border-t-neutral-200 pt-4">
 					<DialogClose asChild>
-						<Button className="w-32 text-sm font-medium text-neutral-400" variant="outline">
+						<Button className="w-32 text-sm font-medium text-neutral-400" size="sm" variant="outline">
 							Cancel
 						</Button>
 					</DialogClose>
 					<Button
 						className="w-32 text-sm"
-						// disabled={lesson.quiz_attempts_left <= 0 || chapter.current_module_progress_percentage < 50}
 						disabled={lesson.quiz_attempts_left <= 0}
+						size="sm"
 						onClick={() =>
 							router.push({
 								pathname: "/dashboard/courses/[id]/quiz",

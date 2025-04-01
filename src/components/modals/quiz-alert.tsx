@@ -33,12 +33,13 @@ export const QuizAlertModal = ({ open, setOpen, setOpenTakeQuiz }: QuizAlertProp
 
 				<div className="flex w-full items-center justify-end gap-4 border-t border-t-neutral-200 pt-4">
 					<DialogClose asChild>
-						<Button className="w-32 text-sm font-medium text-neutral-400" variant="outline">
+						<Button className="w-32 text-sm font-medium text-neutral-400" size="sm" variant="outline">
 							Cancel
 						</Button>
 					</DialogClose>
 					<Button
 						className="w-32 text-sm"
+						size="sm"
 						onClick={() => {
 							setOpen(false);
 							setOpenTakeQuiz(true);
