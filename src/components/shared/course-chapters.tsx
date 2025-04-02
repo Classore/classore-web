@@ -1,13 +1,14 @@
-import { setChapter } from "@/store/z-store/chapter";
-import type { SingleCourseResp } from "@/types";
 import { RiArrowDropDownLine, RiFolderVideoLine, RiLockLine } from "@remixicon/react";
 import * as React from "react";
 
+import type { SingleCourseResp } from "@/types";
+
 type CourseChaptersProps = {
 	chapters: SingleCourseResp["chapters"];
-	progress: number;
-	current_chapter_id?: string;
 	dripping: string;
+	progress: number;
+	setChapter: (chapterId: string) => void;
+	current_chapter_id?: string;
 };
 
 const MIN_CHAPTERS = 5;
@@ -16,6 +17,7 @@ export const CourseChapters = ({
 	chapters,
 	dripping,
 	progress,
+	setChapter,
 	current_chapter_id,
 }: CourseChaptersProps) => {
 	const [showAllChapters, setShowAllChapters] = React.useState(false);
@@ -47,7 +49,7 @@ export const CourseChapters = ({
 								}
 							: {})}
 						type="button"
-						key={chapter.id}
+						key={index}
 						className={`flex w-full flex-col gap-1 border-b p-4 ${showAllChapters && hasMoreChapters ? "last:border-b" : "last:border-b-0"}`}>
 						<div className="flex w-full items-center justify-between">
 							<p
