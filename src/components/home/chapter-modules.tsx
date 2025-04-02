@@ -1,15 +1,16 @@
-import { convertSecondsToMinSec, sanitizeHtml } from "@/lib";
-import { useGetChapter } from "@/queries/student";
+import * as React from "react";
+
 import { setModule, useChapterStore } from "@/store/z-store/chapter";
+import { convertSecondsToMinSec, sanitizeHtml } from "@/lib";
+import { QuizAlertModal, TakeQuizModal } from "../modals";
+import { useGetChapter } from "@/queries/student";
+import { Spinner } from "../shared";
 import {
 	RiCheckboxCircleFill,
 	RiFileTextLine,
 	RiFolderVideoLine,
 	RiPlayCircleLine,
 } from "@remixicon/react";
-import * as React from "react";
-import { QuizAlertModal, TakeQuizModal } from "../modals";
-import { Spinner } from "../shared";
 
 export const ChapterModules = () => {
 	const [open, setOpen] = React.useState(false);
@@ -25,6 +26,11 @@ export const ChapterModules = () => {
 	} = useGetChapter({
 		chapter_id: currentChapter,
 	});
+
+	const modules = React.useMemo(() => {
+		if (!chapter) return [];
+		return chapter.modules;
+	}, [chapter]);
 
 	const hasPassedQuiz = React.useMemo(
 		() =>
@@ -104,7 +110,7 @@ export const ChapterModules = () => {
 						</div>
 					</div>
 
-					{chapter?.modules.map((module) => (
+					{modules.map((module) => (
 						<button
 							type="button"
 							disabled={currentModule === module.id}
