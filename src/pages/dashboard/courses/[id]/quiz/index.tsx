@@ -127,10 +127,13 @@ const Page = () => {
 
 	usePreventNavigation(true, `/dashboard/courses/`);
 
+	React.useEffect(() => {
+		console.log({ currentQuestion });
+	}, [currentQuestion]);
+
 	return (
 		<>
 			<Seo title="Quiz" noIndex />
-
 			<div className="flex h-screen w-screen flex-col bg-white">
 				<nav className="mx-auto h-20 w-full border-b">
 					<div className="container flex h-full w-full items-center justify-between">
