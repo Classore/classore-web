@@ -16,7 +16,7 @@ import {
 
 import { AddMoreCourseModal, EnrollModal, RenewalModal, ShareReview } from "@/components/modals";
 import { BackBtn, EmptyState, ReviewCard, Seo, Spinner } from "@/components/shared";
-import { capitalize, formatCurrency, formatNumber } from "@/lib";
+import { capitalize, formatCurrency, formatNumber, sanitizeHtml } from "@/lib";
 import { useGetSingleExamBundleQuery } from "@/queries/school";
 import { BundleSubjects } from "@/components/categories";
 import { DashboardLayout } from "@/components/layouts";
@@ -86,7 +86,7 @@ const Page = () => {
 							) : null}
 						</header>
 
-						<section className="flex flex-col gap-10 lg:grid lg:grid-cols-8">
+						<section className="mb-5 flex flex-col gap-10 lg:grid lg:grid-cols-8">
 							<div className="col-span-5 flex flex-col gap-4">
 								<Image
 									src={
@@ -101,7 +101,9 @@ const Page = () => {
 
 								<div className="flex flex-col gap-1">
 									<h3 className="text-xl font-medium text-neutral-900">Summary</h3>
-									<p className="text-sm text-neutral-400">{capitalize(bundle?.description ?? "")}</p>
+									<p
+										className="text-sm text-neutral-400 first-letter:capitalize"
+										dangerouslySetInnerHTML={{ __html: sanitizeHtml(bundle?.description) }}></p>
 								</div>
 
 								<div className="flex flex-col gap-1">
