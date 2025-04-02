@@ -1,6 +1,5 @@
 import * as React from "react";
 
-import { setModule, useChapterStore } from "@/store/z-store/chapter";
 import { convertSecondsToMinSec, sanitizeHtml } from "@/lib";
 import { QuizAlertModal, TakeQuizModal } from "../modals";
 import { useGetChapter } from "@/queries/student";
@@ -12,19 +11,30 @@ import {
 	RiPlayCircleLine,
 } from "@remixicon/react";
 
-export const ChapterModules = () => {
+interface Props {
+	currentChapterId: string;
+	currentModuleId: string;
+	canProceed: boolean;
+	isQuizPassed: (moduleId: string) => boolean;
+	onSelectModule: (moduleId: string) => void;
+}
+
+export const ChapterModules = ({
+	canProceed,
+	currentChapterId,
+	currentModuleId,
+	isQuizPassed,
+	onSelectModule,
+}: Props) => {
 	const [open, setOpen] = React.useState(false);
 	const [openTakeQuiz, setOpenTakeQuiz] = React.useState(false);
-
-	const currentChapter = useChapterStore((state) => state.chapter);
-	const currentModule = useChapterStore((state) => state.module);
 
 	const {
 		data: chapter,
 		isPending,
 		isError,
 	} = useGetChapter({
-		chapter_id: currentChapter,
+		chapter_id: currentChapterId,
 	});
 
 	const modules = React.useMemo(() => {
@@ -32,21 +42,12 @@ export const ChapterModules = () => {
 		return chapter.modules;
 	}, [chapter]);
 
-	const hasPassedQuiz = React.useMemo(
-		() =>
-			chapter?.modules
-				.find((module) => module.id === currentModule)
-				?.quizes.some((quiz) => quiz.is_passed),
-		[chapter, currentModule]
-	);
-
 	React.useEffect(() => {
 		if (chapter) {
 			const current_module = chapter.current_chapter_module ?? chapter.modules[0].id;
-
-			setModule(current_module);
+			onSelectModule(current_module);
 		}
-	}, [chapter, currentModule]);
+	}, [chapter, currentModuleId]);
 
 	if (isPending) {
 		return (
@@ -96,7 +97,6 @@ export const ChapterModules = () => {
 								</div>
 							</div>
 						</div>
-
 						<div className="flex items-center gap-2">
 							<div className="flex h-[6px] w-16 items-center overflow-hidden rounded-3xl bg-[#efefef]">
 								<div
@@ -109,22 +109,21 @@ export const ChapterModules = () => {
 							<p className="text-xs font-bold">{chapter.current_chapter_progress_percentage}%</p>
 						</div>
 					</div>
-
 					{modules.map((module) => (
 						<button
 							type="button"
-							disabled={currentModule === module.id}
+							disabled={!canProceed || currentModuleId === module.id}
 							key={module.id}
 							onClick={() => {
-								if (!hasPassedQuiz) {
+								if (!isQuizPassed(module.id)) {
 									setOpen(true);
 								} else {
-									setModule(module.id);
+									onSelectModule(module.id);
 								}
 							}}
-							className={`flex w-full items-center gap-4 border-b border-b-neutral-200 px-6 py-4 ${currentModule === module.id ? "border-l-4 border-l-primary-300" : ""}`}>
+							className={`flex w-full items-center gap-4 border-b border-b-neutral-200 px-6 py-4 ${currentModuleId === module.id ? "border-l-4 border-l-primary-300" : ""}`}>
 							<div
-								className={`grid size-8 place-items-center rounded-md ${module.is_completed || currentModule === module.id ? "bg-[rgba(241,236,249,0.5)] text-primary-300" : "bg-neutral-100 text-neutral-400"}`}>
+								className={`grid size-8 place-items-center rounded-md ${module.is_completed || currentModuleId === module.id ? "bg-[rgba(241,236,249,0.5)] text-primary-300" : "bg-neutral-100 text-neutral-400"}`}>
 								<RiPlayCircleLine className="size-4" />
 							</div>
 
@@ -148,7 +147,12 @@ export const ChapterModules = () => {
 			</div>
 
 			<QuizAlertModal open={open} setOpen={setOpen} setOpenTakeQuiz={setOpenTakeQuiz} />
-			<TakeQuizModal open={openTakeQuiz} setOpen={setOpenTakeQuiz} />
+			<TakeQuizModal
+				currentChapterId={currentChapterId}
+				currentModuleId={currentModuleId}
+				open={openTakeQuiz}
+				setOpen={setOpenTakeQuiz}
+			/>
 		</>
 	);
 };

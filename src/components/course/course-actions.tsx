@@ -2,7 +2,6 @@ import { RiArrowRightSLine } from "@remixicon/react";
 import { toast } from "sonner";
 import React from "react";
 
-import { setChapter, setModule, useChapterStore } from "@/store/z-store/chapter";
 import { QuizAlertModal, TakeQuizModal } from "../modals";
 import type { ChapterResp, SingleCourseResp } from "@/types";
 import { Button } from "../ui/button";
@@ -10,28 +9,37 @@ import { Button } from "../ui/button";
 type CourseActionsProps = {
 	canProceed: boolean;
 	chapters: SingleCourseResp["chapters"] | undefined;
+	currentChapterId: string;
+	currentModuleId: string;
 	hasNextModule: boolean;
 	isQuizPassed: boolean;
+	setChapter: (chapterId: string) => void;
+	setModule: (moduleId: string) => void;
 };
 
 export const CourseActions = React.memo(
-	({ canProceed, chapters, isQuizPassed }: CourseActionsProps) => {
-		const currentChapter = useChapterStore((state) => state.chapter);
-		const currentModule = useChapterStore((state) => state.module);
-
+	({
+		canProceed,
+		chapters,
+		currentChapterId,
+		currentModuleId,
+		isQuizPassed,
+		setChapter,
+		setModule,
+	}: CourseActionsProps) => {
 		const [openQuitQuiz, setOpenQuitQuiz] = React.useState(false);
 		const [openTakeQuiz, setOpenTakeQuiz] = React.useState(false);
 
 		const findNextChapter = (chapters: ChapterResp[]): string | undefined => {
-			const chapterIndex = chapters.findIndex((chapter) => chapter.id === currentChapter);
+			const chapterIndex = chapters.findIndex((chapter) => chapter.id === currentChapterId);
 			return chapters[chapterIndex + 1]?.id;
 		};
 
 		const findNextModule = (chapters: ChapterResp[]): string | undefined => {
-			const currentChapterData = chapters.find((chapter) => chapter.id === currentChapter);
+			const currentChapterData = chapters.find((chapter) => chapter.id === currentChapterId);
 			if (!currentChapterData) return undefined;
 			const moduleIndex = currentChapterData.modules.findIndex(
-				(module) => module.id === currentModule
+				(module) => module.id === currentModuleId
 			);
 			return moduleIndex !== -1 ? currentChapterData.modules[moduleIndex + 1]?.id : undefined;
 		};
@@ -56,14 +64,14 @@ export const CourseActions = React.memo(
 
 		const goToNextLesson = React.useCallback(() => {
 			if (!chapters) return;
-			const currentChapterObj = chapters.find((chapter) => chapter.id === currentChapter);
+			const currentChapterObj = chapters.find((chapter) => chapter.id === currentChapterId);
 			if (!currentChapterObj) return;
 			if (isQuizPassed) {
 				navigateToNextSection();
 			} else {
 				setOpenQuitQuiz(true);
 			}
-		}, [chapters, currentChapter, currentModule, isQuizPassed]);
+		}, [chapters, currentChapterId, isQuizPassed]);
 
 		const handleTakeQuiz = () => setOpenTakeQuiz(true);
 		const handleCloseQuitQuiz = () => setOpenQuitQuiz(false);
@@ -79,7 +87,7 @@ export const CourseActions = React.memo(
 						onClick={handleTakeQuiz}>
 						Take Quiz
 					</Button>
-					<Button onClick={goToNextLesson} size="sm" className="w-fit text-sm">
+					<Button onClick={goToNextLesson} disabled={!canProceed} size="sm" className="w-fit text-sm">
 						<span>Go to Next Lesson</span>
 						<RiArrowRightSLine className="size-4" />
 					</Button>
@@ -90,7 +98,14 @@ export const CourseActions = React.memo(
 					setOpen={handleCloseQuitQuiz}
 					setOpenTakeQuiz={setOpenTakeQuiz}
 				/>
-				{openTakeQuiz && <TakeQuizModal open={openTakeQuiz} setOpen={setOpenTakeQuiz} />}
+				{openTakeQuiz && (
+					<TakeQuizModal
+						currentChapterId={currentChapterId}
+						currentModuleId={currentModuleId}
+						open={openTakeQuiz}
+						setOpen={setOpenTakeQuiz}
+					/>
+				)}
 			</>
 		);
 	}
