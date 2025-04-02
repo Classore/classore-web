@@ -1,23 +1,24 @@
 import { RiCalendar2Line, RiCheckLine, RiCloseLine, RiFileHistoryLine } from "@remixicon/react";
 
 import { useGetChapter } from "@/queries/student";
-import { useChapterStore } from "@/store/z-store/chapter";
-import { format } from "date-fns";
 import { Spinner } from "../shared";
+import { format } from "date-fns";
 
-export const QuizHistory = () => {
-	const currentChapter = useChapterStore((state) => state.chapter);
-	const currentModule = useChapterStore((state) => state.module);
+interface Props {
+	currentChapterId: string;
+	currentModuleId: string;
+}
 
+export const QuizHistory = ({ currentChapterId, currentModuleId }: Props) => {
 	const {
 		data: chapter,
 		isPending,
 		isError,
 	} = useGetChapter({
-		chapter_id: currentChapter,
+		chapter_id: currentChapterId,
 	});
 
-	const lesson = chapter?.modules.find((module) => module.id === currentModule);
+	const lesson = chapter?.modules.find((module) => module.id === currentModuleId);
 
 	if (isPending) {
 		return (

@@ -10,7 +10,6 @@ import { useGetChapter, useGetCourse, useGetProfile } from "@/queries/student";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChapterModules, QuizHistory, Resources } from "@/components/home";
 import { JoinCommunityModal, RenewalModal } from "@/components/modals";
-import { setChapter, useChapterStore } from "@/store/z-store/chapter";
 import { CourseActions } from "@/components/course/course-actions";
 import { type StartCourseDto, startCourse } from "@/queries/user";
 import blockchain from "@/assets/illustrations/blockchain.svg";
@@ -18,6 +17,7 @@ import trophy from "@/assets/illustrations/trophy.svg";
 import { DashboardLayout } from "@/components/layouts";
 import { Button } from "@/components/ui/button";
 import { capitalize, getInitials } from "@/lib";
+import { useCourseHandler } from "@/hooks";
 import {
 	AvatarGroup,
 	BackBtn,
@@ -41,8 +41,6 @@ const Page = () => {
 	const router = useRouter();
 	const { id, bundle: bundleId } = router.query;
 
-	const { module } = useChapterStore();
-
 	const { data: profile } = useGetProfile();
 	const bundle = profile?.time_line.find((item) => item.exam_bundle_details.id === bundleId);
 
@@ -59,41 +57,38 @@ const Page = () => {
 		chapter_id: course?.current_chapter.id ?? "",
 	});
 
+	const chapters = React.useMemo(() => {
+		if (!course) return [];
+		return course.chapters;
+	}, [course]);
+
+	const modules = React.useMemo(() => {
+		if (!chapter) return [];
+		return chapter.modules;
+	}, [chapter]);
+
+	const {
+		canProceed,
+		chapterId,
+		hasNextModule,
+		hasPreviousChapter,
+		isQuizPassed,
+		moduleId,
+		setCurrentChapterId,
+		setCurrentModuleId,
+	} = useCourseHandler({ chapters, modules });
+
+	const currentModule = React.useMemo(() => {
+		if (!chapter) return null;
+		const module = chapter.modules.find((module) => module.id === moduleId);
+		if (!module) return null;
+		return module;
+	}, [chapter, moduleId]);
+
 	const { mutate: startCourseMutation } = useMutation({
 		mutationFn: ({ courseId, payload }: UseMutationProps) => startCourse(courseId, payload),
 		mutationKey: ["start-course", id],
 	});
-
-	const currentModule = React.useMemo(() => {
-		if (!chapter) return null;
-		return chapter.modules.find((mod) => mod.id === module);
-	}, [chapter, module]);
-
-	const isFirstChapter = React.useMemo(() => {
-		if (!course) return false;
-		const currentChapterIndex = course.chapters.findIndex(
-			(chap) => chap.id === course.current_chapter.id
-		);
-		return currentChapterIndex === 0;
-	}, [course]);
-
-	const isQuizPassed = React.useMemo(() => {
-		if (!chapter) return false;
-		const findModule = chapter.modules.find((mod) => mod.id === module);
-		return !!findModule?.is_passed;
-	}, [chapter, module]);
-
-	const hasNextModule = React.useMemo(() => {
-		if (!chapter) return false;
-		const currentModuleIndex = chapter.modules.findIndex((mod) => mod.id === module);
-		return currentModuleIndex !== -1 && currentModuleIndex < chapter.modules.length - 1;
-	}, [chapter, module]);
-
-	const canProceed = React.useMemo(() => {
-		return Boolean(
-			(course?.current_module_progress_percentage || 0) >= 50 || currentModule?.is_passed
-		);
-	}, [course?.current_module_progress_percentage, currentModule]);
 
 	const courseProgress = React.useMemo(() => {
 		if (!course?.chapters.length || !chapter) return 0;
@@ -110,13 +105,7 @@ const Page = () => {
 	}, [chapter]);
 
 	React.useEffect(() => {
-		if (course) {
-			setChapter(course.current_chapter.id);
-		}
-	}, [course]);
-
-	React.useEffect(() => {
-		if (isFirstChapter && course?.current_chapter.id) {
+		if (!hasPreviousChapter && course?.current_chapter.id) {
 			startCourseMutation({
 				courseId: String(id),
 				payload: {
@@ -125,7 +114,7 @@ const Page = () => {
 				},
 			});
 		}
-	}, [courseProgress, isFirstChapter, id, course, startCourseMutation]);
+	}, [courseProgress, hasPreviousChapter, id, course, startCourseMutation]);
 
 	React.useEffect(() => {
 		if (isError && error?.status === 403) {
@@ -177,7 +166,7 @@ const Page = () => {
 			return (
 				<VideoPlayer
 					courseId={String(id)}
-					moduleId={currentModule.id}
+					moduleId={currentModule?.id}
 					moduleProgress={currentModuleProgress}
 					src={videoUrl}
 				/>
@@ -201,6 +190,7 @@ const Page = () => {
 				progress={course?.current_progress_percentage ?? 0}
 				chapters={course?.chapters ?? []}
 				dripping={course?.subject_id.chapter_dripping ?? "NO"}
+				setChapter={setCurrentChapterId}
 			/>
 
 			{/* Points Card */}
@@ -259,14 +249,14 @@ const Page = () => {
 							<AvatarFallback className="rounded-lg bg-primary-100 font-bold text-primary-400">
 								{getInitials(
 									currentModule?.tutor?.first_name
-										? `${currentModule.tutor.first_name} ${currentModule.tutor.last_name}`
+										? `${currentModule?.tutor.first_name} ${currentModule?.tutor.last_name}`
 										: "Anonymous"
 								)}
 							</AvatarFallback>
 						</Avatar>
 						<p className="text-sm font-semibold capitalize">
 							{currentModule?.tutor?.first_name
-								? `${currentModule.tutor.first_name} ${currentModule.tutor.last_name}`
+								? `${currentModule?.tutor.first_name} ${currentModule?.tutor.last_name}`
 								: "Anonymous"}
 						</p>
 					</div>
@@ -299,8 +289,12 @@ const Page = () => {
 					<CourseActions
 						canProceed={canProceed}
 						chapters={course?.chapters}
+						currentChapterId={chapterId}
+						currentModuleId={moduleId}
 						hasNextModule={hasNextModule}
-						isQuizPassed={isQuizPassed}
+						isQuizPassed={isQuizPassed(moduleId)}
+						setChapter={setCurrentChapterId}
+						setModule={setCurrentModuleId}
 					/>
 				</div>
 			</div>
@@ -334,13 +328,19 @@ const Page = () => {
 							</TabsList>
 
 							<TabsContent value="summary">
-								<ChapterModules />
+								<ChapterModules
+									canProceed={canProceed}
+									currentChapterId={chapterId}
+									currentModuleId={moduleId}
+									isQuizPassed={isQuizPassed}
+									onSelectModule={setCurrentModuleId}
+								/>
 							</TabsContent>
 							<TabsContent value="resources">
-								<Resources />
+								<Resources currentChapterId={chapterId} currentModuleId={moduleId} />
 							</TabsContent>
 							<TabsContent value="quiz history">
-								<QuizHistory />
+								<QuizHistory currentChapterId={chapterId} currentModuleId={moduleId} />
 							</TabsContent>
 						</Tabs>
 					</div>

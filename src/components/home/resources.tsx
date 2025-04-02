@@ -1,3 +1,5 @@
+import { toast } from "sonner";
+import * as React from "react";
 import {
 	RiDownload2Line,
 	RiFilePdf2Line,
@@ -8,15 +10,17 @@ import {
 	RiLoaderLine,
 	type RemixiconComponentType,
 } from "@remixicon/react";
-import { toast } from "sonner";
 
-import { useDownload } from "@/hooks";
-import { getFileExtension } from "@/lib";
 import { useGetChapter } from "@/queries/student";
-import { useChapterStore } from "@/store/z-store/chapter";
 import type { FiletypeProps } from "@/types";
-import * as React from "react";
+import { getFileExtension } from "@/lib";
+import { useDownload } from "@/hooks";
 import { Spinner } from "../shared";
+
+interface Props {
+	currentChapterId: string;
+	currentModuleId: string;
+}
 
 const fileIcon: Record<FiletypeProps | (string & {}), RemixiconComponentType> = {
 	doc: RiFileWordLine,
@@ -26,21 +30,18 @@ const fileIcon: Record<FiletypeProps | (string & {}), RemixiconComponentType> = 
 	txt: RiFileTextLine,
 };
 
-export const Resources = () => {
-	const currentChapter = useChapterStore((state) => state.chapter);
-	const currentModule = useChapterStore((state) => state.module);
-
+export const Resources = ({ currentChapterId, currentModuleId }: Props) => {
 	const {
 		data: chapter,
 		isPending,
 		isError,
 	} = useGetChapter({
-		chapter_id: currentChapter,
+		chapter_id: currentChapterId,
 	});
 
 	const current_module = React.useMemo(() => {
-		return chapter?.modules.find((module) => module.id === currentModule);
-	}, [chapter, currentModule]);
+		return chapter?.modules.find((module) => module.id === currentModuleId);
+	}, [chapter, currentModuleId]);
 
 	if (isPending) {
 		return (

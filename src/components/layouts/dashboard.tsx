@@ -1,10 +1,11 @@
+import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import React from "react";
 
 import meeting from "@/assets/illustrations/meeting.svg";
 import { MobileAppbar } from "./mobile-appbar";
+import { useUserStore } from "@/store/z-store";
 import { dashboard_links } from "@/config";
 import { cn, normalize } from "@/lib";
 import { Invite } from "../invite";
@@ -16,9 +17,16 @@ type DashboardLayoutProps = {
 };
 
 export function DashboardLayout({ children, className }: DashboardLayoutProps) {
+	const { user } = useUserStore();
 	const router = useRouter();
 
 	const isOnRoute = (href: string) => normalize(router.pathname) === href;
+
+	React.useEffect(() => {
+		if (user && user.user_type === "PARENT") {
+			router.push("/parent/dashboard");
+		}
+	}, [router, user]);
 
 	return (
 		<>

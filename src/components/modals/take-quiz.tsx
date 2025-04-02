@@ -4,28 +4,32 @@ import { useRouter } from "next/router";
 import React from "react";
 
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from "../ui/dialog";
-import { useChapterStore } from "@/store/z-store/chapter";
 import { useGetChapter } from "@/queries/student";
 import { fetchQuestions } from "@/queries/user";
 import { Button } from "../ui/button";
 import { Progress } from "../shared";
 
 type TakeQuizModal = {
+	currentChapterId: string;
+	currentModuleId: string;
 	open: boolean;
 	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export const TakeQuizModal = ({ open, setOpen }: TakeQuizModal) => {
+export const TakeQuizModal = ({
+	currentChapterId,
+	currentModuleId,
+	open,
+	setOpen,
+}: TakeQuizModal) => {
 	const router = useRouter();
 	const { id: course_id } = router.query;
 
-	const currentChapter = useChapterStore((state) => state.chapter);
-	const currentModule = useChapterStore((state) => state.module);
-
 	const { data: chapter } = useGetChapter({
-		chapter_id: currentChapter,
+		chapter_id: currentChapterId,
 	});
-	const lesson = chapter?.modules.find((module) => module.id === currentModule);
+
+	const lesson = chapter?.modules.find((module) => module.id === currentModuleId);
 
 	// Prefetch this chapter quiz. Might change this since quiz might be moving to modules.
 	usePrefetchQuery({

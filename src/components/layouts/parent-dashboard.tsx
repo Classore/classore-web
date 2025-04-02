@@ -9,6 +9,7 @@ import { useGetParentHome } from "@/queries/parent";
 import { parents_dashboard_links } from "@/config";
 import { WardItem } from "../dashboard/ward-item";
 import { MobileAppbar } from "./mobile-appbar";
+import { useUserStore } from "@/store/z-store";
 import { cn, normalize } from "@/lib";
 import { Invite } from "../invite";
 import { Appbar } from "./appbar";
@@ -21,11 +22,18 @@ type DashboardLayoutProps = {
 };
 
 export function ParentDashboardLayout({ children, className, title }: DashboardLayoutProps) {
+	const { user } = useUserStore();
 	const router = useRouter();
 
 	const isOnRoute = (href: string) => normalize(router.pathname, 3) === href;
 
 	const { data: parentHome } = useGetParentHome();
+
+	React.useEffect(() => {
+		if (user && user.user_type === "STUDENT") {
+			router.push("/parent/dashboard");
+		}
+	}, [router, user]);
 
 	return (
 		<>
