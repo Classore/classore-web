@@ -1,4 +1,3 @@
-export * from "./use-course-handler";
 export * from "./use-debounce";
 export * from "./use-download";
 export * from "./use-device-width";
