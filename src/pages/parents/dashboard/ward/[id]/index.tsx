@@ -11,10 +11,12 @@ import {
 	RiUserFollowLine,
 } from "@remixicon/react";
 
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AnalyticsCard } from "@/components/dashboard/analytics-card";
 import { AddWardCourse } from "@/components/dashboard/add-course";
 import { useGetExamBundles, useGetExams } from "@/queries/school";
+import { useGetWard, useGetParentHome } from "@/queries/parent";
 import { DeleteWard } from "@/components/dashboard/delete-ward";
 import { Pagination } from "@/components/dashboard/pagination";
 import { AnalyticsChart } from "@/components/dashboard/chart";
@@ -24,7 +26,6 @@ import type { Period } from "@/constants/period";
 import { columns } from "@/components/dashboard";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/shared";
-import { useGetWard } from "@/queries/parent";
 import { getInitials } from "@/lib";
 
 const Page = () => {
@@ -38,7 +39,19 @@ const Page = () => {
 	const { data: examinations } = useGetExams();
 	const { data: bundles } = useGetExamBundles({ examination, limit: 10, page });
 	const { data: ward, isLoading } = useGetWard(id);
-	console.log({ ward });
+	const { data: home } = useGetParentHome();
+
+	const wards = React.useMemo(() => {
+		if (!home) return [];
+		return home.my_wards;
+	}, [home]);
+
+	const singleWard = React.useMemo(() => {
+		if (!wards) return null;
+		const ward = wards.find((ward) => ward.id === id);
+		if (!ward) return null;
+		return ward;
+	}, [id, wards]);
 
 	return (
 		<ParentDashboardLayout title={``}>
@@ -53,7 +66,7 @@ const Page = () => {
 				<div className="h-full w-full space-y-5 pb-6">
 					<div className="w-full space-y-3 rounded-lg bg-white p-5">
 						<div className="flex items-center gap-x-4">
-							<Button className="w-fit" size="sm" variant="outline">
+							<Button className="w-fit" onClick={() => router.back()} size="sm" variant="outline">
 								<RiArrowLeftSLine /> Back
 							</Button>
 							<p className="font-semibold">Ward Details</p>
@@ -62,24 +75,31 @@ const Page = () => {
 							<div className="flex h-14 items-center gap-x-6 rounded-md bg-neutral-100 p-2">
 								<div className="flex w-full items-center gap-x-2">
 									<Avatar className="size-8 rounded-md border-2 border-white">
-										<AvatarImage src="" />
+										<AvatarImage src={String(singleWard?.profile_image)} alt={singleWard?.first_name} />
 										<AvatarFallback className="rounded-md bg-black text-white">
-											{getInitials("John Doe")}
+											{getInitials(`${singleWard?.first_name} ${singleWard?.last_name}`)}
 										</AvatarFallback>
 									</Avatar>
 									<div>
-										<p className="text-xs font-medium">John Doe</p>
-										<p className="text-[10px] text-neutral-400">johndoe@example.com</p>
+										<p className="text-sm font-medium">
+											{singleWard?.first_name} {singleWard?.last_name}
+										</p>
+										<p className="text-xs text-neutral-400">{singleWard?.email}</p>
 									</div>
 								</div>
 								<div className="flex items-center gap-x-2">
 									<div
-										className={`rounded-md px-3 py-1.5 text-sm ${true ? "bg-green-100 text-green-500" : "bg-red-100 text-red-500"}`}>
+										className={`rounded-md px-3 py-1.5 text-xs font-medium ${true ? "bg-green-100 text-green-500" : "bg-red-100 text-red-500"}`}>
 										Active
 									</div>
-									<button className="grid size-4 place-items-center rounded-full border border-neutral-300">
-										<RiArrowDownSLine className="size-3" />
-									</button>
+									<Popover>
+										<PopoverTrigger asChild>
+											<button className="grid size-4 place-items-center rounded-full border border-neutral-300">
+												<RiArrowDownSLine className="size-3" />
+											</button>
+										</PopoverTrigger>
+										<PopoverContent></PopoverContent>
+									</Popover>
 								</div>
 							</div>
 							<div className="flex items-center gap-x-4">
@@ -95,7 +115,7 @@ const Page = () => {
 						<div className="w-full space-y-3">
 							<div className="grid w-full grid-cols-4 gap-4">
 								<AnalyticsCard icon={RiTrophyLine} label="Leaderboard Ranking" value="0" />
-								<AnalyticsCard icon={RiUserFollowLine} label="Total avg. Quiz Score" value="0" />
+								<AnalyticsCard icon={RiUserFollowLine} label="Total Avg. Quiz Score" value="0" />
 								<AnalyticsCard icon={RiFlashlightLine} label="Streak" value="0" />
 								<AnalyticsCard icon={Target04} label="Quiz Points" value="0" />
 							</div>
@@ -111,7 +131,7 @@ const Page = () => {
 								<div className="space-y-6 rounded-md border p-4">
 									<div className="flex flex-col items-center gap-y-2">
 										<p className="text-3xl font-bold">0%</p>
-										<div className="h-6 w-fit rounded-xl bg-primary-100 px-3 text-center text-sm text-primary-400">
+										<div className="flex h-6 w-fit items-center rounded-xl bg-primary-100 px-3 text-center text-xs font-medium text-primary-400">
 											Overall Performance
 										</div>
 									</div>

@@ -76,7 +76,7 @@ export const VideoPlayer = React.memo(
 
 		React.useEffect(() => {
 			mutate({ course_id: courseId, module_id: moduleId, current_progress: Math.round(progress) });
-		}, [progress]);
+		}, [courseId, moduleId, progress]);
 
 		const hideControlsTimer = React.useCallback(() => {
 			if (controlsTimeoutRef.current) {

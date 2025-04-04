@@ -7,7 +7,7 @@ import type { ChapterResp, SingleCourseResp } from "@/types";
 import { Button } from "../ui/button";
 
 type CourseActionsProps = {
-	canProceed: boolean;
+	canProceed: (moduleId: string) => boolean;
 	chapters: SingleCourseResp["chapters"] | undefined;
 	currentChapterId: string;
 	currentModuleId: string;
@@ -29,6 +29,10 @@ export const CourseActions = React.memo(
 	}: CourseActionsProps) => {
 		const [openQuitQuiz, setOpenQuitQuiz] = React.useState(false);
 		const [openTakeQuiz, setOpenTakeQuiz] = React.useState(false);
+
+		const canProceedToNextLesson = React.useMemo(() => {
+			return canProceed(currentModuleId);
+		}, [canProceed, currentModuleId]);
 
 		const findNextChapter = (chapters: ChapterResp[]): string | undefined => {
 			const chapterIndex = chapters.findIndex((chapter) => chapter.id === currentChapterId);
@@ -83,11 +87,15 @@ export const CourseActions = React.memo(
 						variant="inverse"
 						size="sm"
 						className="w-fit py-2"
-						disabled={!canProceed}
+						disabled={!canProceedToNextLesson}
 						onClick={handleTakeQuiz}>
 						Take Quiz
 					</Button>
-					<Button onClick={goToNextLesson} disabled={!canProceed} size="sm" className="w-fit text-sm">
+					<Button
+						onClick={goToNextLesson}
+						disabled={!canProceedToNextLesson}
+						size="sm"
+						className="w-fit text-sm">
 						<span>Go to Next Lesson</span>
 						<RiArrowRightSLine className="size-4" />
 					</Button>

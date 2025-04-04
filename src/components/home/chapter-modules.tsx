@@ -12,9 +12,9 @@ import {
 } from "@remixicon/react";
 
 interface Props {
+	canProceed: (moduleId: string) => boolean;
 	currentChapterId: string;
 	currentModuleId: string;
-	canProceed: boolean;
 	isQuizPassed: (moduleId: string) => boolean;
 	onSelectModule: (moduleId: string) => void;
 }
@@ -26,8 +26,8 @@ export const ChapterModules = ({
 	isQuizPassed,
 	onSelectModule,
 }: Props) => {
-	const [open, setOpen] = React.useState(false);
 	const [openTakeQuiz, setOpenTakeQuiz] = React.useState(false);
+	const [open, setOpen] = React.useState(false);
 
 	const {
 		data: chapter,
@@ -41,6 +41,10 @@ export const ChapterModules = ({
 		if (!chapter) return [];
 		return chapter.modules;
 	}, [chapter]);
+
+	const canProceedToNextLesson = React.useMemo(() => {
+		return canProceed(currentModuleId);
+	}, [canProceed, currentModuleId]);
 
 	React.useEffect(() => {
 		if (chapter) {
@@ -112,7 +116,7 @@ export const ChapterModules = ({
 					{modules.map((module) => (
 						<button
 							type="button"
-							disabled={!canProceed || currentModuleId === module.id}
+							disabled={!canProceedToNextLesson || currentModuleId === module.id}
 							key={module.id}
 							onClick={() => {
 								if (!isQuizPassed(module.id)) {

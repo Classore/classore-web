@@ -1,20 +1,36 @@
-import type { SubmitQuizResp } from "@/queries/user";
 import { RiMessage2Line } from "@remixicon/react";
 import { useRouter } from "next/router";
+import { toast } from "sonner";
+import React from "react";
+
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "../ui/dialog";
+import type { SubmitQuizResp } from "@/queries/user";
 import { Progress } from "../shared";
 import { Button } from "../ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogTitle } from "../ui/dialog";
 
 type QuizResultModalProps = {
 	currentChapter: string;
-	nextModule: string;
+	hasNextChapter: boolean;
+	hasNextModule: boolean;
+	nextModuleId: string;
+	onNextChapter: () => void;
+	onNextModule: () => void;
 	open: boolean;
 	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 	result: SubmitQuizResp | null;
 	resetQuiz: () => void;
 };
 
-export const QuizResultModal = ({ open, setOpen, result, resetQuiz }: QuizResultModalProps) => {
+export const QuizResultModal = ({
+	hasNextChapter,
+	hasNextModule,
+	onNextChapter,
+	onNextModule,
+	open,
+	resetQuiz,
+	result,
+	setOpen,
+}: QuizResultModalProps) => {
 	const router = useRouter();
 
 	if (!result) return null;
@@ -29,14 +45,18 @@ export const QuizResultModal = ({ open, setOpen, result, resetQuiz }: QuizResult
 		}, 500);
 	};
 
+	const goToNextLesson = React.useCallback(() => {
+		if (hasNextModule) {
+			onNextModule();
+		} else if (!hasNextModule && hasNextChapter) {
+			onNextChapter();
+		} else {
+			toast.success("You have completed all the lessons in this course");
+		}
+	}, []);
+
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
-			{/* <DialogTrigger asChild>
-				<Button variant="inverse" className="w-36 py-2">
-					Take Quiz
-				</Button>
-			</DialogTrigger> */}
-
 			<DialogContent
 				variant={result.is_passed ? "success" : "destructive"}
 				className="flex w-[400px] flex-col gap-4">
@@ -90,7 +110,7 @@ export const QuizResultModal = ({ open, setOpen, result, resetQuiz }: QuizResult
 							</Button>
 
 							{/* TODO: redirect to course page and set the next module */}
-							<Button className="w-fit text-sm" size="sm">
+							<Button className="w-fit text-sm" onClick={goToNextLesson} size="sm">
 								Go to Next Lesson
 							</Button>
 						</>
