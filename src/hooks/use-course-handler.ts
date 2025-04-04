@@ -8,7 +8,7 @@ interface UseCourseProps {
 }
 
 interface UseCourseHandler {
-	canProceed: boolean;
+	canProceed: (moduleId: string) => boolean;
 	chapterId: string;
 	hasNextChapter: boolean;
 	hasNextModule: boolean;
@@ -42,11 +42,15 @@ export const useCourseHandler = ({ chapters, modules }: UseCourseProps): UseCour
 		return module;
 	}, [currentModuleId, modules]);
 
-	const canProceed = React.useMemo(() => {
-		if (!currentModule) return false;
-		if (!currentModule.is_passed) return false;
-		return currentModule.is_passed && (currentChapter?.current_module_progress_percentage ?? 0) >= 50;
-	}, [currentChapter, currentModule, currentModuleId]);
+	const canProceed = React.useCallback(
+		(moduleId: string) => {
+			if (!modules) return false;
+			const module = modules.find((module) => module?.id === moduleId);
+			if (!module) return false;
+			return module.is_passed || false;
+		},
+		[modules]
+	);
 
 	const hasNextChapter = React.useMemo(() => {
 		const currentChapterIndex = chapters.findIndex((chapter) => chapter?.id === currentChapterId);

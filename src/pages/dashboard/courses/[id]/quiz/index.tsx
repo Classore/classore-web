@@ -21,6 +21,7 @@ import type { ChapterModuleProps } from "@/types";
 import { Button } from "@/components/ui/button";
 import { capitalize, getInitials } from "@/lib";
 import { useUserStore } from "@/store/z-store";
+import { useCourseHandler } from "@/hooks";
 
 const items = [
 	{ label: "answered", color: "var(--primary-400)" },
@@ -46,6 +47,7 @@ const Page = () => {
 	} = useGetCourse({
 		course_id: String(id),
 	});
+
 	const { data: chapter } = useGetChapter({
 		chapter_id: String(course?.current_chapter.id),
 	});
@@ -65,7 +67,7 @@ const Page = () => {
 		}, [] as ChapterModuleProps[]);
 	}, []);
 
-	const nextModule = React.useMemo(() => {
+	const nextModuleId = React.useMemo(() => {
 		if (!modules.length || !lesson) return "";
 		const currentIndex = modules.findIndex((module) => module.id === lesson.id);
 		if (currentIndex === modules.length - 1) return "";
@@ -96,6 +98,12 @@ const Page = () => {
 		},
 		onError: () => toast.error("Something went wrong! Please try again"),
 	});
+
+	const { hasNextChapter, hasNextModule, onNextChapter, onNextModule } = useCourseHandler({
+		chapters: course?.chapters || [],
+		modules: chapter?.modules || [],
+	});
+
 	const {
 		current,
 		currentQuestion,
@@ -335,7 +343,11 @@ const Page = () => {
 
 			<QuizResultModal
 				currentChapter={chapterId}
-				nextModule={nextModule}
+				hasNextChapter={hasNextChapter}
+				hasNextModule={hasNextModule}
+				nextModuleId={nextModuleId}
+				onNextChapter={onNextChapter}
+				onNextModule={onNextModule}
 				open={open}
 				result={result}
 				setOpen={setOpen}
