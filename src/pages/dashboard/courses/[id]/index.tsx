@@ -33,7 +33,6 @@ type UseMutationProps = {
 };
 
 const TABS = ["summary", "resources", "quiz history"] as const;
-
 const AVATAR_IMAGES = Array(11).fill("/assets/images/avatar.png");
 
 const Page = () => {
@@ -53,19 +52,13 @@ const Page = () => {
 		course_id: id as string,
 	});
 
+	const currentChapterId = course?.current_chapter?.id;
 	const { data: chapter, isPending: isChapterPending } = useGetChapter({
-		chapter_id: course?.current_chapter.id ?? "",
+		chapter_id: currentChapterId ?? "",
+		enabled: !!currentChapterId,
 	});
 
-	const chapters = React.useMemo(() => {
-		if (!course) return [];
-		return course.chapters;
-	}, [course]);
-
-	const modules = React.useMemo(() => {
-		if (!chapter) return [];
-		return chapter.modules;
-	}, [chapter]);
+	const chapters = React.useMemo(() => course?.chapters || [], [course]);
 
 	const {
 		canProceed,
@@ -76,11 +69,20 @@ const Page = () => {
 		moduleId,
 		setCurrentChapterId,
 		setCurrentModuleId,
-	} = useCourseHandler({ chapters, modules });
+	} = useCourseHandler({ chapters, modules: chapter?.modules || [] });
+
+	React.useEffect(() => {
+		if (chapter) {
+			const firstModule = chapter.modules[0];
+			const currentModuleId = chapter.current_chapter_module;
+			setCurrentChapterId(chapterId || chapter.id);
+			setCurrentModuleId(moduleId || firstModule?.id || currentModuleId);
+		}
+	}, [chapter]);
 
 	const currentModule = React.useMemo(() => {
-		if (!chapter) return null;
-		const module = chapter.modules.find((module) => module.id === moduleId);
+		if (!moduleId || !chapter) return null;
+		const module = chapter?.modules.find((module) => module.id === moduleId);
 		if (!module) return null;
 		return module;
 	}, [chapter, moduleId]);
@@ -91,13 +93,8 @@ const Page = () => {
 	});
 
 	const courseProgress = React.useMemo(() => {
-		if (!course?.chapters.length || !chapter) return 0;
-
-		const totalChapters = course.chapters.flatMap((chap) => chap);
-		const total = totalChapters.length;
-		const currentChapterIndex = totalChapters.indexOf(chapter);
-
-		return Math.round((currentChapterIndex / total) * 100);
+		if (!chapter || !chapter.current_module_progress_percentage) return 0;
+		return chapter.current_module_progress_percentage;
 	}, [chapter, course]);
 
 	const currentModuleProgress = React.useMemo(() => {
@@ -105,16 +102,20 @@ const Page = () => {
 	}, [chapter]);
 
 	React.useEffect(() => {
-		if (!hasPreviousChapter && course?.current_chapter.id) {
+		if (
+			!hasPreviousChapter &&
+			currentChapterId &&
+			(chapter?.current_chapter_progress_percentage ?? 0) < 0
+		) {
 			startCourseMutation({
 				courseId: String(id),
 				payload: {
-					chapter_id: course.current_chapter.id,
+					chapter_id: currentChapterId,
 					current_progress: courseProgress,
 				},
 			});
 		}
-	}, [courseProgress, hasPreviousChapter, id, course, startCourseMutation]);
+	}, [courseProgress, hasPreviousChapter, id, currentChapterId, startCourseMutation]);
 
 	React.useEffect(() => {
 		if (isError && error?.status === 403) {
@@ -186,9 +187,9 @@ const Page = () => {
 	const renderSidebar = () => (
 		<div className="col-start-3 flex h-fit w-full flex-col gap-2">
 			<CourseChapters
-				current_chapter_id={course?.current_chapter.id}
+				current_chapter_id={currentChapterId}
 				progress={course?.current_progress_percentage ?? 0}
-				chapters={course?.chapters ?? []}
+				chapters={chapters}
 				dripping={course?.subject_id.chapter_dripping ?? "NO"}
 				setChapter={setCurrentChapterId}
 			/>
@@ -249,14 +250,14 @@ const Page = () => {
 							<AvatarFallback className="rounded-lg bg-primary-100 font-bold text-primary-400">
 								{getInitials(
 									currentModule?.tutor?.first_name
-										? `${currentModule?.tutor.first_name} ${currentModule?.tutor.last_name}`
+										? `${currentModule.tutor.first_name} ${currentModule.tutor.last_name}`
 										: "Anonymous"
 								)}
 							</AvatarFallback>
 						</Avatar>
 						<p className="text-sm font-semibold capitalize">
 							{currentModule?.tutor?.first_name
-								? `${currentModule?.tutor.first_name} ${currentModule?.tutor.last_name}`
+								? `${currentModule.tutor.first_name} ${currentModule.tutor.last_name}`
 								: "Anonymous"}
 						</p>
 					</div>
@@ -288,7 +289,7 @@ const Page = () => {
 
 					<CourseActions
 						canProceed={canProceed}
-						chapters={course?.chapters}
+						chapters={chapters}
 						currentChapterId={chapterId}
 						currentModuleId={moduleId}
 						hasNextModule={hasNextModule}
@@ -354,11 +355,9 @@ const Page = () => {
 	return (
 		<>
 			<Seo title={capitalize(course?.subject_id.name ?? "Course Details")} />
-
 			<DashboardLayout>
 				{isCourseLoading ? renderLoadingState() : isError ? renderErrorState() : renderMainContent()}
 			</DashboardLayout>
-
 			{bundle && (
 				<RenewalModal open={renewalModalOpen} setOpen={setRenewalModalOpen} bundle={bundle} />
 			)}

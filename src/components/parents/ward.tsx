@@ -2,6 +2,7 @@ import { RiMoreLine } from "@remixicon/react";
 import Link from "next/link";
 import React from "react";
 
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { WardProps } from "@/types/parent";
 import { getInitials } from "@/lib";
@@ -46,9 +47,14 @@ export const Ward = ({ ward }: Props) => {
 					className="flex h-8 flex-1 items-center justify-center rounded-md border bg-neutral-100 text-sm text-neutral-500 transition-all duration-300 active:scale-95">
 					View
 				</Link>
-				<button className="grid size-8 place-items-center rounded-md border text-neutral-400 transition-all duration-300 active:scale-95">
-					<RiMoreLine className="size-4 rotate-90" />
-				</button>
+				<Popover>
+					<PopoverTrigger asChild>
+						<button className="grid size-8 place-items-center rounded-md border text-neutral-400 transition-all duration-300 active:scale-95">
+							<RiMoreLine className="size-4 rotate-90" />
+						</button>
+					</PopoverTrigger>
+					<PopoverContent></PopoverContent>
+				</Popover>
 			</div>
 		</div>
 	);
