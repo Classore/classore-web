@@ -473,7 +473,7 @@ export const VideoPlayer = React.memo(
 				tabIndex={0}
 				onMouseEnter={() => setShowControls(true)}
 				className={cn(
-					`relative h-80 w-full overflow-hidden bg-neutral-900 md:h-[425px] md:rounded-lg`,
+					`relative aspect-[16/9] w-full overflow-hidden border bg-neutral-900 md:rounded-lg`,
 					className
 				)}>
 				<video
@@ -487,7 +487,7 @@ export const VideoPlayer = React.memo(
 					poster={poster}
 					preload="metadata"
 					controlsList="nodownload"
-					className="h-full max-w-full rounded-lg object-cover"
+					className="size-full rounded-lg object-cover"
 				/>
 
 				{/* Buffering indicator */}
