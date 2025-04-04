@@ -473,7 +473,7 @@ export const VideoPlayer = React.memo(
 				tabIndex={0}
 				onMouseEnter={() => setShowControls(true)}
 				className={cn(
-					`relative aspect-video w-full overflow-hidden border bg-neutral-900 md:rounded-lg`,
+					`relative aspect-[16/9] w-full overflow-hidden border bg-neutral-900 md:rounded-lg`,
 					className
 				)}>
 				<video

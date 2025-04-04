@@ -27,15 +27,22 @@ export const CourseChapters = ({
 	const hasMoreChapters = chapters.length > MIN_CHAPTERS;
 	const Component = dripping === "YES" ? "button" : "div";
 
+	const clampPercentage = (value: number) => {
+		return Math.max(0, Math.min(value, 100));
+	};
+
 	return (
 		<>
 			<div className="flex w-full items-center justify-between rounded-lg border p-4">
 				<p className="text-sm text-neutral-400">ALL CHAPTERS</p>
 				<div className="flex items-center gap-2">
 					<div className="flex h-[6px] w-16 items-center overflow-hidden rounded-3xl bg-[#efefef]">
-						<div style={{ width: `${progress}%` }} className="h-full rounded-3xl bg-primary-400" />
+						<div
+							style={{ width: `${clampPercentage(progress)}%` }}
+							className="h-full rounded-3xl bg-primary-400"
+						/>
 					</div>
-					<p className="text-xs font-bold">{progress}%</p>
+					<p className="text-xs font-bold">{clampPercentage(progress)}%</p>
 				</div>
 			</div>
 
