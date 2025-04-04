@@ -113,40 +113,42 @@ export const ChapterModules = ({
 							<p className="text-xs font-bold">{chapter.current_chapter_progress_percentage}%</p>
 						</div>
 					</div>
-					{modules.map((module) => (
-						<button
-							type="button"
-							disabled={!canProceedToNextLesson || currentModuleId === module.id}
-							key={module.id}
-							onClick={() => {
-								if (!isQuizPassed(module.id)) {
-									setOpen(true);
-								} else {
-									onSelectModule(module.id);
-								}
-							}}
-							className={`flex w-full items-center gap-4 border-b border-b-neutral-200 px-6 py-4 ${currentModuleId === module.id ? "border-l-4 border-l-primary-300" : ""}`}>
-							<div
-								className={`grid size-8 place-items-center rounded-md ${module.is_completed || currentModuleId === module.id ? "bg-[rgba(241,236,249,0.5)] text-primary-300" : "bg-neutral-100 text-neutral-400"}`}>
-								<RiPlayCircleLine className="size-4" />
-							</div>
+					{modules
+						.sort((a, b) => a.sequence - b.sequence)
+						.map((module) => (
+							<button
+								type="button"
+								disabled={!canProceedToNextLesson || currentModuleId === module.id}
+								key={module.id}
+								onClick={() => {
+									if (!isQuizPassed(module.id)) {
+										setOpen(true);
+									} else {
+										onSelectModule(module.id);
+									}
+								}}
+								className={`flex w-full items-center gap-4 border-b border-b-neutral-200 px-6 py-4 ${currentModuleId === module.id ? "border-l-4 border-l-primary-300" : ""}`}>
+								<div
+									className={`grid size-8 place-items-center rounded-md ${module.is_completed || currentModuleId === module.id ? "bg-[rgba(241,236,249,0.5)] text-primary-300" : "bg-neutral-100 text-neutral-400"}`}>
+									<RiPlayCircleLine className="size-4" />
+								</div>
 
-							<div className="flex flex-col gap-1">
-								<p className="text-left text-sm capitalize text-neutral-500">{module.title}</p>
-								<p className="w-fit text-xs text-neutral-400">
-									{module.video_array.length
-										? `${convertSecondsToMinSec(module.video_array.at(0)?.duration ?? 0)} min`
-										: "--:--"}
-								</p>
-							</div>
+								<div className="flex flex-col gap-1">
+									<p className="text-left text-sm capitalize text-neutral-500">{module.title}</p>
+									<p className="w-fit text-xs text-neutral-400">
+										{module.video_array.length
+											? `${convertSecondsToMinSec(module.video_array.at(0)?.duration ?? 0)} min`
+											: "--:--"}
+									</p>
+								</div>
 
-							<div className="ml-auto">
-								<RiCheckboxCircleFill
-									className={`size-5 ${module.is_completed ? "text-primary-300" : "text-neutral-200"}`}
-								/>
-							</div>
-						</button>
-					))}
+								<div className="ml-auto">
+									<RiCheckboxCircleFill
+										className={`size-5 ${module.is_completed ? "text-primary-300" : "text-neutral-200"}`}
+									/>
+								</div>
+							</button>
+						))}
 				</div>
 			</div>
 
