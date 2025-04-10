@@ -64,10 +64,11 @@ export const VideoPlayer = React.memo(
 		const [bufferProgress, setBufferProgress] = React.useState(0);
 		const [loadingHls, setLoadingHls] = React.useState(false);
 
-		const videoRef = React.useRef<HTMLVideoElement | null>(null);
-		const hlsRef = React.useRef<Hls | null>(null);
-		const playerRef = React.useRef<HTMLDivElement>(null);
 		const controlsTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+		const videoRef = React.useRef<HTMLVideoElement | null>(null);
+		const playerRef = React.useRef<HTMLDivElement>(null);
+		const hlsRef = React.useRef<Hls | null>(null);
+		const lastSentProgressRef = React.useRef(0);
 
 		const { mutate } = useMutation({
 			mutationFn: updateModuleProgress,
@@ -75,8 +76,24 @@ export const VideoPlayer = React.memo(
 		});
 
 		React.useEffect(() => {
-			mutate({ course_id: courseId, module_id: moduleId, current_progress: Math.round(progress) });
-		}, [courseId, moduleId, progress]);
+			const updateProgress = () => {
+				if (
+					(Math.abs(Math.round(progress) - lastSentProgressRef.current) >= 1 &&
+						progress <= 100 &&
+						progress > lastSentProgressRef.current) ||
+					(progress === 100 && lastSentProgressRef.current !== 100)
+				) {
+					const progressToSend = Math.min(Math.round(progress), 100);
+					mutate({ course_id: courseId, module_id: moduleId, current_progress: progressToSend });
+					lastSentProgressRef.current = progressToSend;
+				}
+			};
+			updateProgress();
+			const intervalId = lastSentProgressRef.current < 100 ? setInterval(updateProgress, 10000) : null;
+			return () => {
+				if (intervalId) clearInterval(intervalId);
+			};
+		}, [courseId, moduleId, progress, mutate]);
 
 		const hideControlsTimer = React.useCallback(() => {
 			if (controlsTimeoutRef.current) {

@@ -12,7 +12,7 @@ import {
 } from "@remixicon/react";
 
 interface Props {
-	canProceed: (moduleId: string) => boolean;
+	chapterProgress: number;
 	currentChapterId: string;
 	currentModuleId: string;
 	isQuizPassed: (moduleId: string) => boolean;
@@ -20,7 +20,7 @@ interface Props {
 }
 
 export const ChapterModules = ({
-	canProceed,
+	chapterProgress,
 	currentChapterId,
 	currentModuleId,
 	isQuizPassed,
@@ -35,6 +35,7 @@ export const ChapterModules = ({
 		isError,
 	} = useGetChapter({
 		chapter_id: currentChapterId,
+		enabled: !!currentChapterId,
 	});
 
 	const modules = React.useMemo(() => {
@@ -43,15 +44,16 @@ export const ChapterModules = ({
 	}, [chapter]);
 
 	const canProceedToNextLesson = React.useMemo(() => {
-		return canProceed(currentModuleId);
-	}, [canProceed, currentModuleId]);
+		return chapterProgress > 50 && isQuizPassed;
+	}, [chapterProgress, isQuizPassed]);
 
-	React.useEffect(() => {
-		if (chapter) {
-			const current_module = chapter.current_chapter_module ?? chapter.modules[0].id;
-			onSelectModule(current_module);
+	const handleSelectModule = (moduleId: string) => {
+		if (!isQuizPassed && chapterProgress < 50) {
+			setOpen(true);
+		} else {
+			onSelectModule(moduleId);
 		}
-	}, [chapter, currentModuleId]);
+	};
 
 	if (isPending) {
 		return (
@@ -105,12 +107,12 @@ export const ChapterModules = ({
 							<div className="flex h-[6px] w-16 items-center overflow-hidden rounded-3xl bg-[#efefef]">
 								<div
 									style={{
-										width: `${chapter.current_chapter_progress_percentage}%`,
+										width: `${chapterProgress}%`,
 									}}
 									className="h-full rounded-3xl bg-primary-400"
 								/>
 							</div>
-							<p className="text-xs font-bold">{chapter.current_chapter_progress_percentage}%</p>
+							<p className="text-xs font-bold">{chapterProgress}%</p>
 						</div>
 					</div>
 					{modules
@@ -120,13 +122,7 @@ export const ChapterModules = ({
 								type="button"
 								disabled={!canProceedToNextLesson || currentModuleId === module.id}
 								key={module.id}
-								onClick={() => {
-									if (!isQuizPassed(module.id)) {
-										setOpen(true);
-									} else {
-										onSelectModule(module.id);
-									}
-								}}
+								onClick={() => handleSelectModule(module.id)}
 								className={`flex w-full items-center gap-4 border-b border-b-neutral-200 px-6 py-4 ${currentModuleId === module.id ? "border-l-4 border-l-primary-300" : ""}`}>
 								<div
 									className={`grid size-8 place-items-center rounded-md ${module.is_completed || currentModuleId === module.id ? "bg-[rgba(241,236,249,0.5)] text-primary-300" : "bg-neutral-100 text-neutral-400"}`}>
@@ -153,12 +149,14 @@ export const ChapterModules = ({
 			</div>
 
 			<QuizAlertModal open={open} setOpen={setOpen} setOpenTakeQuiz={setOpenTakeQuiz} />
-			<TakeQuizModal
-				currentChapterId={currentChapterId}
-				currentModuleId={currentModuleId}
-				open={openTakeQuiz}
-				setOpen={setOpenTakeQuiz}
-			/>
+			{currentChapterId && currentModuleId && (
+				<TakeQuizModal
+					currentChapterId={currentChapterId}
+					currentModuleId={currentModuleId}
+					open={openTakeQuiz}
+					setOpen={setOpenTakeQuiz}
+				/>
+			)}
 		</>
 	);
 };

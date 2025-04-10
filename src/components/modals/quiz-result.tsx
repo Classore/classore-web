@@ -5,13 +5,14 @@ import React from "react";
 
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "../ui/dialog";
 import type { SubmitQuizResp } from "@/queries/user";
-import { Progress } from "../shared";
 import { Button } from "../ui/button";
+import { Progress } from "../shared";
 
 type QuizResultModalProps = {
 	currentChapter: string;
 	hasNextChapter: boolean;
 	hasNextModule: boolean;
+	nextChapterId: string;
 	nextModuleId: string;
 	onNextChapter: () => void;
 	onNextModule: () => void;
@@ -24,6 +25,8 @@ type QuizResultModalProps = {
 export const QuizResultModal = ({
 	hasNextChapter,
 	hasNextModule,
+	nextChapterId,
+	nextModuleId,
 	onNextChapter,
 	onNextModule,
 	open,
@@ -32,6 +35,7 @@ export const QuizResultModal = ({
 	setOpen,
 }: QuizResultModalProps) => {
 	const router = useRouter();
+	const id = router.query.id as string;
 
 	if (!result) return null;
 
@@ -48,8 +52,10 @@ export const QuizResultModal = ({
 	const goToNextLesson = React.useCallback(() => {
 		if (hasNextModule) {
 			onNextModule();
+			router.push(`/dashboard/courses/${id}?moduleId=${nextModuleId}`);
 		} else if (!hasNextModule && hasNextChapter) {
 			onNextChapter();
+			router.push(`/dashboard/courses/${nextChapterId}`);
 		} else {
 			toast.success("You have completed all the lessons in this course");
 		}
