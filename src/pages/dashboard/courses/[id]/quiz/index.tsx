@@ -67,6 +67,13 @@ const Page = () => {
 		}, [] as ChapterModuleProps[]);
 	}, []);
 
+	const nextChapterId = React.useMemo(() => {
+		if (!course) return "";
+		const currentIndex = course.chapters.findIndex((chapter) => chapter.id === chapterId);
+		if (currentIndex === course.chapters.length - 1) return "";
+		return course.chapters[currentIndex + 1]?.id ?? "";
+	}, [chapterId, course]);
+
 	const nextModuleId = React.useMemo(() => {
 		if (!modules.length || !lesson) return "";
 		const currentIndex = modules.findIndex((module) => module.id === lesson.id);
@@ -345,6 +352,7 @@ const Page = () => {
 				currentChapter={chapterId}
 				hasNextChapter={hasNextChapter}
 				hasNextModule={hasNextModule}
+				nextChapterId={nextChapterId}
 				nextModuleId={nextModuleId}
 				onNextChapter={onNextChapter}
 				onNextModule={onNextModule}

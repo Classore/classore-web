@@ -7,10 +7,10 @@ import type { ChapterResp, SingleCourseResp } from "@/types";
 import { Button } from "../ui/button";
 
 type CourseActionsProps = {
-	canProceed: (moduleId: string) => boolean;
 	chapters: SingleCourseResp["chapters"] | undefined;
 	currentChapterId: string;
 	currentModuleId: string;
+	currentModuleProgress: number;
 	hasNextModule: boolean;
 	isQuizPassed: boolean;
 	setChapter: (chapterId: string) => void;
@@ -19,20 +19,16 @@ type CourseActionsProps = {
 
 export const CourseActions = React.memo(
 	({
-		canProceed,
 		chapters,
 		currentChapterId,
 		currentModuleId,
+		currentModuleProgress,
 		isQuizPassed,
 		setChapter,
 		setModule,
 	}: CourseActionsProps) => {
 		const [openQuitQuiz, setOpenQuitQuiz] = React.useState(false);
 		const [openTakeQuiz, setOpenTakeQuiz] = React.useState(false);
-
-		const canProceedToNextLesson = React.useMemo(() => {
-			return canProceed(currentModuleId);
-		}, [canProceed, currentModuleId]);
 
 		const findNextChapter = (chapters: ChapterResp[]): string | undefined => {
 			const chapterIndex = chapters.findIndex((chapter) => chapter.id === currentChapterId);
@@ -87,13 +83,13 @@ export const CourseActions = React.memo(
 						variant="inverse"
 						size="sm"
 						className="w-fit py-2"
-						disabled={!canProceedToNextLesson}
+						disabled={currentModuleProgress < 50}
 						onClick={handleTakeQuiz}>
 						Take Quiz
 					</Button>
 					<Button
 						onClick={goToNextLesson}
-						disabled={!canProceedToNextLesson}
+						disabled={currentModuleProgress < 50 || !isQuizPassed}
 						size="sm"
 						className="w-fit text-sm">
 						<span>Go to Next Lesson</span>

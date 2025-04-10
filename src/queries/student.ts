@@ -100,9 +100,13 @@ const getChapter = async (id: string) => {
 export const useGetChapter = ({
 	chapter_id,
 	enabled,
+	refetchIntervalInBackground,
+	refetchInterval,
 }: {
 	chapter_id: string;
 	enabled?: boolean;
+	refetchIntervalInBackground?: boolean;
+	refetchInterval?: number;
 }) => {
 	return useQuery({
 		queryKey: ["chapter", { chapter_id }],
@@ -111,6 +115,8 @@ export const useGetChapter = ({
 		enabled,
 		staleTime: 10 * 1000, // 10 seconds
 		gcTime: 10 * 1000, // 10 seconds
+		refetchIntervalInBackground,
+		refetchInterval,
 	});
 };
 

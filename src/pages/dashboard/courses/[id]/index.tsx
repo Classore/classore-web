@@ -56,12 +56,13 @@ const Page = () => {
 	const { data: chapter, isPending: isChapterPending } = useGetChapter({
 		chapter_id: currentChapterId ?? "",
 		enabled: !!currentChapterId,
+		refetchIntervalInBackground: true,
+		refetchInterval: 1000 * 30,
 	});
 
 	const chapters = React.useMemo(() => course?.chapters || [], [course]);
 
 	const {
-		canProceed,
 		chapterId,
 		hasNextModule,
 		hasPreviousChapter,
@@ -97,9 +98,15 @@ const Page = () => {
 		return chapter.current_module_progress_percentage;
 	}, [chapter, course]);
 
-	const currentModuleProgress = React.useMemo(() => {
-		return chapter?.current_module_progress_percentage || 0;
-	}, [chapter]);
+	const overallProgress = React.useMemo(() => {
+		if (!course?.chapters?.length) return 0;
+		const totalChapters = course.chapters.length;
+		const completedChaptersCount = course.chapters.reduce(
+			(acc, chapter) => acc + (chapter.is_completed ? 1 : 0),
+			0
+		);
+		return Math.min(Math.round((completedChaptersCount / totalChapters) * 100), 100);
+	}, [course?.chapters]);
 
 	React.useEffect(() => {
 		if (
@@ -111,11 +118,11 @@ const Page = () => {
 				courseId: String(id),
 				payload: {
 					chapter_id: currentChapterId,
-					current_progress: courseProgress,
+					current_progress: chapter?.current_module_progress_percentage || 0,
 				},
 			});
 		}
-	}, [courseProgress, hasPreviousChapter, id, currentChapterId, startCourseMutation]);
+	}, [chapter, courseProgress, hasPreviousChapter, id, currentChapterId, startCourseMutation]);
 
 	React.useEffect(() => {
 		if (isError && error?.status === 403) {
@@ -168,7 +175,7 @@ const Page = () => {
 				<VideoPlayer
 					courseId={String(id)}
 					moduleId={currentModule?.id}
-					moduleProgress={currentModuleProgress}
+					moduleProgress={chapter?.current_module_progress_percentage || 0}
 					src={videoUrl}
 				/>
 			);
@@ -188,7 +195,7 @@ const Page = () => {
 		<div className="col-start-3 flex h-fit w-full flex-col gap-2">
 			<CourseChapters
 				current_chapter_id={currentChapterId}
-				progress={course?.current_progress_percentage ?? 0}
+				progress={overallProgress}
 				chapters={chapters}
 				dripping={course?.subject_id.chapter_dripping ?? "NO"}
 				setChapter={setCurrentChapterId}
@@ -288,10 +295,10 @@ const Page = () => {
 					</div>
 
 					<CourseActions
-						canProceed={canProceed}
 						chapters={chapters}
 						currentChapterId={chapterId}
 						currentModuleId={moduleId}
+						currentModuleProgress={chapter?.current_module_progress_percentage ?? 0}
 						hasNextModule={hasNextModule}
 						isQuizPassed={isQuizPassed(moduleId)}
 						setChapter={setCurrentChapterId}
@@ -330,8 +337,8 @@ const Page = () => {
 
 							<TabsContent value="summary">
 								<ChapterModules
-									canProceed={canProceed}
-									currentChapterId={chapterId}
+									chapterProgress={chapter?.current_chapter_progress_percentage ?? 0}
+									currentChapterId={String(course?.current_chapter.id)}
 									currentModuleId={moduleId}
 									isQuizPassed={isQuizPassed}
 									onSelectModule={setCurrentModuleId}
