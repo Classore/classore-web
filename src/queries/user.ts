@@ -185,16 +185,22 @@ const renewPlan = async (id: string) => {
 
 type UpdateModulePayload = {
 	course_id: string;
-	current_progress: number;
-	module_id: string;
+	current_chapter_id?: string;
+	current_module_id?: string;
+	current_progress?: number;
+	module_id?: string;
 };
 const updateModuleProgress = async ({
 	course_id,
+	current_chapter_id,
+	current_module_id,
 	current_progress,
 	module_id,
 }: UpdateModulePayload) => {
 	return axios
 		.put<HttpResponse<null>>(endpoints(course_id).user.update_course_progress, {
+			current_chapter_id,
+			current_module_id,
 			current_progress,
 			module_id,
 		})
