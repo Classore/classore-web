@@ -1,8 +1,11 @@
+import { useMutation } from "@tanstack/react-query";
 import * as React from "react";
 
 import { convertSecondsToMinSec, sanitizeHtml } from "@/lib";
 import { QuizAlertModal, TakeQuizModal } from "../modals";
+import { updateModuleProgress } from "@/queries/user";
 import { useGetChapter } from "@/queries/student";
+import { queryClient } from "@/providers";
 import { Spinner } from "../shared";
 import {
 	RiCheckboxCircleFill,
@@ -13,21 +16,38 @@ import {
 
 interface Props {
 	chapterProgress: number;
+	courseId: string;
 	currentChapterId: string;
 	currentModuleId: string;
 	isQuizPassed: (moduleId: string) => boolean;
+	nextChapterId: string;
+	nextModuleId: string;
 	onSelectModule: (moduleId: string) => void;
 }
 
 export const ChapterModules = ({
 	chapterProgress,
+	courseId,
 	currentChapterId,
 	currentModuleId,
 	isQuizPassed,
+	nextChapterId,
+	nextModuleId,
 	onSelectModule,
 }: Props) => {
 	const [openTakeQuiz, setOpenTakeQuiz] = React.useState(false);
 	const [open, setOpen] = React.useState(false);
+
+	const { isPending: isUpdatingProgress, mutate } = useMutation({
+		mutationFn: updateModuleProgress,
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["course"] });
+			queryClient.invalidateQueries({ queryKey: ["chapter"] });
+		},
+		onError: (error) => {
+			console.log(error);
+		},
+	});
 
 	const {
 		data: chapter,
@@ -43,19 +63,30 @@ export const ChapterModules = ({
 		return chapter.modules;
 	}, [chapter]);
 
+	const passedQuiz = isQuizPassed(currentModuleId);
+
+	React.useEffect(() => {
+		mutate({
+			course_id: courseId,
+			current_progress: 0,
+			...(nextChapterId !== "" && { currentChapterId: nextChapterId }),
+			...(nextModuleId !== "" && { currentModuleId: nextModuleId }),
+		});
+	}, [nextChapterId, nextModuleId]);
+
 	const canProceedToNextLesson = React.useMemo(() => {
-		return chapterProgress > 50 && isQuizPassed;
+		return chapterProgress > 50 && passedQuiz;
 	}, [chapterProgress, isQuizPassed]);
 
 	const handleSelectModule = (moduleId: string) => {
-		if (!isQuizPassed && chapterProgress < 50) {
+		if (!passedQuiz && chapterProgress < 50) {
 			setOpen(true);
 		} else {
 			onSelectModule(moduleId);
 		}
 	};
 
-	if (isPending) {
+	if (isPending || isUpdatingProgress) {
 		return (
 			<div className="flex w-full items-center justify-center gap-2 p-4 text-primary-300">
 				<Spinner variant="primary" />
@@ -82,7 +113,6 @@ export const ChapterModules = ({
 						__html: sanitizeHtml(chapter?.content).replace(/\n/g, "<br />"),
 					}}
 				/>
-
 				<div className="w-full rounded-lg border border-neutral-200">
 					<div className="flex items-center justify-between gap-4 border-b border-b-neutral-200 px-6 py-4">
 						<div className="flex items-center gap-4">
@@ -120,7 +150,7 @@ export const ChapterModules = ({
 						.map((module) => (
 							<button
 								type="button"
-								disabled={!canProceedToNextLesson || currentModuleId === module.id}
+								disabled={!canProceedToNextLesson}
 								key={module.id}
 								onClick={() => handleSelectModule(module.id)}
 								className={`flex w-full items-center gap-4 border-b border-b-neutral-200 px-6 py-4 ${currentModuleId === module.id ? "border-l-4 border-l-primary-300" : ""}`}>

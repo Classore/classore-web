@@ -56,7 +56,6 @@ export const CourseActions = React.memo(
 			} else if (nextChapterId) {
 				const firstModuleId =
 					chapters?.find((chapter) => chapter.id === nextChapterId)?.modules[0]?.id ?? "";
-
 				setChapter(nextChapterId);
 				setModule(firstModuleId);
 			}
