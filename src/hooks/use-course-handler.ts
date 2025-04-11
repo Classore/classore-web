@@ -1,21 +1,27 @@
-import React from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import type { ChapterModuleProps, ChapterResp } from "@/types";
 
 interface UseCourseProps {
 	chapters: ChapterResp[];
+	courseId: string;
 	modules: ChapterModuleProps[];
+	onProgressUpdate?: () => void;
 }
 
 interface UseCourseHandler {
 	canProceed: (moduleId: string) => boolean;
 	chapterId: string;
+	currentChapter: ChapterResp | null;
+	currentModule: ChapterModuleProps | null;
 	hasNextChapter: boolean;
 	hasNextModule: boolean;
 	hasPreviousChapter: boolean;
 	hasPreviousModule: boolean;
 	isQuizPassed: (moduleId: string) => boolean;
 	moduleId: string;
+	nextChapterId: string;
+	nextModuleId: string;
 	onNextChapter: () => void;
 	onNextModule: () => void;
 	onPreviousChapter: () => void;
@@ -24,106 +30,139 @@ interface UseCourseHandler {
 	setCurrentModuleId: (moduleId: string) => void;
 }
 
-export const useCourseHandler = ({ chapters, modules }: UseCourseProps): UseCourseHandler => {
-	const [currentChapterId, setCurrentChapterId] = React.useState(chapters[0]?.id);
-	const [currentModuleId, setCurrentModuleId] = React.useState(modules[0]?.id);
+export const useCourseHandler = ({
+	chapters,
+	courseId,
+	modules,
+}: UseCourseProps): UseCourseHandler => {
+	const [currentChapterId, setCurrentChapterId] = useState(chapters[0]?.id || "");
+	const [currentModuleId, setCurrentModuleId] = useState(modules[0]?.id || "");
 
-	const currentChapter = React.useMemo(() => {
-		if (!chapters) return null;
-		const chapter = chapters.find((chapter) => chapter?.id === currentChapterId);
-		if (!chapter) return null;
-		return chapter;
-	}, [chapters, currentChapterId]);
+	const currentChapterIndex = useMemo(
+		() => chapters.findIndex((chapter) => chapter?.id === currentChapterId),
+		[chapters, currentChapterId]
+	);
 
-	const currentModule = React.useMemo(() => {
-		if (!modules) return null;
-		const module = modules.find((module) => module?.id === currentModuleId);
-		if (!module) return null;
-		return module;
-	}, [currentModuleId, modules]);
+	const currentModuleIndex = useMemo(
+		() => modules.findIndex((module) => module?.id === currentModuleId),
+		[modules, currentModuleId]
+	);
 
-	const canProceed = React.useCallback(
+	const currentChapter = useMemo(
+		() => (currentChapterIndex >= 0 ? chapters[currentChapterIndex] : null),
+		[chapters, currentChapterIndex]
+	);
+
+	const currentModule = useMemo(
+		() => (currentModuleIndex >= 0 ? modules[currentModuleIndex] : null),
+		[modules, currentModuleIndex]
+	);
+
+	const canProceed = useCallback(
 		(moduleId: string) => {
-			if (!modules) return false;
 			const module = modules.find((module) => module?.id === moduleId);
-			if (!module) return false;
-			return module.is_passed || false;
+			return module?.is_passed || false;
 		},
 		[modules]
 	);
 
-	const hasNextChapter = React.useMemo(() => {
-		const currentChapterIndex = chapters.findIndex((chapter) => chapter?.id === currentChapterId);
-		return currentChapterIndex < chapters.length - 1;
-	}, [chapters, currentChapterId]);
+	const hasNextChapter = useMemo(
+		() => currentChapterIndex < chapters.length - 1 && currentChapterIndex >= 0,
+		[chapters.length, currentChapterIndex]
+	);
 
-	const hasPreviousChapter = React.useMemo(() => {
-		const currentChapterIndex = chapters.findIndex((chapter) => chapter?.id === currentChapterId);
-		return currentChapterIndex > 0;
-	}, [chapters, currentChapterId]);
+	const hasPreviousChapter = useMemo(() => currentChapterIndex > 0, [currentChapterIndex]);
 
-	const hasNextModule = React.useMemo(() => {
-		const currentModuleIndex = modules.findIndex((module) => module?.id === currentModuleId);
-		return currentModuleIndex < modules.length - 1;
-	}, [currentModuleId, modules]);
+	const hasNextModule = useMemo(
+		() => currentModuleIndex < modules.length - 1 && currentModuleIndex >= 0,
+		[modules.length, currentModuleIndex]
+	);
 
-	const hasPreviousModule = React.useMemo(() => {
-		const currentModuleIndex = modules.findIndex((module) => module?.id === currentModuleId);
-		return currentModuleIndex > 0;
-	}, [currentModuleId, modules]);
+	const hasPreviousModule = useMemo(() => currentModuleIndex > 0, [currentModuleIndex]);
 
-	const isQuizPassed = React.useCallback(
+	const nextChapterId = useMemo(
+		() => (hasNextChapter ? chapters[currentChapterIndex + 1]?.id : ""),
+		[chapters, currentChapterIndex, hasNextChapter]
+	);
+
+	const nextModuleId = useMemo(
+		() => (hasNextModule ? modules[currentModuleIndex + 1]?.id : ""),
+		[modules, currentModuleIndex, hasNextModule]
+	);
+
+	const isQuizPassed = useCallback(
 		(moduleId: string) => {
 			const module = modules.find((module) => module?.id === moduleId);
-			if (!module) return false;
-			return module.is_passed || false;
+			return module?.is_passed || false;
 		},
 		[modules]
 	);
 
-	const onNextChapter = React.useCallback(() => {
-		if (!currentChapter) return;
-		const currentChapterIndex = chapters.findIndex((chapter) => chapter?.id === currentChapter?.id);
+	const updateProgress = useCallback(
+		(newChapterId?: string, newModuleId?: string) => {
+			if (newChapterId) {
+				setCurrentChapterId(newChapterId);
+			}
+			if (newModuleId) {
+				setCurrentModuleId(newModuleId);
+			}
+		},
+		[courseId]
+	);
+
+	const onNextChapter = useCallback(async () => {
+		if (!hasNextChapter) return;
+
 		const nextChapter = chapters[currentChapterIndex + 1];
-		if (!nextChapter) return;
-		setCurrentChapterId(nextChapter?.id);
-		setCurrentModuleId(nextChapter.modules[0]?.id);
-	}, [currentChapter, chapters]);
+		const firstModuleId = nextChapter.modules[0]?.id;
 
-	const onPreviousChapter = React.useCallback(() => {
-		if (!currentChapter) return;
-		const currentChapterIndex = chapters.findIndex((chapter) => chapter?.id === currentChapter?.id);
+		if (!firstModuleId) return;
+
+		await updateProgress(nextChapter.id, firstModuleId);
+	}, [chapters, currentChapterIndex, hasNextChapter, updateProgress]);
+
+	const onPreviousChapter = useCallback(async () => {
+		if (!hasPreviousChapter) return;
+
 		const previousChapter = chapters[currentChapterIndex - 1];
-		if (!previousChapter) return;
-		setCurrentChapterId(previousChapter?.id);
-		setCurrentModuleId(previousChapter.modules[0]?.id);
-	}, [currentChapter, chapters]);
+		const firstModuleId = previousChapter.modules[0]?.id;
 
-	const onNextModule = React.useCallback(() => {
-		if (!currentModule) return;
-		const currentModuleIndex = modules.findIndex((module) => module?.id === currentModule?.id);
+		if (!firstModuleId) return;
+
+		await updateProgress(previousChapter.id, firstModuleId);
+	}, [chapters, currentChapterIndex, hasPreviousChapter, updateProgress]);
+
+	const onNextModule = useCallback(async () => {
+		if (!hasNextModule) return;
+
 		const nextModule = modules[currentModuleIndex + 1];
-		if (!nextModule) return;
-		setCurrentModuleId(nextModule?.id);
-	}, [currentModule, modules]);
+		if (!nextModule?.id) return;
 
-	const onPreviousModule = React.useCallback(() => {
-		if (!currentModule) return;
-		const currentModuleIndex = modules.findIndex((module) => module?.id === currentModule?.id);
+		await updateProgress(undefined, nextModule.id);
+	}, [currentModuleIndex, hasNextModule, modules, updateProgress]);
+
+	const onPreviousModule = useCallback(async () => {
+		if (!hasPreviousModule) return;
+
 		const previousModule = modules[currentModuleIndex - 1];
-		if (!previousModule) return;
-		setCurrentModuleId(previousModule?.id);
-	}, [currentModule, modules]);
+		if (!previousModule?.id) return;
+
+		await updateProgress(undefined, previousModule.id);
+	}, [currentModuleIndex, hasPreviousModule, modules, updateProgress]);
 
 	return {
 		canProceed,
 		chapterId: currentChapterId,
+		currentChapter,
+		currentModule,
 		hasNextChapter,
 		hasNextModule,
 		hasPreviousChapter,
 		hasPreviousModule,
 		isQuizPassed,
 		moduleId: currentModuleId,
+		nextChapterId,
+		nextModuleId,
 		onNextChapter,
 		onNextModule,
 		onPreviousChapter,

@@ -83,11 +83,24 @@ const getCourse = async (id: string) => {
 		.get<HttpResponse<SingleCourseResp>>(endpoints(id).student.get_course)
 		.then((res) => res.data);
 };
-export const useGetCourse = ({ course_id }: { course_id: string }) => {
+export const useGetCourse = ({
+	course_id,
+	enabled,
+	refetchIntervalInBackground,
+	refetchInterval,
+}: {
+	course_id: string;
+	enabled?: boolean;
+	refetchIntervalInBackground?: boolean;
+	refetchInterval?: number;
+}) => {
 	return useQuery({
 		queryKey: ["course", { course_id }],
 		queryFn: () => getCourse(course_id),
 		select: (data) => data.data,
+		enabled,
+		refetchIntervalInBackground,
+		refetchInterval,
 	});
 };
 

@@ -49,15 +49,19 @@ const Page = () => {
 		isError,
 		error,
 	} = useGetCourse({
-		course_id: id as string,
+		course_id: String(id),
+		enabled: !!id,
+		refetchIntervalInBackground: true,
+		refetchInterval: 1000 * 15,
 	});
 
-	const currentChapterId = course?.current_chapter?.id;
+	const initialChapterId = course?.chapters[0].id || "";
+	// const currentChapterId = course?.current_chapter?.id;
 	const { data: chapter, isPending: isChapterPending } = useGetChapter({
-		chapter_id: currentChapterId ?? "",
-		enabled: !!currentChapterId,
+		chapter_id: initialChapterId || "",
+		enabled: !!initialChapterId,
 		refetchIntervalInBackground: true,
-		refetchInterval: 1000 * 30,
+		refetchInterval: 1000 * 15,
 	});
 
 	const chapters = React.useMemo(() => course?.chapters || [], [course]);
@@ -68,16 +72,23 @@ const Page = () => {
 		hasPreviousChapter,
 		isQuizPassed,
 		moduleId,
+		nextChapterId,
+		nextModuleId,
 		setCurrentChapterId,
 		setCurrentModuleId,
-	} = useCourseHandler({ chapters, modules: chapter?.modules || [] });
+	} = useCourseHandler({
+		chapters,
+		courseId: String(id),
+		modules: chapter?.modules || [],
+		onProgressUpdate: () => console.log("updated"),
+	});
 
 	React.useEffect(() => {
 		if (chapter) {
 			const firstModule = chapter.modules[0];
 			const currentModuleId = chapter.current_chapter_module;
-			setCurrentChapterId(chapterId || chapter.id);
-			setCurrentModuleId(moduleId || firstModule?.id || currentModuleId);
+			setCurrentChapterId(course?.chapters[0].id || chapterId);
+			setCurrentModuleId(currentModuleId || moduleId || firstModule?.id);
 		}
 	}, [chapter]);
 
@@ -111,18 +122,18 @@ const Page = () => {
 	React.useEffect(() => {
 		if (
 			!hasPreviousChapter &&
-			currentChapterId &&
+			initialChapterId &&
 			(chapter?.current_chapter_progress_percentage ?? 0) < 0
 		) {
 			startCourseMutation({
 				courseId: String(id),
 				payload: {
-					chapter_id: currentChapterId,
+					chapter_id: initialChapterId,
 					current_progress: chapter?.current_module_progress_percentage || 0,
 				},
 			});
 		}
-	}, [chapter, courseProgress, hasPreviousChapter, id, currentChapterId, startCourseMutation]);
+	}, [chapter, courseProgress, hasPreviousChapter, id, initialChapterId, startCourseMutation]);
 
 	React.useEffect(() => {
 		if (isError && error?.status === 403) {
@@ -194,9 +205,10 @@ const Page = () => {
 	const renderSidebar = () => (
 		<div className="col-start-3 flex h-fit w-full flex-col gap-2">
 			<CourseChapters
-				current_chapter_id={currentChapterId}
-				progress={overallProgress}
 				chapters={chapters}
+				courseId={String(id)}
+				current_chapter_id={initialChapterId}
+				progress={overallProgress}
 				dripping={course?.subject_id.chapter_dripping ?? "NO"}
 				setChapter={setCurrentChapterId}
 			/>
@@ -338,9 +350,12 @@ const Page = () => {
 							<TabsContent value="summary">
 								<ChapterModules
 									chapterProgress={chapter?.current_chapter_progress_percentage ?? 0}
+									courseId={String(id)}
 									currentChapterId={String(course?.current_chapter.id)}
 									currentModuleId={moduleId}
 									isQuizPassed={isQuizPassed}
+									nextModuleId={nextModuleId}
+									nextChapterId={nextChapterId}
 									onSelectModule={setCurrentModuleId}
 								/>
 							</TabsContent>
