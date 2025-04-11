@@ -149,10 +149,10 @@ const Page = () => {
 	return (
 		<>
 			<Seo title="Quiz" noIndex />
-			<div className="flex h-screen w-screen flex-col bg-white">
-				<nav className="mx-auto h-20 w-full border-b">
+			<div className="flex h-full w-screen flex-col bg-white">
+				<nav className="mx-auto py-4 px-4 items-center h-20 w-full border-b">
 					<div className="container flex h-full w-full items-center justify-between">
-						<div className="relative h-[30px] w-[135px] px-6">
+						<div className="relative h-[30px] w-[135px] px-6 hidden lg:flex">
 							<Image
 								src="/assets/images/classore.png"
 								alt="classore"
@@ -161,7 +161,7 @@ const Page = () => {
 							/>
 						</div>
 
-						<div className="flex flex-col items-center justify-center">
+						<div className="flex flex-col items-start lg:items-center justify-center">
 							<p className="text-[10px] uppercase tracking-widest text-neutral-400">
 								{course?.subject_id.name} - {chapter?.name}
 							</p>
@@ -175,7 +175,7 @@ const Page = () => {
 									{getInitials(`${user?.first_name} ${user?.last_name}`)}
 								</AvatarFallback>
 							</Avatar>
-							<div className="flex flex-col items-start">
+							<div className="hidden lg:flex flex-col items-start">
 								<p className="text-sm font-medium capitalize leading-none">
 									{user?.first_name} {user?.last_name}
 								</p>
@@ -208,8 +208,8 @@ const Page = () => {
 						)}
 					</div>
 				) : (
-					<div className="h-full w-full py-8">
-						<div className="container mx-auto grid h-full w-full grid-cols-4 gap-5">
+					<div className="h-full w-full py-8 px-4">
+						<div className="container mx-auto grid h-full w-full grid-cols-1 lg:grid-cols-4 gap-5">
 							<QuitQuizModal />
 
 							<div className="col-span-2 flex h-fit w-full flex-col gap-4 rounded-xl border border-neutral-200 bg-gradient-to-b from-primary-100 from-0% via-white via-15% to-white to-100% p-5">
@@ -278,7 +278,7 @@ const Page = () => {
 									/>
 								) : null}
 
-								<div className="flex w-full items-center justify-between border-t border-t-neutral-200 pt-4">
+								<div className="flex flex-col lg:flex-row w-full items-center justify-between border-t border-t-neutral-200 pt-4">
 									<Button
 										onClick={() => handleNavigation("skip")}
 										className="w-32 text-sm font-medium text-secondary-300 shadow-none hover:shadow-none"
