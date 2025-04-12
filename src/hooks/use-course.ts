@@ -69,27 +69,30 @@ export const useCourse = ({
 	const storedProgress = React.useMemo(() => getStoredProgress(courseId), [courseId]);
 	const validChapters = Array.isArray(chapters) ? chapters : [];
 
-	const [currentChapterId, setInternalChapterId] = React.useState(() => {
+	const initialChapterId = React.useMemo(() => {
 		if (storedProgress?.chapterId && validChapters.some((ch) => ch.id === storedProgress.chapterId)) {
 			return storedProgress.chapterId;
 		}
 		return validChapters[0]?.id || "";
-	});
+	}, [storedProgress?.chapterId, validChapters]);
 
-	const [currentModuleId, setInternalModuleId] = React.useState(() => {
-		const relevantChapterId =
-			storedProgress?.chapterId && validChapters.some((ch) => ch.id === storedProgress.chapterId)
-				? storedProgress.chapterId
-				: validChapters[0]?.id;
-		const relevantChapter = validChapters.find((ch) => ch.id === relevantChapterId);
-		const chapterModules = relevantChapter?.modules || [];
+	const initialChapter = React.useMemo(
+		() => validChapters.find((ch) => ch.id === initialChapterId) || validChapters[0] || null,
+		[initialChapterId, validChapters]
+	);
 
-		if (storedProgress?.moduleId && chapterModules.some((m) => m.id === storedProgress.moduleId)) {
+	const initialModules = React.useMemo(() => initialChapter?.modules || [], [initialChapter]);
+
+	const initialModuleId = React.useMemo(() => {
+		if (storedProgress?.moduleId && initialModules.some((m) => m.id === storedProgress.moduleId)) {
 			return storedProgress.moduleId;
 		}
 
-		return chapterModules[0]?.id || "";
-	});
+		return initialModules[0]?.id || "";
+	}, [storedProgress?.moduleId, initialModules]);
+
+	const [currentChapterId, setInternalChapterId] = React.useState(initialChapterId);
+	const [currentModuleId, setInternalModuleId] = React.useState(initialModuleId);
 
 	const { mutate } = useMutation({
 		mutationFn: updateModuleProgress,
@@ -124,6 +127,13 @@ export const useCourse = ({
 		() => moduleList[currentModuleIndex] || null,
 		[moduleList, currentModuleIndex]
 	);
+
+	// If module ID becomes invalid (not found in current chapter), reset to first module
+	React.useEffect(() => {
+		if (moduleList.length > 0 && currentModuleIndex === -1) {
+			setInternalModuleId(moduleList[0].id);
+		}
+	}, [moduleList, currentModuleIndex]);
 
 	const hasNextChapter =
 		currentChapterIndex !== -1 && currentChapterIndex < validChapters.length - 1;
@@ -161,7 +171,7 @@ export const useCourse = ({
 				});
 			}
 		},
-		[courseId, onProgressUpdate]
+		[courseId, mutate, onProgressUpdate]
 	);
 
 	const setCurrentChapterId = React.useCallback(
@@ -279,7 +289,7 @@ export const useCourse = ({
 	const isQuizPassed = React.useMemo(() => {
 		if (!currentModule) return false;
 		return currentModule?.is_passed || false;
-	}, []);
+	}, [currentModule]);
 
 	return {
 		chapterList: validChapters,
