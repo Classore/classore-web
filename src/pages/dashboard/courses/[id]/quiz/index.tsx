@@ -13,7 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { QuizResultModal } from "@/components/modals/quiz-result";
 import { SubmitQuizModal } from "@/components/modals/submit-quiz";
 import { useGetChapter, useGetCourse } from "@/queries/student";
-import { usePreventNavigation, useQuizHandler } from "@/hooks";
+import { useCourse, usePreventNavigation, useQuizHandler } from "@/hooks";
 import { QuitQuizModal } from "@/components/modals/quit-quiz";
 import { QuizTimer } from "@/components/course/quiz-timer";
 import { Seo, Spinner } from "@/components/shared";
@@ -21,7 +21,6 @@ import type { ChapterModuleProps } from "@/types";
 import { Button } from "@/components/ui/button";
 import { capitalize, getInitials } from "@/lib";
 import { useUserStore } from "@/store/z-store";
-import { useCourseHandler } from "@/hooks";
 
 const items = [
 	{ label: "answered", color: "var(--primary-400)" },
@@ -106,10 +105,9 @@ const Page = () => {
 		onError: () => toast.error("Something went wrong! Please try again"),
 	});
 
-	const { hasNextChapter, hasNextModule, onNextChapter, onNextModule } = useCourseHandler({
+	const { hasNextChapter, hasNextModule, onNext } = useCourse({
 		courseId: String(id),
 		chapters: course?.chapters || [],
-		modules: chapter?.modules || [],
 	});
 
 	const {
@@ -355,8 +353,7 @@ const Page = () => {
 				hasNextModule={hasNextModule}
 				nextChapterId={nextChapterId}
 				nextModuleId={nextModuleId}
-				onNextChapter={onNextChapter}
-				onNextModule={onNextModule}
+				onNext={onNext}
 				open={open}
 				result={result}
 				setOpen={setOpen}

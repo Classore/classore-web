@@ -1,8 +1,14 @@
-import { RiAiGenerate, RiLoaderLine, RiMore2Line, RiVolumeUpLine } from "@remixicon/react";
 import React from "react";
+import {
+	RiAiGenerate,
+	RiHashtag,
+	RiLoaderLine,
+	RiMore2Line,
+	RiVolumeUpLine,
+} from "@remixicon/react";
 
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { useGetInfiniteMessages } from "@/queries/message";
+import { useGetInfiniteMessages, useGetRoom } from "@/queries/message";
 import { DashboardLayout } from "@/components/layouts";
 import { MessageItem } from "@/components/message";
 import { Seo } from "@/components/shared";
@@ -10,6 +16,8 @@ import { Seo } from "@/components/shared";
 const Page = () => {
 	const [roomId, setRoomId] = React.useState("");
 	const [open, setOpen] = React.useState(false);
+
+	const { data: room } = useGetRoom(roomId);
 
 	const { data: messages, isFetchingNextPage } = useGetInfiniteMessages({ roomId });
 	messages?.pages.map((page) =>
@@ -45,7 +53,7 @@ const Page = () => {
 						<div className="flex h-[76px] w-full items-center justify-between border-b border-neutral-200 px-8">
 							<div className="flex items-center">
 								<div className="rounded-lg bg-green-500 p-2 text-white">
-									<RiAiGenerate />
+									{!room || room?.data.name?.includes("general") ? <RiAiGenerate /> : <RiHashtag />}
 								</div>
 								<div>
 									<p className="font-medium"></p>
@@ -66,7 +74,7 @@ const Page = () => {
 								<p className="text-center text-sm text-neutral-400">Select a room to start chatting</p>
 							</div>
 						) : (
-							<div className="h-[calc(100%-76px)] w-full">
+							<div className="flex h-[calc(100%-76px)] w-full flex-col gap-y-4">
 								{messages?.pages.map((page) =>
 									page.data.map((message) => <MessageItem key={message.id} message={message} />)
 								)}

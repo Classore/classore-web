@@ -1,5 +1,9 @@
+import { useMutation } from "@tanstack/react-query";
 import React from "react";
+
 import type { ChapterModuleProps, ChapterResp } from "@/types";
+import { updateModuleProgress } from "@/queries/user";
+import { queryClient } from "@/providers";
 
 interface UseCourseProps {
 	chapters: ChapterResp[];
@@ -87,6 +91,18 @@ export const useCourse = ({
 		return chapterModules[0]?.id || "";
 	});
 
+	const { mutate } = useMutation({
+		mutationFn: updateModuleProgress,
+		mutationKey: ["update-module-progress", courseId, currentChapterId, currentModuleId],
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["course"] });
+			queryClient.invalidateQueries({ queryKey: ["chapters"] });
+			if (onProgressUpdate) {
+				onProgressUpdate(currentChapterId, currentModuleId);
+			}
+		},
+	});
+
 	const currentChapterIndex = React.useMemo(
 		() => validChapters.findIndex((chapter) => chapter.id === currentChapterId),
 		[validChapters, currentChapterId]
@@ -128,12 +144,17 @@ export const useCourse = ({
 			Boolean(currentModule?.is_completed || (currentModule?.progress || 0) >= 50) &&
 			Boolean(currentModule?.is_passed)
 		);
-		return true;
 	}, [currentModule]);
 
 	const updateProgress = React.useCallback(
 		(chapterId: string, moduleId: string) => {
 			storeProgress(courseId, { chapterId, moduleId });
+			mutate({
+				course_id: courseId,
+				current_progress: 0,
+				...(chapterId && { current_chapter_id: chapterId }),
+				...(moduleId && { current_module_id: moduleId }),
+			});
 			if (onProgressUpdate) {
 				onProgressUpdate(chapterId, moduleId).catch((error) => {
 					console.error("Error updating progress:", error);

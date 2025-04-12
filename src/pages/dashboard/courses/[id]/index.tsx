@@ -13,13 +13,12 @@ import { JoinCommunityModal, RenewalModal } from "@/components/modals";
 import { CourseActions } from "@/components/course/course-actions";
 import { type StartCourseDto, startCourse } from "@/queries/user";
 import blockchain from "@/assets/illustrations/blockchain.svg";
+import { useCourseStore } from "@/store/z-store/course-store";
 import trophy from "@/assets/illustrations/trophy.svg";
 import { DashboardLayout } from "@/components/layouts";
-// import { updateModuleProgress } from "@/queries/user";
 import { Button } from "@/components/ui/button";
 import { capitalize, getInitials } from "@/lib";
 import { useCourse } from "@/hooks";
-// import { queryClient } from "@/providers";
 import {
 	AvatarGroup,
 	BackBtn,
@@ -71,7 +70,22 @@ const Page = () => {
 		refetchInterval: 1000 * 15,
 	});
 
-	const chapters = React.useMemo(() => course?.chapters || [], [course]);
+	const { getCourse, isExistingCourse, setCourse } = useCourseStore();
+
+	React.useEffect(() => {
+		const isExisting = isExistingCourse(String(id));
+		if (!isExisting && course) {
+			setCourse(course);
+		}
+	}, [id, isExistingCourse, setCourse]);
+
+	const thisCourse = React.useMemo(() => {
+		return getCourse(String(id));
+	}, [getCourse, id]);
+
+	const chapters = React.useMemo(() => {
+		return thisCourse?.chapters || course?.chapters || [];
+	}, [course]);
 
 	const {
 		chapterId,
