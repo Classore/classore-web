@@ -106,8 +106,10 @@ const Page = () => {
 	});
 
 	const { hasNextChapter, hasNextModule, onNext } = useCourse({
-		courseId: String(id),
+		chapterId: "",
 		chapters: course?.chapters || [],
+		courseId: String(id),
+		moduleId: String(module_id),
 	});
 
 	const {
