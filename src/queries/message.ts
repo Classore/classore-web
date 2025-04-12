@@ -30,6 +30,23 @@ export const useCreateRoom = (members: string[]) => {
 	});
 };
 
+const getRoom = async (roomId: string) => {
+	return axios
+		.get<HttpResponse<RoomProps>>(endpoints(roomId).message.get_room)
+		.then((res) => res.data);
+};
+export const useGetRoom = (roomId: string) => {
+	return useQuery({
+		queryKey: ["room", roomId],
+		queryFn: () => getRoom(roomId),
+		enabled: !!roomId,
+		staleTime: Infinity,
+		gcTime: Infinity,
+		refetchIntervalInBackground: true,
+		refetchInterval: 1000 * 10,
+	});
+};
+
 const uploadMedia = async (media: File) => {
 	const formData = new FormData();
 	formData.append("nedia", media);
