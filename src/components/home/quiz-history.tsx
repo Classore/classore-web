@@ -1,43 +1,13 @@
 import { RiCalendar2Line, RiCheckLine, RiCloseLine, RiFileHistoryLine } from "@remixicon/react";
-
-import { useGetChapter } from "@/queries/student";
-import { Spinner } from "../shared";
 import { format } from "date-fns";
 
+import type { ChapterModuleProps } from "@/types";
+
 interface Props {
-	currentChapterId: string;
-	currentModuleId: string;
+	currentModule: ChapterModuleProps | null;
 }
 
-export const QuizHistory = ({ currentChapterId, currentModuleId }: Props) => {
-	const {
-		data: chapter,
-		isPending,
-		isError,
-	} = useGetChapter({
-		chapter_id: currentChapterId,
-	});
-
-	const lesson = chapter?.modules.find((module) => module.id === currentModuleId);
-
-	if (isPending) {
-		return (
-			<div className="flex w-full items-center justify-center gap-2 p-4 text-primary-300">
-				<Spinner variant="primary" />
-				<p className="text-sm">Getting current lesson...</p>
-			</div>
-		);
-	}
-
-	if (isError) {
-		return (
-			<div className="flex w-full flex-col items-center justify-center gap-2 p-4">
-				<p className="font-semibold">Error fetching chapter</p>
-				<p className="text-sm text-neutral-400">Please refresh the page to try again</p>
-			</div>
-		);
-	}
-
+export const QuizHistory = ({ currentModule }: Props) => {
 	return (
 		<div className="mt-4 flex w-full flex-col rounded-lg border">
 			<div className="flex items-center gap-4 p-4">
@@ -50,13 +20,13 @@ export const QuizHistory = ({ currentChapterId, currentModuleId }: Props) => {
 				</div>
 			</div>
 			<hr className="w-full bg-neutral-300" />
-			{!lesson?.quizes.length ? (
+			{!currentModule?.quizes.length ? (
 				<div className="flex w-full flex-col items-center justify-center gap-2 p-4">
 					<p className="text-sm text-neutral-400">You have no quiz history</p>
 				</div>
 			) : (
 				<div className="flex w-full flex-col">
-					{lesson?.quizes.map((quiz) => (
+					{currentModule?.quizes.map((quiz) => (
 						<div
 							key={quiz.id}
 							className="flex w-full items-center justify-between border-b p-4 last:border-b-0">

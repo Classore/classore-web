@@ -1,5 +1,6 @@
 export * from "./use-countdown";
 export * from "./use-course-handler";
+export * from "./use-course";
 export * from "./use-debounce";
 export * from "./use-device-width";
 export * from "./use-download";
