@@ -6,11 +6,12 @@ interface UseCourseProps {
 	chapters: ChapterResp[];
 	courseId: string;
 	modules: ChapterModuleProps[];
-	onProgressUpdate?: () => void;
+	onProgressUpdate?: (currentChapterId: string, currentModuleId: string) => Promise<void>;
 }
 
 interface UseCourseHandler {
-	canProceed: (moduleId: string) => boolean;
+	chapterList: ChapterResp[];
+	canProceed: boolean;
 	chapterId: string;
 	currentChapter: ChapterResp | null;
 	currentModule: ChapterModuleProps | null;
@@ -20,6 +21,7 @@ interface UseCourseHandler {
 	hasPreviousModule: boolean;
 	isQuizPassed: (moduleId: string) => boolean;
 	moduleId: string;
+	moduleList: ChapterModuleProps[];
 	nextChapterId: string;
 	nextModuleId: string;
 	onNextChapter: () => void;
@@ -28,129 +30,276 @@ interface UseCourseHandler {
 	onPreviousModule: () => void;
 	setCurrentChapterId: (chapterId: string) => void;
 	setCurrentModuleId: (moduleId: string) => void;
+	resetModuleForChapter: (chapterId: string) => string; // New utility function
 }
+
+const getStoredProgress = (courseId: string) => {
+	if (typeof window === "undefined") return null;
+	try {
+		const data = localStorage.getItem(`course_progress_${courseId}`);
+		return data ? JSON.parse(data) : null;
+	} catch (error) {
+		console.error("Error reading from localStorage:", error);
+		return null;
+	}
+};
+
+const storeProgress = (courseId: string, chapterId: string, moduleId: string) => {
+	if (typeof window === "undefined") return;
+
+	try {
+		localStorage.setItem(`course_progress_${courseId}`, JSON.stringify({ chapterId, moduleId }));
+	} catch (error) {
+		console.error("Error writing to localStorage:", error);
+	}
+};
 
 export const useCourseHandler = ({
 	chapters,
 	courseId,
 	modules,
+	onProgressUpdate,
 }: UseCourseProps): UseCourseHandler => {
-	const [currentChapterId, setCurrentChapterId] = useState(chapters[0]?.id || "");
-	const [currentModuleId, setCurrentModuleId] = useState(modules[0]?.id || "");
+	const storedProgress = getStoredProgress(courseId);
 
-	const currentChapterIndex = useMemo(
-		() => chapters.findIndex((chapter) => chapter?.id === currentChapterId),
-		[chapters, currentChapterId]
-	);
+	const validChapters = Array.isArray(chapters) ? chapters : [];
 
-	const currentModuleIndex = useMemo(
-		() => modules.findIndex((module) => module?.id === currentModuleId),
-		[modules, currentModuleId]
-	);
+	const [currentChapterId, setInternalChapterId] = useState(() => {
+		if (storedProgress?.chapterId && validChapters.some((ch) => ch.id === storedProgress.chapterId)) {
+			return storedProgress.chapterId;
+		}
+		return validChapters[0]?.id || "";
+	});
 
-	const currentChapter = useMemo(
-		() => (currentChapterIndex >= 0 ? chapters[currentChapterIndex] : null),
-		[chapters, currentChapterIndex]
-	);
+	const [currentModuleId, setInternalModuleId] = useState(() => {
+		const relevantChapterId =
+			storedProgress?.chapterId && validChapters.some((ch) => ch.id === storedProgress.chapterId)
+				? storedProgress.chapterId
+				: validChapters[0]?.id;
 
-	const currentModule = useMemo(
-		() => (currentModuleIndex >= 0 ? modules[currentModuleIndex] : null),
-		[modules, currentModuleIndex]
-	);
+		const relevantChapter = validChapters.find((ch) => ch.id === relevantChapterId);
+		const chapterModules = relevantChapter?.modules || modules || [];
 
-	const canProceed = useCallback(
-		(moduleId: string) => {
-			const module = modules.find((module) => module?.id === moduleId);
-			return module?.is_passed || false;
+		if (storedProgress?.moduleId && chapterModules.some((m) => m.id === storedProgress.moduleId)) {
+			return storedProgress.moduleId;
+		}
+
+		return chapterModules[0]?.id || modules[0]?.id || "";
+	});
+
+	const resetModuleForChapter = useCallback(
+		(chapterId: string): string => {
+			const targetChapter = validChapters.find((ch) => ch.id === chapterId);
+			const chapterModules = targetChapter?.modules || [];
+			const firstModuleId = chapterModules[0]?.id || "";
+
+			return firstModuleId;
 		},
-		[modules]
+		[validChapters]
 	);
 
-	const hasNextChapter = useMemo(
-		() => currentChapterIndex < chapters.length - 1 && currentChapterIndex >= 0,
-		[chapters.length, currentChapterIndex]
+	const setCurrentChapterId = useCallback(
+		(chapterId: string) => {
+			if (!chapterId) return;
+			const targetChapter = validChapters.find((ch) => ch.id === chapterId);
+
+			if (!targetChapter) {
+				console.error(`Chapter with ID ${chapterId} not found`);
+				return;
+			}
+
+			setInternalChapterId(chapterId);
+			const firstModuleId = resetModuleForChapter(chapterId);
+
+			if (firstModuleId) {
+				setInternalModuleId(firstModuleId);
+				storeProgress(courseId, chapterId, firstModuleId);
+			} else {
+				console.error(`No valid module found for chapter ${chapterId}`);
+			}
+		},
+		[validChapters, courseId, resetModuleForChapter]
 	);
 
-	const hasPreviousChapter = useMemo(() => currentChapterIndex > 0, [currentChapterIndex]);
+	const setCurrentModuleId = useCallback(
+		(moduleId: string) => {
+			if (!moduleId) return;
 
-	const hasNextModule = useMemo(
-		() => currentModuleIndex < modules.length - 1 && currentModuleIndex >= 0,
-		[modules.length, currentModuleIndex]
+			setInternalModuleId(moduleId);
+			storeProgress(courseId, currentChapterId, moduleId);
+		},
+		[courseId, currentChapterId]
 	);
 
-	const hasPreviousModule = useMemo(() => currentModuleIndex > 0, [currentModuleIndex]);
+	const chapterList = useMemo(() => validChapters, [validChapters]);
+	const moduleList = useMemo(() => modules || [], [modules]);
 
-	const nextChapterId = useMemo(
-		() => (hasNextChapter ? chapters[currentChapterIndex + 1]?.id : ""),
-		[chapters, currentChapterIndex, hasNextChapter]
-	);
+	const currentChapter = useMemo(() => {
+		return chapterList.find((chapter) => chapter.id === currentChapterId) || null;
+	}, [chapterList, currentChapterId]);
 
-	const nextModuleId = useMemo(
-		() => (hasNextModule ? modules[currentModuleIndex + 1]?.id : ""),
-		[modules, currentModuleIndex, hasNextModule]
-	);
+	const currentModule = useMemo(() => {
+		return moduleList.find((module) => module.id === currentModuleId) || null;
+	}, [moduleList, currentModuleId]);
+
+	const currentChapterIndex = useMemo(() => {
+		return chapterList.findIndex((chapter) => chapter.id === currentChapterId);
+	}, [chapterList, currentChapterId]);
+
+	const currentModuleIndex = useMemo(() => {
+		return moduleList.findIndex((module) => module.id === currentModuleId);
+	}, [moduleList, currentModuleId]);
+
+	const hasNextChapter = useMemo(() => {
+		return currentChapterIndex < chapterList.length - 1 && currentChapterIndex !== -1;
+	}, [currentChapterIndex, chapterList]);
+
+	const hasPreviousChapter = useMemo(() => {
+		return currentChapterIndex > 0;
+	}, [currentChapterIndex]);
+
+	const hasNextModule = useMemo(() => {
+		return currentModuleIndex < moduleList.length - 1 && currentModuleIndex !== -1;
+	}, [currentModuleIndex, moduleList]);
+
+	const hasPreviousModule = useMemo(() => {
+		return currentModuleIndex > 0;
+	}, [currentModuleIndex]);
+
+	const nextChapterId = useMemo(() => {
+		if (!hasNextChapter) return "";
+		return chapterList[currentChapterIndex + 1]?.id || "";
+	}, [chapterList, currentChapterIndex, hasNextChapter]);
+
+	const nextModuleId = useMemo(() => {
+		if (!hasNextModule) return "";
+		return moduleList[currentModuleIndex + 1]?.id || "";
+	}, [moduleList, currentModuleIndex, hasNextModule]);
 
 	const isQuizPassed = useCallback(
 		(moduleId: string) => {
-			const module = modules.find((module) => module?.id === moduleId);
-			return module?.is_passed || false;
+			const targetModule = moduleList.find((module) => module.id === moduleId);
+			return !!targetModule?.is_passed;
 		},
-		[modules]
+		[moduleList]
 	);
 
-	const updateProgress = useCallback(
-		(newChapterId?: string, newModuleId?: string) => {
-			if (newChapterId) {
-				setCurrentChapterId(newChapterId);
-			}
-			if (newModuleId) {
-				setCurrentModuleId(newModuleId);
-			}
-		},
-		[courseId]
-	);
+	const canProceed = useMemo(() => {
+		if (!currentModule) return false;
+		return Boolean(currentModule.is_completed) || Boolean(currentModule.is_passed);
+	}, [currentModule]);
 
-	const onNextChapter = useCallback(async () => {
-		if (!hasNextChapter) return;
-
-		const nextChapter = chapters[currentChapterIndex + 1];
-		const firstModuleId = nextChapter.modules[0]?.id;
-
-		if (!firstModuleId) return;
-
-		await updateProgress(nextChapter.id, firstModuleId);
-	}, [chapters, currentChapterIndex, hasNextChapter, updateProgress]);
-
-	const onPreviousChapter = useCallback(async () => {
-		if (!hasPreviousChapter) return;
-
-		const previousChapter = chapters[currentChapterIndex - 1];
-		const firstModuleId = previousChapter.modules[0]?.id;
-
-		if (!firstModuleId) return;
-
-		await updateProgress(previousChapter.id, firstModuleId);
-	}, [chapters, currentChapterIndex, hasPreviousChapter, updateProgress]);
-
-	const onNextModule = useCallback(async () => {
+	const onNextModule = useCallback(() => {
 		if (!hasNextModule) return;
 
-		const nextModule = modules[currentModuleIndex + 1];
-		if (!nextModule?.id) return;
+		const nextModule = moduleList[currentModuleIndex + 1];
+		if (nextModule?.id) {
+			setCurrentModuleId(nextModule.id);
 
-		await updateProgress(undefined, nextModule.id);
-	}, [currentModuleIndex, hasNextModule, modules, updateProgress]);
+			if (onProgressUpdate) {
+				onProgressUpdate(currentChapterId, nextModule.id).catch((error) => {
+					console.error("Error updating progress:", error);
+				});
+			}
+		}
+	}, [
+		hasNextModule,
+		moduleList,
+		currentModuleIndex,
+		currentChapterId,
+		onProgressUpdate,
+		setCurrentModuleId,
+	]);
 
-	const onPreviousModule = useCallback(async () => {
+	const onPreviousModule = useCallback(() => {
 		if (!hasPreviousModule) return;
 
-		const previousModule = modules[currentModuleIndex - 1];
-		if (!previousModule?.id) return;
+		const prevModule = moduleList[currentModuleIndex - 1];
+		if (prevModule?.id) {
+			setCurrentModuleId(prevModule.id);
 
-		await updateProgress(undefined, previousModule.id);
-	}, [currentModuleIndex, hasPreviousModule, modules, updateProgress]);
+			if (onProgressUpdate) {
+				onProgressUpdate(currentChapterId, prevModule.id).catch((error) => {
+					console.error("Error updating progress:", error);
+				});
+			}
+		}
+	}, [
+		hasPreviousModule,
+		moduleList,
+		currentModuleIndex,
+		currentChapterId,
+		onProgressUpdate,
+		setCurrentModuleId,
+	]);
+
+	const onNextChapter = useCallback(() => {
+		if (!hasNextChapter) return;
+
+		const nextChapter = chapterList[currentChapterIndex + 1];
+		if (!nextChapter) return;
+
+		const nextChapterId = nextChapter.id;
+
+		const nextChapterModules = nextChapter.modules || [];
+		console.log({ nextChapterModules });
+		const firstModuleId = nextChapterModules[0]?.id || "";
+
+		if (firstModuleId) {
+			setCurrentChapterId(nextChapterId);
+
+			if (onProgressUpdate) {
+				onProgressUpdate(nextChapterId, firstModuleId).catch((error) => {
+					console.error("Error updating progress:", error);
+				});
+			}
+		} else {
+			console.error(`No modules found in next chapter ${nextChapterId}`);
+		}
+	}, [hasNextChapter, chapterList, currentChapterIndex, setCurrentChapterId, onProgressUpdate]);
+
+	const onPreviousChapter = useCallback(() => {
+		if (!hasPreviousChapter) return;
+
+		const prevChapter = chapterList[currentChapterIndex - 1];
+		if (!prevChapter) return;
+
+		const prevChapterId = prevChapter.id;
+
+		// Set to last module of the previous chapter
+		const prevChapterModules = prevChapter.modules || [];
+
+		if (prevChapterModules.length > 0) {
+			const lastModuleIndex = prevChapterModules.length - 1;
+			const lastModuleId = prevChapterModules[lastModuleIndex].id;
+
+			// Set chapter first, which will trigger module update
+			setCurrentChapterId(prevChapterId);
+
+			// Explicitly set to last module (overriding default first module selection)
+			if (lastModuleId) {
+				setCurrentModuleId(lastModuleId);
+
+				if (onProgressUpdate) {
+					onProgressUpdate(prevChapterId, lastModuleId).catch((error) => {
+						console.error("Error updating progress:", error);
+					});
+				}
+			}
+		} else {
+			setCurrentChapterId(prevChapterId);
+		}
+	}, [
+		hasPreviousChapter,
+		chapterList,
+		currentChapterIndex,
+		setCurrentChapterId,
+		setCurrentModuleId,
+		onProgressUpdate,
+	]);
 
 	return {
+		chapterList,
 		canProceed,
 		chapterId: currentChapterId,
 		currentChapter,
@@ -161,6 +310,7 @@ export const useCourseHandler = ({
 		hasPreviousModule,
 		isQuizPassed,
 		moduleId: currentModuleId,
+		moduleList,
 		nextChapterId,
 		nextModuleId,
 		onNextChapter,
@@ -169,5 +319,6 @@ export const useCourseHandler = ({
 		onPreviousModule,
 		setCurrentChapterId,
 		setCurrentModuleId,
+		resetModuleForChapter,
 	};
 };

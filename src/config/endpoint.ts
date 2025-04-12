@@ -27,6 +27,12 @@ export const endpoints = (id?: string) => {
 		delete: `/courses/${id}`,
 	} as const;
 
+	const message = {
+		create_room: "/chat/find-or-create-room",
+		upload: "/chat/media-upload",
+		fetch_messages: "/chat/fetch-room-messages",
+	} as const;
+
 	const parents = {
 		home: "/parent/home",
 		add_ward: "/auth/add-my-wards",
@@ -85,5 +91,5 @@ export const endpoints = (id?: string) => {
 		get: `/mail/fetch-waitlist`,
 	};
 
-	return { auth, bank, courses, school, user, waitlist, student, test_center, parents };
+	return { auth, bank, courses, school, user, waitlist, student, test_center, parents, message };
 };
