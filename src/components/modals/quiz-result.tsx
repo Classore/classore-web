@@ -14,8 +14,7 @@ type QuizResultModalProps = {
 	hasNextModule: boolean;
 	nextChapterId: string;
 	nextModuleId: string;
-	onNextChapter: () => void;
-	onNextModule: () => void;
+	onNext: () => void;
 	open: boolean;
 	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 	result: SubmitQuizResp | null;
@@ -27,8 +26,7 @@ export const QuizResultModal = ({
 	hasNextModule,
 	nextChapterId,
 	nextModuleId,
-	onNextChapter,
-	onNextModule,
+	onNext,
 	open,
 	resetQuiz,
 	result,
@@ -51,10 +49,10 @@ export const QuizResultModal = ({
 
 	const goToNextLesson = React.useCallback(() => {
 		if (hasNextModule) {
-			onNextModule();
+			onNext();
 			router.push(`/dashboard/courses/${id}?moduleId=${nextModuleId}`);
 		} else if (!hasNextModule && hasNextChapter) {
-			onNextChapter();
+			onNext();
 			router.push(`/dashboard/courses/${nextChapterId}`);
 		} else {
 			toast.success("You have completed all the lessons in this course");
