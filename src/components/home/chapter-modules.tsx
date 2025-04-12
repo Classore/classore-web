@@ -1,12 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
 import * as React from "react";
-
-import { convertSecondsToMinSec, sanitizeHtml } from "@/lib";
-import { QuizAlertModal, TakeQuizModal } from "../modals";
-import { updateModuleProgress } from "@/queries/user";
-import { useGetChapter } from "@/queries/student";
-import { queryClient } from "@/providers";
-import { Spinner } from "../shared";
 import {
 	RiCheckboxCircleFill,
 	RiFileTextLine,
@@ -14,79 +6,62 @@ import {
 	RiPlayCircleLine,
 } from "@remixicon/react";
 
+import type { ChapterResp, ChapterModuleProps } from "@/types";
+import { convertSecondsToMinSec, sanitizeHtml } from "@/lib";
+import { QuizAlertModal, TakeQuizModal } from "../modals";
+import { Spinner } from "../shared";
+
 interface Props {
+	chapter: ChapterResp | undefined;
 	chapterProgress: number;
-	courseId: string;
 	currentChapterId: string;
 	currentModuleId: string;
-	isQuizPassed: (moduleId: string) => boolean;
+	hasNextChapter: boolean;
+	hasNextModule: boolean;
+	hasPreviousChapter: boolean;
+	hasPreviousModule: boolean;
+	isError: boolean;
+	isPending: boolean;
+	moduleList: ChapterModuleProps[];
 	nextChapterId: string;
 	nextModuleId: string;
+	onSelectChapter: (chapterId: string) => void;
 	onSelectModule: (moduleId: string) => void;
 }
 
 export const ChapterModules = ({
+	chapter,
 	chapterProgress,
-	courseId,
 	currentChapterId,
 	currentModuleId,
-	isQuizPassed,
-	nextChapterId,
-	nextModuleId,
+	moduleList,
+	isError,
+	isPending,
 	onSelectModule,
 }: Props) => {
+	const [activeModuleId, setActiveModuleId] = React.useState(currentModuleId);
 	const [openTakeQuiz, setOpenTakeQuiz] = React.useState(false);
 	const [open, setOpen] = React.useState(false);
 
-	const { isPending: isUpdatingProgress, mutate } = useMutation({
-		mutationFn: updateModuleProgress,
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["course"] });
-			queryClient.invalidateQueries({ queryKey: ["chapter"] });
-		},
-		onError: (error) => {
-			console.log(error);
-		},
-	});
-
-	const {
-		data: chapter,
-		isPending,
-		isError,
-	} = useGetChapter({
-		chapter_id: currentChapterId,
-		enabled: !!currentChapterId,
-	});
-
-	const modules = React.useMemo(() => {
-		if (!chapter) return [];
-		return chapter.modules;
-	}, [chapter]);
-
-	const passedQuiz = isQuizPassed(currentModuleId);
-
 	React.useEffect(() => {
-		mutate({
-			course_id: courseId,
-			current_progress: 0,
-			...(nextChapterId !== "" && { currentChapterId: nextChapterId }),
-			...(nextModuleId !== "" && { currentModuleId: nextModuleId }),
-		});
-	}, [nextChapterId, nextModuleId]);
+		setActiveModuleId(currentModuleId);
+	}, [currentModuleId]);
 
-	const canProceedToNextLesson = React.useMemo(() => {
-		return chapterProgress > 50 && passedQuiz;
-	}, [chapterProgress, isQuizPassed]);
-
-	const handleSelectModule = (moduleId: string) => {
-		if (!passedQuiz && chapterProgress < 50) {
+	const handleSelectModule = (moduleId: string, is_passed: boolean) => {
+		if (!is_passed && chapterProgress < 50 && moduleId !== moduleList[0].id) {
 			setOpen(true);
 		} else {
 			onSelectModule(moduleId);
 		}
 	};
 
-	if (isPending || isUpdatingProgress) {
+	React.useEffect(() => {
+		if (openTakeQuiz) {
+			setOpenTakeQuiz(false);
+		}
+	}, [currentChapterId]);
+
+	if (isPending) {
 		return (
 			<div className="flex w-full items-center justify-center gap-2 p-4 text-primary-300">
 				<Spinner variant="primary" />
@@ -128,7 +103,7 @@ export const ChapterModules = ({
 									</div>
 									<div className="flex items-center gap-1">
 										<RiFileTextLine size={18} />
-										<span>{chapter.no_of_quizes} Quizzes</span>
+										<span>{chapter?.no_of_quizes} Quizzes</span>
 									</div>
 								</div>
 							</div>
@@ -145,14 +120,13 @@ export const ChapterModules = ({
 							<p className="text-xs font-bold">{chapterProgress}%</p>
 						</div>
 					</div>
-					{modules
+					{moduleList
 						.sort((a, b) => a.sequence - b.sequence)
 						.map((module) => (
 							<button
 								type="button"
-								disabled={!canProceedToNextLesson}
 								key={module.id}
-								onClick={() => handleSelectModule(module.id)}
+								onClick={() => handleSelectModule(module.id, module?.is_passed || false)}
 								className={`flex w-full items-center gap-4 border-b border-b-neutral-200 px-6 py-4 ${currentModuleId === module.id ? "border-l-4 border-l-primary-300" : ""}`}>
 								<div
 									className={`grid size-8 place-items-center rounded-md ${module.is_completed || currentModuleId === module.id ? "bg-[rgba(241,236,249,0.5)] text-primary-300" : "bg-neutral-100 text-neutral-400"}`}>
@@ -179,10 +153,10 @@ export const ChapterModules = ({
 			</div>
 
 			<QuizAlertModal open={open} setOpen={setOpen} setOpenTakeQuiz={setOpenTakeQuiz} />
-			{currentChapterId && currentModuleId && (
+			{openTakeQuiz && (
 				<TakeQuizModal
 					currentChapterId={currentChapterId}
-					currentModuleId={currentModuleId}
+					currentModuleId={activeModuleId}
 					open={openTakeQuiz}
 					setOpen={setOpenTakeQuiz}
 				/>

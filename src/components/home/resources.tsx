@@ -11,15 +11,12 @@ import {
 	type RemixiconComponentType,
 } from "@remixicon/react";
 
-import { useGetChapter } from "@/queries/student";
-import type { FiletypeProps } from "@/types";
+import type { ChapterModuleProps, FiletypeProps } from "@/types";
 import { getFileExtension } from "@/lib";
 import { useDownload } from "@/hooks";
-import { Spinner } from "../shared";
 
 interface Props {
-	currentChapterId: string;
-	currentModuleId: string;
+	currentModule: ChapterModuleProps | null;
 }
 
 const fileIcon: Record<FiletypeProps | (string & {}), RemixiconComponentType> = {
@@ -30,37 +27,7 @@ const fileIcon: Record<FiletypeProps | (string & {}), RemixiconComponentType> = 
 	txt: RiFileTextLine,
 };
 
-export const Resources = ({ currentChapterId, currentModuleId }: Props) => {
-	const {
-		data: chapter,
-		isPending,
-		isError,
-	} = useGetChapter({
-		chapter_id: currentChapterId,
-	});
-
-	const current_module = React.useMemo(() => {
-		return chapter?.modules.find((module) => module.id === currentModuleId);
-	}, [chapter, currentModuleId]);
-
-	if (isPending) {
-		return (
-			<div className="flex w-full items-center justify-center gap-2 p-4 text-primary-300">
-				<Spinner variant="primary" />
-				<p className="text-sm">Getting current lesson...</p>
-			</div>
-		);
-	}
-
-	if (isError) {
-		return (
-			<div className="flex w-full flex-col items-center justify-center gap-2 p-4">
-				<p className="font-semibold">Error fetching chapter</p>
-				<p className="text-sm text-neutral-400">Please refresh the page to try again</p>
-			</div>
-		);
-	}
-
+export const Resources = ({ currentModule }: Props) => {
 	return (
 		<div className="mt-4 flex w-full flex-col rounded-lg border">
 			<div className="flex items-center gap-4 p-4">
@@ -75,13 +42,13 @@ export const Resources = ({ currentChapterId, currentModuleId }: Props) => {
 				</div>
 			</div>
 			<hr className="w-full bg-neutral-300" />
-			{!current_module?.attachments.length ? (
+			{!currentModule?.attachments.length ? (
 				<div className="flex w-full flex-col items-center justify-center gap-2 p-4">
 					<p className="text-sm text-neutral-400">No resources found</p>
 				</div>
 			) : (
 				<div className="flex w-full flex-col">
-					{current_module.attachments.map((resource, index) => (
+					{currentModule.attachments.map((resource, index) => (
 						<Resource key={index} index={index} resource={resource} />
 					))}
 				</div>

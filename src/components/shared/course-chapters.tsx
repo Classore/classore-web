@@ -1,16 +1,15 @@
 import { RiArrowDropDownLine, RiFolderVideoLine, RiLockLine } from "@remixicon/react";
-import { useMutation } from "@tanstack/react-query";
 import * as React from "react";
 import { toast } from "sonner";
 
-import { updateModuleProgress } from "@/queries/user";
 import type { SingleCourseResp } from "@/types";
-import { queryClient } from "@/providers";
 
 type CourseChaptersProps = {
 	chapters: SingleCourseResp["chapters"];
 	courseId: string;
 	dripping: string;
+	hasNextChapter: boolean;
+	hasPreviousChapter: boolean;
 	progress: number;
 	setChapter: (chapterId: string) => void;
 	current_chapter_id?: string;
@@ -19,58 +18,63 @@ type CourseChaptersProps = {
 const MIN_CHAPTERS = 5;
 
 export const CourseChapters = ({
-	chapters,
-	courseId,
+	chapters = [],
 	dripping,
 	progress,
 	setChapter,
 	current_chapter_id,
 }: CourseChaptersProps) => {
 	const [showAllChapters, setShowAllChapters] = React.useState(false);
-
-	const { mutate } = useMutation({
-		mutationFn: updateModuleProgress,
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["course"] });
-			queryClient.invalidateQueries({ queryKey: ["chapter"] });
-		},
-		onError: (error) => {
-			console.log(error);
-		},
-	});
-
-	const displayedChapters = showAllChapters ? chapters : chapters.slice(0, MIN_CHAPTERS);
-
-	const hasMoreChapters = chapters.length > MIN_CHAPTERS;
+	const safeChapters = Array.isArray(chapters) ? chapters : [];
+	const displayedChapters = showAllChapters ? safeChapters : safeChapters.slice(0, MIN_CHAPTERS);
+	const hasMoreChapters = safeChapters.length > MIN_CHAPTERS;
 
 	const nextChapterId = React.useMemo(() => {
-		const currentChapterIndex = chapters.findIndex((chapter) => chapter.id === current_chapter_id);
+		if (!current_chapter_id) return "";
+
+		const currentChapterIndex = safeChapters.findIndex(
+			(chapter) => chapter.id === current_chapter_id
+		);
 		if (currentChapterIndex === -1) return "";
-		return chapters[currentChapterIndex + 1]?.id || "";
-	}, [chapters, current_chapter_id]);
 
-	const canAccessNextChapter = progress > 75;
+		return safeChapters[currentChapterIndex + 1]?.id || "";
+	}, [safeChapters, current_chapter_id]);
 
-	const isChapterLocked = (chapterId: string) => {
-		if (chapterId === nextChapterId && canAccessNextChapter) return false;
+	const canAccessNextChapter = progress > 50;
 
-		if (dripping === "NO") return false;
-		if (chapterId === current_chapter_id) return false;
-		const chapterIndex = chapters.findIndex((chapter) => chapter.id === chapterId);
-		const currentChapterIndex = chapters.findIndex((chapter) => chapter.id === current_chapter_id);
-		if (chapterIndex < currentChapterIndex) return false;
-		if (chapterIndex === currentChapterIndex + 1 && canAccessNextChapter) return false;
-		return true;
-	};
+	const isChapterLocked = React.useCallback(
+		(chapterId: string) => {
+			if (!chapterId || !current_chapter_id) return true;
+
+			if (chapterId === nextChapterId && canAccessNextChapter) return false;
+
+			if (dripping === "NO") return false;
+			if (chapterId === current_chapter_id) return false;
+			const chapterIndex = safeChapters.findIndex((chapter) => chapter.id === chapterId);
+			const currentChapterIndex = safeChapters.findIndex(
+				(chapter) => chapter.id === current_chapter_id
+			);
+
+			if (chapterIndex < currentChapterIndex) return false;
+			if (chapterIndex === currentChapterIndex + 1 && canAccessNextChapter) return false;
+
+			return true;
+		},
+		[safeChapters, current_chapter_id, nextChapterId, canAccessNextChapter, dripping]
+	);
 
 	const onSelectChapter = (chapterId: string) => {
+		const chapterExists = safeChapters.some((chapter) => chapter.id === chapterId);
+		if (!chapterExists) {
+			toast.error("Chapter not found");
+			return;
+		}
 		const locked = isChapterLocked(chapterId);
 		if (locked) {
 			toast.error("Chapter is locked. Complete previous chapter to unlock");
 			return;
 		}
 		setChapter(chapterId);
-		mutate({ course_id: courseId, current_progress: 0, current_chapter_id: chapterId });
 	};
 
 	return (
@@ -90,6 +94,8 @@ export const CourseChapters = ({
 				{displayedChapters
 					.sort((a, b) => a.sequence - b.sequence)
 					.map((chapter, index) => {
+						if (!chapter || !chapter.id) return null;
+
 						const locked = isChapterLocked(chapter.id);
 
 						return (
@@ -97,7 +103,7 @@ export const CourseChapters = ({
 								onClick={() => !locked && onSelectChapter(chapter.id)}
 								type="button"
 								disabled={locked || chapter.id === current_chapter_id}
-								key={index}
+								key={chapter.id || index}
 								className={`flex w-full flex-col gap-1 border-b p-4 ${showAllChapters && hasMoreChapters ? "last:border-b" : "last:border-b-0"}`}>
 								<div className="flex w-full items-center justify-between">
 									<p
