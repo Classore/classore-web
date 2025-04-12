@@ -13,7 +13,6 @@ import { JoinCommunityModal, RenewalModal } from "@/components/modals";
 import { CourseActions } from "@/components/course/course-actions";
 import { type StartCourseDto, startCourse } from "@/queries/user";
 import blockchain from "@/assets/illustrations/blockchain.svg";
-import { useCourseStore } from "@/store/z-store/course-store";
 import trophy from "@/assets/illustrations/trophy.svg";
 import { DashboardLayout } from "@/components/layouts";
 import { Button } from "@/components/ui/button";
@@ -56,8 +55,14 @@ const Page = () => {
 		refetchInterval: 1000 * 15,
 	});
 
-	const initialChapterId = course?.chapters[0]?.id || "";
-	const initialModuleId = course?.chapters[0]?.modules[0]?.id || "";
+	const { initialChapterId, initialModuleId } = React.useMemo(() => {
+		if (!course?.chapters?.length) {
+			return { initialChapterId: "", initialModuleId: "" };
+		}
+		const initialChapterId = course.chapters[0]?.id || "";
+		const initialModuleId = course.chapters[0]?.modules?.[0]?.id || "";
+		return { initialChapterId, initialModuleId };
+	}, [course]);
 
 	const {
 		data: chapter,
@@ -70,22 +75,10 @@ const Page = () => {
 		refetchInterval: 1000 * 15,
 	});
 
-	const { getCourse, isExistingCourse, setCourse } = useCourseStore();
-
-	React.useEffect(() => {
-		const isExisting = isExistingCourse(String(id));
-		if (!isExisting && course) {
-			setCourse(course);
-		}
-	}, [id, isExistingCourse, setCourse]);
-
-	const thisCourse = React.useMemo(() => {
-		return getCourse(String(id));
-	}, [getCourse, id]);
-
 	const chapters = React.useMemo(() => {
-		return thisCourse?.chapters || course?.chapters || [];
-	}, [course]);
+		if (isCourseLoading) return [];
+		return course?.chapters || [];
+	}, [course, isCourseLoading]);
 
 	const {
 		chapterId,
@@ -108,9 +101,11 @@ const Page = () => {
 		setCurrentChapterId,
 		setCurrentModuleId,
 	} = useCourse({
+		chapterId: initialChapterId,
 		chapters,
 		courseId: String(id),
-		onProgressUpdate: async () => console.log("updated"),
+		moduleId: initialModuleId,
+		onProgressUpdate: async () => {},
 	});
 
 	const { mutate: startCourseMutation } = useMutation({
@@ -135,8 +130,47 @@ const Page = () => {
 	}, [chapter, hasPreviousChapter, id, initialChapterId, startCourseMutation]);
 
 	React.useEffect(() => {
-		setCurrentModuleId(initialModuleId);
-	}, []);
+		if (initialChapterId && initialModuleId && !isCourseLoading) {
+			// Check localStorage first
+			const storageKey = `course_progress_${id}`;
+			let shouldSetInitialValues = true;
+
+			try {
+				const storedProgress = localStorage.getItem(storageKey);
+				if (storedProgress) {
+					const parsed = JSON.parse(storedProgress);
+
+					const chapterExists = chapters.some((ch) => ch.id === parsed.chapterId);
+					const moduleExists =
+						chapterExists &&
+						chapters
+							.find((ch) => ch.id === parsed.chapterId)
+							?.modules.some((m) => m.id === parsed.moduleId);
+
+					if (chapterExists && moduleExists) {
+						setCurrentChapterId(parsed.chapterId);
+						setCurrentModuleId(parsed.moduleId);
+						shouldSetInitialValues = false;
+					}
+				}
+			} catch (e) {
+				console.error("Error reading stored progress:", e);
+			}
+
+			if (shouldSetInitialValues) {
+				setCurrentChapterId(initialChapterId);
+				setCurrentModuleId(initialModuleId);
+			}
+		}
+	}, [
+		initialChapterId,
+		initialModuleId,
+		chapters,
+		id,
+		isCourseLoading,
+		setCurrentChapterId,
+		setCurrentModuleId,
+	]);
 
 	React.useEffect(() => {
 		if (isError && error?.status === 403) {
@@ -385,11 +419,50 @@ const Page = () => {
 		</>
 	);
 
+	const DebugState = () => {
+		const storedProgress = React.useMemo(() => {
+			if (typeof window !== "undefined") {
+				try {
+					const data = localStorage.getItem(`course_progress_${id}`);
+					return data ? JSON.parse(data) : null;
+				} catch (e) {
+					return null;
+				}
+			}
+			return null;
+		}, []);
+
+		return process.env.NODE_ENV === "development" ? (
+			<div className="fixed bottom-4 right-4 z-50 max-w-sm rounded bg-black/80 p-4 text-xs text-white">
+				<h4 className="mb-2 font-bold">Course Debug</h4>
+				<div className="grid grid-cols-2 gap-1">
+					<span>ChapterId:</span>
+					<span>{chapterId || "none"}</span>
+					<span>ModuleId:</span>
+					<span>{moduleId || "none"}</span>
+					<span>Initial Chapter:</span>
+					<span>{initialChapterId || "none"}</span>
+					<span>Initial Module:</span>
+					<span>{initialModuleId || "none"}</span>
+					<span>Chapters Count:</span>
+					<span>{chapterList?.length || 0}</span>
+					<span>Modules Count:</span>
+					<span>{moduleList?.length || 0}</span>
+					<span>Stored Chapter:</span>
+					<span>{storedProgress?.chapterId || "none"}</span>
+					<span>Stored Module:</span>
+					<span>{storedProgress?.moduleId || "none"}</span>
+				</div>
+			</div>
+		) : null;
+	};
+
 	return (
 		<>
 			<Seo title={capitalize(course?.subject_id.name ?? "Course Details")} />
 			<DashboardLayout>
 				{isCourseLoading ? renderLoadingState() : isError ? renderErrorState() : renderMainContent()}
+				{process.env.NODE_ENV === "development" && <DebugState />}
 			</DashboardLayout>
 			{bundle && (
 				<RenewalModal open={renewalModalOpen} setOpen={setRenewalModalOpen} bundle={bundle} />

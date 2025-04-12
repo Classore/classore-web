@@ -6,8 +6,10 @@ import { updateModuleProgress } from "@/queries/user";
 import { queryClient } from "@/providers";
 
 interface UseCourseProps {
+	chapterId: string;
 	chapters: ChapterResp[];
 	courseId: string;
+	moduleId: string;
 	onProgressUpdate?: (currentChapterId: string, currentModuleId: string) => Promise<void>;
 }
 
@@ -44,7 +46,13 @@ const getStoredProgress = (courseId: string): UseCourseStorage | null => {
 	if (typeof window === "undefined") return null;
 	try {
 		const data = localStorage.getItem(`course_progress_${courseId}`);
-		return data ? JSON.parse(data) : null;
+		if (!data) return null;
+		const parsed = JSON.parse(data);
+		if (typeof parsed !== "object" || !parsed.chapterId || !parsed.moduleId) {
+			console.warn("Invalid stored course progress format, ignoring");
+			return null;
+		}
+		return parsed;
 	} catch (error) {
 		console.error("Error reading from localStorage:", error);
 		return null;
@@ -62,8 +70,10 @@ const storeProgress = (courseId: string, payload: UseCourseStorage) => {
 };
 
 export const useCourse = ({
+	chapterId,
 	chapters,
 	courseId,
+	moduleId,
 	onProgressUpdate,
 }: UseCourseProps): UseCourseHandler => {
 	const storedProgress = React.useMemo(() => getStoredProgress(courseId), [courseId]);
@@ -73,7 +83,7 @@ export const useCourse = ({
 		if (storedProgress?.chapterId && validChapters.some((ch) => ch.id === storedProgress.chapterId)) {
 			return storedProgress.chapterId;
 		}
-		return validChapters[0]?.id || "";
+		return validChapters[0]?.id || chapterId || "";
 	}, [storedProgress?.chapterId, validChapters]);
 
 	const initialChapter = React.useMemo(
@@ -88,7 +98,7 @@ export const useCourse = ({
 			return storedProgress.moduleId;
 		}
 
-		return initialModules[0]?.id || "";
+		return initialModules[0]?.id || moduleId || "";
 	}, [storedProgress?.moduleId, initialModules]);
 
 	const [currentChapterId, setInternalChapterId] = React.useState(initialChapterId);
@@ -130,10 +140,21 @@ export const useCourse = ({
 
 	// If module ID becomes invalid (not found in current chapter), reset to first module
 	React.useEffect(() => {
-		if (moduleList.length > 0 && currentModuleIndex === -1) {
-			setInternalModuleId(moduleList[0].id);
+		if (moduleList.length > 0) {
+			if (currentModuleIndex === -1) {
+				const storedProgress = getStoredProgress(courseId);
+				if (storedProgress?.moduleId && moduleList.some((m) => m.id === storedProgress.moduleId)) {
+					setInternalModuleId(storedProgress.moduleId);
+				} else {
+					setInternalModuleId(moduleList[0].id);
+				}
+				storeProgress(courseId, {
+					chapterId: currentChapterId,
+					moduleId: moduleList[0].id,
+				});
+			}
 		}
-	}, [moduleList, currentModuleIndex]);
+	}, [moduleList, currentModuleIndex, courseId, currentChapterId]);
 
 	const hasNextChapter =
 		currentChapterIndex !== -1 && currentChapterIndex < validChapters.length - 1;
