@@ -12,7 +12,7 @@ import { QuizAlertModal, TakeQuizModal } from "../modals";
 import { Spinner } from "../shared";
 
 interface Props {
-	chapter: ChapterResp | undefined;
+	chapter: ChapterResp | null;
 	chapterProgress: number;
 	currentChapterId: string;
 	currentModuleId: string;
