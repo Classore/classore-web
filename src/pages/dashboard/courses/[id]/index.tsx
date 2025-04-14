@@ -52,7 +52,7 @@ const Page = () => {
 		course_id: String(id),
 		enabled: !!id,
 		refetchIntervalInBackground: true,
-		refetchInterval: 1000 * 15,
+		refetchInterval: 1000 * 2,
 	});
 
 	const { initialChapterId, initialModuleId } = React.useMemo(() => {
@@ -365,7 +365,7 @@ const Page = () => {
 
 					<div className="about-course relative z-50 mb-5 flex w-full flex-col gap-4">
 						<div className="flex w-full items-center justify-between">
-							<h3 className="text-balance text-xl font-semibold capitalize">{chapter?.name}</h3>
+							<h3 className="text-balance text-xl font-semibold capitalize">{currentChapter?.name}</h3>
 							<div className="flex items-center gap-3">
 								<div className="flex items-center px-2 py-1">
 									<RiThumbUpLine size={20} />
@@ -387,7 +387,7 @@ const Page = () => {
 
 							<TabsContent value="summary">
 								<ChapterModules
-									chapter={chapter}
+									chapter={currentChapter}
 									chapterProgress={currentChapterProgress}
 									currentChapterId={chapterId}
 									currentModuleId={moduleId}
