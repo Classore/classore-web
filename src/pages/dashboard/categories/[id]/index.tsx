@@ -54,6 +54,9 @@ const Page = () => {
 			<Seo title={bundle?.name ? `${capitalize(bundle?.name)} Exam Prep Bundle` : "Bundle Details"} />
 
 			<DashboardLayout>
+				<div className="w-full max-w-full overflow-x-hidden">
+
+			
 				{isPending ? (
 					<div className="flex w-full flex-col items-center justify-center gap-1 py-4">
 						<Spinner variant="primary" />
@@ -61,7 +64,8 @@ const Page = () => {
 					</div>
 				) : (
 					<>
-						<header className="flex flex-col justify-between gap-2 md:flex-row md:items-center">
+					<div className="w-full max-w-full overflow-x-hidden">
+						<header className="flex-col justify-between gap-2 md:flex-row md:items-center">
 							<div className="flex flex-col gap-2">
 								<div className="flex flex-col gap-4 sm:flex-row sm:items-center">
 									<BackBtn />
@@ -88,6 +92,9 @@ const Page = () => {
 
 						<section className="mb-5 flex flex-col gap-10 lg:grid lg:grid-cols-8">
 							<div className="col-span-5 flex flex-col gap-4">
+								<div>
+									
+								</div>
 								<Image
 									src={
 										bundle?.banner ??
@@ -131,7 +138,7 @@ const Page = () => {
 								{bundle?.reviews.length ? (
 									<div className="flex flex-col gap-4">
 										<div className="flex items-center justify-between gap-2">
-											<h3 className="text-xl font-medium text-neutral-900">Reviews</h3>
+											<h3 className="text-xl font-medium text-neutral-900">Reviews</h3>hif
 
 											<ShareReview />
 										</div>
@@ -144,7 +151,7 @@ const Page = () => {
 									</div>
 								) : (
 									<EmptyState
-										className="col-span-full"
+										className="w-full"
 										illustration={renderStars()}
 										subtitle="No reviews here yet"
 									/>
@@ -231,8 +238,10 @@ const Page = () => {
 								</div>
 							</div>
 						</section>
+						</div>
 					</>
 				)}
+					</div>
 			</DashboardLayout>
 
 			{currentBundle && <RenewalModal open={open} setOpen={setOpen} bundle={currentBundle} />}
@@ -242,7 +251,7 @@ const Page = () => {
 
 const renderStars = () => {
 	return (
-		<div className="flex items-center gap-1">
+		<div className="flex items-center gap-1 overflow-x-auto">
 			{[...Array(5)].map((_, i) => (
 				<Star key={i} className="size-4 text-[#FFC107]" />
 			))}

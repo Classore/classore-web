@@ -12,9 +12,10 @@ export const EmptyState = ({ subtitle, illustration, title, className }: EmptySc
 	return (
 		<div
 			className={cn(
-				"flex min-h-44 w-full flex-1 flex-col items-center justify-center gap-3 overflow-hidden rounded-lg bg-white p-10",
+				"relative flex min-h-44 w-full flex-1 flex-col items-center justify-center gap-3 overflow-hidden rounded-lg bg-white p-10",
 				className
-			)}>
+			)}
+		>
 			<div className="absolute -top-96 left-0">
 				<ModalArt />
 			</div>
@@ -28,3 +29,4 @@ export const EmptyState = ({ subtitle, illustration, title, className }: EmptySc
 		</div>
 	);
 };
+
