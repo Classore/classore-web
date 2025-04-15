@@ -6,7 +6,7 @@ import posthog from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
 import React from "react";
 
-import { QueryProvider, SSRProvider } from "@/providers";
+import { ErrorBoundary, QueryProvider, SSRProvider } from "@/providers";
 import { FacebookPixel } from "@/components/shared";
 import { Toaster } from "@/components/ui/sonner";
 import { analytics, pageview } from "@/lib";
@@ -28,9 +28,11 @@ export default function App({ Component, pageProps }: AppProps) {
 			<QueryProvider>
 				<SSRProvider>
 					<PostHogProvider client={posthog}>
-						<Component {...pageProps} />
-						<Toaster position="top-right" richColors theme="light" closeButton />
-						<FacebookPixel />
+						<ErrorBoundary>
+							<Component {...pageProps} />
+							<Toaster position="top-right" richColors theme="light" closeButton />
+							<FacebookPixel />
+						</ErrorBoundary>
 					</PostHogProvider>
 				</SSRProvider>
 			</QueryProvider>
