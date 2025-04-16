@@ -37,9 +37,6 @@ export const CourseActions = React.memo(
 			}
 		}, [chapters, currentChapterId, isQuizPassed]);
 
-		const handleTakeQuiz = () => setOpenTakeQuiz(true);
-		const handleCloseQuitQuiz = () => setOpenQuitQuiz(false);
-
 		return (
 			<>
 				<div className="flex items-center gap-4">
@@ -48,7 +45,7 @@ export const CourseActions = React.memo(
 						size="sm"
 						className="w-fit py-2"
 						disabled={currentModuleProgress < 50}
-						onClick={handleTakeQuiz}>
+						onClick={() => setOpenTakeQuiz(true)}>
 						Take Quiz
 					</Button>
 					<Button
@@ -63,17 +60,15 @@ export const CourseActions = React.memo(
 
 				<QuizAlertModal
 					open={openQuitQuiz}
-					setOpen={handleCloseQuitQuiz}
+					setOpen={setOpenTakeQuiz}
 					setOpenTakeQuiz={setOpenTakeQuiz}
 				/>
-				{openTakeQuiz && (
-					<TakeQuizModal
-						currentChapterId={currentChapterId}
-						currentModuleId={currentModuleId}
-						open={openTakeQuiz}
-						setOpen={setOpenTakeQuiz}
-					/>
-				)}
+				<TakeQuizModal
+					currentChapterId={currentChapterId}
+					currentModuleId={currentModuleId}
+					open={openTakeQuiz}
+					setOpen={setOpenTakeQuiz}
+				/>
 			</>
 		);
 	}

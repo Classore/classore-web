@@ -130,7 +130,6 @@ export const VideoPlayer = React.memo(
 			hideControlsTimer();
 		}, [hideControlsTimer, isMuted]);
 
-		// Handle progress bar change
 		const handleProgressChange = (newValue: number[]) => {
 			if (!videoRef.current) return;
 
@@ -140,7 +139,6 @@ export const VideoPlayer = React.memo(
 			setProgress((newTime / duration) * 100);
 		};
 
-		// Handle progress bar seeking start
 		const handleSeekStart = () => {
 			setWasPlayingBeforeSeeking(isPlaying);
 
@@ -149,7 +147,6 @@ export const VideoPlayer = React.memo(
 			}
 		};
 
-		// Handle progress bar seeking end
 		const handleSeekEnd = () => {
 			if (videoRef.current && wasPlayingBeforeSeeking) {
 				videoRef.current.play();
@@ -168,7 +165,6 @@ export const VideoPlayer = React.memo(
 			hideControlsTimer();
 		};
 
-		// TODO: Handle browser incompatibilities
 		const toggleFullscreen = () => {
 			if (!playerRef.current) return;
 
@@ -183,7 +179,6 @@ export const VideoPlayer = React.memo(
 			hideControlsTimer();
 		};
 
-		// Toggle Picture-in-Picture mode
 		const togglePiPMode = async () => {
 			try {
 				if (!videoRef.current) return;
@@ -202,11 +197,8 @@ export const VideoPlayer = React.memo(
 
 		const updateBufferProgress = () => {
 			if (!videoRef.current || !duration) return;
-
 			const video = videoRef.current;
 			if (video.buffered.length === 0) return;
-
-			// Get the end time of the last buffered range
 			const bufferedEnd = video.buffered.end(video.buffered.length - 1);
 			const bufferPercentage = (bufferedEnd / duration) * 100;
 
@@ -218,21 +210,14 @@ export const VideoPlayer = React.memo(
 			return false;
 		};
 
-		// useEffect to handle video playing (hls or not) and errors
 		React.useEffect(() => {
 			const video = videoRef.current;
 			if (!video) return;
-
-			// Function to handle media errors
 			const handleMediaError = (error: unknown) => {
 				console.error("Error playing media:", error);
 				onError?.(error);
 			};
-
-			// Check if the source is an HLS stream or a regular video file
 			const isHLSStream = src.includes(".m3u8");
-
-			// Handle HLS streams
 			if (isHLSStream) {
 				if (Hls.isSupported()) {
 					setLoadingHls(true);
@@ -281,7 +266,6 @@ export const VideoPlayer = React.memo(
 						hls.destroy();
 					};
 				} else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-					// Native HLS support (Safari)
 					video.src = src;
 					if (autoPlay) {
 						video.play().catch(handleMediaError);
@@ -297,9 +281,7 @@ export const VideoPlayer = React.memo(
 					return;
 				}
 			} else {
-				// Handle regular video files (MP4, WebM, etc.)
 				video.src = src;
-
 				video.addEventListener("loadedmetadata", () => {
 					onReady?.();
 					if (autoPlay) {
@@ -325,7 +307,6 @@ export const VideoPlayer = React.memo(
 			};
 		}, [autoPlay, onError, onReady, src]);
 
-		// Video event handlers
 		React.useEffect(() => {
 			const video = videoRef.current;
 			if (!video) return;
@@ -341,8 +322,6 @@ export const VideoPlayer = React.memo(
 			const onLoadedMetadata = () => {
 				setDuration(video.duration);
 				setIsLoading(false);
-
-				// Start the video from where it was paused
 				const currentProgress =
 					moduleProgress && moduleProgress !== 100
 						? ((moduleProgress ?? 0) / 100) * (video.duration ?? 0)
@@ -357,13 +336,10 @@ export const VideoPlayer = React.memo(
 				video.currentTime = 0;
 			};
 
-			// Buffer update events
 			const onProgress = () => updateBufferProgress();
-
 			const onWaiting = () => setIsLoading(true);
 			const onPlaying = () => setIsLoading(false);
 
-			// Fullscreen change handlers with vendor prefixes
 			const onFullscreenChange = () => {
 				setIsFullscreen(
 					!!document.fullscreenElement ||
@@ -376,7 +352,6 @@ export const VideoPlayer = React.memo(
 				);
 			};
 
-			// Add event listeners
 			video.addEventListener("play", onPlay);
 			video.addEventListener("pause", onPause);
 			video.addEventListener("timeupdate", onTimeUpdate);
@@ -385,14 +360,11 @@ export const VideoPlayer = React.memo(
 			video.addEventListener("waiting", onWaiting);
 			video.addEventListener("playing", onPlaying);
 			video.addEventListener("progress", onProgress);
-
-			// Fullscreen change handlers with vendor prefixes
 			document.addEventListener("fullscreenchange", onFullscreenChange);
 			document.addEventListener("webkitfullscreenchange", onFullscreenChange);
 			document.addEventListener("mozfullscreenchange", onFullscreenChange);
 			document.addEventListener("MSFullscreenChange", onFullscreenChange);
 
-			// Clean up event listeners
 			return () => {
 				video.removeEventListener("play", onPlay);
 				video.removeEventListener("pause", onPause);
@@ -402,8 +374,6 @@ export const VideoPlayer = React.memo(
 				video.removeEventListener("waiting", onWaiting);
 				video.removeEventListener("playing", onPlaying);
 				video.removeEventListener("progress", onProgress);
-
-				// Remove fullscreen event listeners
 				document.removeEventListener("fullscreenchange", onFullscreenChange);
 				document.removeEventListener("webkitfullscreenchange", onFullscreenChange);
 				document.removeEventListener("mozfullscreenchange", onFullscreenChange);
@@ -416,7 +386,6 @@ export const VideoPlayer = React.memo(
 			// eslint-disable-next-line react-hooks/exhaustive-deps
 		}, [moduleProgress]);
 
-		// Auto-hide controls when playing
 		React.useEffect(() => {
 			if (isPlaying) {
 				hideControlsTimer();
@@ -429,10 +398,8 @@ export const VideoPlayer = React.memo(
 			// eslint-disable-next-line react-hooks/exhaustive-deps
 		}, [isPlaying]);
 
-		// Handle keyboard shortcuts
 		React.useEffect(() => {
 			const handleKeyDown = (e: KeyboardEvent) => {
-				// Only handle shortcuts if the player is in focus
 				if (
 					!playerRef.current?.contains(document.activeElement) &&
 					document.activeElement !== document.body
@@ -483,6 +450,10 @@ export const VideoPlayer = React.memo(
 			};
 			// eslint-disable-next-line react-hooks/exhaustive-deps
 		}, [isPlaying]);
+
+		React.useEffect(() => {
+			setProgress(0);
+		}, [moduleId]);
 
 		return (
 			<div
