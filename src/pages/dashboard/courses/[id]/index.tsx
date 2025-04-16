@@ -344,7 +344,6 @@ const Page = () => {
 						</div>
 						<p className="text-xs capitalize text-neutral-400">Categories / {course?.subject_id.name}</p>
 					</div>
-
 					<CourseActions
 						chapters={chapters}
 						currentChapterId={chapterId}
