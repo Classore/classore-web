@@ -16,7 +16,7 @@ type QuizResultModalProps = {
 	nextModuleId: string;
 	onNext: () => void;
 	open: boolean;
-	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+	setOpen: (open: boolean) => void;
 	result: SubmitQuizResp | null;
 	resetQuiz: () => void;
 };

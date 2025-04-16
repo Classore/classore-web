@@ -5,7 +5,7 @@ import { Dialog, DialogClose, DialogContent, DialogTitle } from "../ui/dialog";
 type SubmitQuizModalProps = {
 	handleSubmission: () => void;
 	open: boolean;
-	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+	setOpen: (open: boolean) => void;
 	isSubmitting: boolean;
 	noOfQuestions: number;
 	noOfAnswered: number;
