@@ -34,6 +34,11 @@ export const endpoints = (id?: string) => {
 		fetch_messages: "/chat/fetch-room-messages",
 	} as const;
 
+	const notifications = {
+		get_all: "/notification/fetch-all",
+		clear: "/notification/clear-all",
+	} as const;
+
 	const parents = {
 		home: "/parent/home",
 		add_ward: "/auth/add-my-wards",
@@ -92,5 +97,17 @@ export const endpoints = (id?: string) => {
 		get: `/mail/fetch-waitlist`,
 	};
 
-	return { auth, bank, courses, school, user, waitlist, student, test_center, parents, message };
+	return {
+		auth,
+		bank,
+		courses,
+		message,
+		notifications,
+		parents,
+		school,
+		student,
+		test_center,
+		user,
+		waitlist,
+	};
 };

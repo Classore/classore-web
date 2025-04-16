@@ -32,9 +32,15 @@ const Page = () => {
 	const router = useRouter();
 	const { user } = useUserStore();
 
-	const [result, setResult] = React.useState<SubmitQuizResp | null>(null);
-	const [open, setOpen] = React.useState(false);
-	const [openSubmitQuiz, setOpenSubmitQuiz] = React.useState(false);
+	const [modalState, setModalState] = React.useState({
+		result: null as SubmitQuizResp | null,
+		open: false,
+		openSubmitQuiz: false,
+	});
+	const { open, openSubmitQuiz, result } = modalState;
+	const handleModalUpdate = (updates: Partial<typeof modalState>) => {
+		setModalState((prev) => ({ ...prev, ...updates }));
+	};
 
 	const id = router.query.id as string;
 	const module_id = router.query.module_id as string;
@@ -62,12 +68,12 @@ const Page = () => {
 	}, [chapter]);
 
 	const modules = React.useMemo(() => {
-		if (!course) return [];
+		if (!course?.chapters) return [];
 		return course.chapters.reduce((acc, chapter) => {
-			if (!chapter.modules.length) return acc;
+			if (!chapter.modules?.length) return acc;
 			return [...acc, ...chapter.modules];
 		}, [] as ChapterModuleProps[]);
-	}, [course]);
+	}, [course?.chapters]);
 
 	const nextChapterId = React.useMemo(() => {
 		if (!course) return "";
@@ -100,11 +106,15 @@ const Page = () => {
 				});
 			}
 			toast.success("Quiz submitted successfully");
-			setResult(data.data);
+			handleModalUpdate({
+				result: data.data,
+			});
 
 			setTimeout(() => {
-				setOpenSubmitQuiz(false);
-				setOpen(true);
+				handleModalUpdate({
+					openSubmitQuiz: false,
+					open: true,
+				});
 			}, 100);
 		},
 		onError: () => toast.error("Something went wrong! Please try again"),
@@ -167,6 +177,8 @@ const Page = () => {
 								alt="classore"
 								fill
 								sizes="(max-width:1024px)100%"
+								loading="eager"
+								priority
 							/>
 						</div>
 						<div className="flex flex-col items-start justify-center lg:items-center">
@@ -306,7 +318,7 @@ const Page = () => {
 										{questionCount > 0 && questionCount === current + 1 ? (
 											<>
 												<Button
-													onClick={() => setOpenSubmitQuiz(true)}
+													onClick={() => handleModalUpdate({ openSubmitQuiz: true })}
 													className="w-40"
 													disabled={isSubmitting}>
 													Submit
@@ -316,7 +328,7 @@ const Page = () => {
 													handleSubmission={handleSubmission}
 													isSubmitting={isSubmitting}
 													open={openSubmitQuiz}
-													setOpen={setOpenSubmitQuiz}
+													setOpen={(openSubmitQuiz) => handleModalUpdate({ openSubmitQuiz })}
 													noOfQuestions={questionCount}
 													noOfAnswered={answered.length}
 												/>
@@ -365,7 +377,7 @@ const Page = () => {
 				onNext={onNext}
 				open={open}
 				result={result}
-				setOpen={setOpen}
+				setOpen={(open) => handleModalUpdate({ open })}
 				resetQuiz={resetQuiz}
 			/>
 		</>
