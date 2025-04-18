@@ -318,6 +318,11 @@ h6 {
 		margin-top: 0px;
 	}
 }
+@media screen and (max-width: 769px) {
+	.about-course {
+		margin-top: 250px;
+	}
+}
 
 .markdown-content {
 	line-height: 1.6;

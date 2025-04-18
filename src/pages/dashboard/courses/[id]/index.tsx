@@ -309,9 +309,9 @@ const Page = () => {
 
 			<div className="flex w-full flex-col gap-8 lg:grid lg:grid-cols-3">
 				<div className="col-span-2 col-start-1 flex flex-col gap-8">
-					<div className="absolute left-0 right-0 md:static">{renderVideoPlayer()}</div>
+					<div className="border absolute left-0 right-0 md:static">{renderVideoPlayer()}</div>
 
-					<div className="about-course relative z-50 mb-5 flex w-full flex-col gap-4">
+					<div className="about-course z-50 mb-5 flex w-full flex-col gap-4">
 						<div className="flex w-full items-center justify-between">
 							<h3 className="text-balance text-xl font-semibold capitalize">
 								{course?.current_chapter?.name}
