@@ -331,7 +331,7 @@ h6 {
 
 /* Typography */
 .markdown-content p {
-	font-size: 1rem;
+	font-size: 0.875rem;
 }
 
 .markdown-content p:first-child:is(".") {
