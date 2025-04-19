@@ -111,25 +111,17 @@ const Security = () => {
 				control={control}
 			/>
 
-			<div className="flex w-full items-center justify-between pt-8">
+			<div className="ml-auto flex items-center gap-2">
 				<Button
 					type="button"
-					variant="text"
-					className="w-fit !text-sm text-red-500 hover:bg-red-50 hover:text-red-700">
-					Delete Account
+					variant="outline"
+					className="w-fit !text-sm text-neutral-400"
+					onClick={() => reset()}>
+					Reset Changes
 				</Button>
-				<div className="flex items-center gap-2">
-					<Button
-						type="button"
-						variant="outline"
-						className="w-fit !text-sm text-neutral-400"
-						onClick={() => reset()}>
-						Reset Changes
-					</Button>
-					<Button disabled={isPending} type="submit" className="w-fit !text-sm font-bold">
-						{isPending ? <Spinner /> : "Save Changes"}
-					</Button>
-				</div>
+				<Button disabled={isPending} type="submit" className="w-fit !text-sm font-bold">
+					{isPending ? <Spinner /> : "Save Changes"}
+				</Button>
 			</div>
 		</form>
 	);

@@ -1,5 +1,3 @@
-import { User03 } from "@untitled-ui/icons-react";
-import React from "react";
 import {
 	RiCloseLine,
 	RiLock2Line,
@@ -7,15 +5,13 @@ import {
 	RiUser3Line,
 	RiUserAddLine,
 } from "@remixicon/react";
+import { User03 } from "@untitled-ui/icons-react";
+import React from "react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { useUserStore } from "@/store/z-store";
-import Notification from "./notification";
-import { TabPanel } from "../shared";
 import { getInitials } from "@/lib";
-import Security from "./security";
-import Profile from "./profile";
-import Points from "./points";
+import { useUserStore } from "@/store/z-store";
+import { TabPanel } from "../shared";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
 	Sheet,
 	SheetClose,
@@ -24,6 +20,10 @@ import {
 	SheetTitle,
 	SheetTrigger,
 } from "../ui/sheet";
+import Notification from "./notification";
+import Points from "./points";
+import Profile from "./profile";
+import Security from "./security";
 
 const tabs = [
 	{
@@ -57,13 +57,13 @@ export const AccountSettingsDrawer = () => {
 			<SheetTrigger asChild>
 				<button
 					type="button"
-					className="flex w-full items-center gap-2 border-b border-b-neutral-200 px-2 py-3 text-sm text-neutral-400">
-					<User03 height={19} width={19} />
-					<span>Edit profile</span>
+					className="flex items-center gap-2 rounded bg-primary-300 px-3 py-2 text-xs text-white md:w-full md:border-b md:border-b-neutral-200 md:bg-transparent md:px-2 md:py-3 md:text-sm md:text-neutral-400">
+					<User03 height={19} width={19} className="hidden md:block" />
+					<span>Edit Profile</span>
 				</button>
 			</SheetTrigger>
 
-			<SheetContent className="flex flex-col gap-4 rounded-2xl sm:max-w-xl md:w-3/5">
+			<SheetContent className="flex w-[95%] flex-col gap-4 overflow-x-hidden p-4 md:max-w-xl md:p-6 lg:rounded-2xl">
 				<SheetHeader className="flex flex-row items-center justify-between">
 					<SheetTitle className="text-xl font-bold">Account Setting</SheetTitle>
 
@@ -76,15 +76,15 @@ export const AccountSettingsDrawer = () => {
 				<div>
 					<div className="h-40 w-full rounded-lg bg-gradient-to-r from-secondary-100 from-10% to-primary-200 to-100%" />
 
-					<div className="flex gap-4 px-4">
-						<Avatar className="-mt-12 size-28 bg-primary-500">
+					<div className="flex gap-2.5 px-2 md:gap-4 md:px-4">
+						<Avatar className="-mt-6 size-[72px] bg-primary-500 md:-mt-12 md:size-28">
 							<AvatarImage src={user?.profile_image} />
-							<AvatarFallback className="text-5xl font-semibold text-white">
+							<AvatarFallback className="text-3xl font-semibold text-white md:text-5xl">
 								{getInitials(`${user?.first_name} ${user?.last_name}`)}
 							</AvatarFallback>
 						</Avatar>
 						<div className="pt-1">
-							<p className="font-bold capitalize">
+							<p className="font-bold capitalize leading-tight">
 								{user?.first_name} {user?.last_name}
 							</p>
 							<p className="text-sm text-neutral-400">{user?.email}</p>
@@ -93,7 +93,7 @@ export const AccountSettingsDrawer = () => {
 				</div>
 
 				<div className="pt-4">
-					<div className="flex w-full items-center pb-4">
+					<div className="flex w-full items-center overflow-x-auto whitespace-nowrap pb-4">
 						{tabs.map(({ label, name, icon: Icon }) => (
 							<button
 								key={name}

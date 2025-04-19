@@ -1,24 +1,25 @@
 /* eslint-disable react/display-name */
-import { useMutation } from "@tanstack/react-query";
 import * as Slider from "@radix-ui/react-slider";
-import { LoaderCircle } from "lucide-react";
-import * as React from "react";
 import {
 	RiForward10Line,
 	RiFullscreenExitLine,
 	RiFullscreenLine,
 	RiPauseLargeFill,
-	RiPictureInPictureLine,
+	RiPictureInPicture2Line,
+	RiPictureInPictureExitLine,
 	RiPlayCircleFill,
 	RiPlayLargeFill,
 	RiReplay10Line,
 	RiVolumeMuteLine,
 	RiVolumeUpLine,
 } from "@remixicon/react";
+import { useMutation } from "@tanstack/react-query";
 import Hls from "hls.js";
+import { LoaderCircle } from "lucide-react";
+import * as React from "react";
 
-import { updateModuleProgress } from "@/queries/user";
 import { cn } from "@/lib";
+import { updateModuleProgress } from "@/queries/user";
 
 const formatTime = (timeInSeconds: number): string => {
 	if (isNaN(timeInSeconds)) return "0:00";
@@ -63,6 +64,7 @@ export const VideoPlayer = React.memo(
 		const [wasPlayingBeforeSeeking, setWasPlayingBeforeSeeking] = React.useState(false);
 		const [bufferProgress, setBufferProgress] = React.useState(0);
 		const [loadingHls, setLoadingHls] = React.useState(false);
+		const [isPiP, setIsPiP] = React.useState(false);
 
 		const controlsTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 		const videoRef = React.useRef<HTMLVideoElement | null>(null);
@@ -168,16 +170,39 @@ export const VideoPlayer = React.memo(
 		};
 
 		const toggleFullscreen = () => {
-			if (!playerRef.current) return;
+			const video = videoRef.current;
+			if (!video) return;
 
 			if (!document.fullscreenElement) {
-				playerRef.current.requestFullscreen().catch((err) => {
-					console.error(`Error attempting to enable fullscreen: ${err.message}`);
-				});
+				if (video.requestFullscreen) {
+					video.requestFullscreen();
+					// @ts-expect-error
+				} else if (video.msRequestFullscreen) {
+					// IE11
+					// @ts-expect-error
+					video.msRequestFullscreen();
+					// @ts-expect-error
+				} else if (video.webkitEnterFullscreen) {
+					// iOS Safari - THIS IS THE KEY ADDITION
+					// @ts-expect-error
+					video.webkitEnterFullscreen();
+				} else if (
+					// @ts-expect-error
+					video.webkitSupportsPresentationMode &&
+					// @ts-expect-error
+					typeof video.webkitSetPresentationMode === "function"
+				) {
+					// @ts-expect-error
+					video.webkitSetPresentationMode("fullscreen");
+					// @ts-expect-error
+				} else if (video.webkitRequestFullscreen) {
+					// Safari desktop
+					// @ts-expect-error
+					video.webkitRequestFullscreen();
+				}
 			} else {
 				document.exitFullscreen();
 			}
-
 			hideControlsTimer();
 		};
 
@@ -187,8 +212,10 @@ export const VideoPlayer = React.memo(
 
 				if (document.pictureInPictureElement !== videoRef.current) {
 					await videoRef.current.requestPictureInPicture();
+					setIsPiP(true);
 				} else if (document.pictureInPictureElement === videoRef.current) {
 					await document.exitPictureInPicture();
+					setIsPiP(false);
 				}
 			} catch (error) {
 				console.error("Error toggling Picture-in-Picture mode: ", error);
@@ -473,9 +500,10 @@ export const VideoPlayer = React.memo(
 					height="auto"
 					onClick={togglePlay}
 					onContextMenu={preventContextMenu}
-					playsInline
 					poster={poster}
 					preload="metadata"
+					playsInline={true}
+					webkit-playsinline="true"
 					controlsList="nodownload"
 					className="size-full rounded-lg object-cover"
 				/>
@@ -574,7 +602,7 @@ export const VideoPlayer = React.memo(
 								title="Toggle picture-in-picture mode (p)"
 								onClick={togglePiPMode}
 								className="rounded-full p-1.5 text-white hover:bg-white/20 focus:bg-white/20">
-								<RiPictureInPictureLine size={16} />
+								{isPiP ? <RiPictureInPicture2Line size={16} /> : <RiPictureInPictureExitLine size={16} />}
 							</button>
 							<button
 								title="Toggle fullscreen (f)"

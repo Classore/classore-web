@@ -1,23 +1,16 @@
 import { RiCloseCircleLine, RiThumbDownLine, RiThumbUpLine } from "@remixicon/react";
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/router";
 import Image from "next/image";
-import * as React from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import * as React from "react";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useGetChapter, useGetCourse, useGetProfile } from "@/queries/student";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ChapterModules, QuizHistory, Resources } from "@/components/home";
-import { JoinCommunityModal, RenewalModal } from "@/components/modals";
-import { CourseActions } from "@/components/course/course-actions";
-import { type StartCourseDto, startCourse } from "@/queries/user";
 import blockchain from "@/assets/illustrations/blockchain.svg";
 import trophy from "@/assets/illustrations/trophy.svg";
+import { CourseActions } from "@/components/course/course-actions";
+import { ChapterModules, QuizHistory, Resources } from "@/components/home";
 import { DashboardLayout } from "@/components/layouts";
-import { Button } from "@/components/ui/button";
-import { capitalize, getInitials } from "@/lib";
-import { useCourse } from "@/hooks";
+import { JoinCommunityModal, RenewalModal } from "@/components/modals";
 import {
 	AvatarGroup,
 	BackBtn,
@@ -26,6 +19,13 @@ import {
 	Spinner,
 	VideoPlayer,
 } from "@/components/shared";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useCourse } from "@/hooks";
+import { capitalize, getInitials } from "@/lib";
+import { useGetChapter, useGetCourse, useGetProfile } from "@/queries/student";
+import { type StartCourseDto, startCourse } from "@/queries/user";
 
 type UseMutationProps = {
 	courseId: string;
@@ -240,7 +240,7 @@ const Page = () => {
 	};
 
 	const renderSidebar = () => (
-		<div className="col-start-3 flex h-fit w-full flex-col gap-2">
+		<div className="col-start-3 flex w-full flex-col gap-2 lg:overflow-auto lg:pb-10">
 			<CourseChapters
 				chapters={chapterList}
 				courseId={String(id)}
@@ -358,11 +358,11 @@ const Page = () => {
 				</div>
 			</div>
 
-			<div className="flex w-full flex-col gap-8 lg:grid lg:grid-cols-3">
-				<div className="col-span-2 col-start-1 flex flex-col gap-8">
-					<div className="absolute left-0 right-0 md:static">{renderVideoPlayer()}</div>
+			<div className="flex w-full flex-col gap-8 lg:grid lg:h-screen lg:grid-cols-3 lg:overflow-hidden">
+				<div className="col-span-2 col-start-1 flex flex-col gap-8 lg:overflow-auto">
+					<div className="absolute left-0 right-0 border md:static">{renderVideoPlayer()}</div>
 
-					<div className="about-course relative z-50 mb-5 flex w-full flex-col gap-4">
+					<div className="about-course z-50 mb-5 flex w-full flex-col gap-4">
 						<div className="flex w-full items-center justify-between">
 							<h3 className="text-balance text-xl font-semibold capitalize">{currentChapter?.name}</h3>
 							<div className="flex items-center gap-3">
