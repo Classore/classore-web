@@ -86,6 +86,18 @@ const ResetPasswordMutation = async (payload: ResetPasswordDto) => {
 		.then((res) => res.data);
 };
 
+export type AddGuardianDto = {
+	first_name: string;
+	last_name: string;
+	phone_number: string;
+	email?: string;
+};
+const AddGuardian = async (payload: AddGuardianDto) => {
+	return axios
+		.post<HttpResponse<string>>(endpoints().auth.add_guardian, payload)
+		.then((res) => res.data);
+};
+
 export type AddWardsDto = Array<{
 	first_name: string;
 	last_name: string;
@@ -153,6 +165,7 @@ const ChangePasswordMutation = async (payload: ChangePasswordPayload) => {
 };
 
 export {
+	AddGuardian,
 	AddWardsMutation,
 	ChangePasswordMutation,
 	ForgotPasswordMutation,

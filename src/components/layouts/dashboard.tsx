@@ -9,6 +9,7 @@ import { useUserStore } from "@/store/z-store";
 import { dashboard_links } from "@/config";
 import { cn, normalize } from "@/lib";
 import { Invite } from "../invite";
+import { KYC } from "../dashboard";
 import { Appbar } from "./appbar";
 
 type DashboardLayoutProps = {
@@ -17,6 +18,7 @@ type DashboardLayoutProps = {
 };
 
 export function DashboardLayout({ children, className }: DashboardLayoutProps) {
+	const [open, setOpen] = React.useState(false);
 	const { user } = useUserStore();
 	const router = useRouter();
 
@@ -28,8 +30,21 @@ export function DashboardLayout({ children, className }: DashboardLayoutProps) {
 		}
 	}, [router, user]);
 
+	React.useEffect(() => {
+		if (user) {
+			if (user.user_type === "STUDENT") {
+				const today = new Date();
+				const age = today.getFullYear() - new Date(user.birthday).getFullYear();
+				if (age < 18) {
+					setOpen(true);
+				}
+			}
+		}
+	}, [user]);
+
 	return (
 		<>
+			<KYC onOpenChange={setOpen} open={open} />
 			<main className="hidden overflow-hidden lg:flex lg:h-screen lg:w-screen lg:items-center lg:bg-white">
 				<aside className="flex h-full w-[256px] min-w-[256px] flex-col justify-between border-r border-neutral-300 py-8">
 					<div className="flex w-full flex-col gap-8">

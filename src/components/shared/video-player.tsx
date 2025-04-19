@@ -134,6 +134,8 @@ export const VideoPlayer = React.memo(
 			if (!videoRef.current) return;
 
 			const newTime = newValue[0];
+			const maxScrub = (progress * duration) / 100;
+			if (newTime > maxScrub) return;
 			setCurrentTime(newTime);
 			videoRef.current.currentTime = newTime;
 			setProgress((newTime / duration) * 100);
