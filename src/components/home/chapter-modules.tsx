@@ -1,13 +1,13 @@
-import * as React from "react";
 import {
 	RiCheckboxCircleFill,
 	RiFileTextLine,
 	RiFolderVideoLine,
 	RiPlayCircleLine,
 } from "@remixicon/react";
+import * as React from "react";
 
-import type { ChapterResp, ChapterModuleProps } from "@/types";
 import { convertSecondsToMinSec, sanitizeHtml } from "@/lib";
+import type { ChapterModuleProps, ChapterResp } from "@/types";
 import { QuizAlertModal, TakeQuizModal } from "../modals";
 import { Spinner } from "../shared";
 
@@ -83,9 +83,9 @@ export const ChapterModules = ({
 		<>
 			<div className="flex flex-col gap-6 pt-4">
 				<div
-					className="markdown-content text-sm leading-relaxed text-neutral-400 first-letter:capitalize"
+					className="prose-a:underline prose-a:hover:text-primary-300 prose-hr:my-1 prose-p:my-0 prose-sm prose-ol:list-decimal prose-ul:list-disc prose-p:first-letter:capitalize prose-headings:first-letter:uppercase prose-li:first-letter:uppercase text-neutral-400"
 					dangerouslySetInnerHTML={{
-						__html: sanitizeHtml(chapter?.content).replace(/\n/g, "<br />"),
+						__html: sanitizeHtml(chapter?.content),
 					}}
 				/>
 				<div className="w-full rounded-lg border border-neutral-200">
