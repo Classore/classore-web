@@ -55,7 +55,11 @@ export const BrowseCategories = () => {
 								className="grid gap-x-4 gap-y-6 lg:grid-cols-3">
 								{bundles?.data.length ? (
 									bundles.data.map((subject) => (
-										<ExamCard key={subject.examinationbundle_id} course={subject} className="min-w-[360px]" />
+										<ExamCard
+											key={subject.examinationbundle_id}
+											course={subject}
+											className="md:w-96 md:min-w-96"
+										/>
 									))
 								) : (
 									<p className="text-sm text-neutral-400">No bundles found.</p>
