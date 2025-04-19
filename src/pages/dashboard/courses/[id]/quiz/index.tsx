@@ -161,6 +161,10 @@ const Page = () => {
 		},
 	});
 
+	const onContextMenu = (e: React.MouseEvent) => {
+		e.preventDefault();
+	};
+
 	usePreventNavigation(true);
 
 	const questionCount = questions?.data.meta.itemCount || 0;
@@ -229,7 +233,9 @@ const Page = () => {
 					<div className="h-full w-full px-4 py-8">
 						<div className="container mx-auto grid h-full w-full grid-cols-1 gap-5 lg:grid-cols-4">
 							<QuitQuizModal />
-							<div className="col-span-2 flex h-fit w-full flex-col gap-4 rounded-xl border border-neutral-200 bg-gradient-to-b from-primary-100 from-0% via-white via-15% to-white to-100% p-5">
+							<div
+								onContextMenu={onContextMenu}
+								className="col-span-2 flex h-fit w-full select-none flex-col gap-4 rounded-xl border border-neutral-200 bg-gradient-to-b from-primary-100 from-0% via-white via-15% to-white to-100% p-5">
 								<div className="flex w-full items-center justify-between">
 									<div className="flex items-center gap-1 text-neutral-400">
 										<RiQuestionLine size={20} />

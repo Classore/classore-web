@@ -30,11 +30,12 @@ interface SubmitQuizDto {
 const getProfile = async () => {
 	return axios.get<HttpResponse<UserProps>>(endpoints().auth.profile).then((res) => res.data);
 };
-export const useGetProfile = () => {
+export const useGetProfile = (enabled?: boolean) => {
 	return useQuery({
 		queryKey: ["profile"],
 		queryFn: () => getProfile(),
 		staleTime: Infinity,
+		enabled,
 		gcTime: Infinity,
 		select: (data) => data.data,
 	});
