@@ -7,6 +7,8 @@ import React from "react";
 import * as z from "zod";
 
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "../ui/dialog";
+import { useGetProfile } from "@/queries/student";
+import { useUserStore } from "@/store/z-store";
 import type { HttpError } from "@/types";
 import { AddGuardian } from "@/queries";
 import { Button } from "../ui/button";
@@ -28,6 +30,8 @@ interface Props {
 }
 
 export const KYC = ({ onOpenChange, open }: Props) => {
+	const { setUser } = useUserStore();
+
 	const { control, handleSubmit } = useForm<FormValues>({
 		defaultValues: {
 			first_name: "",
@@ -38,12 +42,14 @@ export const KYC = ({ onOpenChange, open }: Props) => {
 		resolver: zodResolver(schema),
 	});
 
+	const { data: user, refetch } = useGetProfile();
+
 	const { isPending, mutate } = useMutation({
 		mutationFn: AddGuardian,
 		mutationKey: ["add-guardian"],
-		onSuccess: (data) => {
-			console.log(data);
-			// onOpenChange(false);
+		onSuccess: () => {
+			toast.success("Guardian added successfully");
+			onOpenChange(false);
 		},
 		onError: (error: HttpError) => {
 			const errorMessage = Array.isArray(error.response.data.message)
@@ -52,7 +58,16 @@ export const KYC = ({ onOpenChange, open }: Props) => {
 			const message = errorMessage || "Something went wrong";
 			toast.error(message);
 		},
+		onSettled: () => {
+			refetch();
+		},
 	});
+
+	React.useEffect(() => {
+		if (user) {
+			setUser(user);
+		}
+	}, [setUser, user]);
 
 	const onSubmit: SubmitHandler<FormValues> = (data) => {
 		console.log(data);
@@ -72,7 +87,7 @@ export const KYC = ({ onOpenChange, open }: Props) => {
 				</div>
 				<form className="w-full space-y-2" onSubmit={handleSubmit(onSubmit)}>
 					<Input control={control} name="first_name" label="First Name" type="text" />
-					<Input control={control} name="first_name" label="Last Name" type="text" />
+					<Input control={control} name="last_name" label="Last Name" type="text" />
 					<Input control={control} name="phone_number" label="Phone Number" type="tel" />
 					<Input control={control} name="email" label="Email" type="email" />
 					<Button type="submit" disabled={isPending}>

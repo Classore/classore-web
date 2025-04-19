@@ -4,10 +4,12 @@ import Link from "next/link";
 import React from "react";
 
 import meeting from "@/assets/illustrations/meeting.svg";
+import { ReviewToast } from "../dashboard/review";
 import { MobileAppbar } from "./mobile-appbar";
 import { useUserStore } from "@/store/z-store";
 import { dashboard_links } from "@/config";
 import { cn, normalize } from "@/lib";
+import { useInterval } from "@/hooks";
 import { Invite } from "../invite";
 import { KYC } from "../dashboard";
 import { Appbar } from "./appbar";
@@ -18,6 +20,7 @@ type DashboardLayoutProps = {
 };
 
 export function DashboardLayout({ children, className }: DashboardLayoutProps) {
+	const [openReview, setOpenReview] = React.useState(false);
 	const [open, setOpen] = React.useState(false);
 	const { user } = useUserStore();
 	const router = useRouter();
@@ -32,7 +35,7 @@ export function DashboardLayout({ children, className }: DashboardLayoutProps) {
 
 	React.useEffect(() => {
 		if (user) {
-			if (user.user_type === "STUDENT") {
+			if (user.user_type === "STUDENT" && !user.parent) {
 				const today = new Date();
 				const age = today.getFullYear() - new Date(user.birthday).getFullYear();
 				if (age < 18) {
@@ -41,6 +44,13 @@ export function DashboardLayout({ children, className }: DashboardLayoutProps) {
 			}
 		}
 	}, [user]);
+
+	useInterval(
+		() => {
+			setOpenReview(true);
+		},
+		100 * 60 * 60 * 3
+	);
 
 	return (
 		<>
@@ -123,6 +133,7 @@ export function DashboardLayout({ children, className }: DashboardLayoutProps) {
 					{children}
 				</section>
 			</main>
+			<ReviewToast isOpen={openReview} onOpenChange={setOpenReview} />
 		</>
 	);
 }

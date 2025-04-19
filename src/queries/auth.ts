@@ -179,4 +179,3 @@ export {
 	VerifyEmailMutation,
 	WaitlistMutation,
 };
-

@@ -87,13 +87,43 @@ export type UserProps = Node & {
 	last_name: string;
 	leaderboard_id: Maybe<string>;
 	my_wards: UserProps[];
-	parent: null;
+	parent: Maybe<string>;
 	password: string;
 	phone_number: string;
 	profile_image: string;
 	reason_for_account_delete: null;
 	referral_code: string;
 	sign_up_channel: string;
+	timeline: {
+		amount_paid: number;
+		chosen_bundle: string;
+		createdOn: string;
+		deletedBy: string;
+		deletedOn: string;
+		end_date: string;
+		exam: {
+			id: string;
+			name: string;
+		};
+		exam_bundle_details: {
+			id: string;
+			name: string;
+		};
+		exam_type: string;
+		id: string;
+		isBlocked: boolean;
+		isDeleted: boolean;
+		is_paid: boolean;
+		renewal_amount: number;
+		status: string;
+		subjects: {
+			id: string;
+			name: string;
+		}[];
+		updatedBy: string;
+		updatedOn: string;
+		user_id: string;
+	}[];
 	user_type: "STUDENT" | "PARENT";
 	wallet_id: string;
 };
@@ -436,7 +466,7 @@ export type UserProfileResp = {
 	leaderboard_id: string;
 	sign_up_channel: string;
 	my_wards: Array<string>;
-	parent: string;
+	parent: Maybe<string>;
 	birthday: string;
 	time_line: Array<{
 		id: string;

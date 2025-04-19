@@ -60,6 +60,7 @@ export const endpoints = (id?: string) => {
 		vet_study_pack: "/school/exams/vet-study-pack-options",
 		get_my_courses: "/student/my-courses",
 		payment_callback: "/transaction/paystack-callback",
+		create_review: "/school/exams/give-a-review",
 	} as const;
 
 	const student = {
