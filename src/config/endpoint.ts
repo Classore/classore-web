@@ -9,6 +9,7 @@ export const endpoints = (id?: string) => {
 		reset_password: "/auth/reset-password",
 		profile: "/auth/profile",
 		google_auth: "/auth/google",
+		add_guardian: "/auth/add-my-guardian",
 		add_wards: "/auth/add-my-wards",
 		update_profile: "/auth/update-profile",
 		change_password: "/auth/change-password",
@@ -59,6 +60,7 @@ export const endpoints = (id?: string) => {
 		vet_study_pack: "/school/exams/vet-study-pack-options",
 		get_my_courses: "/student/my-courses",
 		payment_callback: "/transaction/paystack-callback",
+		create_review: "/school/exams/give-a-review",
 	} as const;
 
 	const student = {

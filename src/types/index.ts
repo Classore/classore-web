@@ -74,20 +74,58 @@ export type FiletypeProps = "doc" | "docx" | "pdf" | "pptx" | "txt";
 
 export type UserProps = Node & {
 	__typename?: "User";
-	first_name: string;
-	last_name: string;
-	email: string;
-	image: string;
-	password: string;
 	access_token: string;
-	referral_code: string;
-	profile_image: string;
-	is_verified: boolean;
+	birthday: Date | string;
 	chosen_study_plan: boolean;
-	user_type: string;
-	wallet_id: string;
-	sign_up_channel: string;
+	copied_from: Maybe<string>;
+	description: Maybe<string>;
+	email: string;
+	first_name: string;
 	isBlocked: boolean;
+	isDeleted: boolean;
+	is_verified: boolean;
+	last_name: string;
+	leaderboard_id: Maybe<string>;
+	my_wards: UserProps[];
+	parent: Maybe<string>;
+	password: string;
+	phone_number: string;
+	profile_image: string;
+	reason_for_account_delete: null;
+	referral_code: string;
+	sign_up_channel: string;
+	timeline: {
+		amount_paid: number;
+		chosen_bundle: string;
+		createdOn: string;
+		deletedBy: string;
+		deletedOn: string;
+		end_date: string;
+		exam: {
+			id: string;
+			name: string;
+		};
+		exam_bundle_details: {
+			id: string;
+			name: string;
+		};
+		exam_type: string;
+		id: string;
+		isBlocked: boolean;
+		isDeleted: boolean;
+		is_paid: boolean;
+		renewal_amount: number;
+		status: string;
+		subjects: {
+			id: string;
+			name: string;
+		}[];
+		updatedBy: string;
+		updatedOn: string;
+		user_id: string;
+	}[];
+	user_type: "STUDENT" | "PARENT";
+	wallet_id: string;
 };
 
 export type AdminProps = Node & {
@@ -428,7 +466,7 @@ export type UserProfileResp = {
 	leaderboard_id: string;
 	sign_up_channel: string;
 	my_wards: Array<string>;
-	parent: string;
+	parent: Maybe<string>;
 	birthday: string;
 	time_line: Array<{
 		id: string;

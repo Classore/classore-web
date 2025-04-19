@@ -13,10 +13,11 @@ import { skipToken, useQuery } from "@tanstack/react-query";
 const getProfile = async () => {
 	return axios.get<HttpResponse<UserProfileResp>>(endpoints().auth.profile).then((res) => res.data);
 };
-export const useGetProfile = () => {
+export const useGetProfile = (enabled?: boolean) => {
 	return useQuery({
 		queryKey: ["profile"],
 		queryFn: getProfile,
+		enabled,
 		staleTime: Infinity,
 		gcTime: Infinity,
 		select: (data) => data.data,

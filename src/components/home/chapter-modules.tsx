@@ -83,7 +83,7 @@ export const ChapterModules = ({
 		<>
 			<div className="flex flex-col gap-6 pt-4">
 				<div
-					className="prose-a:underline prose-a:hover:text-primary-300 prose-hr:my-1 prose-p:my-0 prose-sm prose-ol:list-decimal prose-ul:list-disc prose-p:first-letter:capitalize prose-headings:first-letter:uppercase prose-li:first-letter:uppercase text-neutral-400"
+					className="prose-sm text-neutral-400 prose-headings:first-letter:uppercase prose-p:my-0 prose-p:first-letter:capitalize prose-a:underline prose-a:hover:text-primary-300 prose-ol:list-decimal prose-ul:list-disc prose-li:first-letter:uppercase prose-hr:my-1"
 					dangerouslySetInnerHTML={{
 						__html: sanitizeHtml(chapter?.content),
 					}}

@@ -133,7 +133,7 @@ const Page = () => {
 
 										<div className="flex flex-col gap-4">
 											<div className="flex items-center justify-between gap-2">
-												<h3 className="text-xl font-medium text-neutral-900">Reviews</h3>hif
+												<h3 className="text-xl font-medium text-neutral-900">Reviews</h3>
 												<ShareReview />
 											</div>
 											{bundle?.reviews.length ? (
