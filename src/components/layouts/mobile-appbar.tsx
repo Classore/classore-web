@@ -9,6 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { LogoutModal } from "../modals";
+import { AccountSettingsDrawer } from "../settings/account-settings-drawer";
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "../ui/sheet";
 
 /**
@@ -42,16 +43,16 @@ export const MobileAppbar = () => {
 					</button>
 				</SheetTrigger>
 
-				<SheetContent className="modal-primary flex w-[90%] flex-col gap-4 py-4">
+				<SheetContent className="modal-primary flex w-[90%] flex-col gap-4 overflow-x-hidden px-0 py-4">
 					<div className="absolute -top-80 left-0 z-30">
 						<ModalArt />
 					</div>
 
-					<SheetClose className="z-30 ml-auto grid size-7 place-items-center rounded-full bg-white">
+					<SheetClose className="z-30 mx-4 ml-auto grid size-7 place-items-center rounded-full bg-white">
 						<XClose height={18} width={18} />
 					</SheetClose>
 
-					<div className="flex w-full flex-col gap-2">
+					<div className="flex w-full flex-col gap-2 p-4">
 						<p className="text-xs text-neutral-500">MENU</p>
 						<ul className="relative z-50 flex w-full flex-col">
 							{dashboard_links.map(({ label, links }) => (
@@ -76,19 +77,23 @@ export const MobileAppbar = () => {
 						</ul>
 					</div>
 
-					<div className="mt-auto flex items-center gap-2 rounded-md bg-neutral-50 px-2 py-3">
-						<Avatar className="size-10 bg-black">
-							<AvatarImage src={user?.profile_image} alt={user?.first_name} />
-							<AvatarFallback className="text-white">
-								{getInitials(`${user?.first_name} ${user?.last_name}`)}
-							</AvatarFallback>
-						</Avatar>
-						<div className="flex flex-col items-start">
-							<p className="text-sm font-medium capitalize leading-none">
-								{user?.first_name} {user?.last_name}
-							</p>
-							<p className="text-xs text-neutral-400">{user?.email}</p>
+					<div className="mt-auto flex w-full items-center justify-between gap-2 rounded-md bg-neutral-50 px-2 py-3">
+						<div className="flex items-center gap-2">
+							<Avatar className="size-10 bg-black">
+								<AvatarImage src={user?.profile_image} alt={user?.first_name} />
+								<AvatarFallback className="text-white">
+									{getInitials(`${user?.first_name} ${user?.last_name}`)}
+								</AvatarFallback>
+							</Avatar>
+							<div className="flex flex-col items-start">
+								<p className="text-sm font-medium capitalize leading-none">
+									{user?.first_name} {user?.last_name}
+								</p>
+								<p className="text-xs text-neutral-400">{user?.email}</p>
+							</div>
 						</div>
+
+						<AccountSettingsDrawer />
 					</div>
 				</SheetContent>
 			</Sheet>

@@ -6,10 +6,10 @@ import posthog from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
 import React from "react";
 
-import { ErrorBoundary, QueryProvider, SSRProvider } from "@/providers";
 import { FacebookPixel } from "@/components/shared";
 import { Toaster } from "@/components/ui/sonner";
 import { analytics, pageview } from "@/lib";
+import { ErrorBoundary, QueryProvider, SSRProvider } from "@/providers";
 
 export default function App({ Component, pageProps }: AppProps) {
 	const router = useRouter();
@@ -25,17 +25,17 @@ export default function App({ Component, pageProps }: AppProps) {
 
 	return (
 		<GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
-			<QueryProvider>
-				<SSRProvider>
-					<PostHogProvider client={posthog}>
-						<ErrorBoundary>
+			<ErrorBoundary>
+				<QueryProvider>
+					<SSRProvider>
+						<PostHogProvider client={posthog}>
 							<Component {...pageProps} />
 							<Toaster position="top-right" richColors theme="light" closeButton />
 							<FacebookPixel />
-						</ErrorBoundary>
-					</PostHogProvider>
-				</SSRProvider>
-			</QueryProvider>
+						</PostHogProvider>
+					</SSRProvider>
+				</QueryProvider>
+			</ErrorBoundary>
 		</GoogleOAuthProvider>
 	);
 }
