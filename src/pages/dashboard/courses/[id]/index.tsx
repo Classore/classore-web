@@ -218,6 +218,7 @@ const Page = () => {
 
 		const videoUrl = currentModule?.video_array?.[0]?.secure_url;
 
+
 		if (videoUrl) {
 			return (
 				<VideoPlayer
