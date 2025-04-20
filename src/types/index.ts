@@ -385,6 +385,11 @@ export type SingleBundleResp = {
 		isDeleted: boolean;
 		isBlocked: boolean;
 		name: string;
+		videos: Array<{
+			duration: number;
+			secure_url: string;
+			derived_url: string;
+		}>;
 		class?: string;
 		examination: string;
 		examination_bundle: string;
