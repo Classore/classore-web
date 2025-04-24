@@ -14,13 +14,11 @@ import {
 	RiVolumeMuteLine,
 	RiVolumeUpLine,
 } from "@remixicon/react";
-import { useMutation } from "@tanstack/react-query";
 import Hls from "hls.js";
 import { LoaderCircle } from "lucide-react";
 import * as React from "react";
 
-import { cn, isDeviceMobileSafari, playbackRates } from "@/lib";
-import { updateModuleProgress } from "@/queries/user";
+import { cn } from "@/lib";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 const formatTime = (timeInSeconds: number): string => {
@@ -32,28 +30,40 @@ const formatTime = (timeInSeconds: number): string => {
 };
 
 interface VideoPlayerProps {
-	courseId: string;
-	moduleId: string;
 	src: string;
 	autoPlay?: boolean;
 	className?: string;
-	moduleProgress?: number;
+	onMetadataLoaded?: () => void;
+	onProgressChange?: () => void;
 	onError?: (error: unknown) => void;
 	onReady?: () => void;
 	poster?: string;
 }
 
-export const VideoPlayer = React.memo(
+const isDeviceMobileSafari = () => {
+	if (typeof window === undefined) return false;
+
+	const ua = navigator.userAgent;
+	const isSafari = /^((?!chrome|android).)*safari/i.test(ua);
+	const isIOS =
+		/iPad|iPhone|iPod/.test(ua) ||
+		(navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+	return isSafari && isIOS;
+};
+
+const playbackRates = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
+
+export const Video = React.memo(
 	({
-		courseId,
-		moduleId,
 		src,
 		autoPlay = false,
 		className,
 		poster,
 		onReady,
 		onError,
-		moduleProgress,
+		onMetadataLoaded,
+		onProgressChange,
 	}: VideoPlayerProps) => {
 		const [isPlaying, setIsPlaying] = React.useState(false);
 		const [progress, setProgress] = React.useState(0);
@@ -72,32 +82,6 @@ export const VideoPlayer = React.memo(
 		const videoRef = React.useRef<HTMLVideoElement | null>(null);
 		const playerRef = React.useRef<HTMLDivElement>(null);
 		const hlsRef = React.useRef<Hls | null>(null);
-		const lastSentProgressRef = React.useRef(0);
-
-		const { mutate } = useMutation({
-			mutationFn: updateModuleProgress,
-			mutationKey: ["update-module-progress", courseId, moduleId, progress],
-		});
-
-		React.useEffect(() => {
-			const updateProgress = () => {
-				if (
-					(Math.abs(Math.round(progress) - lastSentProgressRef.current) >= 1 &&
-						progress <= 100 &&
-						progress > lastSentProgressRef.current) ||
-					(progress === 100 && lastSentProgressRef.current !== 100)
-				) {
-					const progressToSend = Math.min(Math.round(progress), 100);
-					mutate({ course_id: courseId, module_id: moduleId, current_progress: progressToSend });
-					lastSentProgressRef.current = progressToSend;
-				}
-			};
-			updateProgress();
-			const intervalId = lastSentProgressRef.current < 100 ? setInterval(updateProgress, 10000) : null;
-			return () => {
-				if (intervalId) clearInterval(intervalId);
-			};
-		}, [courseId, moduleId, progress, mutate]);
 
 		const hideControlsTimer = React.useCallback(() => {
 			if (controlsTimeoutRef.current) {
@@ -138,10 +122,9 @@ export const VideoPlayer = React.memo(
 			if (!videoRef.current) return;
 
 			const newTime = newValue[0];
-			if (moduleId && courseId) {
-				const maxScrub = (progress * duration) / 100;
-				if (newTime > maxScrub) return;
-			}
+			onProgressChange?.();
+			// const maxScrub = (progress * duration) / 100;
+			// // if (newTime > maxScrub) return;
 			setCurrentTime(newTime);
 			videoRef.current.currentTime = newTime;
 			setProgress((newTime / duration) * 100);
@@ -380,12 +363,7 @@ export const VideoPlayer = React.memo(
 			const onLoadedMetadata = () => {
 				setDuration(video.duration);
 				setIsLoading(false);
-				const currentProgress =
-					moduleProgress && moduleProgress !== 100
-						? ((moduleProgress ?? 0) / 100) * (video.duration ?? 0)
-						: 0;
-				setProgress(currentProgress);
-				video.currentTime = currentProgress;
+				onMetadataLoaded?.();
 			};
 			const onEnded = () => {
 				setIsPlaying(false);
@@ -413,9 +391,9 @@ export const VideoPlayer = React.memo(
 			video.addEventListener("play", onPlay);
 			video.addEventListener("pause", onPause);
 			video.addEventListener("timeupdate", onTimeUpdate);
+			video.addEventListener("loadedmetadata", onLoadedMetadata);
 			video.addEventListener("loadstart", () => setIsLoading(true));
 			video.addEventListener("loadeddata", () => setIsLoading(false));
-			video.addEventListener("loadedmetadata", onLoadedMetadata);
 			video.addEventListener("ended", onEnded);
 			video.addEventListener("waiting", onWaiting);
 			video.addEventListener("playing", onPlaying);
@@ -435,9 +413,9 @@ export const VideoPlayer = React.memo(
 				video.removeEventListener("play", onPlay);
 				video.removeEventListener("pause", onPause);
 				video.removeEventListener("timeupdate", onTimeUpdate);
+				video.removeEventListener("loadedmetadata", onLoadedMetadata);
 				video.removeEventListener("loadstart", () => setIsLoading(true));
 				video.removeEventListener("loadeddata", () => setIsLoading(false));
-				video.removeEventListener("loadedmetadata", onLoadedMetadata);
 				video.removeEventListener("ended", onEnded);
 				video.removeEventListener("waiting", onWaiting);
 				video.removeEventListener("playing", onPlaying);
@@ -458,8 +436,9 @@ export const VideoPlayer = React.memo(
 				}
 			};
 			// eslint-disable-next-line react-hooks/exhaustive-deps
-		}, [moduleProgress]);
+		}, []);
 
+		// Control visibility handlers
 		React.useEffect(() => {
 			if (isPlaying) {
 				hideControlsTimer();
@@ -472,6 +451,7 @@ export const VideoPlayer = React.memo(
 			// eslint-disable-next-line react-hooks/exhaustive-deps
 		}, [isPlaying]);
 
+		// Keyboard shortcut handlers
 		React.useEffect(() => {
 			const handleKeyDown = (e: KeyboardEvent) => {
 				if (
@@ -524,10 +504,6 @@ export const VideoPlayer = React.memo(
 			};
 			// eslint-disable-next-line react-hooks/exhaustive-deps
 		}, [isPlaying]);
-
-		React.useEffect(() => {
-			setProgress(0);
-		}, [moduleId]);
 
 		return (
 			<div
