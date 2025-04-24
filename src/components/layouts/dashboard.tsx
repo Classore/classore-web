@@ -49,7 +49,7 @@ export function DashboardLayout({ children, className }: DashboardLayoutProps) {
 		() => {
 			setOpenReview(true);
 		},
-		100 * 60 * 60 * 3
+		100 * 60 * 60 * 30
 	);
 
 	return (
@@ -109,7 +109,7 @@ export function DashboardLayout({ children, className }: DashboardLayoutProps) {
 					</div>
 				</aside>
 
-				<section className="flex h-screen max-w-[calc(100vw-256px)] flex-1 flex-col overflow-hidden">
+				<section className="flex h-screen w-full flex-col overflow-hidden">
 					<Appbar />
 
 					<div

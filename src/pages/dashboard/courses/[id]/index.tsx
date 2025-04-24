@@ -1,16 +1,23 @@
 import { RiCloseCircleLine, RiThumbDownLine, RiThumbUpLine } from "@remixicon/react";
 import { useMutation } from "@tanstack/react-query";
-import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/router";
+import Image from "next/image";
 import * as React from "react";
+import Link from "next/link";
 
-import blockchain from "@/assets/illustrations/blockchain.svg";
-import trophy from "@/assets/illustrations/trophy.svg";
-import { CourseActions } from "@/components/course/course-actions";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useGetChapter, useGetCourse, useGetProfile } from "@/queries/student";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChapterModules, QuizHistory, Resources } from "@/components/home";
-import { DashboardLayout } from "@/components/layouts";
 import { JoinCommunityModal, RenewalModal } from "@/components/modals";
+import { CourseActions } from "@/components/course/course-actions";
+import { type StartCourseDto, startCourse } from "@/queries/user";
+import blockchain from "@/assets/illustrations/blockchain.svg";
+import { DashboardLayout } from "@/components/layouts";
+import trophy from "@/assets/illustrations/trophy.svg";
+import { Button } from "@/components/ui/button";
+import { capitalize, getInitials } from "@/lib";
+import { useCourse } from "@/hooks";
 import {
 	AvatarGroup,
 	BackBtn,
@@ -19,13 +26,6 @@ import {
 	Spinner,
 	VideoPlayer,
 } from "@/components/shared";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useCourse } from "@/hooks";
-import { capitalize, getInitials } from "@/lib";
-import { useGetChapter, useGetCourse, useGetProfile } from "@/queries/student";
-import { type StartCourseDto, startCourse } from "@/queries/user";
 
 type UseMutationProps = {
 	courseId: string;
@@ -217,7 +217,6 @@ const Page = () => {
 		}
 
 		const videoUrl = currentModule?.video_array?.[0]?.secure_url;
-
 
 		if (videoUrl) {
 			return (
@@ -419,50 +418,11 @@ const Page = () => {
 		</>
 	);
 
-	const DebugState = () => {
-		const storedProgress = React.useMemo(() => {
-			if (typeof window !== "undefined") {
-				try {
-					const data = localStorage.getItem(`course_progress_${id}`);
-					return data ? JSON.parse(data) : null;
-				} catch (e) {
-					return null;
-				}
-			}
-			return null;
-		}, []);
-
-		return process.env.NODE_ENV === "development" ? (
-			<div className="fixed bottom-4 right-4 z-50 max-w-sm rounded bg-black/80 p-4 text-xs text-white">
-				<h4 className="mb-2 font-bold">Course Debug</h4>
-				<div className="grid grid-cols-2 gap-1">
-					<span>ChapterId:</span>
-					<span>{chapterId || "none"}</span>
-					<span>ModuleId:</span>
-					<span>{moduleId || "none"}</span>
-					<span>Initial Chapter:</span>
-					<span>{initialChapterId || "none"}</span>
-					<span>Initial Module:</span>
-					<span>{initialModuleId || "none"}</span>
-					<span>Chapters Count:</span>
-					<span>{chapterList?.length || 0}</span>
-					<span>Modules Count:</span>
-					<span>{moduleList?.length || 0}</span>
-					<span>Stored Chapter:</span>
-					<span>{storedProgress?.chapterId || "none"}</span>
-					<span>Stored Module:</span>
-					<span>{storedProgress?.moduleId || "none"}</span>
-				</div>
-			</div>
-		) : null;
-	};
-
 	return (
 		<>
 			<Seo title={capitalize(course?.subject_id.name ?? "Course Details")} />
 			<DashboardLayout>
 				{isCourseLoading ? renderLoadingState() : isError ? renderErrorState() : renderMainContent()}
-				{process.env.NODE_ENV === "development" && <DebugState />}
 			</DashboardLayout>
 			{bundle && (
 				<RenewalModal open={renewalModalOpen} setOpen={setRenewalModalOpen} bundle={bundle} />

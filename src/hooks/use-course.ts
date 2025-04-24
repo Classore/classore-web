@@ -204,16 +204,15 @@ export const useCourse = ({
 			const chapter = validChapters.find((ch) => ch.id === chapterId);
 			if (chapter) {
 				setInternalChapterId(chapterId);
-				const moduleId = chapter.modules[0]?.id || "";
+				const firstModule = chapter.modules.find((module) => module.sequence === 1);
+				const moduleId = firstModule?.id || "";
 				if (moduleId) {
-					if (moduleId !== currentModuleId) {
-						setInternalModuleId(moduleId);
-					}
+					setInternalModuleId(moduleId);
 					updateProgress(chapterId, moduleId);
 				}
 			}
 		},
-		[validChapters, updateProgress, currentChapterId, currentModuleId]
+		[validChapters, updateProgress, currentChapterId]
 	);
 
 	const setCurrentModuleId = React.useCallback(

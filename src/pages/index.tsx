@@ -31,13 +31,13 @@ const Page = () => {
 	const { isMobile } = useDeviceWidth();
 	const router = useRouter();
 	const reference = router.query.reference as string;
-	console.log({});
 
 	const { mutate } = useMutation({
 		mutationKey: ["payment-callback"],
 		mutationFn: paymentCallback,
 		onSuccess: () => {
 			toast.success("Payment verified successfully");
+			router.push("/dashboard");
 		},
 		onError: (error: HttpError) => {
 			const errorMessage = Array.isArray(error.response?.data.message)

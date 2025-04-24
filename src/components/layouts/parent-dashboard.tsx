@@ -42,7 +42,7 @@ export function ParentDashboardLayout({ children, className, title }: DashboardL
 		() => {
 			setOpen(true);
 		},
-		100 * 60 * 60 * 3
+		100 * 60 * 60 * 30
 	);
 
 	return (
