@@ -23,10 +23,11 @@ export type ViewCourseProps = {
 	user_id: string;
 };
 
-export type NewChapterProps = Node & {
+export type NewChapterProps = {
 	__typename: "Chapter";
 	bench_mark: number;
 	content: string;
+	id: string;
 	images: string[];
 	modules: NewModuleProps[];
 	name: string;

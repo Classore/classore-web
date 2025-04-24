@@ -233,7 +233,6 @@ const Page = () => {
 
 										<div className="flex flex-col gap-4 pt-4">
 											<h4 className="font-bold text-neutral-700">All Courses:</h4>
-
 											<BundleSubjects subjects={bundle?.subjects ?? []} />
 										</div>
 									</div>
@@ -243,7 +242,6 @@ const Page = () => {
 					)}
 				</>
 			</DashboardLayout>
-
 			{currentBundle && <RenewalModal open={open} setOpen={setOpen} bundle={currentBundle} />}
 		</>
 	);

@@ -1,6 +1,7 @@
-import type { HttpResponse, PaginatedResponse, PaginationProps } from "@/types";
 import { useQuery } from "@tanstack/react-query";
-import type { NewSubjectProps } from "@/types/course";
+
+import type { HttpResponse, PaginatedResponse, PaginationProps } from "@/types";
+import type { NewChapterProps, NewSubjectProps } from "@/types/course";
 import { endpoints } from "@/config";
 import { axios } from "@/lib";
 
@@ -52,4 +53,36 @@ export const getSubjects = async (
 	return axios.get<HttpResponse<PaginatedResponse<NewSubjectProps>>>(
 		endpoints().school.get_subjects
 	);
+};
+
+export interface SubjectProps {
+	banner: string;
+	chapter_dripping: "NO" | "YES";
+	chapters: NewChapterProps[];
+	description: string;
+	examination: {
+		id: string;
+		name: string;
+	};
+	examination_bundle: {
+		id: string;
+		name: string;
+	};
+	name: string;
+	videos: string[];
+}
+const getSubject = async (id: string) => {
+	return axios
+		.get<HttpResponse<SubjectProps>>(endpoints(id).school.get_subject)
+		.then((res) => res.data);
+};
+export const useGetSubject = (id: string) => {
+	return useQuery({
+		queryKey: ["subject-course", { id }],
+		queryFn: () => getSubject(id),
+		enabled: !!id,
+		select: (data) => data.data,
+		staleTime: Infinity,
+		gcTime: Infinity,
+	});
 };
