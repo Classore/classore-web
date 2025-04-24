@@ -1,6 +1,8 @@
-import type { SingleBundleResp } from "@/types";
 import { FolderClosed, NotebookText, PlayCircle } from "lucide-react";
 import * as React from "react";
+import Link from "next/link";
+
+import type { SingleBundleResp } from "@/types";
 
 type Props = {
 	subjects: SingleBundleResp["subjects"];
@@ -22,7 +24,13 @@ export const BundleSubjects = ({ subjects }: Props) => {
 							<p className="font-medium capitalize">{subject.name}</p>
 						</button>
 
-						{value === subject.id && <p className="text-sm text-secondary-300 underline">Preview</p>}
+						{value === subject.id && (
+							<Link
+								href={`/dashboard/courses/preview/${subject.id}`}
+								className="text-sm text-secondary-300 underline">
+								Preview
+							</Link>
+						)}
 					</div>
 
 					{value === subject.id && (
