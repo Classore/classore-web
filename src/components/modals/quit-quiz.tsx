@@ -5,6 +5,7 @@ import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "
 
 export const QuitQuizModal = () => {
 	const router = useRouter();
+	const id = router.query.id as string;
 
 	return (
 		<Dialog>
@@ -29,7 +30,7 @@ export const QuitQuizModal = () => {
 							Cancel
 						</Button>
 					</DialogClose>
-					<Button className="w-40 text-sm" onClick={() => router.push("/dashboard/courses")}>
+					<Button className="w-40 text-sm" onClick={() => router.push(`/dashboard/courses/${id}`)}>
 						I Understand, Quit
 					</Button>
 				</div>
