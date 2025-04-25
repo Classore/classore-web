@@ -2,8 +2,8 @@ import { RiFileTextLine, RiPlayCircleLine, RiTimeLine } from "@remixicon/react";
 import Image from "next/image";
 import Link from "next/link";
 
-import type { MyCoursesResp } from "@/queries/student";
 import { formatNumber } from "@/lib";
+import type { MyCoursesResp } from "@/queries/student";
 
 interface Props {
 	course: MyCoursesResp["data"][number];
@@ -53,7 +53,7 @@ export const CourseCard = ({ course, onClick }: Props) => {
 			id={course.course_id}
 			bundle={course.course_chosen_bundle}
 			onClick={onClick}
-			className="flex w-full flex-col gap-3 rounded-lg border p-2.5 transition-all duration-700 hover:shadow-2xl md:w-96 md:min-w-[350px] md:p-4">
+			className="flex w-full flex-col gap-3 rounded-lg border p-2.5 transition-all duration-700 hover:shadow-2xl md:w-96 md:min-w-[380px] md:p-3">
 			<div className="relative w-full rounded-lg">
 				<div className="absolute right-[10px] top-2 !z-[5] flex items-center gap-1 rounded bg-white p-1">
 					<RiTimeLine size={18} />

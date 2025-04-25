@@ -60,11 +60,7 @@ const DialogContent = React.forwardRef<
 			)}
 			{...props}>
 			<div
-				className={cn(
-					dialogVariants({ variant }),
-					"flex flex-col gap-4 rounded-xl p-4 md:px-6",
-					className
-				)}>
+				className={cn(dialogVariants({ variant }), "flex flex-col gap-4 rounded-xl p-4", className)}>
 				<div className="absolute -top-80 left-0 z-30">
 					<ModalArt />
 				</div>

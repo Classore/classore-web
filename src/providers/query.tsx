@@ -33,7 +33,11 @@ export const queryClient = new QueryClient({
 		mutations: {
 			// This is a global error handler and can be can be overridden by each Mutation "onError". You can change this later to use Mutation Cache (which means this the global error will be called regardless of each Mutation onError), but for now this will do
 			onError: (error) => {
-				toast.error(error.response?.data.message || "Something went wrong");
+				const errorMessage = Array.isArray(error.response?.data.message)
+					? error.response?.data.message[0]
+					: error.response?.data.message;
+				const message = errorMessage || "Something went wrong";
+				toast.error(message);
 			},
 		},
 	},
@@ -43,7 +47,7 @@ export const QueryProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 	return (
 		<QueryClientProvider client={queryClient}>
 			{children}
-			<ReactQueryDevtools initialIsOpen={false} />
+			<ReactQueryDevtools buttonPosition="bottom-left" initialIsOpen={false} />
 		</QueryClientProvider>
 	);
 };

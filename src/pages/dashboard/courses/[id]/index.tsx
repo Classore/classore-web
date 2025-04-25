@@ -13,11 +13,11 @@ import { JoinCommunityModal, RenewalModal } from "@/components/modals";
 import { CourseActions } from "@/components/course/course-actions";
 import { type StartCourseDto, startCourse } from "@/queries/user";
 import blockchain from "@/assets/illustrations/blockchain.svg";
-import trophy from "@/assets/illustrations/trophy.svg";
 import { DashboardLayout } from "@/components/layouts";
+import trophy from "@/assets/illustrations/trophy.svg";
 import { Button } from "@/components/ui/button";
 import { capitalize, getInitials } from "@/lib";
-import { useCourseHandler } from "@/hooks";
+import { useCourse } from "@/hooks";
 import {
 	AvatarGroup,
 	BackBtn,
@@ -32,8 +32,8 @@ type UseMutationProps = {
 	payload: StartCourseDto;
 };
 
-const TABS = ["summary", "resources", "quiz history"] as const;
 const AVATAR_IMAGES = Array(11).fill("/assets/images/avatar.png");
+const TABS = ["summary", "resources", "quiz history"] as const;
 
 const Page = () => {
 	const [renewalModalOpen, setRenewalModalOpen] = React.useState(false);
@@ -49,80 +49,129 @@ const Page = () => {
 		isError,
 		error,
 	} = useGetCourse({
-		course_id: id as string,
-	});
-
-	const currentChapterId = course?.current_chapter?.id;
-	const { data: chapter, isPending: isChapterPending } = useGetChapter({
-		chapter_id: currentChapterId ?? "",
-		enabled: !!currentChapterId,
+		course_id: String(id),
+		enabled: !!id,
 		refetchIntervalInBackground: true,
-		refetchInterval: 1000 * 30,
+		refetchInterval: 1000 * 2,
 	});
 
-	const chapters = React.useMemo(() => course?.chapters || [], [course]);
+	const { initialChapterId, initialModuleId } = React.useMemo(() => {
+		if (!course?.chapters?.length) {
+			return { initialChapterId: "", initialModuleId: "" };
+		}
+		const initialChapterId = course.chapters[0]?.id || "";
+		const initialModuleId = course.chapters[0]?.modules?.[0]?.id || "";
+		return { initialChapterId, initialModuleId };
+	}, [course]);
+
+	const {
+		data: chapter,
+		isPending: isChapterPending,
+		isError: isChapterError,
+	} = useGetChapter({
+		chapter_id: initialChapterId || "",
+		enabled: !!initialChapterId,
+		refetchIntervalInBackground: true,
+		refetchInterval: 1000 * 15,
+	});
+
+	const chapters = React.useMemo(() => {
+		if (isCourseLoading) return [];
+		return course?.chapters || [];
+	}, [course, isCourseLoading]);
 
 	const {
 		chapterId,
+		chapterList,
+		courseProgress,
+		currentChapter,
+		currentChapterProgress,
+		currentModule,
+		currentModuleProgress,
+		hasNextChapter,
 		hasNextModule,
 		hasPreviousChapter,
+		hasPreviousModule,
 		isQuizPassed,
 		moduleId,
+		moduleList,
+		nextChapterId,
+		nextModuleId,
+		onNext,
+		previousModule,
 		setCurrentChapterId,
 		setCurrentModuleId,
-	} = useCourseHandler({ chapters, modules: chapter?.modules || [] });
-
-	React.useEffect(() => {
-		if (chapter) {
-			const firstModule = chapter.modules[0];
-			const currentModuleId = chapter.current_chapter_module;
-			setCurrentChapterId(chapterId || chapter.id);
-			setCurrentModuleId(moduleId || firstModule?.id || currentModuleId);
-		}
-	}, [chapter]);
-
-	const currentModule = React.useMemo(() => {
-		if (!moduleId || !chapter) return null;
-		const module = chapter?.modules.find((module) => module.id === moduleId);
-		if (!module) return null;
-		return module;
-	}, [chapter, moduleId]);
+	} = useCourse({
+		chapterId: initialChapterId,
+		chapters,
+		courseId: String(id),
+		moduleId: initialModuleId,
+		onProgressUpdate: async () => {},
+	});
 
 	const { mutate: startCourseMutation } = useMutation({
 		mutationFn: ({ courseId, payload }: UseMutationProps) => startCourse(courseId, payload),
 		mutationKey: ["start-course", id],
 	});
 
-	const courseProgress = React.useMemo(() => {
-		if (!chapter || !chapter.current_module_progress_percentage) return 0;
-		return chapter.current_module_progress_percentage;
-	}, [chapter, course]);
-
-	const overallProgress = React.useMemo(() => {
-		if (!course?.chapters?.length) return 0;
-		const totalChapters = course.chapters.length;
-		const completedChaptersCount = course.chapters.reduce(
-			(acc, chapter) => acc + (chapter.is_completed ? 1 : 0),
-			0
-		);
-		return Math.min(Math.round((completedChaptersCount / totalChapters) * 100), 100);
-	}, [course?.chapters]);
-
 	React.useEffect(() => {
 		if (
 			!hasPreviousChapter &&
-			currentChapterId &&
+			initialChapterId &&
 			(chapter?.current_chapter_progress_percentage ?? 0) < 0
 		) {
 			startCourseMutation({
 				courseId: String(id),
 				payload: {
-					chapter_id: currentChapterId,
+					chapter_id: initialChapterId,
 					current_progress: chapter?.current_module_progress_percentage || 0,
 				},
 			});
 		}
-	}, [chapter, courseProgress, hasPreviousChapter, id, currentChapterId, startCourseMutation]);
+	}, [chapter, hasPreviousChapter, id, initialChapterId, startCourseMutation]);
+
+	React.useEffect(() => {
+		if (initialChapterId && initialModuleId && !isCourseLoading) {
+			// Check localStorage first
+			const storageKey = `course_progress_${id}`;
+			let shouldSetInitialValues = true;
+
+			try {
+				const storedProgress = localStorage.getItem(storageKey);
+				if (storedProgress) {
+					const parsed = JSON.parse(storedProgress);
+
+					const chapterExists = chapters.some((ch) => ch.id === parsed.chapterId);
+					const moduleExists =
+						chapterExists &&
+						chapters
+							.find((ch) => ch.id === parsed.chapterId)
+							?.modules.some((m) => m.id === parsed.moduleId);
+
+					if (chapterExists && moduleExists) {
+						setCurrentChapterId(parsed.chapterId);
+						setCurrentModuleId(parsed.moduleId);
+						shouldSetInitialValues = false;
+					}
+				}
+			} catch (e) {
+				console.error("Error reading stored progress:", e);
+			}
+
+			if (shouldSetInitialValues) {
+				setCurrentChapterId(initialChapterId);
+				setCurrentModuleId(initialModuleId);
+			}
+		}
+	}, [
+		initialChapterId,
+		initialModuleId,
+		chapters,
+		id,
+		isCourseLoading,
+		setCurrentChapterId,
+		setCurrentModuleId,
+	]);
 
 	React.useEffect(() => {
 		if (isError && error?.status === 403) {
@@ -162,7 +211,7 @@ const Page = () => {
 	const renderVideoPlayer = () => {
 		if (isChapterPending) {
 			return (
-				<div className="flex h-80 w-full flex-col items-center justify-center rounded bg-neutral-200 p-10">
+				<div className="flex aspect-[16/9] w-full flex-col items-center justify-center rounded bg-neutral-200 p-10">
 					<p className="text-center text-sm text-neutral-500">Loading...</p>
 				</div>
 			);
@@ -182,7 +231,7 @@ const Page = () => {
 		}
 
 		return (
-			<div className="flex h-80 w-full flex-col items-center justify-center rounded bg-neutral-200 p-10">
+			<div className="flex aspect-[16/9] w-full flex-col items-center justify-center rounded bg-neutral-200 p-10">
 				<RiCloseCircleLine className="text-neutral-400" size={48} />
 				<p className="text-center text-sm text-neutral-500">
 					This lesson currently has no video. <br /> Please check back later.
@@ -192,11 +241,14 @@ const Page = () => {
 	};
 
 	const renderSidebar = () => (
-		<div className="col-start-3 flex h-fit w-full flex-col gap-2">
+		<div className="col-start-3 flex w-full flex-col gap-2 lg:overflow-auto lg:pb-10">
 			<CourseChapters
-				current_chapter_id={currentChapterId}
-				progress={overallProgress}
-				chapters={chapters}
+				chapters={chapterList}
+				courseId={String(id)}
+				current_chapter_id={currentChapter?.id ?? ""}
+				hasNextChapter={hasNextChapter}
+				hasPreviousChapter={hasPreviousChapter}
+				progress={courseProgress}
 				dripping={course?.subject_id.chapter_dripping ?? "NO"}
 				setChapter={setCurrentChapterId}
 			/>
@@ -293,29 +345,27 @@ const Page = () => {
 						</div>
 						<p className="text-xs capitalize text-neutral-400">Categories / {course?.subject_id.name}</p>
 					</div>
-
 					<CourseActions
 						chapters={chapters}
 						currentChapterId={chapterId}
 						currentModuleId={moduleId}
-						currentModuleProgress={chapter?.current_module_progress_percentage ?? 0}
+						currentModuleProgress={currentModuleProgress}
 						hasNextModule={hasNextModule}
-						isQuizPassed={isQuizPassed(moduleId)}
+						isQuizPassed={isQuizPassed}
+						onNext={onNext}
 						setChapter={setCurrentChapterId}
 						setModule={setCurrentModuleId}
 					/>
 				</div>
 			</div>
 
-			<div className="flex w-full flex-col gap-8 lg:grid lg:grid-cols-3">
-				<div className="col-span-2 col-start-1 flex flex-col gap-8">
-					<div className="border absolute left-0 right-0 md:static">{renderVideoPlayer()}</div>
+			<div className="flex w-full flex-col gap-8 lg:grid lg:h-screen lg:grid-cols-3 lg:overflow-hidden">
+				<div className="col-span-2 col-start-1 flex flex-col gap-8 lg:overflow-auto">
+					<div className="absolute left-0 right-0 border md:static">{renderVideoPlayer()}</div>
 
 					<div className="about-course z-50 mb-5 flex w-full flex-col gap-4">
 						<div className="flex w-full items-center justify-between">
-							<h3 className="text-balance text-xl font-semibold capitalize">
-								{course?.current_chapter?.name}
-							</h3>
+							<h3 className="text-balance text-xl font-semibold capitalize">{currentChapter?.name}</h3>
 							<div className="flex items-center gap-3">
 								<div className="flex items-center px-2 py-1">
 									<RiThumbUpLine size={20} />
@@ -337,18 +387,29 @@ const Page = () => {
 
 							<TabsContent value="summary">
 								<ChapterModules
-									chapterProgress={chapter?.current_chapter_progress_percentage ?? 0}
-									currentChapterId={String(course?.current_chapter.id)}
+									chapter={currentChapter}
+									chapterProgress={currentChapterProgress}
+									currentChapterId={chapterId}
 									currentModuleId={moduleId}
-									isQuizPassed={isQuizPassed}
+									hasNextChapter={hasNextChapter}
+									hasNextModule={hasNextModule}
+									hasPreviousChapter={hasPreviousChapter}
+									hasPreviousModule={hasPreviousModule}
+									isError={isChapterError}
+									isPending={isChapterPending}
+									moduleList={moduleList}
+									nextChapterId={nextChapterId}
+									nextModuleId={nextModuleId}
+									onSelectChapter={setCurrentChapterId}
 									onSelectModule={setCurrentModuleId}
+									previousModule={previousModule}
 								/>
 							</TabsContent>
 							<TabsContent value="resources">
-								<Resources currentChapterId={chapterId} currentModuleId={moduleId} />
+								<Resources currentModule={currentModule} />
 							</TabsContent>
 							<TabsContent value="quiz history">
-								<QuizHistory currentChapterId={chapterId} currentModuleId={moduleId} />
+								<QuizHistory currentModule={currentModule} />
 							</TabsContent>
 						</Tabs>
 					</div>

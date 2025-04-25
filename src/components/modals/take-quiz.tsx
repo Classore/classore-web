@@ -1,7 +1,7 @@
 import { skipToken, usePrefetchQuery } from "@tanstack/react-query";
 import { RiMessage2Line } from "@remixicon/react";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useMemo } from "react";
 
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from "../ui/dialog";
 import { useGetChapter } from "@/queries/student";
@@ -29,9 +29,15 @@ export const TakeQuizModal = ({
 		chapter_id: currentChapterId,
 	});
 
+	// Find the lesson outside of a conditional render
 	const lesson = chapter?.modules.find((module) => module.id === currentModuleId);
 
-	// Prefetch this chapter quiz. Might change this since quiz might be moving to modules.
+	// Create this value unconditionally
+	const lastQuizAttempt = useMemo(() => {
+		return lesson?.quizes?.[lesson.quizes.length - 1];
+	}, [lesson?.quizes]);
+
+	// Always call hooks at the top level, not conditionally
 	usePrefetchQuery({
 		queryKey: ["questions", { module_id: lesson?.id }],
 		queryFn: lesson?.id ? () => fetchQuestions({ module_id: String(lesson?.id) }) : skipToken,
@@ -39,15 +45,19 @@ export const TakeQuizModal = ({
 		gcTime: Infinity,
 	});
 
-	if (!chapter || !lesson) return null;
+	// Calculate values outside of the return statement
+	const attempts_percentage = useMemo(() => {
+		if (!lesson) return 0;
+		return (
+			((lesson.quiz_attempts_limit - lesson.quiz_attempts_left) / (lesson.quiz_attempts_limit ?? 3)) *
+			100
+		);
+	}, [lesson]);
 
-	const attempts_percentage =
-		((lesson?.quiz_attempts_limit - lesson.quiz_attempts_left) / (lesson.quiz_attempts_limit ?? 3)) *
-		100;
-
-	const lastQuizAttempt = React.useMemo(() => {
-		return lesson.quizes[lesson.quizes.length - 1];
-	}, [lesson.quizes]);
+	// Early return after all hooks are called
+	if (!chapter || !lesson) {
+		return null;
+	}
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
@@ -85,7 +95,7 @@ export const TakeQuizModal = ({
 					<ul className="flex flex-col gap-1 pt-2">
 						{lastQuizAttempt?.score !== 0 && Number(lastQuizAttempt?.score) < chapter.bench_mark ? (
 							<li className="text-xs">
-								You need to score above ${chapter.bench_mark}% to qualify for next chapter
+								You need to score above {chapter.bench_mark}% to qualify for next chapter
 							</li>
 						) : null}
 

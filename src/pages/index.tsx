@@ -1,18 +1,24 @@
+import { useMutation } from "@tanstack/react-query";
 import { RiDownload2Line } from "@remixicon/react";
+import { useRouter } from "next/router";
 import Image from "next/image";
+import { toast } from "sonner";
 import Link from "next/link";
+import React from "react";
 
+import { AvatarGroup, Footer, Navbar, ReviewCard, Seo } from "@/components/shared";
+import { useDeviceWidth } from "@/hooks/use-device-width";
 import { PersonalizedPlanCard } from "@/components/home";
 import { MasonryLayout } from "@/components/layouts";
-import { AvatarGroup, Footer, Navbar, ReviewCard, Seo } from "@/components/shared";
+import { paymentCallback } from "@/queries/school";
 import { Button } from "@/components/ui/button";
+import type { HttpError } from "@/types";
 import {
 	FREQUENTLY_ASKED_QUESTIONS,
 	INCENTIVES,
 	PERSONALIZED_PLANS,
 	TESTIMONIALS,
 } from "@/constants";
-import { useDeviceWidth } from "@/hooks/use-device-width";
 
 const images = [
 	"/assets/images/avatar-0.png",
@@ -23,6 +29,39 @@ const images = [
 
 const Page = () => {
 	const { isMobile } = useDeviceWidth();
+	const router = useRouter();
+	const reference = router.query.reference as string;
+
+	const { mutate } = useMutation({
+		mutationKey: ["payment-callback"],
+		mutationFn: paymentCallback,
+		onSuccess: () => {
+			toast.success("Payment verified successfully");
+			router.push("/dashboard");
+		},
+		onError: (error: HttpError) => {
+			const errorMessage = Array.isArray(error.response?.data.message)
+				? error?.response.data.message[0]
+				: error?.response.data.message;
+			const message = errorMessage ?? "Something went wrong, please try again later";
+			toast.error(message);
+		},
+	});
+
+	React.useEffect(() => {
+		if (reference) {
+			mutate({
+				event: "charge.success",
+				data: {
+					metadata: {
+						narration_id: "",
+						narration: "RESERVATION",
+					},
+					reference: reference,
+				},
+			});
+		}
+	}, [reference]);
 
 	return (
 		<>
@@ -32,11 +71,11 @@ const Page = () => {
 
 			<main className="scrollbar w-full font-geist">
 				<section className="relative w-full overflow-y-hidden bg-gradient-to-b from-primary-100 to-neutral-100 lg:min-h-dvh">
-					<div className="absolute left-0 top-0 h-full w-full">
+					<div className="absolute left-0 top-0 !z-0 hidden h-full w-full lg:block">
 						<Image src="/assets/images/vector-grid.png" alt="vector-grid" fill sizes="100%" />
 					</div>
 
-					<div className="container my-32 flex h-full flex-col items-center justify-end gap-y-5 px-3 lg:absolute lg:left-1/2 lg:top-10 lg:!z-[1] lg:-translate-x-1/2 lg:px-0">
+					<div className="!z-5 container my-32 flex h-full flex-col items-center justify-end gap-y-5 px-3 lg:absolute lg:left-1/2 lg:top-10 lg:-translate-x-1/2 lg:px-0">
 						<div className="flex flex-col items-center gap-y-4 text-center lg:w-[750px]">
 							<div className="flex w-fit items-center gap-x-4 rounded-2xl border-2 border-white bg-[rgba(255,255,255,0.3)] px-3 py-1">
 								<p className="text-xs">Join over 2,500 learners today</p>
@@ -57,7 +96,7 @@ const Page = () => {
 									asChild
 									variant="outline-primary"
 									className="w-full rounded-lg border-secondary-300 px-8 text-secondary-300 hover:bg-secondary-50">
-									<Link href="/signin">Start Learning</Link>
+									<Link href="/signin">Continue/Start Learning</Link>
 								</Button>
 								<Button className="rounded-lg px-6">
 									<RiDownload2Line /> Download App

@@ -242,3 +242,16 @@ export const paymentCallback = async (payload: PaymentCallbackDto) => {
 		.post<HttpResponse<null>>(endpoints().school.payment_callback, payload)
 		.then((res) => res.data);
 };
+
+// <----- REVIEWS ------->
+export interface CreateReviewDto {
+	id: string;
+	purpose: "EXAMINATION" | "EXAM_BUNDLE" | "COURSE";
+	rating: number;
+	comment: string;
+}
+export const createReview = async (payload: CreateReviewDto) => {
+	return axios
+		.post<HttpResponse<string>>(endpoints().school.create_review, payload)
+		.then((res) => res.data);
+};

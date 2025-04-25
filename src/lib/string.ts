@@ -385,3 +385,17 @@ export const generateRandomColor = (opacity: number = 1) => {
 
 	return `rgba(${r}, ${g}, ${b}, ${clampedOpacity})`;
 };
+
+export const isDeviceMobileSafari = () => {
+	if (typeof window === undefined) return false;
+
+	const ua = navigator.userAgent;
+	const isSafari = /^((?!chrome|android).)*safari/i.test(ua);
+	const isIOS =
+		/iPad|iPhone|iPod/.test(ua) ||
+		(navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+	return isSafari && isIOS;
+};
+
+export const playbackRates = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];

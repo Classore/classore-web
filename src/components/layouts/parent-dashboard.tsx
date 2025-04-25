@@ -8,8 +8,11 @@ import meeting from "@/assets/illustrations/meeting.svg";
 import { useGetParentHome } from "@/queries/parent";
 import { parents_dashboard_links } from "@/config";
 import { WardItem } from "../dashboard/ward-item";
+import { ReviewToast } from "../dashboard/review";
+import { MobileAppbar } from "./mobile-appbar";
 import { useUserStore } from "@/store/z-store";
 import { cn, normalize } from "@/lib";
+import { useInterval } from "@/hooks";
 import { Invite } from "../invite";
 import { Appbar } from "./appbar";
 import { Seo } from "../shared";
@@ -22,6 +25,7 @@ type DashboardLayoutProps = {
 };
 
 export function ParentDashboardLayout({ children, className, title }: DashboardLayoutProps) {
+	const [open, setOpen] = React.useState(false);
 	const { user } = useUserStore();
 	const router = useRouter();
 
@@ -34,6 +38,13 @@ export function ParentDashboardLayout({ children, className, title }: DashboardL
 			router.push("/parent/dashboard");
 		}
 	}, [router, user]);
+
+	useInterval(
+		() => {
+			setOpen(true);
+		},
+		100 * 60 * 60 * 30
+	);
 
 	return (
 		<>
@@ -125,6 +136,7 @@ export function ParentDashboardLayout({ children, className, title }: DashboardL
 					{children}
 				</section>
 			</main>
+			<ReviewToast isOpen={open} onOpenChange={setOpen} />
 		</>
 	);
 }

@@ -1,18 +1,18 @@
-import { RiDownload2Line, RiFileCopyLine, RiUserAddLine } from "@remixicon/react";
-import { type SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
+import { RiDownload2Line, RiFileCopyLine, RiUserAddLine } from "@remixicon/react";
 import React from "react";
+import { type SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
-import { Select, SelectItem } from "../ui/select";
-import { useUserStore } from "@/store/z-store";
-import { Sharer, TabPanel } from "../shared";
-import { useGetBanks } from "@/queries/bank";
 import { Coin } from "@/assets/svgs/coin";
 import { formatCurrency } from "@/lib";
+import { useGetBanks } from "@/queries/bank";
+import { useUserStore } from "@/store/z-store";
+import { Sharer, TabPanel } from "../shared";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { Select, SelectItem } from "../ui/select";
 
 const tabs = [
 	{ label: "Withdrawal History", name: "withdrawal", icon: RiDownload2Line },
@@ -68,8 +68,8 @@ const Points = () => {
 		<div
 			onSubmit={handleSubmit(onSubmit)}
 			className="flex w-full flex-col gap-5 overflow-y-auto border-b border-t py-6">
-			<div className="grid w-full grid-cols-2 gap-x-3">
-				<div className="flex aspect-[1.6/1] w-full flex-col justify-between rounded-md bg-gradient-to-r from-primary-200 to-primary-500 px-4 py-3">
+			<div className="grid w-full gap-x-3 md:grid-cols-2">
+				<div className="flex aspect-[1.6/1] w-full flex-col justify-between bg-gradient-to-r from-primary-200 to-primary-500 px-4 py-3 md:rounded-md">
 					<div className="size-8 rounded-full bg-white/50">
 						<Coin className="text-white" />
 					</div>
@@ -81,7 +81,7 @@ const Points = () => {
 						Withdraw Points
 					</Button>
 				</div>
-				<div className="flex aspect-[1.6/1] w-full flex-col justify-between rounded-md bg-gradient-to-r from-primary-100 to-primary-200 px-4 py-3">
+				<div className="flex aspect-[1.6/1] w-full flex-col justify-between bg-gradient-to-r from-primary-100 to-primary-200 px-4 py-3 md:rounded-md">
 					<div>
 						<p className="text-sm text-neutral-400">Referral Code</p>
 						<p className="text-lg font-medium">{user?.referral_code}</p>
@@ -98,7 +98,7 @@ const Points = () => {
 				</div>
 			</div>
 			<form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-6">
-				<div>
+				<div className="flex flex-col gap-4">
 					<Select control={control} name="bank_id" label="Select Bank">
 						{options.map((option) => (
 							<SelectItem key={option.value} value={option.value}>

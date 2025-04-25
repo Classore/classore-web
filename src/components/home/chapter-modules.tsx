@@ -1,9 +1,5 @@
 import * as React from "react";
-
-import { convertSecondsToMinSec, sanitizeHtml } from "@/lib";
-import { QuizAlertModal, TakeQuizModal } from "../modals";
-import { useGetChapter } from "@/queries/student";
-import { Spinner } from "../shared";
+import { toast } from "sonner";
 import {
 	RiCheckboxCircleFill,
 	RiFileTextLine,
@@ -11,49 +7,70 @@ import {
 	RiPlayCircleLine,
 } from "@remixicon/react";
 
+import { convertSecondsToMinSec, sanitizeHtml } from "@/lib";
+import type { ChapterModuleProps, ChapterResp } from "@/types";
+import { QuizAlertModal, TakeQuizModal } from "../modals";
+import { Spinner } from "../shared";
+
 interface Props {
+	chapter: ChapterResp | null;
 	chapterProgress: number;
 	currentChapterId: string;
 	currentModuleId: string;
-	isQuizPassed: (moduleId: string) => boolean;
+	hasNextChapter: boolean;
+	hasNextModule: boolean;
+	hasPreviousChapter: boolean;
+	hasPreviousModule: boolean;
+	isError: boolean;
+	isPending: boolean;
+	moduleList: ChapterModuleProps[];
+	nextChapterId: string;
+	nextModuleId: string;
+	onSelectChapter: (chapterId: string) => void;
 	onSelectModule: (moduleId: string) => void;
+	previousModule: ChapterModuleProps | null;
 }
 
 export const ChapterModules = ({
+	chapter,
 	chapterProgress,
 	currentChapterId,
 	currentModuleId,
-	isQuizPassed,
+	moduleList,
+	isError,
+	isPending,
 	onSelectModule,
 }: Props) => {
+	const [activeModuleId, setActiveModuleId] = React.useState(currentModuleId);
 	const [openTakeQuiz, setOpenTakeQuiz] = React.useState(false);
 	const [open, setOpen] = React.useState(false);
 
-	const {
-		data: chapter,
-		isPending,
-		isError,
-	} = useGetChapter({
-		chapter_id: currentChapterId,
-		enabled: !!currentChapterId,
-	});
+	React.useEffect(() => {
+		setActiveModuleId(currentModuleId);
+	}, [currentModuleId]);
 
-	const modules = React.useMemo(() => {
-		if (!chapter) return [];
-		return chapter.modules;
-	}, [chapter]);
-
-	const canProceedToNextLesson = React.useMemo(() => {
-		return chapterProgress > 50 && isQuizPassed;
-	}, [chapterProgress, isQuizPassed]);
-
-	const handleSelectModule = (moduleId: string) => {
-		if (!isQuizPassed && chapterProgress < 50) {
-			setOpen(true);
-		} else {
-			onSelectModule(moduleId);
+	const handleSelectModule = (module: ChapterModuleProps) => {
+		const moduleId = module.id;
+		const isPassed = module.is_passed;
+		const hasPreviousModule = module.sequence > 1;
+		const previousModule = moduleList[module.sequence - 2];
+		console.log({ previousModule });
+		if (hasPreviousModule && (previousModule?.progress || 0) < 50) {
+			toast.error("Please complete the previous module first");
+			return;
 		}
+		if (!isPassed && chapterProgress < 50 && moduleId !== moduleList[0].id) {
+			setOpen(true);
+			return;
+		}
+		onSelectModule(moduleId);
 	};
+
+	React.useEffect(() => {
+		if (openTakeQuiz) {
+			setOpenTakeQuiz(false);
+		}
+	}, [currentChapterId]);
 
 	if (isPending) {
 		return (
@@ -77,12 +94,11 @@ export const ChapterModules = ({
 		<>
 			<div className="flex flex-col gap-6 pt-4">
 				<div
-					className="markdown-content text-sm leading-relaxed text-neutral-400 first-letter:capitalize"
+					className="prose-sm text-neutral-400 prose-headings:first-letter:uppercase prose-p:my-0 prose-p:first-letter:capitalize prose-a:underline prose-a:hover:text-primary-300 prose-ol:list-decimal prose-ul:list-disc prose-li:first-letter:uppercase prose-hr:my-1"
 					dangerouslySetInnerHTML={{
-						__html: sanitizeHtml(chapter?.content).replace(/\n/g, "<br />"),
+						__html: sanitizeHtml(chapter?.content),
 					}}
 				/>
-
 				<div className="w-full rounded-lg border border-neutral-200">
 					<div className="flex items-center justify-between gap-4 border-b border-b-neutral-200 px-6 py-4">
 						<div className="flex items-center gap-4">
@@ -98,7 +114,7 @@ export const ChapterModules = ({
 									</div>
 									<div className="flex items-center gap-1">
 										<RiFileTextLine size={18} />
-										<span>{chapter.no_of_quizes} Quizzes</span>
+										<span>{chapter?.no_of_quizes} Quizzes</span>
 									</div>
 								</div>
 							</div>
@@ -115,14 +131,13 @@ export const ChapterModules = ({
 							<p className="text-xs font-bold">{chapterProgress}%</p>
 						</div>
 					</div>
-					{modules
+					{moduleList
 						.sort((a, b) => a.sequence - b.sequence)
 						.map((module) => (
 							<button
 								type="button"
-								disabled={!canProceedToNextLesson || currentModuleId === module.id}
 								key={module.id}
-								onClick={() => handleSelectModule(module.id)}
+								onClick={() => handleSelectModule(module)}
 								className={`flex w-full items-center gap-4 border-b border-b-neutral-200 px-6 py-4 ${currentModuleId === module.id ? "border-l-4 border-l-primary-300" : ""}`}>
 								<div
 									className={`grid size-8 place-items-center rounded-md ${module.is_completed || currentModuleId === module.id ? "bg-[rgba(241,236,249,0.5)] text-primary-300" : "bg-neutral-100 text-neutral-400"}`}>
@@ -149,10 +164,10 @@ export const ChapterModules = ({
 			</div>
 
 			<QuizAlertModal open={open} setOpen={setOpen} setOpenTakeQuiz={setOpenTakeQuiz} />
-			{currentChapterId && currentModuleId && (
+			{openTakeQuiz && (
 				<TakeQuizModal
 					currentChapterId={currentChapterId}
-					currentModuleId={currentModuleId}
+					currentModuleId={activeModuleId}
 					open={openTakeQuiz}
 					setOpen={setOpenTakeQuiz}
 				/>

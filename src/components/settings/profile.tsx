@@ -1,21 +1,21 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { RiDeleteBin6Line, RiImageLine } from "@remixicon/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, useWatch } from "react-hook-form";
+import { RiDeleteBin6Line, RiImageLine } from "@remixicon/react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { toast } from "sonner";
 import React from "react";
+import { useForm, useWatch } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
-import { Avatar, AvatarImage } from "../ui/avatar";
+import { useFileHandler } from "@/hooks";
 import { UpdateProfileMutation } from "@/queries";
 import { useGetProfile } from "@/queries/student";
 import { useUserStore } from "@/store/z-store";
-import { Textarea } from "../ui/textarea";
-import { useFileHandler } from "@/hooks";
+import { Spinner } from "../shared";
+import { Avatar, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { Spinner } from "../shared";
+import { Textarea } from "../ui/textarea";
 
 const schema = z.object({
 	first_name: z.string().min(1, { message: "Please enter your first name" }),
@@ -133,7 +133,7 @@ const Profile = () => {
 						</div>
 					</div>
 
-					<div className="grid w-full grid-cols-2 gap-2">
+					<div className="grid w-full gap-2 md:grid-cols-2">
 						<Input
 							type="text"
 							name="first_name"
@@ -162,15 +162,15 @@ const Profile = () => {
 					/>
 					<Textarea control={control} name="description" label="Describe Yourself" />
 
-					<div className="flex w-full items-center justify-between pt-10">
+					<div className="flex w-full items-center justify-between pt-6 md:pt-10">
 						<Button
 							type="button"
 							variant="text"
 							disabled={updatePending}
-							className="w-fit !text-sm text-red-500 hover:bg-red-50 hover:text-red-700">
+							className="hidden w-fit !text-sm text-red-500 hover:bg-red-50 hover:text-red-700 md:flex">
 							Delete Account
 						</Button>
-						<div className="flex items-center gap-2">
+						<div className="flex items-center gap-2 sm:ml-auto">
 							<Button
 								onClick={() => reset()}
 								disabled={updatePending}

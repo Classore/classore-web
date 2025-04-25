@@ -16,7 +16,7 @@ const Page = () => {
 			<Seo title="My Courses" />
 
 			<DashboardLayout>
-				<div className="relative flex w-full flex-col items-center justify-between gap-4 overflow-hidden rounded-2xl bg-[#F8F5FF] p-6 text-black md:min-h-[297px] md:flex-row md:gap-[177px] md:px-10 md:py-[52px]">
+				<div className="relative flex w-full flex-col items-center justify-between gap-4 overflow-x-hidden rounded-2xl bg-[#F8F5FF] p-6 text-black md:min-h-[297px] md:flex-row md:gap-[177px] md:px-10 md:py-[52px]">
 					<div className="flex max-w-[559px] flex-col gap-4">
 						<h1 className="text-2xl font-bold lg:text-4xl">My Courses</h1>
 						<p className="text-sm text-neutral-400 md:text-base">
@@ -40,7 +40,7 @@ const Page = () => {
 					</div>
 				</div>
 
-				<div className="flex flex-col gap-10 pb-10 pt-6">
+				<div className="flex flex-col gap-10 py-6 pb-10">
 					{isPending ? (
 						<div className="mx-auto py-4">
 							<Spinner variant="primary" />

@@ -9,6 +9,7 @@ export const endpoints = (id?: string) => {
 		reset_password: "/auth/reset-password",
 		profile: "/auth/profile",
 		google_auth: "/auth/google",
+		add_guardian: "/auth/add-my-guardian",
 		add_wards: "/auth/add-my-wards",
 		update_profile: "/auth/update-profile",
 		change_password: "/auth/change-password",
@@ -25,6 +26,18 @@ export const endpoints = (id?: string) => {
 		create: "/courses",
 		update: `/courses/${id}`,
 		delete: `/courses/${id}`,
+	} as const;
+
+	const message = {
+		create_room: "/chat/find-or-create-room",
+		get_room: `/chat/get-room/${id}`,
+		upload: "/chat/media-upload",
+		fetch_messages: "/chat/fetch-room-messages",
+	} as const;
+
+	const notifications = {
+		get_all: "/notification/fetch-all",
+		clear: "/notification/clear-all",
 	} as const;
 
 	const parents = {
@@ -47,6 +60,7 @@ export const endpoints = (id?: string) => {
 		vet_study_pack: "/school/exams/vet-study-pack-options",
 		get_my_courses: "/student/my-courses",
 		payment_callback: "/transaction/paystack-callback",
+		create_review: "/school/exams/give-a-review",
 	} as const;
 
 	const student = {
@@ -85,5 +99,17 @@ export const endpoints = (id?: string) => {
 		get: `/mail/fetch-waitlist`,
 	};
 
-	return { auth, bank, courses, school, user, waitlist, student, test_center, parents };
+	return {
+		auth,
+		bank,
+		courses,
+		message,
+		notifications,
+		parents,
+		school,
+		student,
+		test_center,
+		user,
+		waitlist,
+	};
 };
