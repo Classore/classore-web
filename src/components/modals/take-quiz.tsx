@@ -29,23 +29,19 @@ export const TakeQuizModal = ({
 		chapter_id: currentChapterId,
 	});
 
-	// Find the lesson outside of a conditional render
 	const lesson = chapter?.modules.find((module) => module.id === currentModuleId);
 
-	// Create this value unconditionally
 	const lastQuizAttempt = useMemo(() => {
 		return lesson?.quizes?.[lesson.quizes.length - 1];
 	}, [lesson?.quizes]);
 
-	// Always call hooks at the top level, not conditionally
 	usePrefetchQuery({
-		queryKey: ["questions", { module_id: lesson?.id }],
-		queryFn: lesson?.id ? () => fetchQuestions({ module_id: String(lesson?.id) }) : skipToken,
+		queryKey: ["questions", { module_id: currentModuleId }],
+		queryFn: currentModuleId ? () => fetchQuestions({ module_id: currentModuleId }) : skipToken,
 		staleTime: Infinity,
 		gcTime: Infinity,
 	});
 
-	// Calculate values outside of the return statement
 	const attempts_percentage = useMemo(() => {
 		if (!lesson) return 0;
 		return (
@@ -54,7 +50,6 @@ export const TakeQuizModal = ({
 		);
 	}, [lesson]);
 
-	// Early return after all hooks are called
 	if (!chapter || !lesson) {
 		return null;
 	}
@@ -144,7 +139,7 @@ export const TakeQuizModal = ({
 						onClick={() =>
 							router.push({
 								pathname: "/dashboard/courses/[id]/quiz",
-								query: { id: course_id, module_id: lesson.id },
+								query: { id: course_id, module_id: currentModuleId },
 							})
 						}>
 						Start Quiz

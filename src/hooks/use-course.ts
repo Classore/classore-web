@@ -389,17 +389,23 @@ export const useCourse = ({
 		return Math.min(Math.round(overallProgress), 100);
 	}, [validChapters]);
 
-	const currentChapterProgress = React.useMemo(() => {
-		if (!currentChapter) return 0;
-		const cumulativeProgress = currentChapter.modules.reduce((acc, module) => {
-			const progress = module?.progress ?? 0;
-			if (progress >= 50) {
-				return acc + progress;
+	const calculateCurrentChapterProgress = (chapter: ChapterResp | null): number => {
+		if (!chapter?.modules?.length) return 0;
+		let totalProgress = 0;
+		const moduleCount = chapter.modules.length;
+		for (let i = 0; i < moduleCount; i++) {
+			totalProgress += chapter.modules[i].progress || 0;
+			if (totalProgress >= moduleCount * 100) {
+				return 100;
 			}
-			return acc;
-		}, 0);
-		return Math.min(cumulativeProgress, 100);
-	}, [currentChapter]);
+		}
+		return Math.round(totalProgress / moduleCount);
+	};
+
+	const currentChapterProgress = React.useMemo(
+		() => calculateCurrentChapterProgress(currentChapter),
+		[currentChapter]
+	);
 
 	const currentModuleProgress = React.useMemo(() => {
 		if (!currentModule) return 0;

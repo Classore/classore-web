@@ -132,7 +132,6 @@ const Page = () => {
 
 	React.useEffect(() => {
 		if (initialChapterId && initialModuleId && !isCourseLoading) {
-			// Check localStorage first
 			const storageKey = `course_progress_${id}`;
 			let shouldSetInitialValues = true;
 

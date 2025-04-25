@@ -254,28 +254,31 @@ const Page = () => {
 
 											{currentQuestion.question_images?.length ? (
 												currentQuestion.question_images.length > 1 ? (
-													<div className="grid grid-cols-2 gap-4 p-4">
+													<div className="grid w-full grid-cols-2 gap-4 p-4">
 														{currentQuestion.question_images.map((image, index) => (
-															<div key={index} className="relative rounded-md p-2">
-																<p className="absolute left-2 top-2 rounded-full bg-neutral-300 p-2 text-sm font-bold">
+															<div key={index} className="relative h-52 w-full rounded-md p-2">
+																<p className="absolute left-2 top-2 !z-[2] grid size-6 place-items-center rounded-full bg-neutral-300 text-xs font-bold">
 																	{index + 1}
 																</p>
-
 																<Image
 																	key={image}
 																	src={image}
 																	alt="question image"
-																	className="h-36 w-full object-cover"
+																	fill
+																	sizes="100%"
+																	className="object-cover"
 																/>
 															</div>
 														))}
 													</div>
 												) : (
-													<div className="p-4">
+													<div className="relative h-52 w-full p-4">
 														<Image
 															src={currentQuestion.question_images[0]}
 															alt="question image"
-															className="h-52 w-full object-cover"
+															fill
+															sizes="100%"
+															className="object-cover"
 														/>
 													</div>
 												)
