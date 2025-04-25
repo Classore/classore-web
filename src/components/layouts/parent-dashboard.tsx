@@ -9,7 +9,7 @@ import { useGetParentHome } from "@/queries/parent";
 import { parents_dashboard_links } from "@/config";
 import { WardItem } from "../dashboard/ward-item";
 import { ReviewToast } from "../dashboard/review";
-import { MobileAppbar } from "./mobile-appbar";
+// import { MobileAppbar } from "./mobile-appbar";
 import { useUserStore } from "@/store/z-store";
 import { cn, normalize } from "@/lib";
 import { useInterval } from "@/hooks";
@@ -127,7 +127,7 @@ export function ParentDashboardLayout({ children, className, title }: DashboardL
 
 			{/* MOBILE NAVBAR */}
 			<main className="w-full bg-[#F6F8FA] lg:hidden">
-			<MobileParentDashboardLayout children={undefined}/>
+				<MobileParentDashboardLayout children={undefined} />
 				<section
 					className={cn(
 						"flex h-full w-full flex-col gap-6 overflow-y-auto bg-[#F6F8FA] px-3 py-6 md:px-8",
