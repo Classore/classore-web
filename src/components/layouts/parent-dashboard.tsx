@@ -8,7 +8,6 @@ import meeting from "@/assets/illustrations/meeting.svg";
 import { useGetParentHome } from "@/queries/parent";
 import { parents_dashboard_links } from "@/config";
 import { WardItem } from "../dashboard/ward-item";
-import { MobileAppbar } from "./mobile-appbar";
 import { useUserStore } from "@/store/z-store";
 import { cn, normalize } from "@/lib";
 import { Invite } from "../invite";
