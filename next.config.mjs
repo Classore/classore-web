@@ -10,6 +10,7 @@ const nextConfig = {
 			{ protocol: "https", hostname: "storage.googleapis.com" },
 			{ protocol: "http", hostname: "dummyimage.com" },
 			{ protocol: "http", hostname: "classore.com" },
+			{ protocol: "http", hostname: "storage.googleapis.com" },
 		],
 	},
 };
