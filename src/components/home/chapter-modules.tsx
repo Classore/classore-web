@@ -1,10 +1,11 @@
+import * as React from "react";
+import { toast } from "sonner";
 import {
 	RiCheckboxCircleFill,
 	RiFileTextLine,
 	RiFolderVideoLine,
 	RiPlayCircleLine,
 } from "@remixicon/react";
-import * as React from "react";
 
 import { convertSecondsToMinSec, sanitizeHtml } from "@/lib";
 import type { ChapterModuleProps, ChapterResp } from "@/types";
@@ -27,6 +28,7 @@ interface Props {
 	nextModuleId: string;
 	onSelectChapter: (chapterId: string) => void;
 	onSelectModule: (moduleId: string) => void;
+	previousModule: ChapterModuleProps | null;
 }
 
 export const ChapterModules = ({
@@ -47,12 +49,21 @@ export const ChapterModules = ({
 		setActiveModuleId(currentModuleId);
 	}, [currentModuleId]);
 
-	const handleSelectModule = (moduleId: string, is_passed: boolean) => {
-		if (!is_passed && chapterProgress < 50 && moduleId !== moduleList[0].id) {
-			setOpen(true);
-		} else {
-			onSelectModule(moduleId);
+	const handleSelectModule = (module: ChapterModuleProps) => {
+		const moduleId = module.id;
+		const isPassed = module.is_passed;
+		const hasPreviousModule = module.sequence > 1;
+		const previousModule = moduleList[module.sequence - 2];
+		console.log({ previousModule });
+		if (hasPreviousModule && (previousModule?.progress || 0) < 50) {
+			toast.error("Please complete the previous module first");
+			return;
 		}
+		if (!isPassed && chapterProgress < 50 && moduleId !== moduleList[0].id) {
+			setOpen(true);
+			return;
+		}
+		onSelectModule(moduleId);
 	};
 
 	React.useEffect(() => {
@@ -126,7 +137,7 @@ export const ChapterModules = ({
 							<button
 								type="button"
 								key={module.id}
-								onClick={() => handleSelectModule(module.id, module?.is_passed || false)}
+								onClick={() => handleSelectModule(module)}
 								className={`flex w-full items-center gap-4 border-b border-b-neutral-200 px-6 py-4 ${currentModuleId === module.id ? "border-l-4 border-l-primary-300" : ""}`}>
 								<div
 									className={`grid size-8 place-items-center rounded-md ${module.is_completed || currentModuleId === module.id ? "bg-[rgba(241,236,249,0.5)] text-primary-300" : "bg-neutral-100 text-neutral-400"}`}>
