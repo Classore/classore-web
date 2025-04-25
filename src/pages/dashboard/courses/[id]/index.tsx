@@ -98,6 +98,7 @@ const Page = () => {
 		nextChapterId,
 		nextModuleId,
 		onNext,
+		previousModule,
 		setCurrentChapterId,
 		setCurrentModuleId,
 	} = useCourse({
@@ -401,6 +402,7 @@ const Page = () => {
 									nextModuleId={nextModuleId}
 									onSelectChapter={setCurrentChapterId}
 									onSelectModule={setCurrentModuleId}
+									previousModule={previousModule}
 								/>
 							</TabsContent>
 							<TabsContent value="resources">

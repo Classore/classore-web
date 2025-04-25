@@ -30,9 +30,13 @@ interface UseCourseHandler {
 	moduleId: string;
 	moduleList: ChapterModuleProps[];
 	nextChapterId: string;
+	nextModule: ChapterModuleProps | null;
 	nextModuleId: string;
 	onNext: () => void;
 	onPrevious: () => void;
+	previousChapterId: string;
+	previousModule: ChapterModuleProps | null;
+	previousModuleId: string;
 	setCurrentChapterId: (chapterId: string) => void;
 	setCurrentModuleId: (moduleId: string) => void;
 }
@@ -147,18 +151,104 @@ export const useCourse = ({
 		}
 	}, [moduleList, currentModuleIndex, currentModuleId]);
 
-	const hasNextChapter =
-		currentChapterIndex !== -1 && currentChapterIndex < validChapters.length - 1;
-	const hasPreviousChapter = currentChapterIndex > 0;
-	const hasNextModule = currentModuleIndex !== -1 && currentModuleIndex < moduleList.length - 1;
-	const hasPreviousModule = currentModuleIndex > 0;
+	const hasNextChapter = React.useMemo(() => {
+		return currentChapterIndex !== -1 && currentChapterIndex < validChapters.length - 1;
+	}, [currentChapterIndex, validChapters]);
 
-	const nextChapterId = hasNextChapter ? validChapters[currentChapterIndex + 1].id : "";
-	const nextModuleId = hasNextModule
-		? moduleList[currentModuleIndex + 1].id
-		: hasNextChapter
-			? validChapters[currentChapterIndex + 1]?.modules[0]?.id || ""
-			: "";
+	const hasPreviousChapter = React.useMemo(() => {
+		return currentChapterIndex > 0;
+	}, [currentChapterIndex]);
+
+	const hasNextModule = React.useMemo(() => {
+		return currentModuleIndex !== -1 && currentModuleIndex < moduleList.length - 1;
+	}, [currentModuleIndex, moduleList]);
+
+	const hasPreviousModule = React.useMemo(() => {
+		return currentModuleIndex > 0;
+	}, [currentModuleIndex]);
+
+	const nextChapterId = React.useMemo(() => {
+		if (hasNextChapter) {
+			return validChapters[currentChapterIndex + 1].id;
+		}
+		return "";
+	}, [hasNextChapter, validChapters, currentChapterIndex]);
+
+	const previousChapterId = React.useMemo(() => {
+		if (hasPreviousChapter) {
+			return validChapters[currentChapterIndex - 1].id;
+		}
+		return "";
+	}, [hasPreviousChapter, validChapters, currentChapterIndex]);
+
+	const nextModuleId = React.useMemo(() => {
+		if (hasNextModule) {
+			return moduleList[currentModuleIndex + 1].id;
+		} else if (hasNextChapter) {
+			return validChapters[currentChapterIndex + 1]?.modules[0]?.id || "";
+		}
+		return "";
+	}, [
+		hasNextModule,
+		hasNextChapter,
+		moduleList,
+		currentModuleIndex,
+		validChapters,
+		currentChapterIndex,
+	]);
+
+	const previousModuleId = React.useMemo(() => {
+		if (hasPreviousModule) {
+			return moduleList[currentModuleIndex - 1].id;
+		} else if (hasPreviousChapter) {
+			const prevChapter = validChapters[currentChapterIndex - 1];
+			const lastModuleIndex = prevChapter?.modules?.length - 1;
+			return prevChapter?.modules[lastModuleIndex]?.id || "";
+		}
+		return "";
+	}, [
+		hasPreviousModule,
+		hasPreviousChapter,
+		moduleList,
+		currentModuleIndex,
+		validChapters,
+		currentChapterIndex,
+	]);
+
+	// Module references
+	const nextModule = React.useMemo(() => {
+		if (hasNextModule) {
+			return moduleList[currentModuleIndex + 1];
+		} else if (hasNextChapter) {
+			return validChapters[currentChapterIndex + 1]?.modules[0] || null;
+		}
+		return null;
+	}, [
+		hasNextModule,
+		hasNextChapter,
+		moduleList,
+		currentModuleIndex,
+		validChapters,
+		currentChapterIndex,
+	]);
+
+	const previousModule = React.useMemo(() => {
+		if (hasPreviousModule) {
+			return moduleList[currentModuleIndex - 1];
+		} else if (hasPreviousChapter) {
+			const prevChapter = validChapters[currentChapterIndex - 1];
+			const lastModuleIndex = prevChapter?.modules?.length - 1;
+			return prevChapter?.modules[lastModuleIndex] || null;
+		}
+		return null;
+	}, [
+		hasPreviousModule,
+		hasPreviousChapter,
+		moduleList,
+		currentModuleIndex,
+		validChapters,
+		currentChapterIndex,
+	]);
 
 	const canProceed = React.useMemo(() => {
 		if (!currentModule) return false;
@@ -338,9 +428,13 @@ export const useCourse = ({
 		moduleId: currentModuleId,
 		moduleList,
 		nextChapterId,
+		nextModule,
 		nextModuleId,
 		onNext,
 		onPrevious,
+		previousChapterId,
+		previousModule,
+		previousModuleId,
 		setCurrentChapterId,
 		setCurrentModuleId,
 	};
