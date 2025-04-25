@@ -71,7 +71,7 @@ const Page = () => {
 							</Button>
 							<p className="font-semibold">Ward Details</p>
 						</div>
-						<div className="flex w-full items-center justify-between">
+						<div className="flex flex-col gap-y-5 lg:flex-row w-full items-center justify-between">
 							<div className="flex h-14 items-center gap-x-6 rounded-md bg-neutral-100 p-2">
 								<div className="flex w-full items-center gap-x-2">
 									<Avatar className="size-8 rounded-md border-2 border-white">
@@ -113,13 +113,13 @@ const Page = () => {
 					<div className="w-full space-y-3 rounded-lg bg-white p-5">
 						<p className="font-semibold">Analytics Report</p>
 						<div className="w-full space-y-3">
-							<div className="grid w-full grid-cols-4 gap-4">
+							<div className="grid grid-cols-1 w-full lg:grid-cols-4 gap-4">
 								<AnalyticsCard icon={RiTrophyLine} label="Leaderboard Ranking" value="0" />
 								<AnalyticsCard icon={RiUserFollowLine} label="Total Avg. Quiz Score" value="0" />
 								<AnalyticsCard icon={RiFlashlightLine} label="Streak" value="0" />
 								<AnalyticsCard icon={Target04} label="Quiz Points" value="0" />
 							</div>
-							<div className="grid w-full grid-cols-4 gap-4">
+							<div className="grid grid-cols-1 w-full lg:grid-cols-4 gap-4">
 								<div className="col-span-3 rounded-md border p-4 lg:h-[286px]">
 									<AnalyticsChart
 										data={[]}
