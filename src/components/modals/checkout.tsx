@@ -1,17 +1,18 @@
+import { Lock02 } from "@untitled-ui/icons-react";
+import * as React from "react";
+import { toast } from "sonner";
+
+import { Dialog, DialogContent } from "../ui/dialog";
+import { useMiscStore } from "@/store/z-store/misc";
 import { formatCurrency } from "@/lib";
+import { Button } from "../ui/button";
+import { Spinner } from "../shared";
 import {
 	useCreateStudyTimeline,
 	useGetExamBundles,
 	useGetExams,
 	useGetSubjects,
 } from "@/queries/school";
-import { useMiscStore } from "@/store/z-store/misc";
-import { Lock02 } from "@untitled-ui/icons-react";
-import * as React from "react";
-import { toast } from "sonner";
-import { Spinner } from "../shared";
-import { Button } from "../ui/button";
-import { Dialog, DialogContent } from "../ui/dialog";
 
 type CheckoutModalProps = {
 	open: boolean;
@@ -29,17 +30,19 @@ export const CheckoutModal = ({ open, setOpen }: CheckoutModalProps) => {
 	const exam_type = exams?.find(
 		(exam) => exam.examination_id === values.exam_type
 	)?.examination_name;
-	const prep_bundle = bundles?.data.find(
+
+	const prep_bundle = bundles?.data?.find(
 		(bundle) => bundle.examinationbundle_id === values.chosen_bundle
 	);
+
 	const chosen_subjects =
 		subjects
-			?.filter((subject) => values.subjects.includes(subject.subject_id))
+			?.filter((subject) => values?.subjects?.includes(subject.subject_id))
 			?.map((subject) => subject.subject_name)
 			.join(", ") ?? "";
 
 	const chosen_bundle = prep_bundle?.examinationbundle_name ?? "";
-	const bundle_amount = prep_bundle?.examinationbundle_amount ?? 0;
+	// const bundle_amount = prep_bundle?.examinationbundle_amount ?? 0;
 
 	const { isPending, mutate } = useCreateStudyTimeline();
 	const continueToPayment = () => {
@@ -48,10 +51,24 @@ export const CheckoutModal = ({ open, setOpen }: CheckoutModalProps) => {
 			return;
 		}
 
-		mutate(values, {
+		const subjects =
+			typeof values.subjects === "string"
+				? String(values.subjects)
+						.split(",")
+						.map((s) => s.trim())
+				: Array.isArray(values.subjects)
+					? values.subjects
+					: [];
+		const payload = {
+			...values,
+			subjects,
+		};
+		console.log(payload);
+
+		mutate(payload, {
 			onSuccess: (data) => {
 				setVisible(true);
-				window.open(data.data.payment_link.authorization_url, "_self");
+				window.open(data?.data?.payment_link?.authorization_url, "_self");
 			},
 		});
 	};
@@ -70,7 +87,6 @@ export const CheckoutModal = ({ open, setOpen }: CheckoutModalProps) => {
 
 			<DialogContent className="flex w-96 flex-col gap-6">
 				<h3 className="text-2xl font-bold">Checkout</h3>
-
 				<ul className="flex flex-col gap-4">
 					<li>
 						<p className="text-sm text-neutral-400">Exam type:</p>
@@ -91,12 +107,10 @@ export const CheckoutModal = ({ open, setOpen }: CheckoutModalProps) => {
 						<p className="text-sm text-neutral-400">Subtotal:</p>
 						<p className="font-medium">{formatCurrency(Number(values.summary.base_amount ?? 0))}</p>
 					</li>
-
 					<li>
 						<p className="text-sm text-neutral-400">No of extra subjects added:</p>
 						<p className="font-medium">{values.summary.number_of_extra_subjects_added}</p>
 					</li>
-
 					<li>
 						<p className="text-sm text-neutral-400">Grand total:</p>
 						<p className="font-medium">
@@ -109,7 +123,7 @@ export const CheckoutModal = ({ open, setOpen }: CheckoutModalProps) => {
 
 				<div className="flex flex-col gap-1">
 					<Button onClick={continueToPayment} type="submit" disabled={isPending}>
-						{isPending ? <Spinner /> : `Pay ${formatCurrency(Number(bundle_amount ?? 0))}`}
+						{isPending ? <Spinner /> : `Pay ${formatCurrency(Number(values.summary.base_amount ?? 0))}`}
 					</Button>
 					<div className="flex items-center gap-1.5 self-center text-neutral-500">
 						<Lock02 width={18} />

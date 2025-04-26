@@ -73,6 +73,7 @@ export const useGetExamBundles = (params: Params) => {
 	return useQuery({
 		queryKey: ["exam-bundles", { params }],
 		queryFn: () => getExamBundles(params),
+		enabled: !!params.examination,
 		staleTime: Infinity,
 		gcTime: Infinity,
 		select: (data) => data.data,
