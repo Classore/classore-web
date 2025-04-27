@@ -4,6 +4,7 @@ import Link from "next/link";
 import React from "react";
 
 import meeting from "@/assets/illustrations/meeting.svg";
+import { CompleteKyc } from "../dashboard/complete-kyc";
 import { ReviewToast } from "../dashboard/review";
 import { MobileAppbar } from "./mobile-appbar";
 import { useUserStore } from "@/store/z-store";
@@ -21,6 +22,7 @@ type DashboardLayoutProps = {
 
 export function DashboardLayout({ children, className }: DashboardLayoutProps) {
 	const [openReview, setOpenReview] = React.useState(false);
+	const [openSheet, setOpensheet] = React.useState(false);
 	const [open, setOpen] = React.useState(false);
 	const { user } = useUserStore();
 	const router = useRouter();
@@ -34,8 +36,10 @@ export function DashboardLayout({ children, className }: DashboardLayoutProps) {
 	}, [router, user]);
 
 	React.useEffect(() => {
-		if (user) {
-			if (user.user_type === "STUDENT" && !user.parent) {
+		if (user && user.user_type === "STUDENT") {
+			if (!user.birthday) {
+				setOpensheet(true);
+			} else if (!user.parent) {
 				const today = new Date();
 				const age = today.getFullYear() - new Date(user.birthday).getFullYear();
 				if (age < 18) {
@@ -134,6 +138,7 @@ export function DashboardLayout({ children, className }: DashboardLayoutProps) {
 				</section>
 			</main>
 			<ReviewToast isOpen={openReview} onOpenChange={setOpenReview} />
+			<CompleteKyc onOpenChange={setOpensheet} open={openSheet} />
 		</>
 	);
 }
