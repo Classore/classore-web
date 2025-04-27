@@ -6,22 +6,24 @@ import React from "react";
 import * as z from "zod";
 
 import { useGetExamBundles } from "@/queries/school";
+import { useMiscStore } from "@/store/z-store/misc";
 import { Select, SelectItem } from "../ui/select";
 import { MultiSelect } from "../ui/multi-select";
 import { Button } from "@/components/ui/button";
+import type { WardProps } from "@/types/parent";
 import { useGetExams } from "@/queries/school";
 import { queryClient } from "@/providers";
+import { CheckoutModal } from "../modals";
 import type { HttpError } from "@/types";
-import { formatCurrency } from "@/lib";
 import {
 	type StudyPackDto,
 	type VetStudyPackDto,
-	type VetStudyPackResponse,
 	useGetSubjects,
 	vetStudyPack,
 } from "@/queries/parent";
 
 interface Props {
+	ward: WardProps | null;
 	wardId: string;
 }
 
@@ -41,8 +43,10 @@ const schema = z.object({
 
 type FormValues = z.infer<typeof schema>;
 
-export const AddWardCourse = ({ wardId }: Props) => {
-	const [response, setResponse] = React.useState<VetStudyPackResponse | null>();
+export const AddWardCourse = ({ ward, wardId }: Props) => {
+	// const [response, setResponse] = React.useState<VetStudyPackResponse | null>();
+	const [openCheckout, setOpenCheckout] = React.useState(false);
+	const setMiscStore = useMiscStore((state) => state.setMisc);
 	const [open, setOpen] = React.useState(false);
 
 	const { control, handleSubmit, reset, setValue, watch } = useForm<FormValues>({
@@ -72,7 +76,20 @@ export const AddWardCourse = ({ wardId }: Props) => {
 		mutationFn: (payload: VetStudyPackDto) => vetStudyPack(payload),
 		mutationKey: ["add-course-ward", wardId],
 		onSuccess: (data) => {
-			setResponse(data.data);
+			// setResponse(data.data);
+			const response = data?.data;
+			const payload = {
+				wards: [ward],
+				total_wards: 1,
+				exam_type: values.exam_type,
+				chosen_bundle: values.chosen_bundle,
+				subjects: values.subjects,
+				...response,
+			};
+
+			setMiscStore(payload);
+			setOpen(false);
+			setOpenCheckout(true);
 		},
 		onError: (error: HttpError) => {
 			console.error(error);
@@ -110,6 +127,7 @@ export const AddWardCourse = ({ wardId }: Props) => {
 		const payload: VetStudyPackDto = {
 			vettings,
 		};
+
 		mutate(payload);
 	};
 
@@ -192,19 +210,15 @@ export const AddWardCourse = ({ wardId }: Props) => {
 									</button>
 								</div>
 								<Button type="submit">
-									{isPending ? (
-										<RiLoaderLine className="animate-spin" />
-									) : response ? (
-										`Pay ${formatCurrency(response.summary.grand_total)}`
-									) : (
-										"Proceed to Checkout"
-									)}
+									{isPending ? <RiLoaderLine className="animate-spin" /> : "Proceed to Checkout"}
 								</Button>
 							</form>
 						</div>
 					</div>
 				</div>
 			</div>
+
+			<CheckoutModal open={openCheckout} setOpen={setOpenCheckout} />
 		</>
 	);
 };

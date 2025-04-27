@@ -77,14 +77,13 @@ const Page = () => {
 				},
 				{
 					onSuccess: (data) => {
-						console.log("data", data);
 						const payload = {
 							wards: response.wards,
 							total_wards: 1,
-							...data?.data,
 							exam_type: values.examination,
 							chosen_bundle,
 							subjects: values.subjects,
+							...data?.data,
 						};
 
 						setMiscStore(payload);
