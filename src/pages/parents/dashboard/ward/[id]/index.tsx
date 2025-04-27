@@ -104,7 +104,7 @@ const Page = () => {
 							</div>
 							<div className="flex items-center gap-x-4">
 								<DeleteWard wardId={id} />
-								<AddWardCourse wardId={id} />
+								<AddWardCourse ward={singleWard} wardId={id} />
 							</div>
 						</div>
 					</div>
