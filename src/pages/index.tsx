@@ -157,7 +157,7 @@ const Page = () => {
 										<h3 className="text-2xl font-semibold text-neutral-700 lg:text-4xl">{title}</h3>
 										<p className="text-xs text-neutral-400 lg:text-sm">{description}</p>
 										<Button className="w-fit capitalize" asChild>
-											<Link href={href} target={href.startsWith("https://") ? "_self" : "_self"}>
+											<Link href={href} target={href.startsWith("https://") ? "_blank" : "_self"}>
 												{button}
 											</Link>
 										</Button>

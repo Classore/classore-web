@@ -131,12 +131,11 @@ export const PERSONALIZED_PLANS: PersonalizedPlanProps[] = [
 		type: "card",
 	},
 	{
-		title: "Refer and Earn",
-		description:
-			"Engage with bite-sized lessons that combine videos, quizzes, and activities to make learning simple, fun, and effective.",
+		title: "Join the Classore referer program",
+		description: "Inspire student success while building your own steady stream of passive income.",
 		image: "",
 		type: "link",
-		href: "https://marketers.classore.com",
+		href: "/refer-and-earn",
 		buttonText: "Get Started",
 	},
 	{
@@ -390,5 +389,93 @@ export const TESTIMONIALS: SingleBundleResp["reviews"][number][] = [
 		user_first_name: "Kalila",
 		user_last_name: "Lane",
 		user_profile_image: "https://robohash.org/solutaquialiquid.png?size=50x50&set=set1",
+	},
+];
+
+export const REFERRAL_STEPS = [
+	{
+		step: 1,
+		title: "Submit Your Application",
+		descriptions: [
+			{
+				label:
+					"Fill out the Marketer Application Form here (link to external page or download form or email).",
+			},
+			{
+				label:
+					"Provide accurate information such as your full name, email, phone number, and a few details about why you are interested in promoting Classore.",
+			},
+		],
+	},
+	{
+		step: 2,
+		title: "Application Review by Our Team",
+		descriptions: [
+			{
+				label: "Once your application is submitted, our admin team will carefully review your details.",
+			},
+			{
+				label:
+					"We assess applications based on marketing potential, communication skills, and overall fit with our mission.",
+			},
+			{ label: "Note that only selected applicants will be contacted." },
+		],
+	},
+	{
+		step: 3,
+		title: "Admin Creates Your Marketer Account",
+		descriptions: [
+			{
+				label:
+					"If your application is approved, an admin will manually create your marketer account in our system.",
+			},
+			{ label: "This ensures full security and control over who can promote Classore." },
+		],
+	},
+	{
+		step: 4,
+		title: "Receive Your Invitation Email",
+		descriptions: [
+			{
+				label: "After account creation, you will receive an official invitation email from Classore.",
+			},
+			{
+				label:
+					"The email will contain a special link that will direct you to a secure page where you can set your desired password.",
+			},
+			{ label: "This link is personalized for you and must not be shared." },
+		],
+	},
+	{
+		step: 5,
+		title: "Access Your Marketer Dashboard",
+		descriptions: [
+			{
+				label: "Once you set your password, you will gain access to your exclusive marketer dashboard.",
+			},
+			{
+				label: "From your dashboard, you can:",
+				options: [
+					"View your unique referral link.",
+					"Track the number of students you've referred.",
+					"Monitor your earnings and payouts.",
+					"Access promotional materials to boost your marketing efforts.",
+				],
+			},
+		],
+	},
+	{
+		step: 6,
+		title: "Start Promoting Classore",
+		descriptions: [
+			{
+				label:
+					"Share your referral link anywhere: WhatsApp, blogs, YouTube, Instagram, Facebook, emails, etc.",
+			},
+			{
+				label:
+					"Every time a student signs up through your link, it is recorded under your account automatically",
+			},
+		],
 	},
 ];

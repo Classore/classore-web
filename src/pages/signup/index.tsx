@@ -1,8 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { User01 } from "@untitled-ui/icons-react";
-import Link from "next/link";
-import { useRouter } from "next/router";
 import { Controller, useForm } from "react-hook-form";
+import { User01 } from "@untitled-ui/icons-react";
+import { useRouter } from "next/router";
+import Link from "next/link";
 import * as z from "zod";
 
 import { AuthGraphic } from "@/assets/icons";
