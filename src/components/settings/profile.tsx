@@ -1,21 +1,21 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { RiDeleteBin6Line, RiImageLine } from "@remixicon/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { format } from "date-fns";
-import React from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
+import { format } from "date-fns";
 import { toast } from "sonner";
+import React from "react";
 import { z } from "zod";
 
-import { useFileHandler } from "@/hooks";
+import { Avatar, AvatarImage } from "../ui/avatar";
 import { UpdateProfileMutation } from "@/queries";
 import { useGetProfile } from "@/queries/student";
 import { useUserStore } from "@/store/z-store";
-import { Spinner } from "../shared";
-import { Avatar, AvatarImage } from "../ui/avatar";
+import { Textarea } from "../ui/textarea";
+import { useFileHandler } from "@/hooks";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
+import { Spinner } from "../shared";
 
 const schema = z.object({
 	first_name: z.string().min(1, { message: "Please enter your first name" }),

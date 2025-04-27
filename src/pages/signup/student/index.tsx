@@ -56,6 +56,8 @@ type OnboardFormValues = z.infer<typeof onboardSchema>;
 const Page = () => {
 	const { setUser } = useUserStore();
 	const router = useRouter();
+	const referral_code = router.query.referral_code as string;
+
 	const {
 		control,
 		register,
@@ -68,7 +70,7 @@ const Page = () => {
 			last_name: "",
 			email: "",
 			password: "",
-			referral_code: "",
+			referral_code,
 			accept_terms: undefined,
 		},
 	});

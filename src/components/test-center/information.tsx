@@ -1,3 +1,4 @@
+import { RiArticleLine } from "@remixicon/react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import { toast } from "sonner";
@@ -11,6 +12,7 @@ import type { TestCenterProps } from "@/types/test";
 import { Select, SelectItem } from "../ui/select";
 import { getTimeInSeconds } from "@/lib";
 import { Button } from "../ui/button";
+import { IconLabel } from "../shared";
 import { steps } from "./data";
 
 interface Props {
@@ -80,7 +82,7 @@ export const Information = ({ test }: Props) => {
 					toast.error("Please select a subject");
 					return;
 				}
-				if (values.test_type !== "personal" && !values.timer_hour && !values.timer_minute) {
+				if (values.test_type === "personal" && !values.timer_hour && !values.timer_minute) {
 					toast.error("Please set a timer");
 					return;
 				}
@@ -115,6 +117,7 @@ export const Information = ({ test }: Props) => {
 	return (
 		<div className="w-full space-y-4">
 			<div className="mt-8 space-y-2">
+				<IconLabel icon={RiArticleLine} />
 				<DialogTitle className="text-xl capitalize">Hi {user?.first_name} 👋</DialogTitle>
 				<DialogDescription className="text-sm">
 					Get ready to take your {test.title.toUpperCase()} exam with confidence

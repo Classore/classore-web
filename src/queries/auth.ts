@@ -132,15 +132,27 @@ type UpdateProfilePayload = {
 	profile_image: string | File;
 };
 
-const UpdateProfileMutation = async (payload: UpdateProfilePayload) => {
+const UpdateProfileMutation = async (payload: Partial<UpdateProfilePayload>) => {
 	const formdata = new FormData();
 
-	formdata.append("first_name", payload.first_name);
-	formdata.append("last_name", payload.last_name);
-	formdata.append("email", payload.email);
-	formdata.append("phone_number", payload.phone_number);
-	formdata.append("description", payload.description);
-	formdata.append("birthday", payload.birthday);
+	if (payload.first_name) {
+		formdata.append("first_name", payload.first_name);
+	}
+	if (payload.last_name) {
+		formdata.append("last_name", payload.last_name);
+	}
+	if (payload.email) {
+		formdata.append("email", payload.email);
+	}
+	if (payload.phone_number) {
+		formdata.append("phone_number", payload.phone_number);
+	}
+	if (payload.description) {
+		formdata.append("description", payload.description);
+	}
+	if (payload.birthday) {
+		formdata.append("birthday", payload.birthday);
+	}
 	if (payload.profile_image instanceof File) {
 		formdata.append("profile_image", payload.profile_image);
 	}
