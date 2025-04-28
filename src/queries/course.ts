@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 
-import type { HttpResponse, PaginatedResponse, PaginationProps } from "@/types";
-import type { NewChapterProps, NewSubjectProps } from "@/types/course";
 import { endpoints } from "@/config";
 import { axios } from "@/lib";
+import type { HttpResponse, PaginatedResponse, PaginationProps } from "@/types";
+import type { NewChapterProps, NewSubjectProps } from "@/types/course";
 
 export type MyCoursesResp = PaginatedResponse<{
 	course_id: string;
@@ -69,7 +69,10 @@ export interface SubjectProps {
 		name: string;
 	};
 	name: string;
-	videos: string[];
+	videos: {
+		derived_url: string;
+		secure_url: string;
+	}[];
 }
 const getSubject = async (id: string) => {
 	return axios

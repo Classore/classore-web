@@ -7,9 +7,10 @@ import { z } from "zod";
 
 import { Coin } from "@/assets/svgs/coin";
 import { formatCurrency } from "@/lib";
-import { useGetBanks } from "@/queries/bank";
+import { addAccountDetails, useGetAccountDetails, useGetBanks } from "@/queries/bank";
 import { useUserStore } from "@/store/z-store";
-import { Sharer, TabPanel } from "../shared";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Sharer, Spinner, TabPanel } from "../shared";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Select, SelectItem } from "../ui/select";
@@ -30,6 +31,7 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 const Points = () => {
+	const queryClient = useQueryClient();
 	const [tab, setTab] = React.useState("withdrawal");
 	const [open, setOpen] = React.useState(false);
 	const { user } = useUserStore();
@@ -48,16 +50,27 @@ const Points = () => {
 		}));
 	}, [banks]);
 
+	const { data, isPending } = useGetAccountDetails();
+
 	const { control, handleSubmit, reset } = useForm<FormValues>({
-		defaultValues: {
-			account_number: "",
-			bank_id: "",
+		values: {
+			account_number: data?.bank_details.at(0)?.bank_detail_account_number ?? "",
+			bank_id: data?.bank_details.at(0)?.bank_detail_bank_id ?? "",
 		},
 		resolver: zodResolver(schema),
 	});
 
+	const { mutate, isPending: mutatePending } = useMutation({
+		mutationFn: addAccountDetails,
+		onSuccess: (data) => {
+			queryClient.invalidateQueries({
+				queryKey: ["account-details"],
+			});
+			toast.success("Bank Details added successfully");
+		},
+	});
 	const onSubmit: SubmitHandler<FormValues> = (data) => {
-		console.log(data);
+		mutate(data);
 	};
 
 	const handleReset = () => {
@@ -99,21 +112,27 @@ const Points = () => {
 			</div>
 			<form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-6">
 				<div className="flex flex-col gap-4">
-					<Select control={control} name="bank_id" label="Select Bank">
+					<Select disabled={isPending} control={control} name="bank_id" label="Select Bank">
 						{options.map((option) => (
 							<SelectItem key={option.value} value={option.value}>
 								{option.label}
 							</SelectItem>
 						))}
 					</Select>
-					<Input control={control} name="account_number" type="text" label="Enter Account Number" />
+					<Input
+						disabled={isPending}
+						control={control}
+						name="account_number"
+						type="text"
+						label="Enter Account Number"
+					/>
 				</div>
 				<div className="flex w-full items-center justify-end gap-x-4">
-					<Button className="w-fit" onClick={handleReset} size="sm" type="button" variant="outline">
+					<Button className="w-fit" size="sm" onClick={handleReset} type="button" variant="outline">
 						Reset Changes
 					</Button>
 					<Button className="w-fit" size="sm" type="submit">
-						Save Changes
+						{mutatePending ? <Spinner /> : "Save Changes"}
 					</Button>
 				</div>
 			</form>
