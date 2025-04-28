@@ -62,7 +62,7 @@ const Points = () => {
 
 	const { mutate, isPending: mutatePending } = useMutation({
 		mutationFn: addAccountDetails,
-		onSuccess: (data) => {
+		onSuccess: () => {
 			queryClient.invalidateQueries({
 				queryKey: ["account-details"],
 			});
