@@ -81,7 +81,7 @@ export const KYC = ({ onOpenChange, open }: Props) => {
 				<div>
 					<DialogTitle>One last thing</DialogTitle>
 					<DialogDescription>
-						We'd love to keep contact with you always. Kindly enter yuor guardians&apos;/parents&apos;
+						We'd love to keep contact with you always. Kindly enter your guardians&apos;/parents&apos;
 						information below
 					</DialogDescription>
 				</div>

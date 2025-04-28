@@ -1,14 +1,14 @@
+import { Target04, Trophy01 } from "@untitled-ui/icons-react";
+import { useQuery } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import Image from "next/image";
+import React from "react";
 import {
 	RiFlashlightLine,
 	RiFullscreenExitLine,
 	RiFullscreenLine,
 	RiLoaderLine,
 } from "@remixicon/react";
-import { useQuery } from "@tanstack/react-query";
-import { Target04, Trophy01 } from "@untitled-ui/icons-react";
-import Image from "next/image";
-import React from "react";
-import { useForm } from "react-hook-form";
 
 import trophy from "@/assets/illustrations/trophy.svg";
 import bronze from "@/assets/images/award-bronze.png";
@@ -278,11 +278,11 @@ const Page = () => {
 										<div className="flex flex-col items-center gap-2">
 											<Avatar className="size-12 rounded border-2 bg-[#bfdbfe]">
 												<AvatarImage src={user?.profile_image} alt={user?.first_name} />
-												<AvatarFallback className="text-xl font-semibold">
+												<AvatarFallback className="text-xl font-semibold uppercase">
 													{getInitials(`${user?.first_name} ${user?.last_name}`)}
 												</AvatarFallback>
 											</Avatar>
-											<div className="flex flex-col gap-1">
+											<div className="flex flex-col gap-1 text-center">
 												<p className="font-bold capitalize">
 													{user?.first_name} {user?.last_name}
 												</p>
