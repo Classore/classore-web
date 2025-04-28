@@ -17,7 +17,10 @@ export const endpoints = (id?: string) => {
 
 	const bank = {
 		get_banks: "/admin/payment/get-banks",
-		add_details: "/admin/payment/add-bank-details",
+		add_account_details: "/transaction/add-bank-details",
+		get_account_details: "/transaction/view-my-bank-details",
+		get_withdrawal_history: "/transaction/fetch-withdrawals",
+		request_withdrawal: "/transaction/make-withdrawal-request",
 	} as const;
 
 	const courses = {

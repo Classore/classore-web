@@ -1,6 +1,6 @@
 import { FolderClosed, NotebookText, PlayCircle } from "lucide-react";
-import * as React from "react";
 import Link from "next/link";
+import * as React from "react";
 
 import type { SingleBundleResp } from "@/types";
 
@@ -26,7 +26,7 @@ export const BundleSubjects = ({ subjects }: Props) => {
 
 						{value === subject.id && (
 							<Link
-								href={`/dashboard/courses/preview/${subject.id}`}
+								href={`/dashboard/categories/${subject.examination_bundle}/preview/${subject.id}`}
 								className="text-sm text-secondary-300 underline">
 								Preview
 							</Link>
