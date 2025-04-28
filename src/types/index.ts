@@ -719,3 +719,57 @@ export type BankProps = {
 	bank_code: string;
 	bank_longcode: string;
 };
+
+export type AccountDetailsProps = {
+	bank_details: Array<{
+		bank_detail_id: string;
+		bank_detail_copied_from: any;
+		bank_detail_createdOn: string;
+		bank_detail_updatedOn: string;
+		bank_detail_updatedBy: any;
+		bank_detail_deletedOn: any;
+		bank_detail_deletedBy: any;
+		bank_detail_isDeleted: boolean;
+		bank_detail_isBlocked: boolean;
+		bank_detail_account_number: string;
+		bank_detail_account_name: string;
+		bank_detail_user_id: string;
+		bank_detail_bank_id: string;
+		bank_detail_bank_name: string;
+	}>;
+	wallet: {
+		id: string;
+		copied_from: any;
+		createdOn: string;
+		updatedOn: string;
+		updatedBy: any;
+		deletedOn: any;
+		deletedBy: any;
+		isDeleted: boolean;
+		isBlocked: boolean;
+		user_id: string;
+		admin_id: any;
+		current_balance: number;
+		currency: string;
+	};
+};
+
+export type WithdrawalHistoryProps = {
+	withdrawal_id: string;
+	withdrawal_copied_from: any;
+	withdrawal_createdOn: string;
+	withdrawal_updatedOn: string;
+	withdrawal_updatedBy: any;
+	withdrawal_deletedOn: any;
+	withdrawal_deletedBy: any;
+	withdrawal_isDeleted: boolean;
+	withdrawal_isBlocked: boolean;
+	withdrawal_amount: number;
+	withdrawal_account_name: string;
+	withdrawal_account_nullable: any;
+	withdrawal_account_number: string;
+	withdrawal_user_id: string;
+	withdrawal_bank_detail_id: string;
+	withdrawal_bank_id: string;
+	withdrawal_status: string;
+};
