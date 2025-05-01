@@ -100,7 +100,13 @@ const Points = () => {
 						<p className="text-lg font-medium">{user?.referral_code}</p>
 					</div>
 					<div className="flex w-full items-center gap-x-4">
-						<Sharer onOpenChange={setOpen} open={open} url="" />
+						<Sharer
+							onOpenChange={setOpen}
+							open={open}
+							title="Share Referral Code"
+							description="Share your referral code to get more points."
+							url=""
+						/>
 						<button
 							type="button"
 							onClick={() => copy("")}
