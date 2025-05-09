@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import {
 	Challenge,
-	ExplorePopularExams,
+	// ExplorePopularExams,
 	Leaderboard,
 	Learning,
 	MyCourses,
@@ -42,7 +42,7 @@ const Page = () => {
 		<>
 			<Seo title="Dashboard" />
 			<DashboardLayout>
-				<div className="flex w-full flex-col gap-6">
+				<div className="flex w-full flex-col gap-6 overflow-y-auto">
 					<div className="flex w-full flex-col justify-between gap-4 rounded-2xl bg-dashboard bg-cover bg-center bg-no-repeat p-6 text-white md:items-center md:px-10 md:py-[52px] lg:flex-row lg:gap-[177px]">
 						<div className="flex flex-col gap-2">
 							<h1 className="text-2xl font-semibold capitalize">
@@ -70,7 +70,7 @@ const Page = () => {
 
 					<div className="flex flex-col gap-10 pb-10">
 						<MyCourses />
-						<ExplorePopularExams />
+						{/* <ExplorePopularExams /> */}
 					</div>
 				</div>
 			</DashboardLayout>
