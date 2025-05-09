@@ -59,7 +59,7 @@ export function DashboardLayout({ children, className }: DashboardLayoutProps) {
 	return (
 		<>
 			<KYC onOpenChange={setOpen} open={open} />
-			<main className="hidden overflow-hidden lg:flex lg:h-screen lg:w-screen lg:items-center lg:bg-white">
+			<main className="hidden w-screen overflow-hidden lg:flex lg:h-screen lg:w-screen lg:items-center lg:bg-white">
 				<aside className="flex h-full w-[256px] min-w-[256px] flex-col justify-between border-r border-neutral-300 py-8">
 					<div className="flex w-full flex-col gap-8">
 						<div className="relative h-[30px] w-[135px] px-6">

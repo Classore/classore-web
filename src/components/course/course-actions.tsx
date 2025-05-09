@@ -1,4 +1,5 @@
 import { RiArrowRightSLine } from "@remixicon/react";
+import { toast } from "sonner";
 import React from "react";
 
 import { QuizAlertModal, TakeQuizModal } from "../modals";
@@ -19,7 +20,6 @@ type CourseActionsProps = {
 
 export const CourseActions = React.memo(
 	({
-		chapters,
 		currentChapterId,
 		currentModuleId,
 		currentModuleProgress,
@@ -29,13 +29,21 @@ export const CourseActions = React.memo(
 		const [openQuitQuiz, setOpenQuitQuiz] = React.useState(false);
 		const [openTakeQuiz, setOpenTakeQuiz] = React.useState(false);
 
+		const handleOpenTakeQuiz = React.useCallback(() => {
+			if (isQuizPassed) {
+				toast.error("You have passed the quiz. Please proceed to the next lesson");
+				return;
+			}
+			setOpenTakeQuiz(true);
+		}, [isQuizPassed]);
+
 		const goToNextLesson = React.useCallback(() => {
 			if (isQuizPassed && currentModuleProgress >= 50) {
 				onNext();
 			} else {
 				setOpenQuitQuiz(true);
 			}
-		}, [chapters, currentChapterId, isQuizPassed]);
+		}, [currentModuleProgress, isQuizPassed, onNext]);
 
 		return (
 			<>
@@ -45,7 +53,7 @@ export const CourseActions = React.memo(
 						size="sm"
 						className="w-fit py-2"
 						disabled={currentModuleProgress < 50}
-						onClick={() => setOpenTakeQuiz(true)}>
+						onClick={handleOpenTakeQuiz}>
 						Take Quiz
 					</Button>
 					<Button
