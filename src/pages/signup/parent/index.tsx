@@ -48,6 +48,7 @@ const onboardSchema = z.object({
 	accept_terms: z.literal(true, {
 		errorMap: () => ({ message: "You must accept the terms & conditions" }),
 	}),
+	accept_emails: z.boolean().optional(),
 });
 
 type OnboardFormValues = z.infer<typeof onboardSchema>;
@@ -70,6 +71,7 @@ const Page = () => {
 			password: "",
 			referral_code,
 			accept_terms: undefined,
+			accept_emails: false,
 		},
 	});
 
@@ -77,7 +79,6 @@ const Page = () => {
 		mutationKey: ["signup"],
 		mutationFn: (values: OnboardFormValues) => {
 			const { accept_terms, ...rest } = values;
-
 			return SignUpMutation({
 				...rest,
 				sign_up_channel: "DEFAULT",
@@ -156,21 +157,31 @@ const Page = () => {
 								control={control}
 								name="referral_code"
 							/>
-
-							<div className="col-span-full flex flex-col gap-1.5">
-								<label className="flex items-center gap-3 font-body text-sm font-normal">
-									<input
-										{...register("accept_terms")}
-										type="checkbox"
-										aria-invalid={errors.accept_terms ? "true" : "false"}
-										className="size-5 rounded border border-neutral-200 text-primary-300 aria-[invalid=true]:border-[1.3px] aria-[invalid=true]:border-red-600"
-									/>
-									<p>I agree to the terms and conditions</p>
-								</label>
-
-								{errors.accept_terms ? <ErrorMessage message={errors.accept_terms.message} /> : null}
+							<div className="col-span-full space-y-1">
+								<div className="col-span-full flex flex-col gap-1.5">
+									<label className="flex items-center gap-3 font-body text-sm font-normal">
+										<input
+											{...register("accept_terms")}
+											type="checkbox"
+											aria-invalid={errors.accept_terms ? "true" : "false"}
+											className="size-5 rounded border border-neutral-200 text-primary-300 aria-[invalid=true]:border-[1.3px] aria-[invalid=true]:border-red-600"
+										/>
+										<p>I agree to the terms and conditions</p>
+									</label>
+									{errors.accept_terms ? <ErrorMessage message={errors.accept_terms.message} /> : null}
+								</div>
+								<div className="flex w-full flex-col gap-1.5">
+									<label className="flex items-start gap-3 font-body text-sm font-normal">
+										<input
+											{...register("accept_emails")}
+											type="checkbox"
+											aria-invalid={errors.accept_emails ? "true" : "false"}
+											className="size-5 rounded border border-neutral-200 text-primary-300 aria-[invalid=true]:border-[1.3px] aria-[invalid=true]:border-red-600"
+										/>
+										<p>I agree to receive marketing communications and promotional emails</p>
+									</label>
+								</div>
 							</div>
-
 							<div className="col-span-full flex flex-col gap-2">
 								<Button type="submit" disabled={isPending}>
 									{isPending ? <Spinner /> : "Sign up"}

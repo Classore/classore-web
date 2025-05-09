@@ -1,19 +1,19 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { RiDownload2Line, RiFileCopyLine, RiUserAddLine } from "@remixicon/react";
-import React from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
+import { useQueryClient } from "@tanstack/react-query";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import React from "react";
 import { z } from "zod";
 
+import { useAddAccountDetails, useGetAccountDetails, useGetBanks } from "@/queries/bank";
+import { Sharer, Spinner, TabPanel } from "../shared";
+import { Select, SelectItem } from "../ui/select";
+import { useUserStore } from "@/store/z-store";
 import { Coin } from "@/assets/svgs/coin";
 import { formatCurrency } from "@/lib";
-import { addAccountDetails, useGetAccountDetails, useGetBanks } from "@/queries/bank";
-import { useUserStore } from "@/store/z-store";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Sharer, Spinner, TabPanel } from "../shared";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { Select, SelectItem } from "../ui/select";
 
 const tabs = [
 	{ label: "Withdrawal History", name: "withdrawal", icon: RiDownload2Line },
@@ -60,15 +60,25 @@ const Points = () => {
 		resolver: zodResolver(schema),
 	});
 
-	const { mutate, isPending: mutatePending } = useMutation({
-		mutationFn: addAccountDetails,
-		onSuccess: () => {
+	const { mutate, isPending: mutatePending } = useAddAccountDetails(
+		() => {
 			queryClient.invalidateQueries({
 				queryKey: ["account-details"],
 			});
 			toast.success("Bank Details added successfully");
 		},
-	});
+		(error) => {
+			const errorMessage = Array.isArray(error.response.data.message)
+				? error.response.data.message[0]
+				: error.response.data.message;
+			const message = errorMessage || "Something went wrong, please try again";
+			toast.error(message);
+		},
+		() => {
+			reset();
+		}
+	);
+
 	const onSubmit: SubmitHandler<FormValues> = (data) => {
 		mutate(data);
 	};

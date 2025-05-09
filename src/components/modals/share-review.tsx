@@ -118,7 +118,7 @@ export const ShareReview = () => {
 											<button
 												onClick={() => onChange(rating.id)}
 												type="button"
-												className={`items-center justify-center rounded-full border border-neutral-200 transition-all ${value === rating.id ? "size-[72px] bg-[linear-gradient(180deg,rgba(111,66,193,0.15)_0%,rgba(246,127,54,0.15)_100%)] text-2xl" : "size-[54px] bg-white text-xl"}`}>
+												className={`items-center justify-center rounded-full border border-neutral-200 transition-all ${value === rating.id ? "size-14 bg-[linear-gradient(180deg,rgba(111,66,193,0.15)_0%,rgba(246,127,54,0.15)_100%)] text-2xl" : "size-14 bg-white text-xl"}`}>
 												{rating.emoji}
 											</button>
 
@@ -128,13 +128,11 @@ export const ShareReview = () => {
 										</div>
 									))}
 								</div>
-
 								{error ? <ErrorMessage message={error.message} /> : null}
 							</div>
 						)}
 					/>
-					<Textarea control={control} name="comment" label="Write a review" />
-
+					<Textarea control={control} name="comment" label="Write a review" className="text-sm" />
 					<Button type="submit" disabled={isPending}>
 						{isPending ? <Spinner /> : "Submit Review"}
 					</Button>

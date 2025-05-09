@@ -12,7 +12,6 @@ interface Props {
 
 export const ExamCard = ({ course, className }: Props) => {
 	return (
-		// className=""
 		<Link
 			href={`/dashboard/categories/${course.examinationbundle_id}`}
 			className={twMerge(

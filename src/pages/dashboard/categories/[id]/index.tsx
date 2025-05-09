@@ -52,7 +52,6 @@ const Page = () => {
 	return (
 		<>
 			<Seo title={bundle?.name ? `${capitalize(bundle?.name)} Exam Prep Bundle` : "Bundle Details"} />
-
 			<DashboardLayout>
 				<>
 					{isPending ? (
@@ -77,7 +76,6 @@ const Page = () => {
 											Categories / {bundle?.name} Prep Bundle
 										</p>
 									</div>
-
 									{!isMobile ? (
 										<button
 											type="button"
@@ -87,7 +85,6 @@ const Page = () => {
 										</button>
 									) : null}
 								</header>
-
 								<section className="mb-5 flex flex-col gap-10 lg:grid lg:grid-cols-8">
 									<div className="col-span-5 flex flex-col gap-4 overflow-y-auto">
 										<div></div>
@@ -101,18 +98,15 @@ const Page = () => {
 											height={172}
 											className="h-96 w-full rounded-md object-cover"
 										/>
-
 										<div className="flex flex-col gap-1">
 											<h3 className="text-xl font-medium text-neutral-900">Summary</h3>
 											<p
 												className="text-sm text-neutral-400 first-letter:capitalize"
 												dangerouslySetInnerHTML={{ __html: sanitizeHtml(bundle?.description) }}></p>
 										</div>
-
 										<div className="flex flex-col gap-1">
 											<h3 className="text-sm font-medium text-neutral-900">Subject Includes:</h3>
 										</div>
-
 										<div className="flex flex-col items-center justify-between gap-2 rounded-xl border border-neutral-200 p-4 sm:flex-row">
 											<div>
 												<div className="flex items-center gap-2">
@@ -130,7 +124,6 @@ const Page = () => {
 												</p>
 											</div>
 										</div>
-
 										<div className="flex flex-col gap-4">
 											<div className="flex items-center justify-between gap-2">
 												<h3 className="text-xl font-medium text-neutral-900">Reviews</h3>
@@ -155,7 +148,6 @@ const Page = () => {
 											)}
 										</div>
 									</div>
-
 									{/* sidebar */}
 									<div className="col-span-3 flex h-max flex-col gap-4 rounded-xl border border-neutral-200 p-4 md:p-6">
 										<div className="flex items-center justify-between border-b border-b-neutral-200 pb-4">
@@ -174,7 +166,6 @@ const Page = () => {
 												</p>
 											)}
 										</div>
-
 										<div className="flex flex-col gap-2 border-b border-b-neutral-200 pb-4">
 											{bundle?.is_bought ? (
 												<>
@@ -197,10 +188,8 @@ const Page = () => {
 												<EnrollModal />
 											)}
 										</div>
-
 										<div className="flex flex-col gap-2 pt-4">
 											<h4 className="font-bold text-neutral-700">Bundles Includes:</h4>
-
 											<ul className="flex flex-col gap-4 rounded-xl bg-neutral-100 p-4">
 												<li className="flex items-center gap-2 text-sm text-neutral-400">
 													<PlayCircle className="size-4" />
@@ -230,7 +219,6 @@ const Page = () => {
 												</li>
 											</ul>
 										</div>
-
 										<div className="flex flex-col gap-4 pt-4">
 											<h4 className="font-bold text-neutral-700">All Courses:</h4>
 											<BundleSubjects subjects={bundle?.subjects ?? []} />
