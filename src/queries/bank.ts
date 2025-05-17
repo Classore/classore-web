@@ -3,12 +3,13 @@ import { axios } from "@/lib";
 import type {
 	AccountDetailsProps,
 	BankProps,
+	HttpError,
 	HttpResponse,
 	PaginatedResponse,
 	PaginationProps,
 	WithdrawalHistoryProps,
 } from "@/types";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 interface AddBankDto {
 	account_number: string;
@@ -55,6 +56,7 @@ const getWithdrawalHistory = async (params?: GetWithdrawalHistoryPayload) => {
 		>(endpoints().bank.get_banks, { params })
 		.then((res) => res.data);
 };
+
 export const useGetWithdrawalHistory = (params: GetWithdrawalHistoryPayload) => {
 	return useQuery({
 		queryKey: ["withdrawal-history"],
@@ -65,6 +67,20 @@ export const useGetWithdrawalHistory = (params: GetWithdrawalHistoryPayload) => 
 	});
 };
 
-export const addAccountDetails = async (payload: AddBankDto) => {
-	return axios.post(endpoints().bank.add_account_details, payload).then((res) => res.data);
+const addAccountDetails = async (payload: AddBankDto) => {
+	return axios
+		.post<HttpResponse<AccountDetailsProps>>(endpoints().bank.add_account_details, payload)
+		.then((res) => res.data);
+};
+export const useAddAccountDetails = (
+	onSuccess: (data: HttpResponse<AccountDetailsProps>) => void,
+	onError: (error: HttpError) => void,
+	onSettled: () => void
+) => {
+	return useMutation({
+		mutationFn: addAccountDetails,
+		onSuccess,
+		onError,
+		onSettled,
+	});
 };

@@ -58,14 +58,19 @@ type Params = Partial<
 	}
 >;
 const getExamBundles = async (params: Params) => {
+	if (params) {
+		Object.keys(params).forEach((key) => {
+			if (
+				!params[key as keyof Params] ||
+				String(params[key as keyof Params]).toLowerCase() === "all"
+			) {
+				delete params[key as keyof Params];
+			}
+		});
+	}
 	return axios
 		.get<HttpResponse<ExamBundlesResp>>(endpoints().school.get_exam_bundles, {
-			params: {
-				...params,
-				...(params?.examination && { examination: params.examination }),
-				...(params?.is_popular && { is_popular: params.is_popular }),
-				...(params?.search && { search: params.search }),
-			},
+			params,
 		})
 		.then((res) => res.data);
 };
@@ -73,7 +78,6 @@ export const useGetExamBundles = (params: Params) => {
 	return useQuery({
 		queryKey: ["exam-bundles", { params }],
 		queryFn: () => getExamBundles(params),
-		enabled: !!params.examination,
 		staleTime: Infinity,
 		gcTime: Infinity,
 		select: (data) => data.data,

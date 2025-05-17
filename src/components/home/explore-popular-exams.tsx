@@ -12,7 +12,7 @@ export const ExplorePopularExams = () => {
 	});
 
 	return (
-		<div className="flex w-full flex-col gap-4">
+		<div className="flex h-fit w-full flex-col gap-4">
 			<div className="flex items-center justify-between">
 				<p className="text-xl font-medium">Explore popular exams</p>
 				<NextPrevButtons emblaApi={emblaApi} />
