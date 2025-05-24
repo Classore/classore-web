@@ -80,7 +80,7 @@ export type UserProps = BaseProps & {
 	description: string;
 	access_token: string;
 	referral_code: string;
-	profile_image: string;
+	profile_image?: string;
 	is_verified: boolean;
 	chosen_study_plan: boolean;
 	leaderboard_id: string | null;
@@ -318,7 +318,7 @@ export type AddWardsProps = {
 		parent: string;
 		isDeleted: boolean;
 		isBlocked: boolean;
-		profile_image: string;
+		profile_image?: string;
 		wallet_id: string;
 		// my_wards: Array<any>
 		id: string;
@@ -457,7 +457,7 @@ export type UserProfileResp = {
 	email: string;
 	access_token: string;
 	referral_code: string;
-	profile_image: null;
+	profile_image?: string;
 	is_verified: boolean;
 	isDeleted: boolean;
 	user_type: string;
@@ -472,6 +472,15 @@ export type UserProfileResp = {
 	createdOn: Date;
 	updatedOn: Date;
 	isBlocked: boolean;
+	phone_number: string;
+	description: string;
+	chosen_study_plan: boolean;
+	leaderboard_id: string | null;
+	my_wards: [];
+	parent: string;
+	birthday: string;
+	reason_for_account_delete: string | null;
+	player_id: string | null;
 	courses: {
 		id: string;
 		createdOn: Date;
