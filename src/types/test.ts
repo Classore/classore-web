@@ -1,4 +1,4 @@
-import type { Maybe, Node } from "./index";
+import type { Maybe, BaseProps } from "./index";
 
 export type TestCenterProps = {
 	id: string;
@@ -11,7 +11,7 @@ export type TestCenterProps = {
 	hour: number;
 };
 
-export type TestCenterDetailProps = Node & {
+export type TestCenterDetailProps = BaseProps & {
 	attempt_limit: number;
 	attempt_reset: number;
 	attempts_left: number;
@@ -48,7 +48,7 @@ export type TestCenterDetailProps = Node & {
 	};
 };
 
-export type TestQuestionsProps = Node & {
+export type TestQuestionsProps = BaseProps & {
 	id: string;
 	title: string;
 	description: string;
