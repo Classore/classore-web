@@ -89,6 +89,7 @@ export type UserProps = BaseProps & {
 	parent: string;
 	birthday: string;
 	reason_for_account_delete: string | null;
+	password: string;
 	player_id: string | null;
 	classore_points: number;
 	ranking: number;
