@@ -530,6 +530,36 @@ export type UserProfileResp = {
 		user_profile_image: null;
 		position: string;
 	}[];
+	time_line: {
+		id: string;
+		createdOn: Date;
+		updatedOn: Date;
+		updatedBy: string | null;
+		deletedOn: Date | null;
+		deletedBy: string | null;
+		isDeleted: boolean;
+		isBlocked: boolean;
+		user_id: string;
+		exam_type: string;
+		chosen_bundle: string;
+		subjects: {
+			id: string;
+			name: string;
+		}[];
+		end_date: Date;
+		status: string;
+		is_paid: boolean;
+		amount_paid: number;
+		exam_bundle_details: {
+			id: string;
+			name: string;
+		};
+		exam: {
+			id: string;
+			name: string;
+		};
+		renewal_amount: number;
+	}[];
 };
 
 export type SingleCourseResp = {
