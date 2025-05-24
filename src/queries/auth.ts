@@ -1,3 +1,5 @@
+import { useQuery } from "@tanstack/react-query";
+
 import { endpoints } from "@/config";
 import { axios } from "@/lib";
 import type {
@@ -174,6 +176,17 @@ const ChangePasswordMutation = async (payload: ChangePasswordPayload) => {
 	return axios
 		.put<HttpResponse<null>>(endpoints().auth.change_password, payload)
 		.then((res) => res.data);
+};
+
+const googleCallback = async () => {
+	return axios.get<HttpResponse<string>>(endpoints().auth.google_callback).then((res) => res.data);
+};
+export const useGoogleCallback = () => {
+	return useQuery({
+		queryKey: ["google_callback"],
+		queryFn: googleCallback,
+		enabled: false,
+	});
 };
 
 export {

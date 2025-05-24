@@ -80,7 +80,7 @@ export type UserProps = BaseProps & {
 	description: string;
 	access_token: string;
 	referral_code: string;
-	profile_image: string;
+	profile_image?: string;
 	is_verified: boolean;
 	chosen_study_plan: boolean;
 	leaderboard_id: string | null;
@@ -318,7 +318,7 @@ export type AddWardsProps = {
 		parent: string;
 		isDeleted: boolean;
 		isBlocked: boolean;
-		profile_image: string;
+		profile_image?: string;
 		wallet_id: string;
 		// my_wards: Array<any>
 		id: string;
@@ -452,42 +452,110 @@ export type SingleBundleResp = {
 
 export type UserProfileResp = {
 	id: string;
-	createdOn: string;
-	updatedOn: string;
-	isDeleted: boolean;
-	isBlocked: boolean;
 	first_name: string;
 	last_name: string;
 	email: string;
-	phone_number: string;
-	password: string;
-	description: string;
 	access_token: string;
 	referral_code: string;
-	profile_image: string;
+	profile_image?: string;
 	is_verified: boolean;
-	chosen_study_plan: boolean;
+	isDeleted: boolean;
 	user_type: string;
-	wallet_id: string;
-	leaderboard_id: string;
+	wallet_balance: number;
 	sign_up_channel: string;
-	my_wards: Array<string>;
-	parent: Maybe<string>;
+	classore_points: number;
+	password: string;
+	ranking: number;
+	referrals: number;
+	streak: number;
+	quiz_points: number;
+	createdOn: Date;
+	updatedOn: Date;
+	isBlocked: boolean;
+	phone_number: string;
+	description: string;
+	chosen_study_plan: boolean;
+	leaderboard_id: string | null;
+	my_wards: [];
+	parent: string;
 	birthday: string;
-	time_line: Array<{
+	reason_for_account_delete: string | null;
+	player_id: string | null;
+	courses: {
 		id: string;
-		createdOn: string;
-		updatedOn: string;
+		createdOn: Date;
+		updatedOn: Date;
+		subjects: {
+			id: string;
+			createdOn: Date;
+			name: string;
+		}[];
+		exam: string;
+		exam_bundle: {
+			id: string;
+			createdOn: Date;
+			updatedOn: Date;
+			name: string;
+			amount: number;
+			start_date: Date;
+			end_date: Date;
+		};
+	}[];
+	referral_list: {
+		referral_id: string;
+		referral_copied_from: null;
+		referral_createdOn: Date;
+		referral_updatedOn: Date;
+		referral_updatedBy: null;
+		referral_deletedOn: null;
+		referral_deletedBy: null;
+		referral_isDeleted: boolean;
+		referral_isBlocked: boolean;
+		referral_referrer_id: string;
+		referral_referee_id: string;
+		referral_type: null;
+		referral_referee_type: string;
+		referral_verified: boolean;
+		referral_redeemed: boolean;
+		referral_referral_code: null;
+		referral_points: number;
+		user_first_name: string;
+		user_last_name: string;
+		user_email: string;
+		user_id: string;
+	}[];
+	leaderboard: {
+		leaderboard_id: string;
+		leaderboard_user: string;
+		leaderboard_points: number;
+		leaderboard_examination: string;
+		leaderboard_examination_bundle: string;
+		examination_bundle_name: string;
+		examination_name: string;
+		user_id: string;
+		user_first_name: string;
+		user_last_name: string;
+		user_email: string;
+		user_profile_image: null;
+		position: string;
+	}[];
+	time_line: {
+		id: string;
+		createdOn: Date;
+		updatedOn: Date;
+		updatedBy: string | null;
+		deletedOn: Date | null;
+		deletedBy: string | null;
 		isDeleted: boolean;
 		isBlocked: boolean;
 		user_id: string;
 		exam_type: string;
 		chosen_bundle: string;
-		subjects: Array<{
+		subjects: {
 			id: string;
 			name: string;
-		}>;
-		end_date: string;
+		}[];
+		end_date: Date;
 		status: string;
 		is_paid: boolean;
 		amount_paid: number;
@@ -500,7 +568,7 @@ export type UserProfileResp = {
 			name: string;
 		};
 		renewal_amount: number;
-	}>;
+	}[];
 };
 
 export type SingleCourseResp = {
