@@ -1,6 +1,6 @@
-import type { Maybe, Node } from "./";
+import type { Maybe, BaseProps } from "./";
 
-export type RoomProps = Node & {
+export type RoomProps = BaseProps & {
 	copied_from: Maybe<string>;
 	name: Maybe<string>;
 	media: [];
@@ -9,7 +9,7 @@ export type RoomProps = Node & {
 	description: Maybe<string>;
 };
 
-export type MessageProps = Node & {
+export type MessageProps = BaseProps & {
 	content: string;
 	sender: {
 		id: string;
