@@ -17,6 +17,7 @@ import { Plus } from "lucide-react";
 import * as React from "react";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import * as z from "zod";
+import { toast } from "sonner";
 
 const initialValue = {
 	first_name: "",
@@ -126,6 +127,13 @@ const Page = () => {
 					// @ts-expect-error err
 					setMiscStore(payload);
 					setOpen(true);
+				},
+				onError: (error) => {
+					const errorMessage = Array.isArray(error?.response?.data.message)
+						? error?.response?.data.message[0]
+						: error?.response?.data.message;
+					const message = errorMessage || "Something went wrong!";
+					toast.error(message);
 				},
 			}
 		);

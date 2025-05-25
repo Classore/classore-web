@@ -1,6 +1,5 @@
 import { AuthLayout } from "@/components/layouts/auth";
 import { Seo, Spinner } from "@/components/shared";
-
 import { ForgotPasswordGraphic } from "@/assets/icons";
 import { classore } from "@/assets/images";
 import { Button } from "@/components/ui/button";
@@ -15,6 +14,7 @@ import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
+import type { HttpError } from "@/types";
 // const appId = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID
 
 const pageSchema = z
@@ -93,6 +93,13 @@ const Page = () => {
 				description: "You can now sign in with your new password",
 			});
 			router.replace("/signin");
+		},
+		onError: (error: HttpError) => {
+			const errorMessage = Array.isArray(error.response.data.message)
+				? error.response.data.message[0]
+				: error.response.data.message;
+			const message = errorMessage || "Something went wrong!";
+			toast.error(message);
 		},
 	});
 	const onSubmit = (values: FormValues) => {

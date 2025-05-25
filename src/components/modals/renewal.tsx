@@ -1,12 +1,14 @@
-import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
-import { formatCurrency } from "@/lib";
-import { renewPlan } from "@/queries/user";
-import type { UserProfileResp } from "@/types";
 import { useMutation } from "@tanstack/react-query";
 import { Lock02 } from "@untitled-ui/icons-react";
 import * as React from "react";
-import { Spinner } from "../shared";
+import { toast } from "sonner";
+
+import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
+import type { UserProfileResp, HttpError } from "@/types";
+import { renewPlan } from "@/queries/user";
+import { formatCurrency } from "@/lib";
 import { Button } from "../ui/button";
+import { Spinner } from "../shared";
 
 interface RenewalProps {
 	open: boolean;
@@ -23,6 +25,13 @@ export const RenewalModal = ({ open, setOpen, bundle }: RenewalProps) => {
 		onSuccess: (data) => {
 			setVisible(true);
 			window.open(data.data.authorization_url, "_self");
+		},
+		onError: (error: HttpError) => {
+			const errorMessage = Array.isArray(error.response.data.message)
+				? error.response.data.message[0]
+				: error.response.data.message;
+			const message = errorMessage || "Something went wrong!";
+			toast.error(message);
 		},
 	});
 

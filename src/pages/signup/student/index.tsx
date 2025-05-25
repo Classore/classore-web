@@ -16,6 +16,7 @@ import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
+import type { HttpError } from "@/types";
 
 const onboardSchema = z.object({
 	first_name: z.string().min(1, { message: "Please enter your first name" }).trim(),
@@ -107,6 +108,13 @@ const Page = () => {
 					step: "3",
 				},
 			});
+		},
+		onError: (error: HttpError) => {
+			const errorMessage = Array.isArray(error.response.data.message)
+				? error.response.data.message[0]
+				: error.response.data.message;
+			const message = errorMessage || "Something went wrong!";
+			toast.error(message);
 		},
 	});
 	const onSubmit = (values: OnboardFormValues) => {

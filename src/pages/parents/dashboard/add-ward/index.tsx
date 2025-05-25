@@ -89,6 +89,13 @@ const Page = () => {
 						setMiscStore(payload);
 						setOpen(true);
 					},
+					onError: (error) => {
+						const errorMessage = Array.isArray(error?.response?.data.message)
+							? error?.response?.data.message[0]
+							: error?.response?.data.message;
+						const message = errorMessage || "Something went wrong!";
+						toast.error(message);
+					},
 				}
 			);
 		},
@@ -154,7 +161,7 @@ const Page = () => {
 				subjects: [],
 			});
 		}
-	}, [values.examination]);
+	}, [reset, values, values.examination]);
 
 	return (
 		<>

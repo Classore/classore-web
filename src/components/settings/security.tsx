@@ -1,13 +1,15 @@
-import { ChangePasswordMutation } from "@/queries";
-import { useUserStore } from "@/store/z-store";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/router";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/router";
 import { toast } from "sonner";
 import * as z from "zod";
-import { Spinner } from "../shared";
+
+import { ChangePasswordMutation } from "@/queries";
+import { useUserStore } from "@/store/z-store";
+import type { HttpError } from "@/types";
 import { Button } from "../ui/button";
+import { Spinner } from "../shared";
 import { Input } from "../ui/input";
 
 const schema = z
@@ -88,6 +90,13 @@ const Security = () => {
 			queryClient.clear();
 			signOut();
 			router.replace("/signin");
+		},
+		onError: (error: HttpError) => {
+			const errorMessage = Array.isArray(error.response.data.message)
+				? error.response.data.message[0]
+				: error.response.data.message;
+			const message = errorMessage || "Something went wrong!";
+			toast.error(message);
 		},
 	});
 
