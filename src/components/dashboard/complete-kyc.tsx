@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from "../ui/dia
 import { UpdateProfileMutation } from "@/queries";
 import { queryClient } from "@/providers";
 import { Textarea } from "../ui/textarea";
+import type { HttpError } from "@/types";
 import { Button } from "../ui/button";
 import { IconLabel } from "../shared";
 import { Input } from "../ui/input";
@@ -39,6 +40,13 @@ export const CompleteKyc = ({ onOpenChange, open }: Props) => {
 			queryClient.invalidateQueries({
 				queryKey: ["profile"],
 			});
+		},
+		onError: (error: HttpError) => {
+			const errorMessage = Array.isArray(error.response.data.message)
+				? error.response.data.message[0]
+				: error.response.data.message;
+			const message = errorMessage || "Something went wrong!";
+			toast.error(message);
 		},
 	});
 

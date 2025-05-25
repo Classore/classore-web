@@ -1,11 +1,12 @@
+import { useRouter } from "next/router";
+import { toast } from "sonner";
+import Link from "next/link";
 import {
 	RiArrowDropDownLine,
 	RiInformation2Line,
 	RiThumbDownLine,
 	RiThumbUpLine,
 } from "@remixicon/react";
-import Link from "next/link";
-import { useRouter } from "next/router";
 
 import { DashboardLayout } from "@/components/layouts";
 import { EnrollModal } from "@/components/modals";
@@ -55,6 +56,13 @@ const Page = () => {
 				onSuccess: (data) => {
 					setOpen(true);
 					window.open(data.data.payment_link.authorization_url, "_self");
+				},
+				onError: (error) => {
+					const errorMessage = Array.isArray(error?.response?.data.message)
+						? error?.response?.data.message[0]
+						: error?.response?.data.message;
+					const message = errorMessage || "Something went wrong!";
+					toast.error(message);
 				},
 			}
 		);

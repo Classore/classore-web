@@ -70,6 +70,13 @@ export const CheckoutModal = ({ open, setOpen }: CheckoutModalProps) => {
 				setVisible(true);
 				window.open(data?.data?.payment_link?.authorization_url, "_self");
 			},
+			onError: (error) => {
+				const errorMessage = Array.isArray(error?.response?.data.message)
+					? error?.response?.data.message[0]
+					: error?.response?.data.message;
+				const message = errorMessage || "Something went wrong!";
+				toast.error(message);
+			},
 		});
 	};
 
