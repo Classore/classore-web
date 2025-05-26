@@ -34,6 +34,9 @@ type FormValues = z.infer<typeof signupSchema>;
 
 const Page = () => {
 	const router = useRouter();
+	const referral_code = router.query.referral_code as string;
+	console.log("referral_code", referral_code);
+
 	const { control, handleSubmit } = useForm<FormValues>({
 		defaultValues: {
 			register_as: "",
@@ -46,6 +49,7 @@ const Page = () => {
 			pathname: `/signup/${value.register_as}`,
 			query: {
 				step: "2",
+				referral_code,
 			},
 		});
 	};
@@ -53,11 +57,9 @@ const Page = () => {
 	return (
 		<>
 			<Seo title="Sign up" />
-
 			<AuthLayout screen="signup">
 				<div className="flex max-w-96 flex-col gap-10 font-body lg:gap-20">
 					<SignupStepper />
-
 					<div className="flex flex-col gap-6">
 						<header className="flex flex-col gap-4">
 							<AuthGraphic />

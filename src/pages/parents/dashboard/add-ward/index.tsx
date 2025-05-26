@@ -48,7 +48,7 @@ const Page = () => {
 
 	const { mutateAsync: vetStudyPack } = useVetStudyPack();
 
-	const { control, handleSubmit, reset, watch } = useForm<AddWardForm>({
+	const { control, handleSubmit, watch } = useForm<AddWardForm>({
 		defaultValues: {
 			first_name: "",
 			last_name: "",
@@ -90,9 +90,8 @@ const Page = () => {
 						setOpen(true);
 					},
 					onError: (error) => {
-						const errorMessage = Array.isArray(error?.response?.data.message)
-							? error?.response?.data.message[0]
-							: error?.response?.data.message;
+						console.log("error", error);
+						const errorMessage = error?.response?.data.message;
 						const message = errorMessage || "Something went wrong!";
 						toast.error(message);
 					},
@@ -152,16 +151,6 @@ const Page = () => {
 		wards.push(payload);
 		mutateAsync(wards);
 	};
-
-	React.useEffect(() => {
-		if (values.examination) {
-			reset({
-				...values,
-				examination_bundle: "",
-				subjects: [],
-			});
-		}
-	}, [reset, values, values.examination]);
 
 	return (
 		<>
