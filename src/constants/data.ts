@@ -45,7 +45,7 @@ export const INCENTIVES = [
 		title: "Turn Your Referrals into Earnings",
 		description:
 			"Earn commissions for successful referrals, track your performance with detailed analytics and start earning quickly with easy registration.",
-		image: "/assets/images/for-agents.png",
+		image: "/assets/images/for-agents-2.png",
 		button: "start earning now",
 		href: "https://marketers.classore.com",
 	},
@@ -88,19 +88,19 @@ export const PERSONALIZED_PLANS: PersonalizedPlanProps[] = [
 	{
 		title: "Explore Courses",
 		description: "Discover a variety of topics across different categories and levels.",
-		image: "/assets/images/personalized-1.png",
+		image: "/assets/images/1.png",
 		type: "card",
 	},
 	{
-		title: "Interactive Learning",
+		title: "Interactive Learning", 
 		description: "Engage with videos, quizzes, and activities to make learning fun and effective.",
-		image: "/assets/images/personalized-2.png",
+		image: "/assets/images/2.png",
 		type: "card",
 	},
 	{
 		title: "Join Live Classes",
 		description: "Track your growth with detailed analytics and visual performance charts.",
-		image: "/assets/images/personalized-3.png",
+		image: "/assets/images/3.png",
 		type: "card",
 	},
 	{
@@ -115,19 +115,19 @@ export const PERSONALIZED_PLANS: PersonalizedPlanProps[] = [
 	{
 		title: "",
 		description: "",
-		image: "/assets/images/personalized-4.png",
+		image: "/assets/images/4.png",
 		type: "photo",
 	},
 	{
 		title: "Community Forum",
 		description: "Connect, discuss, and learn with peers through interactive forums.",
-		image: "/assets/images/personalized-5.png",
+		image: "/assets/images/5.png",
 		type: "card",
 	},
 	{
 		title: "Interactive Messaging",
 		description: "Connect, discuss, and learn with peers through interactive forums.",
-		image: "/assets/images/personalized-6.png",
+		image: "/assets/images/6.png",
 		type: "card",
 	},
 	{
@@ -141,25 +141,25 @@ export const PERSONALIZED_PLANS: PersonalizedPlanProps[] = [
 	{
 		title: "",
 		description: "",
-		image: "/assets/images/personalized-7.png",
+		image: "/assets/images/7.png",
 		type: "photo",
 	},
 	{
 		title: "Test Your Knowledge",
 		description: "Discover a variety of topics across different categories and levels.",
-		image: "/assets/images/personalized-8.png",
+		image: "/assets/images/8.png",
 		type: "card",
 	},
 	{
 		title: "Leaderboard",
 		description: "Engage with videos, quizzes, and activities to make learning fun and effective.",
-		image: "/assets/images/personalized-9.png",
+		image: "/assets/images/9.png",
 		type: "card",
 	},
 	{
 		title: "Track Progress",
 		description: "Track your growth with detailed analytics and visual performance charts.",
-		image: "/assets/images/personalized-10.png",
+		image: "/assets/images/10.png",
 		type: "card",
 	},
 ];

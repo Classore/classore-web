@@ -113,7 +113,7 @@ const Page = () => {
 								/>
 							</div>
 							<div className="absolute bottom-0 right-0 h-[400px] w-[350px]">
-								<Image src="/assets/images/hero-2.png" alt="hero-2" fill sizes="100%" />
+								<Image src="/assets/images/hero-22.png" alt="hero-2" fill sizes="100%" />
 							</div>
 						</div>
 					</div>
