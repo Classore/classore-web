@@ -46,7 +46,7 @@ export const Navbar = () => {
 					<Button
 						asChild
 						variant="ghost"
-						className="text-secondary-300 hover:bg-secondary-100 md:!text-sm">
+						className="text-primary-400 hover:bg-secondary-100 md:!text-sm">
 						<Link href="/signin">Start Learning</Link>
 					</Button>
 					<Button variant="outline-primary" className="py-2 md:!text-sm">
