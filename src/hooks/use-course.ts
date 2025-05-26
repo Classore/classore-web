@@ -1,7 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
 import React from "react";
 
-import type { ChapterModuleProps, ChapterResp } from "@/types";
+import type { ChapterModuleProps, ChapterResp, HttpError } from "@/types";
 import { updateModuleProgress } from "@/queries/user";
 import { queryClient } from "@/providers";
 
@@ -117,6 +118,13 @@ export const useCourse = ({
 			if (onProgressUpdate) {
 				onProgressUpdate(currentChapterId, currentModuleId);
 			}
+		},
+		onError: (error: HttpError) => {
+			const errorMessage = Array.isArray(error.response.data.message)
+				? error.response.data.message[0]
+				: error.response.data.message;
+			const message = errorMessage || "Something went wrong!";
+			toast.error(message);
 		},
 	});
 

@@ -14,6 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as React from "react";
 import { useForm, useWatch } from "react-hook-form";
 import * as z from "zod";
+import { toast } from "sonner";
 
 const studyingForSchema = z.object({
 	exam_type: z
@@ -92,6 +93,13 @@ const Page = () => {
 					};
 					setMiscStore(payload);
 					setOpen(true);
+				},
+				onError: (error) => {
+					const errorMessage = Array.isArray(error?.response?.data.message)
+						? error?.response?.data.message[0]
+						: error?.response?.data.message;
+					const message = errorMessage || "Something went wrong!";
+					toast.error(message);
 				},
 			}
 		);

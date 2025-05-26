@@ -1,4 +1,17 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Lock02 } from "@untitled-ui/icons-react";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/router";
+import * as React from "react";
+import { toast } from "sonner";
+import { z } from "zod";
+
+import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
+import { Select, SelectItem } from "../ui/select";
+import { MultiSelect } from "../ui/multi-select";
 import { formatCurrency } from "@/lib";
+import { Button } from "../ui/button";
+import { Spinner } from "../shared";
 import {
 	useCreateStudyTimeline,
 	useGetExamBundles,
@@ -6,17 +19,6 @@ import {
 	useGetSingleExamBundleQuery,
 	useGetSubjects,
 } from "@/queries/school";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Lock02 } from "@untitled-ui/icons-react";
-import { useRouter } from "next/router";
-import * as React from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Spinner } from "../shared";
-import { Button } from "../ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
-import { MultiSelect } from "../ui/multi-select";
-import { Select, SelectItem } from "../ui/select";
 
 const schema = z.object({
 	exam_type: z
@@ -77,6 +79,13 @@ export const EnrollModal = () => {
 			onSuccess: (data) => {
 				setOpen(true);
 				window.open(data.data.payment_link.authorization_url, "_self");
+			},
+			onError: (error) => {
+				const errorMessage = Array.isArray(error?.response?.data.message)
+					? error?.response?.data.message[0]
+					: error?.response?.data.message;
+				const message = errorMessage || "Something went wrong!";
+				toast.error(message);
 			},
 		});
 	};

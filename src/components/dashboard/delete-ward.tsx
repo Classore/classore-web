@@ -1,5 +1,6 @@
 import { RiDeleteBin6Line } from "@remixicon/react";
 import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
 import React from "react";
 
 import { Button } from "@/components/ui/button";
@@ -27,7 +28,11 @@ export const DeleteWard = ({ wardId }: Props) => {
 			console.log(data);
 		},
 		onError: (error: HttpError) => {
-			console.error(error);
+			const errorMessage = Array.isArray(error.response.data.message)
+				? error.response.data.message[0]
+				: error.response.data.message;
+			const message = errorMessage || "Something went wrong!";
+			toast.error(message);
 		},
 		onSettled: () => {
 			queryClient.invalidateQueries({ queryKey: ["get-parent-home"] });

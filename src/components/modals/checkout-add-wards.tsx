@@ -1,13 +1,15 @@
-import { formatCurrency } from "@/lib";
-import { AddWardsMutation, type AddWardsDto } from "@/queries";
-import { useMiscStore } from "@/store/z-store/misc";
 import { useMutation } from "@tanstack/react-query";
 import { Lock02 } from "@untitled-ui/icons-react";
 import * as React from "react";
 import { toast } from "sonner";
-import { Spinner } from "../shared";
-import { Button } from "../ui/button";
+
+import { AddWardsMutation, type AddWardsDto } from "@/queries";
 import { Dialog, DialogContent } from "../ui/dialog";
+import { useMiscStore } from "@/store/z-store/misc";
+import type { HttpError } from "@/types";
+import { formatCurrency } from "@/lib";
+import { Button } from "../ui/button";
+import { Spinner } from "../shared";
 
 type CheckoutModalProps = {
 	open: boolean;
@@ -27,6 +29,13 @@ export const CheckoutAddWardsModal = ({ open, setOpen }: CheckoutModalProps) => 
 		onSuccess: (data) => {
 			setVisible(true);
 			window.open(data.data.payment_link_data.authorization_url, "_self");
+		},
+		onError: (error: HttpError) => {
+			const errorMessage = Array.isArray(error.response.data.message)
+				? error.response.data.message[0]
+				: error.response.data.message;
+			const message = errorMessage || "Something went wrong!";
+			toast.error(message);
 		},
 	});
 	const continueToPayment = () => {

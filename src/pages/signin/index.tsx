@@ -14,6 +14,7 @@ import { useUserStore } from "@/store/z-store";
 import { Input } from "@/components/ui/input";
 import { SignInMutation } from "@/queries";
 import { setToken } from "@/lib/cookies";
+import type { HttpError } from "@/types";
 
 const loginSchema = z.object({
 	email: z
@@ -85,6 +86,13 @@ const Page = () => {
 
 			toast.success("Login successful!");
 			router.replace("/dashboard");
+		},
+		onError: (error: HttpError) => {
+			const errorMessage = Array.isArray(error.response.data.message)
+				? error.response.data.message[0]
+				: error.response.data.message;
+			const message = errorMessage || "Something went wrong!";
+			toast.error(message);
 		},
 	});
 

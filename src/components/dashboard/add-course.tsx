@@ -2,6 +2,7 @@ import { RiAddLine, RiCloseLine, RiLoaderLine } from "@remixicon/react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
 import React from "react";
 import * as z from "zod";
 
@@ -92,11 +93,15 @@ export const AddWardCourse = ({ ward, wardId }: Props) => {
 			setOpenCheckout(true);
 		},
 		onError: (error: HttpError) => {
-			console.error(error);
+			const errorMessage = Array.isArray(error.response.data.message)
+				? error.response.data.message[0]
+				: error.response.data.message;
+			const message = errorMessage || "Something went wrong!";
+			toast.error(message);
 		},
 		onSettled: () => {
 			queryClient.invalidateQueries({ queryKey: ["get-parent-home"] });
-			// setOpen(false);
+			setOpen(false);
 		},
 	});
 
@@ -143,7 +148,7 @@ export const AddWardCourse = ({ ward, wardId }: Props) => {
 				subjects: [],
 			});
 		}
-	}, [open]);
+	}, [open, reset]);
 
 	return (
 		<>

@@ -17,6 +17,7 @@ import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
+import type { HttpError } from "@/types";
 
 const pageSchema = z.object({
 	verification_code: z
@@ -61,6 +62,13 @@ const Page = ({ email }: InferGetServerSidePropsType<typeof getServerSideProps>)
 				description: "Please check your email to verify your account",
 			});
 			reset();
+		},
+		onError: (error: HttpError) => {
+			const errorMessage = Array.isArray(error.response.data.message)
+				? error.response.data.message[0]
+				: error.response.data.message;
+			const message = errorMessage || "Something went wrong!";
+			toast.error(message);
 		},
 	});
 

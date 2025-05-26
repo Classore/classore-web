@@ -12,6 +12,7 @@ import { UpdateProfileMutation } from "@/queries";
 import { useGetProfile } from "@/queries/student";
 import { useUserStore } from "@/store/z-store";
 import { Textarea } from "../ui/textarea";
+import type { HttpError } from "@/types";
 import { useFileHandler } from "@/hooks";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -47,7 +48,7 @@ const Profile = () => {
 		if (user) {
 			setUser(user);
 		}
-	}, [user]);
+	}, [setUser, user]);
 
 	const { control, handleSubmit, setValue, reset } = useForm<FormValues>({
 		resolver: zodResolver(schema),
@@ -82,6 +83,13 @@ const Profile = () => {
 			queryClient.invalidateQueries({
 				queryKey: ["profile"],
 			});
+		},
+		onError: (error: HttpError) => {
+			const errorMessage = Array.isArray(error.response.data.message)
+				? error.response.data.message[0]
+				: error.response.data.message;
+			const message = errorMessage || "Something went wrong!";
+			toast.error(message);
 		},
 	});
 
