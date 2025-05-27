@@ -105,11 +105,11 @@ const Page = () => {
 						<div className="relative hidden w-full lg:flex lg:h-[650px]">
 							<div className="relative h-full w-[95%] self-start">
 								<Image
-									src="/assets/images/hero-1.png"
+									src="/assets/images/hero-11.png"
 									alt="hero-1"
 									fill
 									sizes="100%"
-									className="object-cover"
+									className="object-fit"
 								/>
 							</div>
 							<div className="absolute bottom-0 right-0 h-[400px] w-[350px]">
