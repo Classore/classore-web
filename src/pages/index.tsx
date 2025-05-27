@@ -103,7 +103,7 @@ const Page = () => {
 							</div>
 						</div>
 						<div className="relative hidden w-full lg:flex lg:h-[650px]">
-							<div className="relative h-full w-[95%] self-start">
+							<div className="relative lg:flex h-full w-[95%] self-start">
 								<Image
 									src="/assets/images/hero-11.png"
 									alt="hero-1"
@@ -112,8 +112,13 @@ const Page = () => {
 									className="object-fit"
 								/>
 							</div>
-							<div className="absolute bottom-0 right-0 h-[400px] w-[350px]">
-								<Image src="/assets/images/hero-22.png" alt="hero-2" fill sizes="100%" />
+							<div className="absolute lg:bottom-0 right-0 h-[400px] w-[350px]">
+								<Image src="/assets/images/hero-22.png" alt="hero-2" fill sizes="100%" className="object-fit" />
+							</div>
+						</div>
+						<div className="relative justify-around grid w-full lg:hidden h-[350px]">
+								<div className="absolute lg:bottom-0 items-center h-[400px] w-full">
+								<Image src="/assets/images/hero-22.png" alt="hero-2" fill sizes="100%" className="object-fit" />
 							</div>
 						</div>
 					</div>

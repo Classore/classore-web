@@ -37,9 +37,7 @@ export const CompleteKyc = ({ onOpenChange, open }: Props) => {
 		mutationFn: UpdateProfileMutation,
 		onSuccess: () => {
 			toast.success("Profile updated successfully");
-			queryClient.invalidateQueries({
-				queryKey: ["profile"],
-			});
+			onOpenChange(false);
 		},
 		onError: (error: HttpError) => {
 			const errorMessage = Array.isArray(error.response.data.message)
@@ -47,6 +45,12 @@ export const CompleteKyc = ({ onOpenChange, open }: Props) => {
 				: error.response.data.message;
 			const message = errorMessage || "Something went wrong!";
 			toast.error(message);
+		},
+		onSettled: () => {
+			queryClient.invalidateQueries({
+				queryKey: ["profile"],
+			});
+			window.location.reload();
 		},
 	});
 
