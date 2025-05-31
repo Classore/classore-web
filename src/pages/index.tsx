@@ -87,7 +87,8 @@ const Page = () => {
 									Ace Your Exams with Effective Online Lessons
 								</h1>
 								<p className="mx-auto max-w-lg animate-slide-from-bottom text-neutral-500 lg:text-lg">
-									Our platform simulates different exams, the platform is for you if you are taking JAMB, WAEC,NECO, ICAN.
+									Our platform simulates different exams, the platform is for you if you are taking JAMB,
+									WAEC,NECO, ICAN.
 								</p>
 							</div>
 							<div className="flex w-72 flex-col gap-4 pt-4 md:w-fit md:flex-row md:items-center md:justify-center">
@@ -126,13 +127,14 @@ const Page = () => {
 						<div className="flex max-w-[650px] flex-col items-center gap-y-4 text-center">
 							<p className="text-xs font-medium text-secondary-400 lg:text-sm">WHAT WE OFFER</p>
 							<h4 className="text-2xl font-medium lg:text-4xl">
-								<span className="text-neutral-400">A Personalized Learning for</span> Students,</h4>
-								<div className="flex items-center gap-x-4 ">
-									<AvatarGroup images={images} count={4} />
-										<h4  className="text-2xl font-medium lg:text-4xl"><span className="text-neutral-400"> Tracking for</span> Parents
+								<span className="text-neutral-400">A Personalized Learning for</span> Students,
 							</h4>
-								</div>
-							
+							<div className="flex items-center gap-x-4">
+								<AvatarGroup images={images} count={4} />
+								<h4 className="text-2xl font-medium lg:text-4xl">
+									<span className="text-neutral-400"> Tracking for</span> Parents
+								</h4>
+							</div>
 						</div>
 						<div className="grid w-full grid-cols-1 gap-5 lg:grid-cols-3">
 							{PERSONALIZED_PLANS.map((data, index) => (
