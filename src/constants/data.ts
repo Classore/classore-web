@@ -92,7 +92,7 @@ export const PERSONALIZED_PLANS: PersonalizedPlanProps[] = [
 		type: "card",
 	},
 	{
-		title: "Interactive Learning", 
+		title: "Interactive Learning",
 		description: "Engage with videos, quizzes, and activities to make learning fun and effective.",
 		image: "/assets/images/2.png",
 		type: "card",
