@@ -9,6 +9,7 @@ import * as z from "zod";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "../ui/dialog";
 import { useGetProfile } from "@/queries/student";
 import { useUserStore } from "@/store/z-store";
+import { queryClient } from "@/providers";
 import type { HttpError } from "@/types";
 import { AddGuardian } from "@/queries";
 import { Button } from "../ui/button";
@@ -60,6 +61,8 @@ export const KYC = ({ onOpenChange, open }: Props) => {
 		},
 		onSettled: () => {
 			refetch();
+			queryClient.invalidateQueries({ queryKey: ["profile"] });
+			window.location.reload();
 		},
 	});
 
@@ -81,8 +84,8 @@ export const KYC = ({ onOpenChange, open }: Props) => {
 				<div>
 					<DialogTitle>One last thing</DialogTitle>
 					<DialogDescription>
-						We'd love to keep contact with you always. Kindly enter your guardians&apos;/parents&apos;
-						information below
+						We&apos;d love to keep contact with you always. Kindly enter your
+						guardians&apos;/parents&apos; information below
 					</DialogDescription>
 				</div>
 				<form className="w-full space-y-2" onSubmit={handleSubmit(onSubmit)}>

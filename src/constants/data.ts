@@ -45,7 +45,7 @@ export const INCENTIVES = [
 		title: "Turn Your Referrals into Earnings",
 		description:
 			"Earn commissions for successful referrals, track your performance with detailed analytics and start earning quickly with easy registration.",
-		image: "/assets/images/for-agents.png",
+		image: "/assets/images/for-agents-2.png",
 		button: "start earning now",
 		href: "https://marketers.classore.com",
 	},
@@ -88,19 +88,19 @@ export const PERSONALIZED_PLANS: PersonalizedPlanProps[] = [
 	{
 		title: "Explore Courses",
 		description: "Discover a variety of topics across different categories and levels.",
-		image: "/assets/images/personalized-1.png",
+		image: "/assets/images/1.png",
 		type: "card",
 	},
 	{
 		title: "Interactive Learning",
 		description: "Engage with videos, quizzes, and activities to make learning fun and effective.",
-		image: "/assets/images/personalized-2.png",
+		image: "/assets/images/2.png",
 		type: "card",
 	},
 	{
 		title: "Join Live Classes",
 		description: "Track your growth with detailed analytics and visual performance charts.",
-		image: "/assets/images/personalized-3.png",
+		image: "/assets/images/3.png",
 		type: "card",
 	},
 	{
@@ -115,19 +115,19 @@ export const PERSONALIZED_PLANS: PersonalizedPlanProps[] = [
 	{
 		title: "",
 		description: "",
-		image: "/assets/images/personalized-4.png",
+		image: "/assets/images/4.png",
 		type: "photo",
 	},
 	{
 		title: "Community Forum",
 		description: "Connect, discuss, and learn with peers through interactive forums.",
-		image: "/assets/images/personalized-5.png",
+		image: "/assets/images/5.png",
 		type: "card",
 	},
 	{
 		title: "Interactive Messaging",
 		description: "Connect, discuss, and learn with peers through interactive forums.",
-		image: "/assets/images/personalized-6.png",
+		image: "/assets/images/6.png",
 		type: "card",
 	},
 	{
@@ -141,25 +141,25 @@ export const PERSONALIZED_PLANS: PersonalizedPlanProps[] = [
 	{
 		title: "",
 		description: "",
-		image: "/assets/images/personalized-7.png",
+		image: "/assets/images/7.png",
 		type: "photo",
 	},
 	{
 		title: "Test Your Knowledge",
 		description: "Discover a variety of topics across different categories and levels.",
-		image: "/assets/images/personalized-8.png",
+		image: "/assets/images/8.png",
 		type: "card",
 	},
 	{
 		title: "Leaderboard",
 		description: "Engage with videos, quizzes, and activities to make learning fun and effective.",
-		image: "/assets/images/personalized-9.png",
+		image: "/assets/images/9.png",
 		type: "card",
 	},
 	{
 		title: "Track Progress",
 		description: "Track your growth with detailed analytics and visual performance charts.",
-		image: "/assets/images/personalized-10.png",
+		image: "/assets/images/10.png",
 		type: "card",
 	},
 ];
@@ -172,7 +172,7 @@ export const TESTIMONIALS: SingleBundleResp["reviews"][number][] = [
 		rating_examination: "275cce42-8b31-4196-bf8f-17f4ae1d6de0",
 		rating_examination_bundle: "55d14242-c35a-4218-b1b0-9466e7617f2b",
 		rating_id: "626e985a-6ea3-459a-aedf-cc9db6af29d5",
-		rating_rating: 3,
+		rating_rating: 5,
 		rating_purpose: "subject",
 		rating_subject: "83450d8c-6755-4825-b277-76c51ec0e736",
 		rating_user: "146f739c-be1b-40e9-8f9b-851017bb237c",
@@ -217,7 +217,7 @@ export const TESTIMONIALS: SingleBundleResp["reviews"][number][] = [
 		rating_examination: "ed05189e-e29b-4310-ac63-68020c6e86bb",
 		rating_examination_bundle: "7bdc4a14-ff58-4cba-9bfd-3fd4381957f5",
 		rating_id: "4f0e98be-872d-42d6-86e6-841ae81658e0",
-		rating_rating: 4,
+		rating_rating: 5,
 		rating_purpose: "module",
 		rating_subject: "b57f70b8-493c-4a0a-8941-c4feffd22432",
 		rating_user: "f25fa72a-217f-4fd4-869a-c4334270bd7c",

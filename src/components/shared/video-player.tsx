@@ -77,6 +77,7 @@ export const VideoPlayer = React.memo(
 		const { mutate } = useMutation({
 			mutationFn: updateModuleProgress,
 			mutationKey: ["update-module-progress", courseId, moduleId, progress],
+			onError: (error) => console.error(error),
 		});
 
 		React.useEffect(() => {
