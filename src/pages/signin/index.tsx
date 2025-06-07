@@ -1,23 +1,20 @@
-import { useGoogleLogin } from "@react-oauth/google";
 import { useMutation } from "@tanstack/react-query";
-import Link from "next/link";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import Link from "next/link";
 import * as z from "zod";
 
 import { AuthGraphic, GoogleIcon } from "@/assets/icons";
 import { AuthLayout } from "@/components/layouts/auth";
 import { Seo, Spinner } from "@/components/shared";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { endpoints } from "@/config";
-import { axios, capitalize } from "@/lib";
-import { setToken } from "@/lib/cookies";
-import { SignInMutation } from "@/queries";
 import { useUserStore } from "@/store/z-store";
-import type { HttpError, HttpResponse, UserProps } from "@/types";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Input } from "@/components/ui/input";
+import { SignInMutation } from "@/queries";
+import { setToken } from "@/lib/cookies";
+import type { HttpError } from "@/types";
 
 const loginSchema = z.object({
 	email: z
@@ -41,37 +38,6 @@ const Page = () => {
 			// remember_me: false,
 		},
 		resolver: zodResolver(loginSchema),
-	});
-
-	const loginWithGoogle = useGoogleLogin({
-		scope: "openid email profile",
-		onSuccess: async (credential) => {
-			try {
-				const { data } = await axios.get<HttpResponse<UserProps>>(
-					`${endpoints().auth.google_signin}?access_token=${credential.access_token}`
-				);
-
-				const { access_token } = data.data;
-				signIn(data.data, access_token);
-				toast.success(`Welcome ${capitalize(data.data.first_name)}`);
-				const isStudent = data.data.user_type === "STUDENT";
-				if (isStudent) {
-					router.push("/dashboard");
-				} else {
-					router.push("parents/dashboard");
-				}
-			} catch (error: unknown) {
-				const {
-					response: {
-						data: { message },
-					},
-				} = error as HttpError;
-				toast.error(message ?? "An error occurred");
-			}
-		},
-		onError: (error) => {
-			console.error("An error occurred", error);
-		},
 	});
 
 	const { isPending, mutate } = useMutation({
@@ -120,6 +86,13 @@ const Page = () => {
 
 			toast.success("Login successful!");
 			router.replace("/dashboard");
+		},
+		onError: (error: HttpError) => {
+			const errorMessage = Array.isArray(error.response.data.message)
+				? error.response.data.message[0]
+				: error.response.data.message;
+			const message = errorMessage || "Something went wrong!";
+			toast.error(message);
 		},
 	});
 
@@ -194,7 +167,9 @@ const Page = () => {
 							type="button"
 							variant="ghost"
 							className="font-normal"
-							onClick={() => loginWithGoogle()}>
+							onClick={() =>
+								window.open(`${process.env.NEXT_PUBLIC_API_URL}/auth/google/callback`, "_self")
+							}>
 							<GoogleIcon />
 							Sign in with Google
 						</Button>

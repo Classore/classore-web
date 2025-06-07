@@ -117,7 +117,13 @@ const Page = () => {
 				});
 			}, 100);
 		},
-		onError: () => toast.error("Something went wrong! Please try again"),
+		onError: (error) => {
+			const errorMessage = Array.isArray(error.response?.data.message)
+				? error.response?.data.message[0]
+				: error.response?.data.message;
+			const message = errorMessage || "Something went wrong!";
+			toast.error(message);
+		},
 	});
 
 	const { hasNextChapter, hasNextModule, onNext } = useCourse({

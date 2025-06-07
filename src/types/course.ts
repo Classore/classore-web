@@ -1,4 +1,4 @@
-import type { Maybe, Node } from "./index";
+import type { Maybe, BaseProps } from "./index";
 
 export type CourseStatus = "ONGOING" | "COMPLETED" | "FAILED";
 
@@ -37,7 +37,7 @@ export type NewChapterProps = {
 	videos: string[];
 };
 
-export type NewModuleProps = Node & {
+export type NewModuleProps = BaseProps & {
 	__typename: "Module";
 	attachments: string[];
 	chapter: string;

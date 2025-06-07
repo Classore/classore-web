@@ -58,8 +58,8 @@ export type PaginationProps = {
 	page?: number;
 };
 
-export type Node = {
-	__typename?: "Node";
+export type BaseProps = {
+	__typename?: "BaseProps";
 	id: string;
 	createdOn?: Date | string;
 	deletedBy?: Maybe<string>;
@@ -72,28 +72,29 @@ export type Node = {
 
 export type FiletypeProps = "doc" | "docx" | "pdf" | "pptx" | "txt";
 
-export type UserProps = Node & {
-	__typename?: "User";
-	access_token: string;
-	birthday: Date | string;
-	chosen_study_plan: boolean;
-	copied_from: Maybe<string>;
-	description: Maybe<string>;
-	email: string;
+export type UserProps = BaseProps & {
 	first_name: string;
-	isBlocked: boolean;
-	isDeleted: boolean;
-	is_verified: boolean;
 	last_name: string;
-	leaderboard_id: Maybe<string>;
-	my_wards: UserProps[];
-	parent: Maybe<string>;
-	password: string;
+	email: string;
 	phone_number: string;
-	profile_image: string;
-	reason_for_account_delete: null;
+	description: string;
+	access_token: string;
 	referral_code: string;
-	sign_up_channel: string;
+	profile_image?: string;
+	is_verified: boolean;
+	chosen_study_plan: boolean;
+	leaderboard_id: string | null;
+	sign_up_channel: "DEFAULT";
+	my_wards: [];
+	parent: string;
+	birthday: string;
+	reason_for_account_delete: string | null;
+	password: string;
+	player_id: string | null;
+	classore_points: number;
+	ranking: number;
+	quiz_points: number;
+	streak: number;
 	timeline: {
 		amount_paid: number;
 		chosen_bundle: string;
@@ -128,7 +129,7 @@ export type UserProps = Node & {
 	wallet_id: string;
 };
 
-export type AdminProps = Node & {
+export type AdminProps = BaseProps & {
 	__typename?: "Admin";
 	email: string;
 	first_name: string;
@@ -138,13 +139,13 @@ export type AdminProps = Node & {
 	role: "ADMIN" | "SUPER_ADMIN" | "SUB_TEACHER" | "TEACHER";
 };
 
-export type SubjectProps = Node & {
+export type SubjectProps = BaseProps & {
 	__typename?: "Subject";
 	description: string;
 	title: string;
 };
 
-export type CategoryProps = Node & {
+export type CategoryProps = BaseProps & {
 	__typename?: "Categories";
 	featured: boolean;
 	image: string;
@@ -155,7 +156,7 @@ export type CategoryProps = Node & {
 	subjects: ExamCourseProps[];
 };
 
-export type CourseProps = Node & {
+export type CourseProps = BaseProps & {
 	__typename?: "Course";
 	chapters: ChapterProps[];
 	description: string;
@@ -166,7 +167,7 @@ export type CourseProps = Node & {
 	title: string;
 };
 
-export type ChapterProps = Node & {
+export type ChapterProps = BaseProps & {
 	__typename?: "Chapter";
 	description: string;
 	quizzes: QuizProps[];
@@ -177,14 +178,14 @@ export type ChapterProps = Node & {
 	isRead: boolean;
 };
 
-export type TranscriptProps = Node & {
+export type TranscriptProps = BaseProps & {
 	__typename?: "Transcript";
 	duration: number[];
 	summary: string;
 	title: string;
 };
 
-export type ResourceProps = Node & {
+export type ResourceProps = BaseProps & {
 	__typename?: "Resource";
 	description: string;
 	file: FiletypeProps;
@@ -192,7 +193,7 @@ export type ResourceProps = Node & {
 	url: string;
 };
 
-export type QuizProps = Node & {
+export type QuizProps = BaseProps & {
 	__typename?: "Quiz";
 	date: Date | string;
 	questions: QuestionProps[];
@@ -213,7 +214,7 @@ export type AnsweredQuestionProps = {
 	input_content?: string;
 };
 
-export type MessageProps = Node & {
+export type MessageProps = BaseProps & {
 	__typename?: "Message";
 	content: string;
 	timestamp: number;
@@ -223,7 +224,7 @@ export type MessageProps = Node & {
 	reactions?: Record<string, number>;
 };
 
-export type ChannelProps = Node & {
+export type ChannelProps = BaseProps & {
 	__typename?: "Channel";
 	color: string;
 	description?: string;
@@ -235,7 +236,7 @@ export type ChannelProps = Node & {
 	type: "audio" | "text";
 };
 
-export type CommunityProps = Node & {
+export type CommunityProps = BaseProps & {
 	__typename?: "Community";
 	admins: string[];
 	channels: ChannelProps[];
@@ -244,28 +245,28 @@ export type CommunityProps = Node & {
 	members: UserProps[];
 };
 
-export type LeaderboardProps = Node & {
+export type LeaderboardProps = BaseProps & {
 	__typename?: "Leaderboard";
 	quiz: number;
 	streak: number;
 	userId: string;
 };
 
-export type ChallengeProps = Node & {
+export type ChallengeProps = BaseProps & {
 	__typename?: "Challenge";
 	challenges_challenge_name: string;
 	challenges_challenge_is_completed: boolean;
 	challenges_challenge_points: number;
 };
 
-export type EventProps = Node & {
+export type EventProps = BaseProps & {
 	__typename?: "Event";
 	date: (Date | string)[];
 	title: string;
 	participants: string[];
 };
 
-export type ReviewProps = Node & {
+export type ReviewProps = BaseProps & {
 	__typename?: "Review";
 	fullName: string;
 	rating: number;
@@ -273,7 +274,7 @@ export type ReviewProps = Node & {
 	userType: "student" | "parent";
 };
 
-export type NotificationProps = Node & {
+export type NotificationProps = BaseProps & {
 	content: string;
 	read: boolean;
 	title: string;
@@ -317,7 +318,7 @@ export type AddWardsProps = {
 		parent: string;
 		isDeleted: boolean;
 		isBlocked: boolean;
-		profile_image: string;
+		profile_image?: string;
 		wallet_id: string;
 		// my_wards: Array<any>
 		id: string;
@@ -451,42 +452,110 @@ export type SingleBundleResp = {
 
 export type UserProfileResp = {
 	id: string;
-	createdOn: string;
-	updatedOn: string;
-	isDeleted: boolean;
-	isBlocked: boolean;
 	first_name: string;
 	last_name: string;
 	email: string;
-	phone_number: string;
-	password: string;
-	description: string;
 	access_token: string;
 	referral_code: string;
-	profile_image: string;
+	profile_image?: string;
 	is_verified: boolean;
-	chosen_study_plan: boolean;
+	isDeleted: boolean;
 	user_type: string;
-	wallet_id: string;
-	leaderboard_id: string;
+	wallet_balance: number;
 	sign_up_channel: string;
-	my_wards: Array<string>;
-	parent: Maybe<string>;
+	classore_points: number;
+	password: string;
+	ranking: number;
+	referrals: number;
+	streak: number;
+	quiz_points: number;
+	createdOn: Date;
+	updatedOn: Date;
+	isBlocked: boolean;
+	phone_number: string;
+	description: string;
+	chosen_study_plan: boolean;
+	leaderboard_id: string | null;
+	my_wards: [];
+	parent: string;
 	birthday: string;
-	time_line: Array<{
+	reason_for_account_delete: string | null;
+	player_id: string | null;
+	courses: {
 		id: string;
-		createdOn: string;
-		updatedOn: string;
+		createdOn: Date;
+		updatedOn: Date;
+		subjects: {
+			id: string;
+			createdOn: Date;
+			name: string;
+		}[];
+		exam: string;
+		exam_bundle: {
+			id: string;
+			createdOn: Date;
+			updatedOn: Date;
+			name: string;
+			amount: number;
+			start_date: Date;
+			end_date: Date;
+		};
+	}[];
+	referral_list: {
+		referral_id: string;
+		referral_copied_from: null;
+		referral_createdOn: Date;
+		referral_updatedOn: Date;
+		referral_updatedBy: null;
+		referral_deletedOn: null;
+		referral_deletedBy: null;
+		referral_isDeleted: boolean;
+		referral_isBlocked: boolean;
+		referral_referrer_id: string;
+		referral_referee_id: string;
+		referral_type: null;
+		referral_referee_type: string;
+		referral_verified: boolean;
+		referral_redeemed: boolean;
+		referral_referral_code: null;
+		referral_points: number;
+		user_first_name: string;
+		user_last_name: string;
+		user_email: string;
+		user_id: string;
+	}[];
+	leaderboard: {
+		leaderboard_id: string;
+		leaderboard_user: string;
+		leaderboard_points: number;
+		leaderboard_examination: string;
+		leaderboard_examination_bundle: string;
+		examination_bundle_name: string;
+		examination_name: string;
+		user_id: string;
+		user_first_name: string;
+		user_last_name: string;
+		user_email: string;
+		user_profile_image: null;
+		position: string;
+	}[];
+	time_line: {
+		id: string;
+		createdOn: Date;
+		updatedOn: Date;
+		updatedBy: string | null;
+		deletedOn: Date | null;
+		deletedBy: string | null;
 		isDeleted: boolean;
 		isBlocked: boolean;
 		user_id: string;
 		exam_type: string;
 		chosen_bundle: string;
-		subjects: Array<{
+		subjects: {
 			id: string;
 			name: string;
-		}>;
-		end_date: string;
+		}[];
+		end_date: Date;
 		status: string;
 		is_paid: boolean;
 		amount_paid: number;
@@ -499,7 +568,7 @@ export type UserProfileResp = {
 			name: string;
 		};
 		renewal_amount: number;
-	}>;
+	}[];
 };
 
 export type SingleCourseResp = {
@@ -689,7 +758,7 @@ export type SinglePlan = {
 	renewal_amount: number;
 };
 
-export type ReferralProps = Node & {
+export type ReferralProps = BaseProps & {
 	__typename?: "Referral";
 	fullName: string;
 	email: string;
@@ -697,7 +766,7 @@ export type ReferralProps = Node & {
 	status: "active" | "inactive";
 };
 
-export type WithdrawalProps = Node & {
+export type WithdrawalProps = BaseProps & {
 	__typename?: "Withdrawal";
 	amount: number;
 	date: Date | string;
@@ -723,12 +792,12 @@ export type BankProps = {
 export type AccountDetailsProps = {
 	bank_details: Array<{
 		bank_detail_id: string;
-		bank_detail_copied_from: any;
+		bank_detail_copied_from: string | null;
 		bank_detail_createdOn: string;
 		bank_detail_updatedOn: string;
-		bank_detail_updatedBy: any;
-		bank_detail_deletedOn: any;
-		bank_detail_deletedBy: any;
+		bank_detail_updatedBy: string | null;
+		bank_detail_deletedOn: Date | null;
+		bank_detail_deletedBy: string | null;
 		bank_detail_isDeleted: boolean;
 		bank_detail_isBlocked: boolean;
 		bank_detail_account_number: string;
@@ -739,16 +808,16 @@ export type AccountDetailsProps = {
 	}>;
 	wallet: {
 		id: string;
-		copied_from: any;
+		copied_from: string | null;
 		createdOn: string;
 		updatedOn: string;
-		updatedBy: any;
-		deletedOn: any;
-		deletedBy: any;
+		updatedBy: string | null;
+		deletedOn: Date | null;
+		deletedBy: string | null;
 		isDeleted: boolean;
 		isBlocked: boolean;
 		user_id: string;
-		admin_id: any;
+		admin_id: string | null;
 		current_balance: number;
 		currency: string;
 	};
@@ -756,17 +825,17 @@ export type AccountDetailsProps = {
 
 export type WithdrawalHistoryProps = {
 	withdrawal_id: string;
-	withdrawal_copied_from: any;
+	withdrawal_copied_from: string | null;
 	withdrawal_createdOn: string;
 	withdrawal_updatedOn: string;
-	withdrawal_updatedBy: any;
-	withdrawal_deletedOn: any;
-	withdrawal_deletedBy: any;
+	withdrawal_updatedBy: string | null;
+	withdrawal_deletedOn: Date | null;
+	withdrawal_deletedBy: string | null;
 	withdrawal_isDeleted: boolean;
 	withdrawal_isBlocked: boolean;
 	withdrawal_amount: number;
 	withdrawal_account_name: string;
-	withdrawal_account_nullable: any;
+	withdrawal_account_nullable: string | null;
 	withdrawal_account_number: string;
 	withdrawal_user_id: string;
 	withdrawal_bank_detail_id: string;

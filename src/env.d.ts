@@ -11,6 +11,7 @@ export const requiredEnvs = [
 	"NEXT_PUBLIC_GOOGLE_CLIENT_ID",
 	"NEXT_PUBLIC_GOOGLE_CLIENT_SECRET",
 	"NEXT_PUBLIC_GOOGLE_ANALYTICS_ID",
+	"NEXT_PUBLIC_NODE_ENV",
 	"NEXT_PUBLIC_POSTHOG_HOST",
 	"NEXT_PUBLIC_POSTHOG_KEY",
 	"NEXT_PUBLIC_TESTING",
@@ -35,6 +36,7 @@ declare global {
 			readonly NEXT_PUBLIC_GOOGLE_CLIENT_ID: string;
 			readonly NEXT_PUBLIC_GOOGLE_CLIENT_SECRET: string;
 			readonly NEXT_PUBLIC_GOOGLE_ANALYTICS_ID: string;
+			readonly NEXT_PUBLIC_NODE_ENV: "development" | "production";
 			readonly NEXT_PUBLIC_POSTHOG_HOST: string;
 			readonly NEXT_PUBLIC_POSTHOG_KEY: string;
 			readonly NEXT_PUBLIC_TESTING: string;
