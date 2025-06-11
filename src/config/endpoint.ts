@@ -36,6 +36,7 @@ export const endpoints = (id?: string) => {
 		get_room: `/chat/get-room/${id}`,
 		upload: "/chat/media-upload",
 		fetch_messages: "/chat/fetch-room-messages",
+		get_user_rooms: "/chat/fetch-user-rooms",
 	} as const;
 
 	const notifications = {

@@ -15,6 +15,7 @@ export const requiredEnvs = [
 	"NEXT_PUBLIC_POSTHOG_HOST",
 	"NEXT_PUBLIC_POSTHOG_KEY",
 	"NEXT_PUBLIC_TESTING",
+	"NEXT_PUBLIC_WSS_URL",
 	"NODE_ENV",
 	"TESTING",
 ] as const;
@@ -40,6 +41,7 @@ declare global {
 			readonly NEXT_PUBLIC_POSTHOG_HOST: string;
 			readonly NEXT_PUBLIC_POSTHOG_KEY: string;
 			readonly NEXT_PUBLIC_TESTING: string;
+			readonly NEXT_PUBLIC_WSS_URL: string;
 			readonly NODE_ENV: "development" | "production" | "test";
 			readonly TESTING: string;
 		}
