@@ -5,18 +5,6 @@ import type { MessageProps, RoomProps } from "@/types/message";
 import { endpoints } from "@/config";
 import { axios } from "@/lib";
 
-// type NessageResponse = {
-// 	data: MessageProps[];
-// 	meta: {
-// 		page: number;
-// 		take: number;
-// 		itemCount: number;
-// 		pageCount: number;
-// 		hasPreviousPage: boolean;
-// 		hasNextPage: boolean;
-// 	};
-// };
-
 const findOrCreateRoom = async (members: string[]) => {
 	return axios
 		.post<HttpResponse<RoomProps>>(endpoints().message.create_room, {
@@ -59,15 +47,34 @@ export const useGetRoom = (roomId: string) => {
 	});
 };
 
-const uploadMedia = async (media: File) => {
+const uploadMedia = async (media: File[]) => {
 	const formData = new FormData();
-	formData.append("nedia", media);
+	for (let i = 0; i < media.length; i++) {
+		formData.append("media", media[i]);
+	}
 	return axios
-		.post<HttpResponse<string>>(endpoints().message.upload, formData)
+		.post<HttpResponse<string[]>>(endpoints().message.upload, formData)
 		.then((res) => res.data);
 };
+export const useUploadMedia = ({
+	onError,
+	onSettled,
+	onSuccess,
+}: {
+	onError?: (error: HttpError) => void;
+	onSettled?: () => void;
+	onSuccess?: (data: HttpResponse<string[]>) => void;
+}) => {
+	return useMutation({
+		mutationKey: ["upload_media"],
+		mutationFn: uploadMedia,
+		onError,
+		onSettled,
+		onSuccess,
+	});
+};
 
-const getMessages = async (params: PaginationProps & { roomId: string }) => {
+const getMessages = async (params: PaginationProps & { roomId: string; user_id: string }) => {
 	return axios
 		.get<
 			HttpResponse<PaginatedResponse<MessageProps>>
@@ -75,7 +82,7 @@ const getMessages = async (params: PaginationProps & { roomId: string }) => {
 		.then((res) => res.data.data);
 };
 
-export const useGetMessages = (params: PaginationProps & { roomId: string }) => {
+export const useGetMessages = (params: PaginationProps & { roomId: string; user_id: string }) => {
 	return useQuery({
 		queryKey: ["messages", params.roomId],
 		queryFn: () => getMessages(params),
@@ -89,9 +96,11 @@ export const useGetMessages = (params: PaginationProps & { roomId: string }) => 
 
 export const useGetInfiniteMessages = ({
 	roomId,
+	user_id,
 	limit = 20,
 }: {
 	roomId: string;
+	user_id: string;
 	limit?: number;
 }) => {
 	return useInfiniteQuery({
@@ -99,6 +108,7 @@ export const useGetInfiniteMessages = ({
 		queryFn: ({ pageParam }) =>
 			getMessages({
 				roomId,
+				user_id,
 				page: pageParam as number,
 				limit,
 			}),
@@ -127,10 +137,12 @@ export const useGetInfiniteMessages = ({
 // Alternative implementation for bidirectional infinite scroll
 export const useGetBidirectionalMessages = ({
 	roomId,
+	user_id,
 	limit = 20,
 	initialPage = 1,
 }: {
 	roomId: string;
+	user_id: string;
 	limit?: number;
 	initialPage?: number;
 }) => {
@@ -138,7 +150,7 @@ export const useGetBidirectionalMessages = ({
 		queryKey: ["bidirectional_messages", roomId],
 		queryFn: ({ pageParam }) => {
 			const page = pageParam as number;
-			return getMessages({ roomId, page, limit });
+			return getMessages({ roomId, user_id, page, limit });
 		},
 		enabled: !!roomId,
 		initialPageParam: initialPage,
@@ -162,28 +174,30 @@ export const useGetBidirectionalMessages = ({
 
 export const useRealtimeMessages = ({
 	roomId,
+	user_id,
 }: {
 	roomId: string;
+	user_id: string;
 	onNewMessage?: (message: MessageProps) => void;
 }) => {
 	return useQuery({
 		queryKey: ["realtime_messages", roomId],
-		queryFn: () => getMessages({ roomId, page: 1, limit: 1 }),
+		queryFn: () => getMessages({ roomId, user_id, page: 1, limit: 1 }),
 		enabled: !!roomId,
 		refetchInterval: 5000,
 		refetchIntervalInBackground: true,
 	});
 };
 
-const getUserRooms = async () => {
+const getUserRooms = async (user_id: string) => {
 	return axios
-		.get<HttpResponse<RoomProps[]>>(endpoints().message.get_user_rooms)
+		.get<HttpResponse<RoomProps[]>>(endpoints().message.get_user_rooms, { params: { user_id } })
 		.then((res) => res.data.data);
 };
-export const useGetUserRooms = () => {
+export const useGetUserRooms = (user_id: string) => {
 	return useQuery({
 		queryKey: ["user_rooms"],
-		queryFn: () => getUserRooms(),
+		queryFn: () => getUserRooms(user_id),
 		staleTime: Infinity,
 		gcTime: Infinity,
 		refetchIntervalInBackground: true,

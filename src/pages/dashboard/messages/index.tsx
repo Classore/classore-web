@@ -18,9 +18,10 @@ import { useGetInfiniteMessages, useGetUserRooms } from "@/queries/message";
 import { MessageItem, UserItem } from "@/components/message";
 import { DashboardLayout } from "@/components/layouts";
 import type { UserItemProps } from "@/types/message";
+import { cn, getInitials, sendMessage } from "@/lib";
+import { useUserStore } from "@/store/z-store";
 import { Seo } from "@/components/shared";
 import { useFileHandler } from "@/hooks";
-import { cn, getInitials } from "@/lib";
 
 type FormProps = {
 	content: string;
@@ -46,11 +47,13 @@ const Page = () => {
 	const ref = React.useRef<HTMLDivElement>(null);
 	const [tab, setTab] = React.useState(tabs[0]);
 
-	const url = isDev
-		? process.env.NEXT_PUBLIC_API_URL
-		: "https://classore-be-prod-1.up.railway.app/classore/v1";
+	const { user } = useUserStore();
 
 	React.useEffect(() => {
+		const url = isDev
+			? process.env.NEXT_PUBLIC_WSS_URL
+			: "wss://classore-be-prod-1.up.railway.app/classore/v1";
+
 		socket.current = io(url, {
 			transports: ["websocket"],
 		});
@@ -60,23 +63,25 @@ const Page = () => {
 		socket.current.on("error", (error) => {
 			console.error("Socket error", error);
 		});
-		socket.current.on("new_chat_message", () => {});
-		socket.current.on("receive_chat_message", () => {});
+		socket.current.on("receive_chat_message", (data) => {
+			console.log("received:", data);
+		});
 		socket.current.on("is_typing", () => setIsTyping(true));
-		socket.current.on("message_delivered", () => {});
+		socket.current.on("message_delivered", (data) => {
+			console.log("delivered:", data);
+		});
 
 		return () => {
 			socket.current?.off("connect");
 			socket.current?.off("error");
-			socket.current?.off("new_chat_message");
 			socket.current?.off("receive_chat_message");
 			socket.current?.off("is_typing");
 			socket.current?.off("message_delivered");
 			socket.current?.disconnect();
 		};
-	}, [url]);
+	}, [user]);
 
-	const { data: rooms } = useGetUserRooms();
+	const { data: rooms } = useGetUserRooms(String(user?.id));
 
 	const {
 		data: messagesData,
@@ -86,7 +91,7 @@ const Page = () => {
 		isFetchingPreviousPage,
 		isLoading,
 		refetch,
-	} = useGetInfiniteMessages({ roomId, limit: 50 });
+	} = useGetInfiniteMessages({ roomId, user_id: String(user?.id), limit: 50 });
 
 	const messages = React.useMemo(() => {
 		if (!messagesData?.pages) return [];
@@ -150,11 +155,24 @@ const Page = () => {
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
+		if (!socket.current) {
+			toast.error("Socket not connected");
+			return;
+		}
+		if (!roomId) {
+			toast.error("Please select a chat");
+			return;
+		}
 		if (!formValues.content) {
 			toast.error("Please enter a message");
 			return;
 		}
-		console.log({ formValues });
+		sendMessage(socket.current, {
+			roomId,
+			userId: String(user?.id),
+			message: formValues.content,
+		});
+		console.log("message sent", new Date().toDateString());
 
 		await refetch();
 		setFormValues(initialValues);
@@ -213,6 +231,7 @@ const Page = () => {
 											onSelectRoom={setRoomId}
 											selected={selected}
 											room={room}
+											socket={socket.current}
 										/>
 									))}
 								</>
@@ -263,7 +282,7 @@ const Page = () => {
 						</div>
 						<div
 							ref={ref}
-							className="flex h-[calc(100%-184px)] w-full flex-col gap-y-5 overflow-y-auto bg-[#F6F8FA] px-5">
+							className="flex h-[calc(100%-184px)] w-full flex-col gap-y-5 overflow-y-auto bg-[#F6F8FA] px-5 py-2">
 							{isFetchingNextPage && (
 								<div className="flex justify-center py-2">
 									<div className="text-sm text-neutral-500">Loading older messages...</div>
@@ -286,40 +305,42 @@ const Page = () => {
 								</div>
 							)}
 						</div>
-						<div className="h-[108px] w-full px-8 py-2">
-							<form
-								onSubmit={handleSubmit}
-								className="flex h-full w-full items-center gap-x-4 rounded-lg bg-neutral-200 px-4 py-1">
-								<div className="h-full flex-1">
-									<textarea
-										value={formValues.content}
-										name="content"
-										onChange={handleChange}
-										className="h-full w-full resize-none rounded-lg border-0 bg-transparent text-sm outline-none"
-										placeholder="Type your message..."
-									/>
-									<input
-										type="file"
-										ref={inputRef}
-										onChange={handleFileChange}
-										className="sr-only hidden appearance-none"
-										multiple
-										accept="image/*,video/*"
-									/>
-								</div>
-								<div className="flex items-center gap-x-4">
-									<button onClick={handleClick} className="size-6" type="button">
-										<RiImageAddLine className="text-neutral-500" />
-									</button>
-									<button className="size-6" type="button">
-										<RiEmojiStickerLine className="text-neutral-500" />
-									</button>
-									<button className="size-6" type="submit">
-										<RiSendPlaneLine className="text-neutral-500" />
-									</button>
-								</div>
-							</form>
-						</div>
+						{selected && (
+							<div className="h-[108px] w-full px-8 py-2">
+								<form
+									onSubmit={handleSubmit}
+									className="flex h-full w-full items-center gap-x-4 rounded-lg bg-neutral-200 px-4 py-1">
+									<div className="h-full flex-1">
+										<textarea
+											value={formValues.content}
+											name="content"
+											onChange={handleChange}
+											className="h-full w-full resize-none rounded-lg border-0 bg-transparent text-sm outline-none"
+											placeholder="Type your message..."
+										/>
+										<input
+											type="file"
+											ref={inputRef}
+											onChange={handleFileChange}
+											className="sr-only hidden appearance-none"
+											multiple
+											accept="image/*,video/*"
+										/>
+									</div>
+									<div className="flex items-center gap-x-4">
+										<button onClick={handleClick} className="size-6" type="button">
+											<RiImageAddLine className="text-neutral-500" />
+										</button>
+										<button className="size-6" type="button">
+											<RiEmojiStickerLine className="text-neutral-500" />
+										</button>
+										<button className="size-6" type="submit">
+											<RiSendPlaneLine className="text-neutral-500" />
+										</button>
+									</div>
+								</form>
+							</div>
+						)}
 					</div>
 				</div>
 			</DashboardLayout>

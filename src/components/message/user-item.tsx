@@ -1,24 +1,28 @@
+import type { Socket } from "socket.io-client";
 import { format } from "date-fns";
 import React from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { RoomProps, UserItemProps } from "@/types/message";
-import { cn, getInitials } from "@/lib";
+import { cn, getInitials, joinRoom } from "@/lib";
 
 interface Props {
 	onSelect: (userId: UserItemProps) => void;
 	onSelectRoom: (roomId: string) => void;
-	selected: UserItemProps | null;
 	room: RoomProps;
+	selected: UserItemProps | null;
+	socket: Socket | null;
 }
 
-export const UserItem = ({ onSelect, onSelectRoom, selected, room }: Props) => {
+export const UserItem = ({ onSelect, onSelectRoom, room, selected, socket }: Props) => {
 	const user = room.members[0];
 	const userName = `${user.first_name} ${user.last_name}`;
 
 	const handleSelection = () => {
 		onSelectRoom(room.id);
 		onSelect(user);
+		if (!socket) return;
+		joinRoom(socket, String(user.member_id));
 	};
 
 	return (
@@ -42,11 +46,8 @@ export const UserItem = ({ onSelect, onSelectRoom, selected, room }: Props) => {
 							{format(new Date(room.created_at), "HH:mm a")}
 						</p>
 					</div>
-					<div className="flex w-full items-center gap-x-2">
-						<p className="flex-1 truncate text-xs text-neutral-500">Hey there, I am using classore</p>
-						<p className="grid size-5 place-items-center rounded-full bg-primary-100 text-xs text-primary-500">
-							2
-						</p>
+					<div className="flex h-4 w-full items-center gap-x-2">
+						<p className="flex-1 truncate text-xs text-neutral-500"></p>
 					</div>
 				</div>
 			</div>

@@ -11,15 +11,21 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { useGetInfiniteMessages, useGetRoom } from "@/queries/message";
 import { DashboardLayout } from "@/components/layouts";
 import { MessageItem } from "@/components/message";
+import { useUserStore } from "@/store/z-store";
 import { Seo } from "@/components/shared";
 
 const Page = () => {
 	const [roomId, setRoomId] = React.useState("");
 	const [open, setOpen] = React.useState(false);
+	const { user } = useUserStore();
 
 	const { data: room } = useGetRoom(roomId);
 
-	const { data: messages, isFetchingNextPage } = useGetInfiniteMessages({ roomId });
+	const { data: messages, isFetchingNextPage } = useGetInfiniteMessages({
+		roomId,
+		user_id: String(user?.id),
+		limit: 50,
+	});
 	messages?.pages.map((page) =>
 		page.data.map((message) => <MessageItem key={message.id} message={message} />)
 	);
