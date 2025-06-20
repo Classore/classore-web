@@ -1,5 +1,4 @@
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
-import { toast } from "sonner";
 
 import type { HttpError, HttpResponse, PaginatedResponse, PaginationProps } from "@/types";
 import type { MessageProps, RoomProps } from "@/types/message";
@@ -13,20 +12,21 @@ const findOrCreateRoom = async (members: string[]) => {
 		})
 		.then((res) => res.data);
 };
-export const useCreateRoom = (members: string[]) => {
+export const useFindOrCreateRoom = ({
+	onError,
+	onSettled,
+	onSuccess,
+}: {
+	onError?: (error: HttpError) => void;
+	onSettled?: () => void;
+	onSuccess?: (data: HttpResponse<RoomProps>) => void;
+}) => {
 	return useMutation({
 		mutationKey: ["create_room"],
-		mutationFn: () => findOrCreateRoom(members),
-		onSuccess: (data) => {
-			toast.success(data.message);
-		},
-		onError: (error: HttpError) => {
-			const errorMessage = Array.isArray(error.response.data.message)
-				? error.response.data.message[0]
-				: error.response.data.message;
-			const message = errorMessage || "An error occurred";
-			toast.error(message);
-		},
+		mutationFn: findOrCreateRoom,
+		onError,
+		onSettled,
+		onSuccess,
 	});
 };
 
@@ -47,22 +47,42 @@ export const useGetRoom = (roomId: string) => {
 	});
 };
 
-const uploadMedia = async (media: File) => {
+const uploadMedia = async (media: File[]) => {
 	const formData = new FormData();
-	formData.append("nedia", media);
+	for (let i = 0; i < media.length; i++) {
+		formData.append("media", media[i]);
+	}
 	return axios
-		.post<HttpResponse<string>>(endpoints().message.upload, formData)
+		.post<HttpResponse<string[]>>(endpoints().message.upload, formData)
 		.then((res) => res.data);
 };
+export const useUploadMedia = ({
+	onError,
+	onSettled,
+	onSuccess,
+}: {
+	onError?: (error: HttpError) => void;
+	onSettled?: () => void;
+	onSuccess?: (data: HttpResponse<string[]>) => void;
+}) => {
+	return useMutation({
+		mutationKey: ["upload_media"],
+		mutationFn: uploadMedia,
+		onError,
+		onSettled,
+		onSuccess,
+	});
+};
 
-const getMessages = async (params: PaginationProps & { roomId: string }) => {
+const getMessages = async (params: PaginationProps & { roomId: string; user_id: string }) => {
 	return axios
 		.get<
 			HttpResponse<PaginatedResponse<MessageProps>>
 		>(endpoints().message.fetch_messages, { params })
 		.then((res) => res.data.data);
 };
-export const useGetMessages = (params: PaginationProps & { roomId: string }) => {
+
+export const useGetMessages = (params: PaginationProps & { roomId: string; user_id: string }) => {
 	return useQuery({
 		queryKey: ["messages", params.roomId],
 		queryFn: () => getMessages(params),
@@ -74,24 +94,114 @@ export const useGetMessages = (params: PaginationProps & { roomId: string }) => 
 	});
 };
 
-export const useGetInfiniteMessages = ({ roomId }: { roomId: string }) => {
+export const useGetInfiniteMessages = ({
+	roomId,
+	user_id,
+	limit = 20,
+}: {
+	roomId: string;
+	user_id: string;
+	limit?: number;
+}) => {
 	return useInfiniteQuery({
-		queryKey: ["messages", roomId],
-		queryFn: () => getMessages({ roomId, limit: 100 }),
+		queryKey: ["infinite_messages", roomId],
+		queryFn: ({ pageParam }) =>
+			getMessages({
+				roomId,
+				user_id,
+				page: pageParam as number,
+				limit,
+			}),
 		enabled: !!roomId,
 		initialPageParam: 1,
-		getNextPageParam: (lastPage: PaginatedResponse<MessageProps>, allPages: any) => {
+		getNextPageParam: (lastPage: PaginatedResponse<MessageProps>) => {
+			// For loading older messages (going backwards in time)
 			if (lastPage.meta.hasNextPage) {
-				return allPages.length + 1;
+				return lastPage.meta.page + 1;
 			}
 			return undefined;
 		},
-		getPreviousPageParam: (lastPage: PaginatedResponse<MessageProps>, allPages: any) => {
-			if (lastPage.meta.hasNextPage) {
-				return allPages.length - 1;
+		getPreviousPageParam: (firstPage: PaginatedResponse<MessageProps>) => {
+			// For loading newer messages (going forwards in time)
+			if (firstPage.meta.page > 1) {
+				return firstPage.meta.page - 1;
 			}
 			return undefined;
 		},
+		// Keep data fresh for real-time messaging
+		refetchInterval: 30000, // 30 seconds
+		staleTime: 1000 * 60 * 5, // 5 minutes
+	});
+};
+
+// Alternative implementation for bidirectional infinite scroll
+export const useGetBidirectionalMessages = ({
+	roomId,
+	user_id,
+	limit = 20,
+	initialPage = 1,
+}: {
+	roomId: string;
+	user_id: string;
+	limit?: number;
+	initialPage?: number;
+}) => {
+	return useInfiniteQuery({
+		queryKey: ["bidirectional_messages", roomId],
+		queryFn: ({ pageParam }) => {
+			const page = pageParam as number;
+			return getMessages({ roomId, user_id, page, limit });
+		},
+		enabled: !!roomId,
+		initialPageParam: initialPage,
+		getNextPageParam: (lastPage: PaginatedResponse<MessageProps>) => {
+			if (lastPage.meta.hasNextPage) {
+				return lastPage.meta.page + 1;
+			}
+			return undefined;
+		},
+		getPreviousPageParam: (firstPage: PaginatedResponse<MessageProps>) => {
+			if (firstPage.meta.page > 1) {
+				return firstPage.meta.page - 1;
+			}
+			return undefined;
+		},
+		maxPages: 50, // Limit memory usage
+		refetchInterval: 30000,
+		staleTime: 1000 * 60 * 5,
+	});
+};
+
+export const useRealtimeMessages = ({
+	roomId,
+	user_id,
+}: {
+	roomId: string;
+	user_id: string;
+	onNewMessage?: (message: MessageProps) => void;
+}) => {
+	return useQuery({
+		queryKey: ["realtime_messages", roomId],
+		queryFn: () => getMessages({ roomId, user_id, page: 1, limit: 1 }),
+		enabled: !!roomId,
+		refetchInterval: 5000,
+		refetchIntervalInBackground: true,
+	});
+};
+
+const getUserRooms = async (user_id: string) => {
+	return axios
+		.get<HttpResponse<RoomProps[]>>(endpoints().message.get_user_rooms, { params: { user_id } })
+		.then((res) => res.data.data);
+};
+export const useGetUserRooms = (user_id: string) => {
+	return useQuery({
+		queryKey: ["user_rooms"],
+		queryFn: () => getUserRooms(user_id),
+		staleTime: Infinity,
+		gcTime: Infinity,
+		refetchIntervalInBackground: true,
+		refetchInterval: 1000 * 10,
 	});
 };
 
