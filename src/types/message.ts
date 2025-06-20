@@ -16,7 +16,7 @@ export type RoomProps = {
 
 export type MessageProps = BaseProps & {
 	id: string;
-	content: "hello world";
+	content: string;
 	sender: {
 		id: string;
 		first_name: string;
