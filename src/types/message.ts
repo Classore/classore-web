@@ -1,4 +1,4 @@
-import type { Maybe, BaseProps } from "./";
+import type { BaseProps } from "./";
 
 export type ChatEvent =
 	| "new_chat_message"
@@ -15,17 +15,22 @@ export type RoomProps = {
 };
 
 export type MessageProps = BaseProps & {
-	content: string;
+	id: string;
+	content: "hello world";
 	sender: {
 		id: string;
 		first_name: string;
 		last_name: string;
 		profile_image: string;
 		email: string;
-		phone_number: Maybe<string>;
+		phone_number: string;
 	};
 	media: string[];
+	is_my_message: boolean;
+	createdOn: Date;
+	updatedOn: Date;
 	room: string;
+	isDeleted: boolean;
 };
 
 export type UserItemProps = {
@@ -39,9 +44,10 @@ export type UserItemProps = {
 };
 
 export type NewChatMessageProps = {
-	content: string;
-	media: string[];
 	roomId: string;
+	userId: string; // sender
+	message: string;
+	media?: string[];
 };
 
 export type ReceiveChatMessageProps = {
@@ -53,6 +59,7 @@ export type MessageDeliveredProps = {
 	messageId: string;
 };
 
-export type JoinedRoomProps = {
-	userIds: string[];
+export type IsTypingProps = {
+	roomId: string;
+	userId: string;
 };
