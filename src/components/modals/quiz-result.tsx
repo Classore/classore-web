@@ -1,12 +1,12 @@
 import { RiMessage2Line } from "@remixicon/react";
 import { useRouter } from "next/router";
-import { toast } from "sonner";
 import React from "react";
+import { toast } from "sonner";
 
-import { Dialog, DialogContent, DialogDescription, DialogTitle } from "../ui/dialog";
 import type { SubmitQuizResp } from "@/queries/user";
-import { Button } from "../ui/button";
 import { Progress } from "../shared";
+import { Button } from "../ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "../ui/dialog";
 
 type QuizResultModalProps = {
 	currentChapter: string;
@@ -35,10 +35,9 @@ export const QuizResultModal = ({
 	const router = useRouter();
 	const id = router.query.id as string;
 
-	if (!result) return null;
-
-	const attempts_percentage =
-		((result.attempts_limit - result.attempts_left) / (result.attempts_limit ?? 3)) * 100;
+	const attempts_percentage = result
+		? ((result.attempts_limit - result.attempts_left) / (result.attempts_limit ?? 3)) * 100
+		: 0;
 
 	const retakeQuiz = () => {
 		resetQuiz();
@@ -50,14 +49,26 @@ export const QuizResultModal = ({
 	const goToNextLesson = React.useCallback(() => {
 		if (hasNextModule) {
 			onNext();
-			router.push(`/dashboard/courses/${id}?moduleId=${nextModuleId}`);
+			router.replace(`/dashboard/courses/${id}?moduleId=${nextModuleId}`);
 		} else if (!hasNextModule && hasNextChapter) {
 			onNext();
-			router.push(`/dashboard/courses/${nextChapterId}`);
+			router.replace(`/dashboard/courses/${nextChapterId}`);
 		} else {
 			toast.success("You have completed all the lessons in this course");
 		}
-	}, []);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [hasNextChapter, hasNextModule, id, nextChapterId, nextModuleId, onNext]);
+
+	const onRetakeLesson = () => {
+		setOpen(false);
+		resetQuiz();
+		// router.back();
+		router.replace("/dashboard/courses");
+	};
+
+	if (!result) {
+		return null;
+	}
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
@@ -115,20 +126,17 @@ export const QuizResultModal = ({
 
 							{/* TODO: redirect to course page and set the next module */}
 							<Button className="w-fit text-sm" onClick={goToNextLesson} size="sm">
-								Go to Next Lesson
+								{hasNextModule ? "Go to Next Module" : "Go to Next Chapter"}
 							</Button>
 						</>
 					) : (
 						<>
 							<Button
-								onClick={() => {
-									router.replace("/dashboard/courses");
-									resetQuiz();
-								}}
+								onClick={onRetakeLesson}
 								className="w-fit text-sm font-medium text-neutral-400"
 								size="sm"
 								variant="outline">
-								Cancel
+								Retake Lesson
 							</Button>
 							<Button
 								disabled={result.attempts_left <= 0}

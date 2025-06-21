@@ -2,7 +2,7 @@ import { RiArrowDropDownLine, RiFolderVideoLine, RiLockLine } from "@remixicon/r
 import * as React from "react";
 import { toast } from "sonner";
 
-import type { SingleCourseResp } from "@/types";
+import type { ChapterResp, SingleCourseResp } from "@/types";
 
 type CourseChaptersProps = {
 	chapters: SingleCourseResp["chapters"];
@@ -11,56 +11,68 @@ type CourseChaptersProps = {
 	hasNextChapter: boolean;
 	hasPreviousChapter: boolean;
 	progress: number;
-	setChapter: (chapterId: string) => void;
 	current_chapter_id?: string;
+	currentChapter: ChapterResp | null;
+	setCurrentChapterId: (chapterId: string) => void;
 };
 
 const MIN_CHAPTERS = 5;
 
 export const CourseChapters = ({
 	chapters = [],
-	dripping,
+	dripping: chapter_dripping,
 	progress,
-	setChapter,
+	setCurrentChapterId,
 	current_chapter_id,
+	currentChapter,
 }: CourseChaptersProps) => {
 	const [showAllChapters, setShowAllChapters] = React.useState(false);
-	const safeChapters = Array.isArray(chapters) ? chapters : [];
+	const safeChapters = React.useMemo(() => {
+		return Array.isArray(chapters) ? chapters : [];
+	}, [chapters]);
 	const displayedChapters = showAllChapters ? safeChapters : safeChapters.slice(0, MIN_CHAPTERS);
 	const hasMoreChapters = safeChapters.length > MIN_CHAPTERS;
 
-	const nextChapterId = React.useMemo(() => {
-		if (!current_chapter_id) return "";
+	const nextChapter = React.useMemo(() => {
+		if (!currentChapter?.id) return "";
 
 		const currentChapterIndex = safeChapters.findIndex(
-			(chapter) => chapter.id === current_chapter_id
+			(chapter) => chapter.id === currentChapter?.id
 		);
 		if (currentChapterIndex === -1) return "";
 
-		return safeChapters[currentChapterIndex + 1]?.id || "";
-	}, [safeChapters, current_chapter_id]);
+		return chapters[currentChapterIndex + 1]?.id || "";
+	}, [currentChapter?.id, safeChapters, chapters]);
 
 	const canAccessNextChapter = progress > 50;
 
 	const isChapterLocked = React.useCallback(
 		(chapterId: string) => {
-			if (!chapterId || !current_chapter_id) return true;
+			if (!chapterId || !currentChapter?.id) return true;
 
-			if (chapterId === nextChapterId && canAccessNextChapter) return false;
+			if (chapterId === nextChapter && canAccessNextChapter) return false;
 
+			const dripping = chapter_dripping ?? "NO";
 			if (dripping === "NO") return false;
-			if (chapterId === current_chapter_id) return false;
+			if (chapterId === currentChapter?.id) return false;
 			const chapterIndex = safeChapters.findIndex((chapter) => chapter.id === chapterId);
 			const currentChapterIndex = safeChapters.findIndex(
-				(chapter) => chapter.id === current_chapter_id
+				(chapter) => chapter.id === currentChapter?.id
 			);
 
 			if (chapterIndex < currentChapterIndex) return false;
 			if (chapterIndex === currentChapterIndex + 1 && canAccessNextChapter) return false;
 
+			// check if all previous chapter module ispassed is true
+			const previousChapterModules = safeChapters
+				.slice(0, chapterIndex)
+				.flatMap((chapter) => chapter.modules)
+				.every((module) => module.is_passed);
+			if (previousChapterModules) return false;
+
 			return true;
 		},
-		[safeChapters, current_chapter_id, nextChapterId, canAccessNextChapter, dripping]
+		[currentChapter?.id, nextChapter, canAccessNextChapter, chapter_dripping, safeChapters]
 	);
 
 	const onSelectChapter = (chapterId: string) => {
@@ -71,10 +83,11 @@ export const CourseChapters = ({
 		}
 		const locked = isChapterLocked(chapterId);
 		if (locked) {
-			toast.error("Chapter is locked. Complete previous chapter to unlock");
+			toast.info("Chapter is locked. Complete previous chapter to unlock");
 			return;
 		}
-		setChapter(chapterId);
+
+		setCurrentChapterId(chapterId);
 	};
 
 	return (
@@ -100,7 +113,7 @@ export const CourseChapters = ({
 
 						return (
 							<button
-								onClick={() => !locked && onSelectChapter(chapter.id)}
+								onClick={() => onSelectChapter(chapter.id)}
 								type="button"
 								disabled={locked || chapter.id === current_chapter_id}
 								key={chapter.id || index}
