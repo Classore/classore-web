@@ -1,24 +1,30 @@
-import { useMutation } from "@tanstack/react-query";
 import { RiDownload2Line } from "@remixicon/react";
-import { useRouter } from "next/router";
+import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
-import { toast } from "sonner";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React from "react";
+import { toast } from "sonner";
 
-import { AvatarGroup, Footer, Navbar, ReviewCard, Seo } from "@/components/shared";
-import { useDeviceWidth } from "@/hooks/use-device-width";
 import { PersonalizedPlanCard } from "@/components/home";
 import { MasonryLayout } from "@/components/layouts";
-import { paymentCallback } from "@/queries/school";
+import { AvatarGroup, Footer, Navbar, ReviewCard, Seo } from "@/components/shared";
+import {
+	Accordion,
+	AccordionContent,
+	AccordionItem,
+	AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import type { HttpError } from "@/types";
 import {
 	FREQUENTLY_ASKED_QUESTIONS,
 	INCENTIVES,
 	PERSONALIZED_PLANS,
 	TESTIMONIALS,
 } from "@/constants";
+import { useDeviceWidth } from "@/hooks/use-device-width";
+import { paymentCallback } from "@/queries/school";
+import type { HttpError } from "@/types";
 
 const images = [
 	"/assets/images/avatar-0.png",
@@ -223,16 +229,19 @@ const Page = () => {
 							</h4>
 						</div>
 						<div className="w-full space-y-8 lg:w-[650px]">
-							<div className="flex flex-col items-center gap-y-3">
+							<Accordion type="single" collapsible className="flex flex-col items-center gap-y-3">
 								{FREQUENTLY_ASKED_QUESTIONS.map(({ answer, question }, index) => (
-									<div
+									<AccordionItem
+										value={`item-${index + 1}`}
 										key={index}
-										className="w-full space-y-3 rounded-2xl bg-white p-4 transition-all duration-500 hover:shadow-xl">
-										<h6 className="font-semibold">{question}</h6>
-										<p className="text-xs text-neutral-400 lg:text-sm">{answer}</p>
-									</div>
+										className="w-full space-y-3 rounded-md bg-white p-4 transition-all duration-500">
+										<AccordionTrigger className="font-semibold">{question}</AccordionTrigger>
+										<AccordionContent className="text-xs text-neutral-400 lg:text-sm">
+											{answer}
+										</AccordionContent>
+									</AccordionItem>
 								))}
-							</div>
+							</Accordion>
 							<div className="flex flex-col items-center gap-y-4">
 								<h5>Still have questions?</h5>
 								<Button asChild className="w-48">

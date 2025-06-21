@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable react/display-name */
 import * as Slider from "@radix-ui/react-slider";
 import {
@@ -41,6 +42,7 @@ interface VideoPlayerProps {
 	onError?: (error: unknown) => void;
 	onReady?: () => void;
 	poster?: string;
+	disableStepControls?: boolean;
 }
 
 export const VideoPlayer = React.memo(
@@ -54,6 +56,7 @@ export const VideoPlayer = React.memo(
 		onReady,
 		onError,
 		moduleProgress,
+		disableStepControls = false,
 	}: VideoPlayerProps) => {
 		const [isPlaying, setIsPlaying] = React.useState(false);
 		const [progress, setProgress] = React.useState(0);
@@ -608,6 +611,7 @@ export const VideoPlayer = React.memo(
 							<div className="flex items-center gap-0.5">
 								{/* Skip backward */}
 								<button
+									disabled={disableStepControls}
 									className="rounded-full p-1.5 text-white hover:bg-white/20 focus:bg-white/20"
 									onClick={() => handleSkip(-10)}
 									aria-label="Skip backward 10 seconds">
@@ -616,6 +620,7 @@ export const VideoPlayer = React.memo(
 
 								{/* Play/Pause */}
 								<button
+									disabled={isLoading}
 									className="rounded-full p-1.5 text-white hover:bg-white/20 focus:bg-white/20"
 									onClick={togglePlay}
 									aria-label={isPlaying ? "Pause" : "Play"}>
@@ -624,6 +629,7 @@ export const VideoPlayer = React.memo(
 
 								{/* Skip forward */}
 								<button
+									disabled={disableStepControls}
 									className="rounded-full p-1.5 text-white hover:bg-white/20 focus:bg-white/20"
 									onClick={() => handleSkip(10)}
 									aria-label="Skip forward 10 seconds">
@@ -657,6 +663,7 @@ export const VideoPlayer = React.memo(
 									className="flex w-16 flex-col gap-1 p-1">
 									{playbackRates.map((rate) => (
 										<button
+											key={rate}
 											type="button"
 											onClick={() => handlePlaybackRateChange(rate)}
 											data-active={rate === videoRef.current?.playbackRate}

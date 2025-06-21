@@ -1,9 +1,6 @@
 import { RiShareLine } from "@remixicon/react";
 import { toast } from "sonner";
-import React from "react";
 
-import { share_links } from "@/config/links";
-import { IconLabel } from "./icon-label";
 import {
 	Dialog,
 	DialogContent,
@@ -11,14 +8,18 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
+import { share_links } from "@/config/links";
+import { IconLabel } from "./icon-label";
 
 interface Props {
 	onOpenChange: (open: boolean) => void;
 	open: boolean;
 	url: string;
+	title: string;
+	description: string;
 }
 
-export const Sharer = ({ onOpenChange, open, url }: Props) => {
+export const Sharer = ({ onOpenChange, open, url, title, description }: Props) => {
 	const handleCopy = (url: string) => {
 		navigator.clipboard.writeText(url);
 		toast.success("Link copied!");
@@ -35,8 +36,8 @@ export const Sharer = ({ onOpenChange, open, url }: Props) => {
 				<div className="space-y-6 rounded-lg border p-4 pt-9">
 					<IconLabel icon={RiShareLine} />
 					<div className="space-y-0.5">
-						<DialogTitle>Share Referral Code</DialogTitle>
-						<DialogDescription>Share your referral code to get more points.</DialogDescription>
+						<DialogTitle>{title}</DialogTitle>
+						<DialogDescription>{description}</DialogDescription>
 					</div>
 					<div className="w-full space-y-3">
 						{share_links(url).map(({ action, href, icon: Icon, label }, index) => {

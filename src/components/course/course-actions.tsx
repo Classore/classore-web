@@ -1,9 +1,9 @@
 import { RiArrowRightSLine } from "@remixicon/react";
-import { toast } from "sonner";
 import React from "react";
+import { toast } from "sonner";
 
-import { QuizAlertModal, TakeQuizModal } from "../modals";
 import type { SingleCourseResp } from "@/types";
+import { QuizAlertModal, TakeQuizModal } from "../modals";
 import { Button } from "../ui/button";
 
 type CourseActionsProps = {
@@ -25,6 +25,7 @@ export const CourseActions = React.memo(
 		currentModuleProgress,
 		isQuizPassed,
 		onNext,
+		hasNextModule,
 	}: CourseActionsProps) => {
 		const [openQuitQuiz, setOpenQuitQuiz] = React.useState(false);
 		const [openTakeQuiz, setOpenTakeQuiz] = React.useState(false);
@@ -61,7 +62,7 @@ export const CourseActions = React.memo(
 						disabled={currentModuleProgress < 50 || !isQuizPassed}
 						size="sm"
 						className="w-fit text-sm">
-						<span>Go to Next Lesson</span>
+						<span>{hasNextModule ? "Go to Next Module" : "Go to Next Chapter"}</span>
 						<RiArrowRightSLine className="size-4" />
 					</Button>
 				</div>

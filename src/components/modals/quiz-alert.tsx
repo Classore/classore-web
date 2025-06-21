@@ -28,7 +28,7 @@ export const QuizAlertModal = ({ open, setOpen, setOpenTakeQuiz }: QuizAlertProp
 						Hey <span className="capitalize">{profile?.first_name}</span>, you have to take a quiz after
 						every lesson.
 					</p>
-					<p>Score 70% and above to qualify for the next lesson</p>
+					<p>Score 70% and above to qualify for the next one. You&apos;ve got this!</p>
 				</div>
 
 				<div className="flex w-full items-center justify-end gap-4 border-t border-t-neutral-200 pt-4">

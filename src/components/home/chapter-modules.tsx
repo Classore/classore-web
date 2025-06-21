@@ -1,11 +1,11 @@
-import * as React from "react";
-import { toast } from "sonner";
 import {
 	RiCheckboxCircleFill,
 	RiFileTextLine,
 	RiFolderVideoLine,
 	RiPlayCircleLine,
 } from "@remixicon/react";
+import * as React from "react";
+import { toast } from "sonner";
 
 import { convertSecondsToMinSec, sanitizeHtml } from "@/lib";
 import type { ChapterModuleProps, ChapterResp } from "@/types";
@@ -51,15 +51,16 @@ export const ChapterModules = ({
 
 	const handleSelectModule = (module: ChapterModuleProps) => {
 		const moduleId = module.id;
-		const isPassed = module.is_passed;
 		const hasPreviousModule = module.sequence > 1;
 		const previousModule = moduleList[module.sequence - 2];
-		console.log({ previousModule });
+		const hasPreviousPassed = previousModule?.is_passed;
 		if (hasPreviousModule && (previousModule?.progress || 0) < 50) {
-			toast.error("Please complete the previous module first");
+			toast.error("Please complete the previous module first", {
+				description: "You can't proceed to the next module until you complete the previous one",
+			});
 			return;
 		}
-		if (!isPassed && chapterProgress < 50 && moduleId !== moduleList[0].id) {
+		if (!hasPreviousPassed && chapterProgress < 50 && moduleId !== moduleList[0].id) {
 			setOpen(true);
 			return;
 		}
@@ -70,7 +71,7 @@ export const ChapterModules = ({
 		if (openTakeQuiz) {
 			setOpenTakeQuiz(false);
 		}
-	}, [currentChapterId]);
+	}, [currentChapterId, openTakeQuiz]);
 
 	if (isPending) {
 		return (
