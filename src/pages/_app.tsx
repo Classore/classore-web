@@ -24,7 +24,8 @@ export default function App({ Component, pageProps }: AppProps) {
 	}, [router.events]);
 
 	return (
-		<GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
+		<GoogleOAuthProvider
+			clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "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"}>
 			<ErrorBoundary>
 				<QueryProvider>
 					<SSRProvider>
