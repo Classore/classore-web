@@ -1,20 +1,20 @@
 import {
 	RiCalendar2Line,
+	RiFacebookBoxLine,
 	RiFacebookCircleLine,
 	RiGraduationCapLine,
-	RiFacebookBoxLine,
 	RiHome8Line,
 	RiInstagramLine,
 	RiLayoutGridLine,
-	RiLinksLine,
 	RiLinkedinBoxLine,
+	RiLinksLine,
 	RiMessage3Line,
 	RiSpeedUpLine,
 	RiTeamLine,
 	RiTrophyLine,
 	RiTwitterXLine,
-	RiYoutubeLine,
 	RiWhatsappLine,
+	RiYoutubeLine,
 } from "@remixicon/react";
 
 export const share_links = (url: string) => {
@@ -140,9 +140,9 @@ export const footer_links = [
 	{
 		label: "2",
 		links: [
-			{ name: "What We Offer", href: "/what-we-offer" },
-			{ name: "Testimonials", href: "/testimonials" },
-			{ name: "FAQs", href: "/frequently-asked-questions" },
+			{ name: "What We Offer", href: "/#what-we-offer" },
+			{ name: "Testimonials", href: "/#testimonials" },
+			{ name: "FAQs", href: "/#frequently-asked-questions" },
 			{ name: "Privacy Policy", href: "/privacy-policy" },
 		],
 	},

@@ -1,23 +1,16 @@
 import { RiCloseCircleLine, RiThumbDownLine, RiThumbUpLine } from "@remixicon/react";
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/router";
 import Image from "next/image";
-import * as React from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import * as React from "react";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useGetChapter, useGetCourse, useGetProfile } from "@/queries/student";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ChapterModules, QuizHistory, Resources } from "@/components/home";
-import { JoinCommunityModal, RenewalModal } from "@/components/modals";
-import { CourseActions } from "@/components/course/course-actions";
-import { type StartCourseDto, startCourse } from "@/queries/user";
 import blockchain from "@/assets/illustrations/blockchain.svg";
-import { DashboardLayout } from "@/components/layouts";
 import trophy from "@/assets/illustrations/trophy.svg";
-import { Button } from "@/components/ui/button";
-import { capitalize, getInitials } from "@/lib";
-import { useCourse } from "@/hooks";
+import { CourseActions } from "@/components/course/course-actions";
+import { ChapterModules, QuizHistory, Resources } from "@/components/home";
+import { DashboardLayout } from "@/components/layouts";
+import { JoinCommunityModal, RenewalModal } from "@/components/modals";
 import {
 	AvatarGroup,
 	BackBtn,
@@ -26,6 +19,13 @@ import {
 	Spinner,
 	VideoPlayer,
 } from "@/components/shared";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useCourse } from "@/hooks";
+import { capitalize, getInitials } from "@/lib";
+import { useGetChapter, useGetCourse, useGetProfile } from "@/queries/student";
+import { type StartCourseDto, startCourse } from "@/queries/user";
 
 type UseMutationProps = {
 	courseId: string;
@@ -225,6 +225,7 @@ const Page = () => {
 					moduleId={currentModule?.id}
 					moduleProgress={chapter?.current_module_progress_percentage || 0}
 					src={videoUrl}
+					disableStepControls
 				/>
 			);
 		}
@@ -249,7 +250,8 @@ const Page = () => {
 				hasPreviousChapter={hasPreviousChapter}
 				progress={courseProgress}
 				dripping={course?.subject_id.chapter_dripping ?? "NO"}
-				setChapter={setCurrentChapterId}
+				setCurrentChapterId={setCurrentChapterId}
+				currentChapter={currentChapter}
 			/>
 
 			{/* Points Card */}
