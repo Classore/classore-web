@@ -1,13 +1,13 @@
-import { skipToken, usePrefetchQuery } from "@tanstack/react-query";
 import { RiMessage2Line } from "@remixicon/react";
+import { skipToken, usePrefetchQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import React, { useMemo } from "react";
 
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from "../ui/dialog";
 import { useGetChapter } from "@/queries/student";
 import { fetchQuestions } from "@/queries/user";
-import { Button } from "../ui/button";
 import { Progress } from "../shared";
+import { Button } from "../ui/button";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from "../ui/dialog";
 
 type TakeQuizModal = {
 	currentChapterId: string;
@@ -134,7 +134,7 @@ export const TakeQuizModal = ({
 					</DialogClose>
 					<Button
 						className="w-32 text-sm"
-						disabled={lesson.quiz_attempts_left <= 0}
+						disabled={lesson.quiz_attempts_left <= 0 || lesson.is_passed}
 						size="sm"
 						onClick={() =>
 							router.push({

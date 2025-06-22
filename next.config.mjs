@@ -13,6 +13,9 @@ const nextConfig = {
 			{ protocol: "http", hostname: "storage.googleapis.com" },
 		],
 	},
+	eslint: {
+		dirs: ["."], // Run ESLint on the base directory
+	},
 };
 
 export default nextConfig;

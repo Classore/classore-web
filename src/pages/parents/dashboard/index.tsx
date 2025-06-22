@@ -46,22 +46,22 @@ const Page = () => {
 		if (tab === "referral") {
 			return (
 				<TabPanel selected={tab} value="referral">
-					{renderReferrals()}
+					{RenderReferrals()}
 				</TabPanel>
 			);
 		}
 		return (
 			<TabPanel selected={tab} value="withdrawal">
-				{renderWithdrawals()}
+				{RenderWithdrawals()}
 			</TabPanel>
 		);
 	};
 
-	const renderReferrals = () => {
+	const RenderReferrals = () => {
 		const data = React.useMemo(() => {
 			if (!parentHome?.referral_history) return [];
 			return parentHome.referral_history.data;
-		}, [parentHome]);
+		}, []);
 
 		if (!data.length) {
 			return (
@@ -85,11 +85,11 @@ const Page = () => {
 		);
 	};
 
-	const renderWithdrawals = () => {
+	const RenderWithdrawals = () => {
 		const data = React.useMemo(() => {
 			if (!parentHome?.withdrawal_history) return [];
 			return parentHome?.withdrawal_history.data;
-		}, [parentHome]);
+		}, []);
 
 		if (!data.length) {
 			return (
@@ -188,6 +188,8 @@ const Page = () => {
 													onOpenChange={(share) => handleModalStateChange("share", share)}
 													open={modalStates.share}
 													url={`https://classore.com/signup?step=1&referral_code=${""}` || ""}
+													title=""
+													description=""
 												/>
 												<button
 													onClick={() => {}}
