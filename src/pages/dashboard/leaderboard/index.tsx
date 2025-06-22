@@ -1,14 +1,14 @@
-import { Target04, Trophy01 } from "@untitled-ui/icons-react";
-import { useQuery } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
-import Image from "next/image";
-import React from "react";
 import {
 	RiFlashlightLine,
 	RiFullscreenExitLine,
 	RiFullscreenLine,
 	RiLoaderLine,
 } from "@remixicon/react";
+import { useQuery } from "@tanstack/react-query";
+import { Target04, Trophy01 } from "@untitled-ui/icons-react";
+import Image from "next/image";
+import React from "react";
+import { useForm } from "react-hook-form";
 
 import trophy from "@/assets/illustrations/trophy.svg";
 import bronze from "@/assets/images/award-bronze.png";

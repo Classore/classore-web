@@ -1,20 +1,20 @@
 import { useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
 import React from "react";
+import { toast } from "sonner";
 
-import type { ChapterModuleProps, ChapterResp, HttpError } from "@/types";
-import { updateModuleProgress } from "@/queries/user";
 import { queryClient } from "@/providers";
+import { updateModuleProgress } from "@/queries/user";
+import type { ChapterModuleProps, ChapterResp, HttpError } from "@/types";
 
-interface UseCourseProps {
+type UseCourseProps = {
 	chapterId: string;
 	chapters: ChapterResp[];
 	courseId: string;
 	moduleId: string;
 	onProgressUpdate?: (currentChapterId: string, currentModuleId: string) => Promise<void>;
-}
+};
 
-interface UseCourseHandler {
+type UseCourseHandler = {
 	chapterList: ChapterResp[];
 	canProceed: boolean;
 	chapterId: string;
@@ -40,7 +40,8 @@ interface UseCourseHandler {
 	previousModuleId: string;
 	setCurrentChapterId: (chapterId: string) => void;
 	setCurrentModuleId: (moduleId: string) => void;
-}
+	previousChapter: ChapterResp | null;
+};
 
 interface UseCourseStorage {
 	chapterId: string;
@@ -82,14 +83,16 @@ export const useCourse = ({
 	onProgressUpdate,
 }: UseCourseProps): UseCourseHandler => {
 	const storedProgress = React.useMemo(() => getStoredProgress(courseId), [courseId]);
-	const validChapters = Array.isArray(chapters) ? chapters : [];
+	const validChapters = React.useMemo(() => {
+		return Array.isArray(chapters) ? chapters : [];
+	}, [chapters]);
 
 	const initialChapterId = React.useMemo(() => {
 		if (storedProgress?.chapterId && validChapters.some((ch) => ch.id === storedProgress.chapterId)) {
 			return storedProgress.chapterId;
 		}
 		return validChapters[0]?.id || chapterId || "";
-	}, [storedProgress?.chapterId, validChapters]);
+	}, [chapterId, storedProgress?.chapterId, validChapters]);
 
 	const initialChapter = React.useMemo(
 		() => validChapters.find((ch) => ch.id === initialChapterId) || validChapters[0] || null,
@@ -104,29 +107,10 @@ export const useCourse = ({
 		}
 
 		return initialModules[0]?.id || moduleId || "";
-	}, [storedProgress?.moduleId, initialModules]);
+	}, [storedProgress?.moduleId, initialModules, moduleId]);
 
 	const [currentChapterId, setInternalChapterId] = React.useState(initialChapterId);
 	const [currentModuleId, setInternalModuleId] = React.useState(initialModuleId);
-
-	const { mutate } = useMutation({
-		mutationFn: updateModuleProgress,
-		mutationKey: ["update-module-progress", courseId, currentChapterId, currentModuleId],
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["course"] });
-			queryClient.invalidateQueries({ queryKey: ["chapters"] });
-			if (onProgressUpdate) {
-				onProgressUpdate(currentChapterId, currentModuleId);
-			}
-		},
-		onError: (error: HttpError) => {
-			const errorMessage = Array.isArray(error.response.data.message)
-				? error.response.data.message[0]
-				: error.response.data.message;
-			const message = errorMessage || "Something went wrong!";
-			toast.error(message);
-		},
-	});
 
 	const currentChapterIndex = React.useMemo(
 		() => validChapters.findIndex((chapter) => chapter.id === currentChapterId),
@@ -138,7 +122,10 @@ export const useCourse = ({
 		[validChapters, currentChapterIndex]
 	);
 
-	const moduleList = React.useMemo(() => currentChapter?.modules || [], [currentChapter]);
+	const moduleList = React.useMemo(() => {
+		const modules = currentChapter?.modules || [];
+		return [...modules].sort((a, b) => (a.sequence || 0) - (b.sequence || 0));
+	}, [currentChapter]);
 
 	const currentModuleIndex = React.useMemo(
 		() => moduleList.findIndex((module) => module.id === currentModuleId),
@@ -157,7 +144,12 @@ export const useCourse = ({
 				setInternalModuleId(newModuleId);
 			}
 		}
-	}, [moduleList, currentModuleIndex, currentModuleId]);
+	}, [currentModuleId, moduleList, currentModuleIndex]);
+
+	const hasNextModule = React.useMemo(
+		() => currentModuleIndex >= 0 && currentModuleIndex < moduleList.length - 1,
+		[currentModuleIndex, moduleList]
+	);
 
 	const hasNextChapter = React.useMemo(() => {
 		return currentChapterIndex !== -1 && currentChapterIndex < validChapters.length - 1;
@@ -166,10 +158,6 @@ export const useCourse = ({
 	const hasPreviousChapter = React.useMemo(() => {
 		return currentChapterIndex > 0;
 	}, [currentChapterIndex]);
-
-	const hasNextModule = React.useMemo(() => {
-		return currentModuleIndex !== -1 && currentModuleIndex < moduleList.length - 1;
-	}, [currentModuleIndex, moduleList]);
 
 	const hasPreviousModule = React.useMemo(() => {
 		return currentModuleIndex > 0;
@@ -189,10 +177,18 @@ export const useCourse = ({
 		return "";
 	}, [hasPreviousChapter, validChapters, currentChapterIndex]);
 
+	const previousChapter = React.useMemo(() => {
+		if (hasPreviousChapter) {
+			return validChapters[currentChapterIndex - 1];
+		}
+		return null;
+	}, [hasPreviousChapter, validChapters, currentChapterIndex]);
+
 	const nextModuleId = React.useMemo(() => {
 		if (hasNextModule) {
 			return moduleList[currentModuleIndex + 1].id;
-		} else if (hasNextChapter) {
+		}
+		if (hasNextChapter) {
 			return validChapters[currentChapterIndex + 1]?.modules[0]?.id || "";
 		}
 		return "";
@@ -208,7 +204,8 @@ export const useCourse = ({
 	const previousModuleId = React.useMemo(() => {
 		if (hasPreviousModule) {
 			return moduleList[currentModuleIndex - 1].id;
-		} else if (hasPreviousChapter) {
+		}
+		if (hasPreviousChapter) {
 			const prevChapter = validChapters[currentChapterIndex - 1];
 			const lastModuleIndex = prevChapter?.modules?.length - 1;
 			return prevChapter?.modules[lastModuleIndex]?.id || "";
@@ -227,7 +224,8 @@ export const useCourse = ({
 	const nextModule = React.useMemo(() => {
 		if (hasNextModule) {
 			return moduleList[currentModuleIndex + 1];
-		} else if (hasNextChapter) {
+		}
+		if (hasNextChapter) {
 			return validChapters[currentChapterIndex + 1]?.modules[0] || null;
 		}
 		return null;
@@ -243,7 +241,8 @@ export const useCourse = ({
 	const previousModule = React.useMemo(() => {
 		if (hasPreviousModule) {
 			return moduleList[currentModuleIndex - 1];
-		} else if (hasPreviousChapter) {
+		}
+		if (hasPreviousChapter) {
 			const prevChapter = validChapters[currentChapterIndex - 1];
 			const lastModuleIndex = prevChapter?.modules?.length - 1;
 			return prevChapter?.modules[lastModuleIndex] || null;
@@ -266,6 +265,25 @@ export const useCourse = ({
 		);
 	}, [currentModule]);
 
+	const { mutate } = useMutation({
+		mutationFn: updateModuleProgress,
+		mutationKey: ["update-module-progress", courseId, currentChapterId, currentModuleId],
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["course"] });
+			queryClient.invalidateQueries({ queryKey: ["chapters"] });
+			if (onProgressUpdate) {
+				onProgressUpdate(currentChapterId, currentModuleId);
+			}
+		},
+		onError: (error: HttpError) => {
+			const errorMessage = Array.isArray(error.response.data.message)
+				? error.response.data.message[0]
+				: error.response.data.message;
+			const message = errorMessage || "Something went wrong!";
+			toast.error(message);
+		},
+	});
+
 	const updateProgress = React.useCallback(
 		(chapterId: string, moduleId: string) => {
 			const currentStorage = getStoredProgress(courseId);
@@ -286,8 +304,8 @@ export const useCourse = ({
 			});
 
 			if (onProgressUpdate) {
-				onProgressUpdate(chapterId, moduleId).catch((error) => {
-					console.error("Error updating progress:", error);
+				onProgressUpdate(chapterId, moduleId).catch(() => {
+					// console.error('Error updating progress:', error)
 				});
 			}
 		},
@@ -301,17 +319,32 @@ export const useCourse = ({
 			}
 			const chapter = validChapters.find((ch) => ch.id === chapterId);
 			if (chapter) {
-				setInternalChapterId(chapterId);
-				const firstModule = chapter.modules.find((module) => module.sequence === 1);
-				const moduleId = firstModule?.id || "";
-				if (moduleId) {
-					setInternalModuleId(moduleId);
-					updateProgress(chapterId, moduleId);
-				}
+				// NOTE: We could maybe deduce that the last module is the one that was watched
+				const moduleId = chapter.modules[chapter.modules.length - 1].id || chapter.modules[0].id;
+
+				// Update both states in a single batch
+				React.startTransition(() => {
+					setInternalChapterId(chapterId);
+					if (moduleId) {
+						setInternalModuleId(moduleId);
+						updateProgress(chapterId, moduleId);
+					}
+				});
 			}
 		},
 		[validChapters, updateProgress, currentChapterId]
 	);
+
+	// Force recalculation of module index when chapter changes
+	React.useEffect(() => {
+		const chapter = validChapters.find((ch) => ch.id === currentChapterId);
+		if (chapter) {
+			const moduleIndex = chapter.modules.findIndex((module) => module.id === currentModuleId);
+			if (moduleIndex === -1 && chapter.modules.length > 0) {
+				setInternalModuleId(chapter.modules[0].id);
+			}
+		}
+	}, [currentChapterId, currentModuleId, validChapters]);
 
 	const setCurrentModuleId = React.useCallback(
 		(moduleId: string) => {
@@ -322,6 +355,12 @@ export const useCourse = ({
 			if (currentChapter?.modules.some((m) => m.id === moduleId)) {
 				setInternalModuleId(moduleId);
 				updateProgress(currentChapterId, moduleId);
+				// router.replace({
+				// 	pathname: '/dashboard/my-courses/course/[id]',
+				// 	params: {
+				// 		id: courseId,
+				// 	},
+				// })
 			}
 		},
 		[currentChapter, currentChapterId, updateProgress, currentModuleId]
@@ -334,7 +373,10 @@ export const useCourse = ({
 			const nextModule = moduleList[currentModuleIndex + 1];
 			setInternalModuleId(nextModule?.id);
 			updateProgress(currentChapterId, nextModule?.id);
-		} else if (hasNextChapter) {
+			return;
+		}
+
+		if (hasNextChapter) {
 			const nextChapter = validChapters[currentChapterIndex + 1];
 			const firstModuleId = nextChapter?.modules[0]?.id || "";
 
@@ -451,5 +493,6 @@ export const useCourse = ({
 		previousModuleId,
 		setCurrentChapterId,
 		setCurrentModuleId,
+		previousChapter,
 	};
 };
