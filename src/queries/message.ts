@@ -205,4 +205,20 @@ export const useGetUserRooms = (user_id: string) => {
 	});
 };
 
+const getForums = async (user_id: string) => {
+	return axios
+		.get<HttpResponse<RoomProps[]>>(endpoints().message.get_forums, { params: { user_id } })
+		.then((res) => res.data);
+};
+export const useGetForums = (user_id: string) => {
+	return useQuery({
+		queryKey: ["forums"],
+		queryFn: () => getForums(user_id),
+		staleTime: Infinity,
+		gcTime: Infinity,
+		refetchIntervalInBackground: true,
+		refetchInterval: 1000 * 10,
+	});
+};
+
 export { findOrCreateRoom, uploadMedia };
