@@ -7,7 +7,7 @@ const isDev = process.env.NEXT_PUBLIC_NODE_ENV === "development";
 const api = axios.create({
 	baseURL: isDev
 		? process.env.NEXT_PUBLIC_API_URL
-		: "https://classore-be-june-224829194037.europe-west1.run.app",
+		: "https://classore-be-june-224829194037.europe-west1.run.app/classore/v1",
 });
 
 api.interceptors.request.use(
