@@ -25,7 +25,7 @@ export const MessageItem = ({ message }: Props) => {
 			)}>
 			<Avatar className="size-10 rounded-lg">
 				<AvatarImage src={message.sender.profile_image} />
-				<AvatarFallback>{initials}</AvatarFallback>
+				<AvatarFallback className="bg-primary-200 text-sm font-semibold">{initials}</AvatarFallback>
 			</Avatar>
 			<div
 				className={cn(
@@ -40,7 +40,7 @@ export const MessageItem = ({ message }: Props) => {
 						))}
 					</div>
 				)}
-				<p className="text-[10px] text-neutral-500">{format(message.updatedOn, "HH:mm a")}</p>
+				<p className="text-[10px] text-neutral-500">{format(message.updatedOn, "hh:mm a")}</p>
 			</div>
 		</div>
 	);
