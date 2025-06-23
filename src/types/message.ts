@@ -12,6 +12,7 @@ export type RoomProps = {
 	is_group: "NO" | "YES";
 	created_at: Date;
 	members: UserItemProps[];
+	bundle_name: string;
 };
 
 export type MessageProps = BaseProps & {

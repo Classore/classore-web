@@ -39,8 +39,8 @@ const initialValues: FormProps = {
 const Page = () => {
 	const [selected, setSelected] = React.useState<UserItemProps | null>(null);
 	const [shouldAutoScroll, setShouldAutoScroll] = React.useState(false);
-	const [, setIsLoadingOlder] = React.useState(false);
 	const [formValues, setFormValues] = React.useState(initialValues);
+	const [, setIsLoadingOlder] = React.useState(false);
 	const [isTyping, setIsTyping] = React.useState(false);
 	const socket = React.useRef<Socket | null>(null);
 	const [roomId, setRoomId] = React.useState("");
