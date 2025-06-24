@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import React from "react";
 import {
 	RiAiGenerate,
+	RiArrowLeftSLine,
 	RiEmojiStickerLine,
 	RiForbid2Line,
 	RiHashtag,
@@ -21,7 +22,7 @@ import { MessageItem } from "@/components/message";
 import type { RoomProps } from "@/types/message";
 import { useUserStore } from "@/store/z-store";
 import { Seo } from "@/components/shared";
-import { useFileHandler } from "@/hooks";
+import { useDeviceWidth, useFileHandler } from "@/hooks";
 import { cn, sendMessage } from "@/lib";
 
 type FormProps = {
@@ -39,12 +40,18 @@ const Page = () => {
 	const [shouldAutoScroll, setShouldAutoScroll] = React.useState(false);
 	const [formValues, setFormValues] = React.useState(initialValues);
 	const [room, setRoom] = React.useState<RoomProps | null>(null);
-	const [, setIsLoadingOlder] = React.useState(false);
 	const [isTyping, setIsTyping] = React.useState(false);
+	const [, setIsLoadingOlder] = React.useState(false);
+	const { isMobile } = useDeviceWidth();
 	const { user } = useUserStore();
+	const [open, setOpen] = React.useState(isMobile);
 
 	const socket = React.useRef<Socket | null>(null);
 	const ref = React.useRef<HTMLDivElement>(null);
+
+	React.useEffect(() => {
+		setOpen(isMobile);
+	}, [isMobile]);
 
 	React.useEffect(() => {
 		const url = isDev
@@ -89,8 +96,8 @@ const Page = () => {
 		isLoading,
 		refetch,
 	} = useGetInfiniteMessages({
-		roomId: String(room?.id),
-		user_id: String(user?.id),
+		roomId: room?.id || "",
+		user_id: user?.id || "",
 		limit: 100,
 	});
 
@@ -207,45 +214,78 @@ const Page = () => {
 		<>
 			<Seo title="Community Forum" />
 			<DashboardLayout className="px-0 py-0 lg:px-0 lg:py-0">
-				<div className="grid h-full w-full grid-cols-1 lg:grid-cols-4">
-					<div className="hidden flex-col border-r border-neutral-200 lg:flex">
+				<div className="relative flex h-full w-full items-start">
+					<aside className="hidden h-full w-[280px] flex-col border-r border-neutral-200 lg:flex">
 						<div className="h-[76px] w-full border-b border-neutral-200">
 							<p className="font-medium lg:text-xl"></p>
 						</div>
-						<div className="h-[calc(100%-76px)] w-full space-y-4">
+						<div className="h-[calc(100%-76px)] w-full space-y-4 overflow-y-auto p-5">
 							{forums?.data?.map((forum) => (
-								<div key={forum.id} className="flex h-16 w-full items-center px-5">
-									<div
-										onClick={() => setRoom(forum)}
-										className={cn(
-											"flex h-10 w-full cursor-pointer items-center justify-between rounded-md px-3 text-sm font-medium text-neutral-400 hover:bg-neutral-200",
-											room?.id === forum.id && "bg-neutral-300"
-										)}>
-										<span className="flex items-center gap-x-2">
-											{forum.bundle_name.includes("general") ? (
-												<RiAiGenerate className="size-4" />
-											) : (
-												<RiHashtag className="size-4" />
-											)}
-											<span className="uppercase">{forum.bundle_name}</span>
+								<div
+									key={forum.id}
+									onClick={() => setRoom(forum)}
+									className={cn(
+										"flex h-10 w-full cursor-pointer items-center gap-x-1 rounded-md px-3 text-neutral-400 hover:bg-neutral-200",
+										room?.id === forum.id && "bg-neutral-300"
+									)}>
+									<span className="flex flex-1 items-center gap-x-2">
+										{forum.bundle_name.includes("general") ? (
+											<RiAiGenerate className="size-4" />
+										) : (
+											<RiHashtag className="size-4" />
+										)}
+										<span className="truncate text-[10px] font-medium uppercase lg:text-xs">
+											{forum.bundle_name}
 										</span>
-										<button onClick={(e) => handleMuteRoom(e, forum.id)}>
-											<RiVolumeUpLine className="size-4" />
-										</button>
-									</div>
+									</span>
+									<button onClick={(e) => handleMuteRoom(e, forum.id)}>
+										<RiVolumeUpLine className="size-4" />
+									</button>
 								</div>
 							))}
 						</div>
-					</div>
-					<div className="col-span-3">
+					</aside>
+					{open && (
+						<aside className="absolute left-0 top-0 !z-[5] h-full w-full space-y-2 overflow-y-auto bg-white lg:hidden">
+							{forums?.data?.map((forum) => (
+								<div
+									key={forum.id}
+									onClick={() => {
+										setRoom(forum);
+										setOpen(false);
+									}}
+									className="flex h-12 w-full cursor-pointer items-center gap-x-1 border-b border-neutral-300 px-3 text-neutral-400 last:border-b-0 hover:bg-neutral-200">
+									<span className="flex flex-1 items-center gap-x-2">
+										{forum.bundle_name.includes("general") ? (
+											<RiAiGenerate className="size-4" />
+										) : (
+											<RiHashtag className="size-4" />
+										)}
+										<span className="truncate text-xs font-medium uppercase">{forum.bundle_name}</span>
+									</span>
+									<button onClick={(e) => handleMuteRoom(e, forum.id)}>
+										<RiVolumeUpLine className="size-4" />
+									</button>
+								</div>
+							))}
+						</aside>
+					)}
+					<div className="h-full flex-1">
 						{room && (
-							<div className="flex h-[76px] w-full items-center justify-between border-b border-neutral-200 px-8">
-								<div className="flex items-center gap-x-4">
+							<div className="flex h-10 w-full items-center justify-between border-b border-neutral-200 px-8 lg:h-[76px]">
+								<div className="flex items-center gap-x-2 lg:gap-x-4">
+									<button className="block lg:hidden" onClick={() => setOpen(true)}>
+										<RiArrowLeftSLine />
+									</button>
 									<div className="rounded-lg bg-green-500 p-2 text-white">
-										{!room || room.bundle_name?.includes("general") ? <RiAiGenerate /> : <RiHashtag />}
+										{!room || room.bundle_name?.includes("general") ? (
+											<RiAiGenerate className="size-3 lg:size-6" />
+										) : (
+											<RiHashtag className="size-3 lg:size-6" />
+										)}
 									</div>
 									<div>
-										<p className="font-medium uppercase">{room.bundle_name}</p>
+										<p className="text-sm font-medium uppercase lg:text-base">{room.bundle_name}</p>
 										{isTyping ? (
 											<p className="text-[10px] text-neutral-400 lg:text-xs">someone is typing...</p>
 										) : (
@@ -264,7 +304,7 @@ const Page = () => {
 											<button
 												key={index}
 												className={cn(
-													"flex h-8 w-full items-center gap-x-2 rounded-md px-3 text-sm capitalize transition-colors duration-300",
+													"flex h-4 w-full items-center gap-x-2 rounded-md px-3 text-xs capitalize transition-colors duration-300 lg:h-8 lg:text-sm",
 													destructive ? "text-red-500 hover:bg-red-100" : "text-neutral-500 hover:bg-neutral-200"
 												)}>
 												<Icon className="size-4" /> {label}
@@ -276,7 +316,7 @@ const Page = () => {
 						)}
 						<div
 							ref={ref}
-							className="flex h-[calc(100%-184px)] w-full flex-col gap-y-5 overflow-y-auto bg-[#F6F8FA] px-5 py-2">
+							className="flex h-[calc(100%-148px)] w-full flex-col gap-y-5 overflow-y-auto bg-[#F6F8FA] px-5 py-2 lg:h-[calc(100%-184px)]">
 							{isFetchingNextPage && (
 								<div className="flex justify-center py-2">
 									<div className="text-sm text-neutral-500">Loading older messages...</div>
@@ -287,7 +327,7 @@ const Page = () => {
 									<div className="text-sm text-neutral-500">Loading messages...</div>
 								</div>
 							) : messages.length > 0 ? (
-								messages.map((message) => <MessageItem key={message.id} message={message} />)
+								messages.map((message) => <MessageItem key={message.id} message={message} isGroup />)
 							) : (
 								<div className="flex h-full items-center justify-center">
 									<div className="text-sm text-neutral-500">No messages yet. Start the conversation!</div>
