@@ -1,4 +1,5 @@
 import { type Socket, io } from "socket.io-client";
+import { useRouter } from "next/router";
 import { toast } from "sonner";
 import React from "react";
 import {
@@ -10,18 +11,19 @@ import {
 	RiSendPlaneLine,
 	RiEmojiStickerLine,
 	RiVolumeMuteLine,
+	RiArrowLeftSLine,
 } from "@remixicon/react";
 
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useGetInfiniteMessages, useGetUserRooms } from "@/queries/message";
 import { MessageItem, UserItem } from "@/components/message";
+import { useDeviceWidth, useFileHandler } from "@/hooks";
 import { DashboardLayout } from "@/components/layouts";
 import type { UserItemProps } from "@/types/message";
 import { cn, getInitials, sendMessage } from "@/lib";
 import { useUserStore } from "@/store/z-store";
 import { Seo } from "@/components/shared";
-import { useFileHandler } from "@/hooks";
 
 type FormProps = {
 	content: string;
@@ -29,7 +31,7 @@ type FormProps = {
 };
 
 const isDev = process.env.NODE_ENV === "development";
-const tabs = ["all messages", "unread"];
+// const tabs = ["all messages", "unread"];
 
 const initialValues: FormProps = {
 	content: "",
@@ -43,9 +45,17 @@ const Page = () => {
 	const [, setIsLoadingOlder] = React.useState(false);
 	const [isTyping, setIsTyping] = React.useState(false);
 	const socket = React.useRef<Socket | null>(null);
-	const [roomId, setRoomId] = React.useState("");
 	const ref = React.useRef<HTMLDivElement>(null);
-	const [tab, setTab] = React.useState(tabs[0]);
+	const { isMobile } = useDeviceWidth();
+	const [open, setOpen] = React.useState(isMobile);
+	const router = useRouter();
+
+	const paramsId = router.query.roomId as string;
+	const [roomId, setRoomId] = React.useState(paramsId || "");
+
+	React.useEffect(() => {
+		setOpen(isMobile);
+	}, [isMobile]);
 
 	const { user } = useUserStore();
 
@@ -130,7 +140,6 @@ const Page = () => {
 		setShouldAutoScroll(isNearBottom);
 	};
 
-	// Handle scroll to load older messages
 	const handleScroll = React.useCallback(() => {
 		if (!ref.current) return;
 		const { scrollTop } = ref.current;
@@ -172,8 +181,6 @@ const Page = () => {
 			userId: String(user?.id),
 			message: formValues.content,
 		});
-		console.log("message sent", new Date().toDateString());
-
 		await refetch();
 		setFormValues(initialValues);
 		setShouldAutoScroll(true);
@@ -198,32 +205,44 @@ const Page = () => {
 		}
 	}, [handleScroll]);
 
+	const handleSelectRoom = (roomId: string) => {
+		setRoomId(roomId);
+		setOpen(false);
+	};
+
 	return (
 		<>
 			<Seo title="Messages" />
 			<DashboardLayout className="p-0 md:px-0">
-				<div className="flex h-full w-full items-start">
-					<aside className="h-full w-[325px] border-r border-neutral-200">
-						<div className="flex h-[76px] w-full items-center gap-x-2 border-b border-neutral-200 px-5">
-							{tabs.map((t) => (
-								<button
-									key={t}
-									onClick={() => setTab(t)}
-									className={cn(
-										"h-9 flex-1 rounded-md text-sm font-medium capitalize",
-										tab === t ? "bg-neutral-300 text-primary-400" : "text-neutral-500"
-									)}>
-									{t}
-								</button>
-							))}
-						</div>
-						<div className="h-[calc(100%-76px)] w-full overflow-y-auto">
+				<div className="relative flex h-full w-full items-start">
+					<aside className="hidden h-full w-[325px] border-r border-neutral-200 lg:block">
+						{!rooms?.length ? (
+							<div className="grid h-full w-full place-items-center">
+								<p className="text-sm text-neutral-500">No chats</p>
+							</div>
+						) : (
+							<div className="h-full w-full overflow-y-auto">
+								{rooms.map((room, index) => (
+									<UserItem
+										key={index}
+										onSelect={setSelected}
+										onSelectRoom={handleSelectRoom}
+										selected={selected}
+										room={room}
+										socket={socket.current}
+									/>
+								))}
+							</div>
+						)}
+					</aside>
+					{open && (
+						<aside className="absolute left-0 top-0 !z-[5] h-full w-full space-y-2 overflow-y-auto bg-white lg:hidden">
 							{!rooms?.length ? (
 								<div className="grid h-full w-full place-items-center">
 									<p className="text-sm text-neutral-500">No chats</p>
 								</div>
 							) : (
-								<>
+								<div className="h-full w-full overflow-y-auto">
 									{rooms.map((room, index) => (
 										<UserItem
 											key={index}
@@ -234,15 +253,18 @@ const Page = () => {
 											socket={socket.current}
 										/>
 									))}
-								</>
+								</div>
 							)}
-						</div>
-					</aside>
+						</aside>
+					)}
 					<div className="h-full flex-1">
-						<div className="h-[76px] w-full px-5">
+						<div className="h-[76px] w-full px-3">
 							{selected && (
 								<div className="flex h-full w-full items-center justify-between">
 									<div className="flex items-center gap-x-2">
+										<button className="block lg:hidden" onClick={() => setOpen(true)}>
+											<RiArrowLeftSLine />
+										</button>
 										<Avatar className="size-10 rounded-md border border-neutral-200 bg-primary-500">
 											<AvatarImage src={selected?.profile_picture || ""} className="objec" />
 											<AvatarFallback className="bg-primary-500 text-sm uppercase text-white">
@@ -282,7 +304,7 @@ const Page = () => {
 						</div>
 						<div
 							ref={ref}
-							className="flex h-[calc(100%-184px)] w-full flex-col gap-y-5 overflow-y-auto bg-[#F6F8FA] px-5 py-2">
+							className="flex h-full w-full flex-col gap-y-5 overflow-y-auto bg-[#F6F8FA] px-5 py-2 lg:h-[calc(100%-184px)]">
 							{isFetchingNextPage && (
 								<div className="flex justify-center py-2">
 									<div className="text-sm text-neutral-500">Loading older messages...</div>
@@ -293,7 +315,9 @@ const Page = () => {
 									<div className="text-sm text-neutral-500">Loading messages...</div>
 								</div>
 							) : messages.length > 0 ? (
-								messages.map((message) => <MessageItem key={message.id} message={message} />)
+								messages.map((message) => (
+									<MessageItem key={message.id} message={message} isGroup={false} />
+								))
 							) : (
 								<div className="flex h-full items-center justify-center">
 									<div className="text-sm text-neutral-500">No messages yet. Start the conversation!</div>

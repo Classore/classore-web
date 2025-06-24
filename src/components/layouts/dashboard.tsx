@@ -115,7 +115,6 @@ export function DashboardLayout({ children, className }: DashboardLayoutProps) {
 
 				<section className="flex h-screen w-full flex-col overflow-hidden">
 					<Appbar />
-
 					<div
 						className={cn(
 							"flex h-[calc(100vh-80px)] w-full flex-col gap-6 overflow-y-auto px-3 pt-6 md:px-8",
@@ -127,15 +126,15 @@ export function DashboardLayout({ children, className }: DashboardLayoutProps) {
 			</main>
 
 			{/* MOBILE NAVBAR */}
-			<main className="w-full bg-white lg:hidden">
+			<main className="h-screen w-full bg-white lg:hidden">
 				<MobileAppbar />
-				<section
+				<div
 					className={cn(
-						"flex h-full w-full flex-col gap-6 overflow-y-auto px-2 py-6 md:px-8",
+						"flex h-[calc(100%-62px)] w-full flex-col gap-6 overflow-y-auto px-2 py-6 md:px-8",
 						className
 					)}>
 					{children}
-				</section>
+				</div>
 			</main>
 			<ReviewToast isOpen={openReview} onOpenChange={setOpenReview} />
 			<CompleteKyc onOpenChange={setOpensheet} open={openSheet} />

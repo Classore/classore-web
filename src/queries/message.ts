@@ -86,7 +86,7 @@ export const useGetMessages = (params: PaginationProps & { roomId: string; user_
 	return useQuery({
 		queryKey: ["messages", params.roomId],
 		queryFn: () => getMessages(params),
-		enabled: !!params.roomId,
+		enabled: !!params.roomId && !!params.user_id,
 		staleTime: Infinity,
 		gcTime: Infinity,
 		refetchIntervalInBackground: true,
@@ -198,6 +198,7 @@ export const useGetUserRooms = (user_id: string) => {
 	return useQuery({
 		queryKey: ["user_rooms"],
 		queryFn: () => getUserRooms(user_id),
+		enabled: !!user_id,
 		staleTime: Infinity,
 		gcTime: Infinity,
 		refetchIntervalInBackground: true,
