@@ -1,4 +1,5 @@
 import { RiChat3Line, RiFlagLine, RiForbid2Line, RiMore2Line } from "@remixicon/react";
+import { format, isPast } from "date-fns";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { toast } from "sonner";
@@ -10,7 +11,6 @@ import { useFindOrCreateRoom } from "@/queries/message";
 import type { MessageProps } from "@/types/message";
 import { useUserStore } from "@/store/z-store";
 import { cn, getInitials } from "@/lib";
-import { format } from "date-fns";
 
 interface Props {
 	isGroup: boolean;
@@ -54,7 +54,7 @@ export const MessageItem = ({ isGroup, message }: Props) => {
 	return (
 		<div
 			className={cn(
-				"flex w-1/2 items-start gap-x-2",
+				"group flex w-1/2 items-start gap-x-2",
 				isSender ? "flex-row-reverse self-end" : "self-start"
 			)}>
 			<Avatar className="size-10 rounded-lg">
@@ -63,7 +63,7 @@ export const MessageItem = ({ isGroup, message }: Props) => {
 			</Avatar>
 			<div
 				className={cn(
-					"w-fit space-y-2 rounded-lg p-3",
+					"min-w-40 space-y-2 rounded-lg p-3",
 					isSender ? "rounded-tr-none bg-primary-100 text-right" : "rounded-tl-none bg-secondary-100"
 				)}>
 				<p className="text-sm">{message.content}</p>
@@ -74,39 +74,41 @@ export const MessageItem = ({ isGroup, message }: Props) => {
 						))}
 					</div>
 				)}
-				<div
-					className={cn(
-						"flex w-full items-center",
-						isGroup && !isSender ? "justify-between" : "justify-end"
-					)}>
-					{isGroup && !isSender && (
-						<Popover>
-							<PopoverTrigger asChild>
-								<button>
-									<RiMore2Line className="size-3" />
-								</button>
-							</PopoverTrigger>
-							<PopoverContent>
-								<div className="w-[150px] space-y-2 p-2">
-									{options(message.sender.id).map(({ bad, icon: Icon, label, onClick }, index) => (
-										<button
-											key={index}
-											className={cn(
-												"flex w-full items-center gap-x-1 rounded p-1 text-xs font-medium hover:bg-neutral-200",
-												bad ? "text-red-500" : "text-neutral-500"
-											)}
-											onClick={onClick}>
-											<Icon className="size-3" />
-											{label}
-										</button>
-									))}
-								</div>
-							</PopoverContent>
-						</Popover>
+				<div className="flex w-full items-center justify-end">
+					{isPast(message.updatedOn) ? (
+						<p className="text-[10px] text-neutral-500">
+							{format(message.updatedOn, "dd/MM/yyyy hh:mm a")}
+						</p>
+					) : (
+						<p className="text-[10px] text-neutral-500">{format(message.updatedOn, "hh:mm a")}</p>
 					)}
-					<p className="text-[10px] text-neutral-500">{format(message.updatedOn, "hh:mm a")}</p>
 				</div>
 			</div>
+			{isGroup && !isSender && (
+				<Popover>
+					<PopoverTrigger asChild>
+						<button className="my-auto hidden group-hover:block">
+							<RiMore2Line className="size-3" />
+						</button>
+					</PopoverTrigger>
+					<PopoverContent>
+						<div className="w-[150px] space-y-2 p-2">
+							{options(message.sender.id).map(({ bad, icon: Icon, label, onClick }, index) => (
+								<button
+									key={index}
+									className={cn(
+										"flex w-full items-center gap-x-1 rounded p-1 text-xs font-medium hover:bg-neutral-200",
+										bad ? "text-red-500" : "text-neutral-500"
+									)}
+									onClick={onClick}>
+									<Icon className="size-3" />
+									{label}
+								</button>
+							))}
+						</div>
+					</PopoverContent>
+				</Popover>
+			)}
 		</div>
 	);
 };
