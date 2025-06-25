@@ -222,16 +222,18 @@ const Page = () => {
 							</div>
 						) : (
 							<div className="h-full w-full overflow-y-auto">
-								{rooms.map((room, index) => (
-									<UserItem
-										key={index}
-										onSelect={setSelected}
-										onSelectRoom={handleSelectRoom}
-										selected={selected}
-										room={room}
-										socket={socket.current}
-									/>
-								))}
+								{rooms
+									.filter((room) => room.is_group)
+									.map((room, index) => (
+										<UserItem
+											key={index}
+											onSelect={setSelected}
+											onSelectRoom={handleSelectRoom}
+											selected={selected}
+											room={room}
+											socket={socket.current}
+										/>
+									))}
 							</div>
 						)}
 					</aside>
