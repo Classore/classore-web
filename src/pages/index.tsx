@@ -67,7 +67,7 @@ const Page = () => {
 				},
 			});
 		}
-	}, [reference]);
+	}, [mutate, reference]);
 
 	return (
 		<>
@@ -245,7 +245,7 @@ const Page = () => {
 							<div className="flex flex-col items-center gap-y-4">
 								<h5>Still have questions?</h5>
 								<Button asChild className="w-48">
-									<Link href="/contact">Contact Us</Link>
+									<Link href="/support">Contact Us</Link>
 								</Button>
 							</div>
 						</div>
