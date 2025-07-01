@@ -22,7 +22,6 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { cn, isDeviceMobileSafari, playbackRates } from "@/lib";
 import { useUserStore } from "@/store/z-store";
-import { env } from "@/config";
 
 type ProgressProps = {
 	course_id: string;
@@ -91,9 +90,12 @@ export const VideoPlayer = React.memo(
 		};
 
 		React.useEffect(() => {
-			socket.current = io(env.NEXT_PUBLIC_WSS_URL, {
-				transports: ["websocket"],
-			});
+			socket.current = io(
+				process.env.NEXT_PUBLIC_WSS_URL || "wss://classore-be-june-224829194037.europe-west1.run.app",
+				{
+					transports: ["websocket"],
+				}
+			);
 			socket.current.on("connect", () => {
 				console.info("Socket connected");
 			});

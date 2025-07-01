@@ -1,15 +1,14 @@
 import posthog from "posthog-js";
 
-import { env } from "@/config";
-
 const ENV = {
 	isDevelopment: process.env.NODE_ENV === "development",
 	isBrowser: typeof window !== "undefined",
 } as const;
 
 const config = {
-	posthog_host: env.NEXT_PUBLIC_POSTHOG_HOST,
-	posthog_key: env.NEXT_PUBLIC_POSTHOG_KEY,
+	posthog_host: process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com",
+	posthog_key:
+		process.env.NEXT_PUBLIC_POSTHOG_KEY || "phc_8dU5vludbUYefd8cNEfvBeyUTiYSM5G5XlVYJAhZEww",
 } as const;
 
 if (ENV.isBrowser && config.posthog_key) {

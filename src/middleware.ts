@@ -4,7 +4,6 @@ import { NextResponse } from "next/server";
 import axios from "axios";
 
 import type { UserProps } from "./types";
-import { env } from "@/config";
 
 export const config = {
 	matcher: [
@@ -42,6 +41,10 @@ export async function middleware(req: NextRequest) {
 	const isOnDashboard = url.pathname.startsWith("/dashboard");
 	const isOnAuth = authPathnames.includes(url.pathname);
 
+	const api =
+		process.env.NEXT_PUBLIC_API_URL ||
+		"https://classore-be-june-224829194037.europe-west1.run.app/classore/v1";
+
 	const redirectResponse = (url: string | NextURL) => {
 		const response = NextResponse.redirect(url);
 		response.headers.set("x-middleware-cache", "no-cache");
@@ -56,7 +59,7 @@ export async function middleware(req: NextRequest) {
 	if (hasToken && (isOnAuth || isOnDashboard || isOnParentsDashboard)) {
 		try {
 			const user = await axios
-				.get(`${env.API_URL}/auth/profile`, {
+				.get(`${api}/auth/profile`, {
 					headers: {
 						Authorization: `Bearer ${token}`,
 					},

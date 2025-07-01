@@ -6,7 +6,7 @@ import axios from "axios";
 
 import type { HttpResponse, UserProfileResp } from "@/types";
 import { useUserStore } from "@/store/z-store";
-import { endpoints, env } from "@/config";
+import { endpoints } from "@/config";
 
 const Page = () => {
 	const { signIn } = useUserStore();
@@ -14,7 +14,9 @@ const Page = () => {
 	const token = router.query.token as string;
 
 	const api = axios.create({
-		baseURL: env.NEXT_PUBLIC_API_URL,
+		baseURL:
+			process.env.NEXT_PUBLIC_API_URL ||
+			"https://classore-be-june-224829194037.europe-west1.run.app/classore/v1",
 	});
 
 	api.interceptors.request.use((config) => {

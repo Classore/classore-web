@@ -24,7 +24,6 @@ import type { UserItemProps } from "@/types/message";
 import { cn, getInitials, sendMessage } from "@/lib";
 import { useUserStore } from "@/store/z-store";
 import { Seo } from "@/components/shared";
-import { env } from "@/config";
 
 type FormProps = {
 	content: string;
@@ -60,9 +59,12 @@ const Page = () => {
 	const { user } = useUserStore();
 
 	React.useEffect(() => {
-		socket.current = io(env.NEXT_PUBLIC_WSS_URL, {
-			transports: ["websocket"],
-		});
+		socket.current = io(
+			process.env.NEXT_PUBLIC_WSS_URL || "wss://classore-be-june-224829194037.europe-west1.run.app",
+			{
+				transports: ["websocket"],
+			}
+		);
 		socket.current.on("connect", () => {
 			console.info("Socket connected");
 		});

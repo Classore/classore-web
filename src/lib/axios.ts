@@ -2,10 +2,10 @@ import Cookies from "js-cookie";
 import { toast } from "sonner";
 import axios from "axios";
 
-import { env } from "@/config";
-
 const api = axios.create({
-	baseURL: env.NEXT_PUBLIC_API_URL,
+	baseURL:
+		process.env.NEXT_PUBLIC_API_URL ||
+		"https://classore-be-june-224829194037.europe-west1.run.app/classore/v1",
 });
 
 api.interceptors.request.use(
