@@ -1,5 +1,7 @@
 import { Head, Html, Main, NextScript } from "next/document";
 
+import { env } from "@/config";
+
 export default function Document() {
 	return (
 		<Html lang="en">
@@ -21,7 +23,7 @@ const GoogleAnalytics = () => {
 		<>
 			<script
 				async
-				src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID}`}></script>
+				src={`https://www.googletagmanager.com/gtag/js?id=${env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID}`}></script>
 			<script
 				dangerouslySetInnerHTML={{
 					__html: `
@@ -29,7 +31,7 @@ const GoogleAnalytics = () => {
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
 
-          gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID}');
+          gtag('config', '${env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID}');
           `,
 				}}></script>
 		</>

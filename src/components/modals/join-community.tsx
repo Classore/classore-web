@@ -1,8 +1,14 @@
-import Image from "next/image";
-import { Button } from "../ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "../ui/dialog";
+import Link from "next/link";
 
-export const JoinCommunityModal = () => {
+import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { Button } from "../ui/button";
+import Image from "next/image";
+
+interface Props {
+	roomId: string;
+}
+
+export const JoinCommunityModal = ({ roomId }: Props) => {
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
@@ -26,7 +32,9 @@ export const JoinCommunityModal = () => {
 					learning and making friends.
 				</DialogDescription>
 				<hr className="w-full bg-neutral-400" />
-				<Button>Yes, I agree</Button>
+				<Button asChild>
+					<Link href={`/dashboard/community?roomId=${roomId}`}>Yes, I agree</Link>
+				</Button>
 			</DialogContent>
 		</Dialog>
 	);

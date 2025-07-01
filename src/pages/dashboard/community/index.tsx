@@ -1,4 +1,5 @@
 import { type Socket, io } from "socket.io-client";
+import { useRouter } from "next/router";
 import { toast } from "sonner";
 import React from "react";
 import {
@@ -17,26 +18,28 @@ import {
 
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useGetInfiniteMessages, useGetForums } from "@/queries/message";
+import { useDeviceWidth, useFileHandler } from "@/hooks";
 import { DashboardLayout } from "@/components/layouts";
 import { MessageItem } from "@/components/message";
 import type { RoomProps } from "@/types/message";
 import { useUserStore } from "@/store/z-store";
 import { Seo } from "@/components/shared";
-import { useDeviceWidth, useFileHandler } from "@/hooks";
 import { cn, sendMessage } from "@/lib";
+import { env } from "@/config";
 
 type FormProps = {
 	content: string;
 	media: File[];
 };
 
-const isDev = process.env.NODE_ENV === "development";
 const initialValues: FormProps = {
 	content: "",
 	media: [],
 };
 
 const Page = () => {
+	const router = useRouter();
+
 	const [shouldAutoScroll, setShouldAutoScroll] = React.useState(false);
 	const [formValues, setFormValues] = React.useState(initialValues);
 	const [room, setRoom] = React.useState<RoomProps | null>(null);
@@ -54,11 +57,7 @@ const Page = () => {
 	}, [isMobile]);
 
 	React.useEffect(() => {
-		const url = isDev
-			? process.env.NEXT_PUBLIC_WSS_URL
-			: "wss://classore-be-june-224829194037.europe-west1.run.app";
-
-		socket.current = io(url, {
+		socket.current = io(env.NEXT_PUBLIC_WSS_URL, {
 			transports: ["websocket"],
 		});
 		socket.current.on("connect", () => {
@@ -86,6 +85,16 @@ const Page = () => {
 	}, [user]);
 
 	const { data: forums } = useGetForums(String(user?.id));
+	const roomId = router.query.roomId as string;
+
+	React.useEffect(() => {
+		if (roomId && forums?.data && !room) {
+			const foundRoom = forums.data.find((forum) => forum.id === roomId);
+			if (foundRoom) {
+				setRoom(foundRoom);
+			}
+		}
+	}, [roomId, forums?.data, room]);
 
 	const {
 		data: messagesData,
@@ -115,7 +124,7 @@ const Page = () => {
 		setFormValues({ ...formValues, [e.target.name]: e.target.value });
 	};
 
-	const { handleClick, handleFileChange, inputRef } = useFileHandler({
+	const { handleFileChange, inputRef } = useFileHandler({
 		onFilesChange: (files) => {
 			setFormValues({ ...formValues, media: files });
 		},
@@ -142,7 +151,6 @@ const Page = () => {
 		setShouldAutoScroll(isNearBottom);
 	};
 
-	// Handle scroll to load older messages
 	const handleScroll = React.useCallback(() => {
 		if (!ref.current) return;
 		const { scrollTop } = ref.current;
@@ -362,9 +370,17 @@ const Page = () => {
 										/>
 									</div>
 									<div className="flex items-center gap-x-4">
-										<button onClick={handleClick} className="size-6" type="button">
+										<label htmlFor="image" className="flex size-6 cursor-pointer items-center justify-center">
+											<input
+												type="file"
+												id="image"
+												className="sr-only"
+												onChange={handleFileChange}
+												multiple={false}
+												accept="image/*"
+											/>
 											<RiImageAddLine className="text-neutral-500" />
-										</button>
+										</label>
 										<button className="size-6" type="button">
 											<RiEmojiStickerLine className="text-neutral-500" />
 										</button>

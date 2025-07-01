@@ -15,6 +15,7 @@ import {
 import type { UserProps } from "@/types";
 import { fromSnakeCase } from "@/lib";
 import { Loading } from "./loader";
+import { env } from "@/config";
 
 interface ChannelListProps {
 	currentChannel: StreamChannel;
@@ -37,7 +38,7 @@ const ChannelsComponent = ({ user }: Props) => {
 				const response = await fetch(`/api/get-token?userId=${user.id}`);
 				const { token } = await response.json();
 
-				const client = StreamChat.getInstance(process.env.NEXT_PUBLIC_GETSTREAM_API_KEY);
+				const client = StreamChat.getInstance(env.NEXT_PUBLIC_GETSTREAM_API_KEY);
 				await client.connectUser({ id: user.id, name: user.first_name }, token);
 				const channel = client.channel("messaging", "general", {
 					name: "General Channel",

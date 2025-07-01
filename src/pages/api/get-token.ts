@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { StreamChat } from "stream-chat";
 
+import { env } from "@/config";
+
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
 	const { userId } = req.query;
 
@@ -9,10 +11,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 	}
 
 	try {
-		const client = StreamChat.getInstance(
-			process.env.GETSTREAM_API_KEY,
-			process.env.GETSTREAM_API_SECRET
-		);
+		const client = StreamChat.getInstance(env.GETSTREAM_API_KEY, env.GETSTREAM_API_SECRET);
 
 		const token = client.createToken(userId);
 

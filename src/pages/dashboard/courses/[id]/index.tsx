@@ -1,16 +1,26 @@
 import { RiCloseCircleLine, RiThumbDownLine, RiThumbUpLine } from "@remixicon/react";
 import { useMutation } from "@tanstack/react-query";
-import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/router";
+import Image from "next/image";
 import * as React from "react";
+import { toast } from "sonner";
+import Link from "next/link";
 
-import blockchain from "@/assets/illustrations/blockchain.svg";
-import trophy from "@/assets/illustrations/trophy.svg";
-import { CourseActions } from "@/components/course/course-actions";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useGetChapter, useGetCourse, useGetProfile } from "@/queries/student";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChapterModules, QuizHistory, Resources } from "@/components/home";
-import { DashboardLayout } from "@/components/layouts";
 import { JoinCommunityModal, RenewalModal } from "@/components/modals";
+import { CourseActions } from "@/components/course/course-actions";
+import { type StartCourseDto, startCourse } from "@/queries/user";
+import blockchain from "@/assets/illustrations/blockchain.svg";
+import { useFindOrCreateRoom } from "@/queries/message";
+import { DashboardLayout } from "@/components/layouts";
+import trophy from "@/assets/illustrations/trophy.svg";
+import { Button } from "@/components/ui/button";
+import { capitalize, getInitials } from "@/lib";
+import { useUserStore } from "@/store/z-store";
+import { useCourse } from "@/hooks";
 import {
 	AvatarGroup,
 	BackBtn,
@@ -19,13 +29,6 @@ import {
 	Spinner,
 	VideoPlayer,
 } from "@/components/shared";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useCourse } from "@/hooks";
-import { capitalize, getInitials } from "@/lib";
-import { useGetChapter, useGetCourse, useGetProfile } from "@/queries/student";
-import { type StartCourseDto, startCourse } from "@/queries/user";
 
 type UseMutationProps = {
 	courseId: string;
@@ -37,8 +40,23 @@ const TABS = ["summary", "resources", "quiz history"] as const;
 
 const Page = () => {
 	const [renewalModalOpen, setRenewalModalOpen] = React.useState(false);
+	const { user } = useUserStore();
 	const router = useRouter();
 	const { id, bundle: bundleId } = router.query;
+
+	const { mutate } = useFindOrCreateRoom({
+		onError: (error) => {
+			const errorMessage = Array.isArray(error.response.data.message)
+				? error.response.data.message[0]
+				: error.response.data.message;
+			const message = errorMessage || "Something went wrong";
+			toast.error(message);
+		},
+		onSuccess: (data) => {
+			const roomId = data.data.id;
+			router.push(`/dashboard/messages?roomId=${roomId}`);
+		},
+	});
 
 	const { data: profile } = useGetProfile();
 	const bundle = profile?.time_line.find((item) => item.exam_bundle_details.id === bundleId);
@@ -297,7 +315,7 @@ const Page = () => {
 					<p className="text-sm capitalize">Join {course?.subject_id.name} Community Forum</p>
 					<AvatarGroup images={AVATAR_IMAGES} />
 				</div>
-				<JoinCommunityModal />
+				<JoinCommunityModal roomId={course?.user_self_room.id || ""} />
 			</div>
 
 			{/* Instructor Card */}
@@ -321,7 +339,7 @@ const Page = () => {
 								: "Anonymous"}
 						</p>
 					</div>
-					<Button size="special" variant="special">
+					<Button onClick={() => mutate([String(user?.id)])} size="special" variant="special">
 						Send Message
 					</Button>
 				</div>

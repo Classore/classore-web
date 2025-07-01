@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { SignInMutation } from "@/queries";
 import { setToken } from "@/lib/cookies";
 import type { HttpError } from "@/types";
+import { env } from "@/config";
 
 const loginSchema = z.object({
 	email: z
@@ -167,9 +168,7 @@ const Page = () => {
 							type="button"
 							variant="ghost"
 							className="font-normal"
-							onClick={() =>
-								window.open(`${process.env.NEXT_PUBLIC_API_URL}/auth/google/callback`, "_self")
-							}>
+							onClick={() => window.open(`${env.NEXT_PUBLIC_API_URL}/auth/google/callback`, "_self")}>
 							<GoogleIcon />
 							Sign in with Google
 						</Button>

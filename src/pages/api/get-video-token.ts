@@ -3,6 +3,7 @@ import type { UserRequest } from "@stream-io/node-sdk";
 import { StreamClient } from "@stream-io/node-sdk";
 
 import { generateUniqueNames } from "@/lib";
+import { env } from "@/config";
 
 const color = () => `#${Math.floor(Math.random() * 16777215).toString(16)}`;
 
@@ -18,8 +19,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 	}
 
 	try {
-		const apiKey = process.env.GETSTREAM_API_KEY;
-		const apiSecret = process.env.GETSTREAM_API_SECRET;
+		const apiKey = env.GETSTREAM_API_KEY;
+		const apiSecret = env.GETSTREAM_API_SECRET;
 
 		if (!apiKey || !apiSecret) {
 			return res.status(500).json({ error: "Stream API credentials not configured" });

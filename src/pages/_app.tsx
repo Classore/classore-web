@@ -10,6 +10,7 @@ import { ErrorBoundary, QueryProvider, SSRProvider } from "@/providers";
 import { FacebookPixel } from "@/components/shared";
 import { Toaster } from "@/components/ui/sonner";
 import { analytics, pageview } from "@/lib";
+import { env } from "@/config";
 
 export default function App({ Component, pageProps }: AppProps) {
 	const router = useRouter();
@@ -24,8 +25,7 @@ export default function App({ Component, pageProps }: AppProps) {
 	}, [router.events]);
 
 	return (
-		<GoogleOAuthProvider
-			clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "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"}>
+		<GoogleOAuthProvider clientId={env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
 			<ErrorBoundary>
 				<QueryProvider>
 					<SSRProvider>

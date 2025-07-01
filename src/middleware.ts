@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import axios from "axios";
 
 import type { UserProps } from "./types";
+import { env } from "@/config";
 
 export const config = {
 	matcher: [
@@ -55,7 +56,7 @@ export async function middleware(req: NextRequest) {
 	if (hasToken && (isOnAuth || isOnDashboard || isOnParentsDashboard)) {
 		try {
 			const user = await axios
-				.get(`${process.env.API_URL}/auth/profile`, {
+				.get(`${env.API_URL}/auth/profile`, {
 					headers: {
 						Authorization: `Bearer ${token}`,
 					},

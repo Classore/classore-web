@@ -24,13 +24,13 @@ import type { UserItemProps } from "@/types/message";
 import { cn, getInitials, sendMessage } from "@/lib";
 import { useUserStore } from "@/store/z-store";
 import { Seo } from "@/components/shared";
+import { env } from "@/config";
 
 type FormProps = {
 	content: string;
 	media: File[];
 };
 
-const isDev = process.env.NODE_ENV === "development";
 // const tabs = ["all messages", "unread"];
 
 const initialValues: FormProps = {
@@ -60,11 +60,7 @@ const Page = () => {
 	const { user } = useUserStore();
 
 	React.useEffect(() => {
-		const url = isDev
-			? process.env.NEXT_PUBLIC_WSS_URL
-			: "wss://classore-be-june-224829194037.europe-west1.run.app";
-
-		socket.current = io(url, {
+		socket.current = io(env.NEXT_PUBLIC_WSS_URL, {
 			transports: ["websocket"],
 		});
 		socket.current.on("connect", () => {
@@ -223,7 +219,7 @@ const Page = () => {
 						) : (
 							<div className="h-full w-full overflow-y-auto">
 								{rooms
-									.filter((room) => room.is_group)
+									.filter((room) => room.is_group === "NO")
 									.map((room, index) => (
 										<UserItem
 											key={index}

@@ -6,7 +6,7 @@ import axios from "axios";
 
 import type { HttpResponse, UserProfileResp } from "@/types";
 import { useUserStore } from "@/store/z-store";
-import { endpoints } from "@/config";
+import { endpoints, env } from "@/config";
 
 const Page = () => {
 	const { signIn } = useUserStore();
@@ -14,7 +14,7 @@ const Page = () => {
 	const token = router.query.token as string;
 
 	const api = axios.create({
-		baseURL: process.env.NEXT_PUBLIC_API_URL,
+		baseURL: env.NEXT_PUBLIC_API_URL,
 	});
 
 	api.interceptors.request.use((config) => {

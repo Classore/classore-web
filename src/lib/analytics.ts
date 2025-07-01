@@ -1,13 +1,15 @@
 import posthog from "posthog-js";
 
+import { env } from "@/config";
+
 const ENV = {
 	isDevelopment: process.env.NODE_ENV === "development",
 	isBrowser: typeof window !== "undefined",
 } as const;
 
 const config = {
-	posthog_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
-	posthog_key: process.env.NEXT_PUBLIC_POSTHOG_KEY,
+	posthog_host: env.NEXT_PUBLIC_POSTHOG_HOST,
+	posthog_key: env.NEXT_PUBLIC_POSTHOG_KEY,
 } as const;
 
 if (ENV.isBrowser && config.posthog_key) {
@@ -62,7 +64,7 @@ const analytics = {
 		}
 
 		if (window.gtag) {
-			window.gtag("config", process.env.NEXT_PUBLIC_ANALYTICS_ID!, {
+			window.gtag("config", env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID, {
 				page_path: path,
 			});
 		}

@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { StreamChat } from "stream-chat";
 
+import { env } from "@/config";
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 	if (req.method !== "POST") {
 		return res.status(405).json({ error: "Method not allowed" });
@@ -13,10 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 	}
 
 	try {
-		const serverClient = StreamChat.getInstance(
-			process.env.STREAM_CHAT_API_KEY!,
-			process.env.STREAM_CHAT_API_SECRET!
-		);
+		const serverClient = StreamChat.getInstance(env.GETSTREAM_API_KEY, env.GETSTREAM_API_SECRET);
 
 		const channelId = [currentUserId, otherUserId].sort().join("-");
 

@@ -13,6 +13,7 @@ import {
 
 import type { AdminProps, UserProps } from "@/types";
 import { Loading } from "./loader";
+import { env } from "@/config";
 
 interface User {
 	id: string;
@@ -81,7 +82,7 @@ const ChatComponent = ({ user, initialOtherUserId }: Props) => {
 			}
 
 			const { token } = await response.json();
-			const apiKey = process.env.NEXT_PUBLIC_GETSTREAM_API_KEY;
+			const apiKey = env.NEXT_PUBLIC_GETSTREAM_API_KEY;
 
 			if (!apiKey) {
 				throw new Error("Stream API key is not defined");
