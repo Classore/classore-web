@@ -6,8 +6,9 @@ const ENV = {
 } as const;
 
 const config = {
-	posthog_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
-	posthog_key: process.env.NEXT_PUBLIC_POSTHOG_KEY,
+	posthog_host: process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com",
+	posthog_key:
+		process.env.NEXT_PUBLIC_POSTHOG_KEY || "phc_8dU5vludbUYefd8cNEfvBeyUTiYSM5G5XlVYJAhZEww",
 } as const;
 
 if (ENV.isBrowser && config.posthog_key) {
@@ -62,7 +63,7 @@ const analytics = {
 		}
 
 		if (window.gtag) {
-			window.gtag("config", process.env.NEXT_PUBLIC_ANALYTICS_ID!, {
+			window.gtag("config", process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID, {
 				page_path: path,
 			});
 		}

@@ -14,7 +14,9 @@ const Page = () => {
 	const token = router.query.token as string;
 
 	const api = axios.create({
-		baseURL: process.env.NEXT_PUBLIC_API_URL,
+		baseURL:
+			process.env.NEXT_PUBLIC_API_URL ||
+			"https://classore-be-june-224829194037.europe-west1.run.app/classore/v1",
 	});
 
 	api.interceptors.request.use((config) => {

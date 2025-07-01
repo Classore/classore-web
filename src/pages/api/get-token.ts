@@ -10,8 +10,9 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
 	try {
 		const client = StreamChat.getInstance(
-			process.env.GETSTREAM_API_KEY,
-			process.env.GETSTREAM_API_SECRET
+			process.env.GETSTREAM_API_KEY || "p5ybpcffwqxp",
+			process.env.GETSTREAM_API_SECRET ||
+				"ehcvm6xjhyh5uzd29s6tup7yf5ytnprzbwc8drngakeat3nhks6yuszy3mt7maxq"
 		);
 
 		const token = client.createToken(userId);

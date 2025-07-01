@@ -16,7 +16,10 @@ interface Props {
 
 export const UserItem = ({ onSelect, onSelectRoom, room, selected, socket }: Props) => {
 	const user = room.members[0];
-	const userName = `${user.first_name} ${user.last_name}`;
+	const userName =
+		!user?.first_name && !user?.last_name
+			? "Unknown User"
+			: `${user?.first_name ?? ""} ${user?.last_name ?? ""}`.trim();
 
 	const handleSelection = () => {
 		onSelectRoom(room.id);

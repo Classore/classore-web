@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import Head from "next/head";
 
-const APP_URL = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL;
+const APP_URL = "https://classore.com";
 const DEFAULT_OG_IMAGE = "/meta/screenshot.jpg";
 
 interface SeoProps {

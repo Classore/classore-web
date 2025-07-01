@@ -14,8 +14,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
 	try {
 		const serverClient = StreamChat.getInstance(
-			process.env.STREAM_CHAT_API_KEY!,
-			process.env.STREAM_CHAT_API_SECRET!
+			process.env.GETSTREAM_API_KEY || "p5ybpcffwqxp",
+			process.env.GETSTREAM_API_SECRET ||
+				"ehcvm6xjhyh5uzd29s6tup7yf5ytnprzbwc8drngakeat3nhks6yuszy3mt7maxq"
 		);
 
 		const channelId = [currentUserId, otherUserId].sort().join("-");
