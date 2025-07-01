@@ -112,7 +112,7 @@ export const useGetInfiniteMessages = ({
 				page: pageParam as number,
 				limit,
 			}),
-		enabled: !!roomId,
+		enabled: !!roomId && !!user_id,
 		initialPageParam: 1,
 		getNextPageParam: (lastPage: PaginatedResponse<MessageProps>) => {
 			// For loading older messages (going backwards in time)

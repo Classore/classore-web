@@ -1,6 +1,9 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable react/display-name */
+import { type Socket, io } from "socket.io-client";
 import * as Slider from "@radix-ui/react-slider";
+import { LoaderCircle } from "lucide-react";
+import * as React from "react";
+import Hls from "hls.js";
 import {
 	RiForward10Line,
 	RiFullscreenExitLine,
@@ -15,14 +18,17 @@ import {
 	RiVolumeMuteLine,
 	RiVolumeUpLine,
 } from "@remixicon/react";
-import { useMutation } from "@tanstack/react-query";
-import Hls from "hls.js";
-import { LoaderCircle } from "lucide-react";
-import * as React from "react";
 
-import { cn, isDeviceMobileSafari, playbackRates } from "@/lib";
-import { updateModuleProgress } from "@/queries/user";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { cn, isDeviceMobileSafari, playbackRates } from "@/lib";
+import { useUserStore } from "@/store/z-store";
+
+type ProgressProps = {
+	course_id: string;
+	current_progress: number;
+	module_id: string;
+	user_id: string;
+};
 
 const formatTime = (timeInSeconds: number): string => {
 	if (isNaN(timeInSeconds)) return "0:00";
@@ -74,14 +80,36 @@ export const VideoPlayer = React.memo(
 		const controlsTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 		const videoRef = React.useRef<HTMLVideoElement | null>(null);
 		const playerRef = React.useRef<HTMLDivElement>(null);
+		const socket = React.useRef<Socket | null>(null);
 		const hlsRef = React.useRef<Hls | null>(null);
 		const lastSentProgressRef = React.useRef(0);
+		const { user } = useUserStore();
 
-		const { mutate } = useMutation({
-			mutationFn: updateModuleProgress,
-			mutationKey: ["update-module-progress", courseId, moduleId, progress],
-			onError: (error) => console.error(error),
-		});
+		const updateModuleProgress = (socket: Socket, data: ProgressProps) => {
+			socket.emit("update_course_progress", data);
+		};
+
+		React.useEffect(() => {
+			socket.current = io(
+				process.env.NEXT_PUBLIC_WSS_URL || "wss://classore-be-june-224829194037.europe-west1.run.app",
+				{
+					transports: ["websocket"],
+				}
+			);
+			socket.current.on("connect", () => {
+				console.info("Socket connected");
+			});
+			socket.current.on("update_course_progress", (data) => {
+				console.log({ data });
+			});
+
+			return () => {
+				socket.current?.off("connect");
+				socket.current?.off("error");
+				socket.current?.off("update_course_progress");
+				socket.current?.disconnect();
+			};
+		}, []);
 
 		React.useEffect(() => {
 			const updateProgress = () => {
@@ -92,8 +120,15 @@ export const VideoPlayer = React.memo(
 					(progress === 100 && lastSentProgressRef.current !== 100)
 				) {
 					const progressToSend = Math.min(Math.round(progress), 100);
-					mutate({ course_id: courseId, module_id: moduleId, current_progress: progressToSend });
-					lastSentProgressRef.current = progressToSend;
+					if (socket.current) {
+						updateModuleProgress(socket.current, {
+							course_id: courseId,
+							module_id: moduleId,
+							current_progress: progressToSend,
+							user_id: user?.id || "",
+						});
+						lastSentProgressRef.current = progressToSend;
+					}
 				}
 			};
 			updateProgress();
@@ -101,7 +136,7 @@ export const VideoPlayer = React.memo(
 			return () => {
 				if (intervalId) clearInterval(intervalId);
 			};
-		}, [courseId, moduleId, progress, mutate]);
+		}, [courseId, moduleId, progress, user?.id]);
 
 		const hideControlsTimer = React.useCallback(() => {
 			if (controlsTimeoutRef.current) {

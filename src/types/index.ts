@@ -602,6 +602,22 @@ export type SingleCourseResp = {
 	cut_off: number;
 	quiz_attempts_limit: number;
 	chapters: ChapterResp[];
+	user_self_room: {
+		id: string;
+		copied_from: null;
+		createdOn: Date;
+		updatedOn: Date;
+		updatedBy: string | null;
+		deletedOn: Date | null;
+		deletedBy: string | null;
+		isDeleted: boolean;
+		isBlocked: boolean;
+		name: string;
+		media: [];
+		members: [];
+		is_group: "NO" | "YES";
+		description: string;
+	};
 };
 
 export type ChapterResp = {

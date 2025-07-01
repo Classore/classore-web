@@ -81,7 +81,7 @@ const ChatComponent = ({ user, initialOtherUserId }: Props) => {
 			}
 
 			const { token } = await response.json();
-			const apiKey = process.env.NEXT_PUBLIC_GETSTREAM_API_KEY;
+			const apiKey = process.env.GETSTREAM_API_KEY || "p5ybpcffwqxp";
 
 			if (!apiKey) {
 				throw new Error("Stream API key is not defined");

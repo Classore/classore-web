@@ -18,8 +18,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 	}
 
 	try {
-		const apiKey = process.env.GETSTREAM_API_KEY;
-		const apiSecret = process.env.GETSTREAM_API_SECRET;
+		const apiKey = process.env.GETSTREAM_API_KEY || "p5ybpcffwqxp";
+		const apiSecret =
+			process.env.GETSTREAM_API_SECRET ||
+			"ehcvm6xjhyh5uzd29s6tup7yf5ytnprzbwc8drngakeat3nhks6yuszy3mt7maxq";
 
 		if (!apiKey || !apiSecret) {
 			return res.status(500).json({ error: "Stream API credentials not configured" });

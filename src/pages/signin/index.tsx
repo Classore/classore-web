@@ -168,7 +168,13 @@ const Page = () => {
 							variant="ghost"
 							className="font-normal"
 							onClick={() =>
-								window.open(`${process.env.NEXT_PUBLIC_API_URL}/auth/google/callback`, "_self")
+								window.open(
+									`${
+										process.env.NEXT_PUBLIC_API_URL ||
+										"https://classore-be-june-224829194037.europe-west1.run.app/classore/v1"
+									}/auth/google/callback`,
+									"_self"
+								)
 							}>
 							<GoogleIcon />
 							Sign in with Google
