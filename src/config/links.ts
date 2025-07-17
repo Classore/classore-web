@@ -1,5 +1,6 @@
 import {
 	RiCalendar2Line,
+	RiChatAiLine,
 	RiFacebookBoxLine,
 	RiFacebookCircleLine,
 	RiGraduationCapLine,
@@ -90,6 +91,11 @@ export const dashboard_links = [
 				name: "leaderboard",
 				href: "/dashboard/leaderboard",
 				icon: RiTrophyLine,
+			},
+			{
+				name: "Classore AI",
+				href: "/dashboard/classore-ai",
+				icon: RiChatAiLine,
 			},
 		],
 	},

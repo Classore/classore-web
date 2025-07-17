@@ -25,6 +25,7 @@ const config: Config = {
 				dashboard: "url('/assets/images/dashboard.png')",
 				squiggly: "url('/assets/images/squiggly.png')",
 				"vector-grid": "url('/assets/images/vector-grid.png')",
+				"primary-to-secondary-gradient": "linear-gradient(180deg, #6F42C1 0%, #F67F36 100%)",
 			},
 			gridTemplateColumns: {
 				fluid: "repeat(auto-fit, minmax(300px, 1fr))",

@@ -3,3 +3,4 @@ export * from "./withdrawal-item";
 export * from "./withdraw-points";
 export * from "./column";
 export * from "./kyc";
+export * from "./typing-indicator";
