@@ -15,8 +15,8 @@ export const ClaimPoints = () => {
 	return (
 		<Dialog onOpenChange={setOpen} open={open}>
 			<DialogTrigger asChild>
-				<button className="flex h-8 w-fit items-center gap-x-2 rounded-md border border-primary-400 px-3 text-sm text-primary-400 transition-all duration-300 hover:bg-primary-50 active:scale-95">
-					<RiGiftLine size={16} /> Claim Points
+				<button className="flex h-10 w-fit items-center gap-x-2 rounded-md border border-neutral-200 px-3 text-sm text-primary-700 font-semibold transition-all duration-300 hover:bg-primary-50 active:scale-95">
+					<RiGiftLine size={26} /> Claim Points
 				</button>
 			</DialogTrigger>
 			<DialogContent>

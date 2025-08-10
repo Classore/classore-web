@@ -32,7 +32,7 @@ export const Appbar = () => {
 				<div className="flex w-fit items-center gap-x-3">
 					<Dialog>
 						<DialogTrigger asChild>
-							<button className="flex h-8 w-fit items-center gap-x-2 rounded-md border border-primary-400 px-3 text-sm text-primary-400 transition-all duration-300 hover:bg-primary-50 active:scale-95">
+							<button className="flex h-10 w-fit items-center gap-x-2 rounded-md border border-neutral-200 px-3 text-sm text-primary-700 font-semibold transition-all duration-300 hover:bg-primary-50 active:scale-95">
 								Download App
 							</button>
 						</DialogTrigger>

@@ -1,4 +1,4 @@
-import { RiCommandLine, RiSearchLine } from "@remixicon/react";
+import { RiCommandLine, RiSearch2Line } from "@remixicon/react";
 import React from "react";
 
 import { cn } from "@/lib/utils";
@@ -28,20 +28,21 @@ const Search = React.forwardRef<HTMLInputElement, Props>(
 					"flex h-[46px] items-center gap-2 rounded border px-2 py-3 focus-within:border-primary-500",
 					wrapperClassName
 				)}>
-				<RiSearchLine className="size-4" />
+				<RiSearch2Line className="size-4 text-[#67667A]" />
 				<input
 					ref={ref}
 					type="search"
 					id="search"
 					value={value}
 					onChange={onChange}
+					placeholder="Search here..."
 					className={cn(
 						"flex h-full min-w-60 border-0 bg-transparent px-0 outline-0 ring-0 focus:border-0 focus:outline-0 focus:ring-0",
 						className
 					)}
 					{...props}
 				/>
-				<div className="flex h-full items-center rounded border-none bg-neutral-300 px-2 py-1 text-sm">
+				<div className="flex h-full items-center justify-center gap-2 rounded border-none bg-[#F7F7F8] px-2 py-4 text-sm text-[#807F94]">
 					<RiCommandLine className="size-4" />K
 				</div>
 			</div>
