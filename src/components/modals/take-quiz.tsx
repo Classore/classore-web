@@ -1,5 +1,5 @@
 import { RiMessage2Line } from "@remixicon/react";
-import { skipToken, usePrefetchQuery } from "@tanstack/react-query";
+import { usePrefetchQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import React, { useMemo } from "react";
 
