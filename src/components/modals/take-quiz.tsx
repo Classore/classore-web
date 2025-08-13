@@ -35,12 +35,21 @@ export const TakeQuizModal = ({
 		return lesson?.quizes?.[lesson.quizes.length - 1];
 	}, [lesson?.quizes]);
 
-	usePrefetchQuery({
-		queryKey: ["questions", { module_id: currentModuleId }],
-		queryFn: currentModuleId ? () => fetchQuestions({ module_id: currentModuleId }) : skipToken,
-		staleTime: Infinity,
-		gcTime: Infinity,
-	});
+	// usePrefetchQuery({
+	// 	queryKey: ["questions", { module_id: currentModuleId }],
+	// 	queryFn: currentModuleId ? () => fetchQuestions({ module_id: currentModuleId }) : skipToken,
+	// 	staleTime: Infinity,
+	// 	gcTime: Infinity,
+	// });
+
+	if (currentModuleId) {
+		usePrefetchQuery({
+			queryKey: ["questions", { module_id: currentModuleId }],
+			queryFn: () => fetchQuestions({ module_id: currentModuleId }),
+			staleTime: Infinity,
+			gcTime: Infinity,
+		});
+	}
 
 	const attempts_percentage = useMemo(() => {
 		if (!lesson) return 0;
