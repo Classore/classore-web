@@ -70,18 +70,18 @@ export function DashboardLayout({ children, className }: DashboardLayoutProps) {
 								sizes="(max-width:1024px)100%"
 							/>
 						</div>
-						<div className="flex w-full flex-col">
-							<p className="ml-6 text-xs text-neutral-500">MENU</p>
+						<div className="flex w-full flex-col px-6">
+							<p className="text-xs text-neutral-400">MENU</p>
 							<div className="flex w-full flex-col">
 								{dashboard_links.map(({ label, links }) => (
 									<div
 										key={label}
-										className="flex w-full flex-col gap-2 border-b border-neutral-200 px-6 py-2 last:border-b-0">
+										className="flex w-full flex-col gap-2 border-b border-neutral-200 py-2 last:border-b-0">
 										{links.map(({ href, icon: Icon, name }) => (
 											<Link
 												key={name}
 												href={href}
-												className={`flex items-center gap-2 rounded px-3 py-2 text-sm capitalize ${isOnRoute(href) ? "border border-primary-500 font-bold text-primary-500 shadow-primary transition-all" : "font-medium text-neutral-400 transition-all hover:bg-primary-300/10 hover:text-primary-500"}`}>
+												className={`flex items-center gap-2 rounded px-3 py-2 text-sm capitalize ${isOnRoute(href) ? "border-1 border-primary-300 font-bold text-primary-300 shadow-custom-purple transition-all" : "font-medium text-neutral-400 transition-all hover:bg-primary-300/5 hover:text-primary-300"}`}>
 												<Icon /> {name}
 											</Link>
 										))}

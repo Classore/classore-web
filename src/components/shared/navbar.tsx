@@ -7,6 +7,16 @@ import { ModalArt } from "@/assets/illustrations";
 import { XClose } from "@untitled-ui/icons-react";
 import { Button } from "../ui/button";
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "../ui/sheet";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from "../ui/dialog";
+import { AppStore, PlayStore } from "./app-download";
+import MobileAppImg from "@/assets/images/mobile-img.webp";
 
 const links = [
 	{ name: "What We Offer", href: "what-we-offer" },
@@ -49,9 +59,39 @@ export const Navbar = () => {
 						className="text-primary-400 hover:bg-secondary-100 md:!text-sm">
 						<Link href="/signin">Start Learning</Link>
 					</Button>
-					<Button variant="outline-primary" className="py-2 md:!text-sm">
-						<RiDownload2Line /> Download App
-					</Button>
+
+					<Dialog>
+						<DialogTrigger asChild>
+							<Button variant="outline-primary" className="py-2 md:!text-sm">
+								<RiDownload2Line /> Download App
+							</Button>
+						</DialogTrigger>
+						<DialogContent className="md:w-[400px]">
+							<div className="flex w-full flex-col gap-6">
+								<DialogHeader className="space-y-1">
+									<DialogTitle>Download Mobile App</DialogTitle>
+									<DialogDescription>
+										Download the mobile app for a seamless experience on the go.
+									</DialogDescription>
+								</DialogHeader>
+								<div className="flex items-center justify-center">
+									<Image
+										src={MobileAppImg}
+										alt="mobile-app"
+										width={200}
+										height={200}
+										// fill
+										// sizes='100%'
+										className="object-cover"
+									/>
+								</div>
+								<div className="flex w-full items-center gap-x-5">
+									<AppStore />
+									<PlayStore />
+								</div>
+							</div>
+						</DialogContent>
+					</Dialog>
 				</div>
 			</nav>
 
@@ -97,9 +137,39 @@ export const Navbar = () => {
 								className="border-secondary-300 bg-transparent text-secondary-300">
 								<Link href="/signin">Start Learning</Link>
 							</Button>
-							<Button size="sm" variant="outline-primary">
-								<RiDownload2Line /> Download App
-							</Button>
+
+							<Dialog>
+								<DialogTrigger asChild>
+									<Button size="sm" variant="outline-primary">
+										<RiDownload2Line /> Download App
+									</Button>
+								</DialogTrigger>
+								<DialogContent className="md:w-[400px]">
+									<div className="flex w-full flex-col gap-6">
+										<DialogHeader className="space-y-1">
+											<DialogTitle>Download Mobile App</DialogTitle>
+											<DialogDescription>
+												Download the mobile app for a seamless experience on the go.
+											</DialogDescription>
+										</DialogHeader>
+										<div className="flex items-center justify-center">
+											<Image
+												src={MobileAppImg}
+												alt="mobile-app"
+												width={200}
+												height={200}
+												// fill
+												// sizes='100%'
+												className="object-cover"
+											/>
+										</div>
+										<div className="flex w-full items-center gap-x-5">
+											<AppStore />
+											<PlayStore />
+										</div>
+									</div>
+								</DialogContent>
+							</Dialog>
 						</ul>
 					</SheetContent>
 				</Sheet>

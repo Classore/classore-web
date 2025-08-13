@@ -17,7 +17,14 @@ export const Bundle = ({ bundle }: BundleProps) => {
 	const [selected, setSelected] = React.useState(tabs[0] ?? "");
 	const [open, setOpen] = React.useState(false);
 
-	const [emblaRef, emblaApi] = useEmblaCarousel();
+	const [emblaRef, emblaApi] = useEmblaCarousel({ 
+		axis: 'x',
+		align: 'start',
+		dragFree: true,
+		containScroll: false,
+		skipSnaps: true,
+		inViewThreshold: 0.1
+	});
 
 	const { data: courses, isPending } = useGetMyCourses({
 		examination_bundle: bundle.exam_bundle_details.id,
@@ -52,8 +59,8 @@ export const Bundle = ({ bundle }: BundleProps) => {
 									<Spinner variant="primary" />
 								</div>
 							) : (
-								<div className="overflow-x-clip" ref={emblaRef}>
-									<div className="flex touch-pan-y touch-pinch-zoom flex-col items-center gap-4 md:flex-row">
+								<div className="overflow-hidden" ref={emblaRef}>
+									<div className="flex touch-pan-x gap-3 md:gap-6">
 										{courses?.data.length ? (
 											courses.data.map((course) => (
 												<CourseCard

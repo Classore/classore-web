@@ -4,9 +4,10 @@ export type PersonalizedPlanProps = {
 	title: string;
 	description: string;
 	image: string;
-	type: "card" | "link" | "photo";
+	type: "card" | "link" | "photo" | "modal";
 	href?: string;
 	buttonText?: string;
+	isModal?: boolean;
 };
 
 export const EXAMS = [
@@ -108,9 +109,10 @@ export const PERSONALIZED_PLANS: PersonalizedPlanProps[] = [
 		description:
 			"Engage with bite-sized lessons that combine videos, quizzes, and activities to make learning simple, fun, and effective.",
 		image: "",
-		type: "link",
+		type: "modal",
 		href: "/",
 		buttonText: "Download App",
+		isModal: true,
 	},
 	{
 		title: "",

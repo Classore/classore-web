@@ -10,6 +10,8 @@ import { dehydrate, QueryClient } from "@tanstack/react-query";
 import { BrowseCategories } from "@/components/categories";
 import { getExamsQueryOptions } from "@/queries/school";
 import type { GetStaticProps } from "next";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { FeaturedCategories } from "@/components/categories/featured-categories";
 
 export const getStaticProps = (async () => {
 	const queryClient = new QueryClient();
@@ -44,7 +46,8 @@ const Page = () => {
 		<>
 			<Seo title="Categories" />
 			<DashboardLayout>
-				<div className="relative flex w-full items-center justify-between overflow-hidden rounded-2xl bg-[#F8F5FF] p-4 text-black md:px-10 md:py-[52px] lg:min-h-[297px] lg:gap-[177px]">
+				<ScrollArea hideScrollbar>
+				<div className="relative mb-6 lg:mb-8 flex md:min-h-[297px] w-[96vw] md:w-full flex-col items-center justify-between gap-4 overflow-x-hidden overflow-y-hidden rounded-2xl border border-[#E2E4E9] bg-gradient-to-r from-white to-[#F8F5FF] p-6 text-black md:flex-row md:gap-[177px] md:px-10 md:py-[52px]">
 					<div className="flex max-w-[559px] flex-col gap-4">
 						<h1 className="text-2xl font-bold lg:text-4xl">
 							Let&apos;s get started with your learning journey
@@ -57,10 +60,10 @@ const Page = () => {
 						</Button>
 					</div>
 
-					<div className="hidden md:absolute md:right-8 md:top-1/2 md:aspect-square md:h-[320px] md:-translate-y-1/2">
+					<div className="hidden md:block lg:absolute lg:right-8 lg:top-1/2 lg:aspect-square lg:h-[340px] lg:-translate-y-1/2">
 						<Image
 							src={designer}
-							alt="desginer color"
+							alt="designer color"
 							fill
 							sizes="(max-width:1024px)100%"
 							className="object-contain"
@@ -68,7 +71,9 @@ const Page = () => {
 					</div>
 				</div>
 				{/* /> */}
+				{/* <FeaturedCategories /> */}
 				<BrowseCategories />
+				</ScrollArea>
 			</DashboardLayout>
 		</>
 	);

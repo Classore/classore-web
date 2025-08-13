@@ -15,7 +15,7 @@ export const AppStore = () => {
 export const PlayStore = () => {
 	// https://play.google.com/store/apps/details?id=com.classore.app
 	return (
-		<a href="https://play.google.com/store/apps/" target="_blank" className="">
+		<a href="https://play.google.com/store/apps/details?id=com.samrheglobal.classore" target="_blank" className="">
 			<Image src={playStore} alt="Play Store" />
 		</a>
 	);
