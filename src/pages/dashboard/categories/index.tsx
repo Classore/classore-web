@@ -11,7 +11,6 @@ import { BrowseCategories } from "@/components/categories";
 import { getExamsQueryOptions } from "@/queries/school";
 import type { GetStaticProps } from "next";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { FeaturedCategories } from "@/components/categories/featured-categories";
 
 export const getStaticProps = (async () => {
 	const queryClient = new QueryClient();
