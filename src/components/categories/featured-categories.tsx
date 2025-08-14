@@ -13,7 +13,7 @@ export const FeaturedCategories = () => {
 	});
 
 	return (
-		<div className="flex w-full flex-col gap-4">
+		<div className="flex w-full flex-col gap-4 mb-4">
 			<div className="flex items-center justify-between">
 				<p className="text-xl font-semibold">Featured</p>
 				<div className="flex items-center gap-4">

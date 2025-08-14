@@ -25,6 +25,16 @@ import {
 import { useDeviceWidth } from "@/hooks/use-device-width";
 import { paymentCallback } from "@/queries/school";
 import type { HttpError } from "@/types";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from "@/components/ui/dialog";
+import MobileAppImg from "@/assets/images/mobile-img.webp";
+import { AppStore, PlayStore } from "@/components/shared/app-download";
 
 const images = [
 	"/assets/images/avatar-0.png",
@@ -104,9 +114,39 @@ const Page = () => {
 									className="w-full rounded-lg border-primary-400 px-8 text-primary-400 hover:bg-secondary-50">
 									<Link href="/signin">Start Learning</Link>
 								</Button>
-								<Button className="rounded-lg px-6">
-									<RiDownload2Line /> Download App
-								</Button>
+
+								<Dialog>
+									<DialogTrigger asChild>
+										<Button className="rounded-lg px-6">
+											<RiDownload2Line /> Download App
+										</Button>
+									</DialogTrigger>
+									<DialogContent className="md:w-[400px]">
+										<div className="flex w-full flex-col gap-6">
+											<DialogHeader className="space-y-1">
+												<DialogTitle>Download Mobile App</DialogTitle>
+												<DialogDescription>
+													Download the mobile app for a seamless experience on the go.
+												</DialogDescription>
+											</DialogHeader>
+											<div className="flex items-center justify-center">
+												<Image
+													src={MobileAppImg}
+													alt="mobile-app"
+													width={200}
+													height={200}
+													// fill
+													// sizes='100%'
+													className="object-cover"
+												/>
+											</div>
+											<div className="flex w-full items-center gap-x-5">
+												<AppStore />
+												<PlayStore />
+											</div>
+										</div>
+									</DialogContent>
+								</Dialog>
 							</div>
 						</div>
 						<div className="relative hidden w-full lg:flex lg:h-[650px]">
@@ -263,9 +303,39 @@ const Page = () => {
 									Earn commissions for successful referrals, track your performance with detailed analytics
 									and start earning quickly with easy registration
 								</p>
-								<Button className="w-fit capitalize">
-									<RiDownload2Line /> Download Now
-								</Button>
+
+								<Dialog>
+									<DialogTrigger asChild>
+										<Button className="w-fit capitalize">
+											<RiDownload2Line /> Download Now
+										</Button>
+									</DialogTrigger>
+									<DialogContent className="md:w-[400px]">
+										<div className="flex w-full flex-col gap-6">
+											<DialogHeader className="space-y-1">
+												<DialogTitle>Download Mobile App</DialogTitle>
+												<DialogDescription>
+													Download the mobile app for a seamless experience on the go.
+												</DialogDescription>
+											</DialogHeader>
+											<div className="flex items-center justify-center">
+												<Image
+													src={MobileAppImg}
+													alt="mobile-app"
+													width={200}
+													height={200}
+													// fill
+													// sizes='100%'
+													className="object-cover"
+												/>
+											</div>
+											<div className="flex w-full items-center gap-x-5">
+												<AppStore />
+												<PlayStore />
+											</div>
+										</div>
+									</DialogContent>
+								</Dialog>
 							</div>
 						</div>
 						<div className="relative aspect-square w-full">

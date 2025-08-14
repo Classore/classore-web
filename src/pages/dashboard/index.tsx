@@ -46,7 +46,7 @@ const Page = () => {
 					<div className="flex w-full flex-col justify-between gap-4 rounded-2xl bg-dashboard bg-cover bg-center bg-no-repeat p-6 text-white md:items-center md:px-10 md:py-[52px] lg:flex-row lg:gap-[177px]">
 						<div className="flex flex-col gap-2">
 							<h1 className="text-2xl font-semibold capitalize">
-								{greetUser()}, {user?.first_name}
+								{greetUser()}, {user?.first_name} 👋
 							</h1>
 							<p className="text-balance text-sm md:text-base">
 								Welcome to your dashboard-let&apos;s make progress today. Check your latest achievements,

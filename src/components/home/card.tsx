@@ -66,7 +66,8 @@ const CardLarge = ({ bundle }: Props) => {
 					<div className="flex w-full flex-col gap-6">
 						<div>
 							<h5 className="text-xl font-medium uppercase">{bundle.examinationbundle_name}</h5>
-							<p className="min-h-20 text-sm text-neutral-400">
+							<p className="min-h-20 text-sm text-neutral-400 line-clamp-2">
+
 								Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto vero, fugiat laborum
 								consequuntur aperiam illo in nihil adipisci nam, veritatis iure soluta earum odit explicabo
 								tenetur. Iste, provident obcaecati. Impedit optio architecto deserunt! Dolores adipisci

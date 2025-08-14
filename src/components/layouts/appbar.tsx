@@ -32,11 +32,11 @@ export const Appbar = () => {
 				<div className="flex w-fit items-center gap-x-3">
 					<Dialog>
 						<DialogTrigger asChild>
-							<button className="flex h-8 w-fit items-center gap-x-2 rounded-md border border-primary-400 px-3 text-sm text-primary-400 transition-all duration-300 hover:bg-primary-50 active:scale-95">
+							<button className="flex h-10 w-fit items-center gap-x-2 rounded-md border border-neutral-200 px-3 text-sm text-primary-700 font-medium transition-all duration-300 hover:bg-primary-50 active:scale-95">
 								Download App
 							</button>
 						</DialogTrigger>
-						<DialogContent className="w-[400px]">
+						<DialogContent className="md:w-[400px]">
 							<div className="flex w-full flex-col gap-6">
 								<DialogHeader className="space-y-1">
 									<DialogTitle>Download Mobile App</DialogTitle>
@@ -44,7 +44,7 @@ export const Appbar = () => {
 										Download the mobile app for a seamless experience on the go.
 									</DialogDescription>
 								</DialogHeader>
-								<div>
+								<div className="flex items-center justify-center">
 									<Image
 										src={MobileAppImg}
 										alt="mobile-app"

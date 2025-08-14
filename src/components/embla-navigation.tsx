@@ -54,21 +54,21 @@ export const NextPrevButtons = ({ emblaApi }: PropType) => {
 		usePrevNextButtons(emblaApi);
 
 	return (
-		<div className="hidden md:flex md:flex-row md:gap-4">
+		<div className="flex flex-row gap-2 md:gap-4">
 			<button
 				type="button"
 				disabled={prevBtnDisabled}
 				onClick={onPrevButtonClick}
-				className="grid size-8 touch-manipulation place-items-center rounded-full border bg-white text-black transition-all active:scale-105 disabled:cursor-not-allowed disabled:opacity-50 [&:not(:disabled)]:hover:bg-neutral-100">
-				<ChevronLeft className="size-4" />
+				className="grid size-7 touch-manipulation place-items-center rounded-full border bg-white text-black shadow-sm transition-all active:scale-105 disabled:cursor-not-allowed disabled:opacity-30 [&:not(:disabled)]:hover:bg-neutral-100 md:size-8">
+				<ChevronLeft className="size-3 md:size-4" />
 				<span className="sr-only">Previous</span>
 			</button>
 			<button
 				type="button"
 				disabled={nextBtnDisabled}
 				onClick={onNextButtonClick}
-				className="grid size-8 touch-manipulation place-items-center rounded-full border bg-white text-black transition-all active:scale-105 disabled:cursor-not-allowed disabled:opacity-50 [&:not(:disabled)]:hover:bg-neutral-100">
-				<ChevronLeft className="size-4 rotate-180" />
+				className="grid size-7 touch-manipulation place-items-center rounded-full border bg-white text-black shadow-sm transition-all active:scale-105 disabled:cursor-not-allowed disabled:opacity-30 [&:not(:disabled)]:hover:bg-neutral-100 md:size-8">
+				<ChevronLeft className="size-3 rotate-180 md:size-4" />
 				<span className="sr-only">Next</span>
 			</button>
 		</div>
