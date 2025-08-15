@@ -9,6 +9,19 @@ import { Navbar, Seo } from "@/components/shared";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
+// const schema = z.object({
+// 	name: z.string().min(1, "Please enter your full name."),
+// 	email: z.string().email("Please provide a valid email address."),
+// 	phoneNumber: z.string().min(1, "Please enter your phone number so we can contact you."),
+// 	platform: z.string().min(1, "Please specify the platform you are experiencing issues with."),
+// 	issueType: z.string().min(1, "Please select the type of issue you are facing."),
+// 	issueDescription: z.string().min(1, "Please describe your issue in detail."),
+// 	screenshots: z
+// 		.array(z.instanceof(File))
+// 		.min(1, "Please upload at least one screenshot to help us understand the issue."),
+// 	preferredResponseMethod: z.string().min(1, "Please select your preferred method of response."),
+// });
+
 const schema = z.object({
 	name: z.string().min(1, "Please enter your full name."),
 	email: z.string().email("Please provide a valid email address."),
@@ -16,9 +29,7 @@ const schema = z.object({
 	platform: z.string().min(1, "Please specify the platform you are experiencing issues with."),
 	issueType: z.string().min(1, "Please select the type of issue you are facing."),
 	issueDescription: z.string().min(1, "Please describe your issue in detail."),
-	screenshots: z
-		.array(z.instanceof(File))
-		.min(1, "Please upload at least one screenshot to help us understand the issue."),
+	screenshots: z.array(z.any()).min(1, "Please upload at least one screenshot."),
 	preferredResponseMethod: z.string().min(1, "Please select your preferred method of response."),
 });
 
@@ -47,7 +58,15 @@ const Page = () => {
 		resolver: zodResolver(schema),
 	});
 
+	// const onSubmit = (values: FormProps) => {
+	// 	console.log(values);
+	// };
+
 	const onSubmit = (values: FormProps) => {
+		if (!values.screenshots.every((file) => file instanceof File)) {
+			console.error("One or more uploads are not valid files.");
+			return;
+		}
 		console.log(values);
 	};
 
