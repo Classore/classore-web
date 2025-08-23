@@ -1,5 +1,5 @@
 import { RiChat3Line, RiCheckDoubleLine, RiFlagLine, RiForbid2Line, RiMore2Line } from "@remixicon/react";
-import { format, isPast } from "date-fns";
+import { format } from "date-fns";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { toast } from "sonner";

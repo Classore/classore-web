@@ -12,7 +12,6 @@ import {
 	RiEmotionHappyLine,
 	RiVolumeMuteLine,
 	RiArrowLeftSLine,
-	RiMicLine,
 } from "@remixicon/react";
 
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -25,7 +24,7 @@ import type { UserItemProps } from "@/types/message";
 import { cn, getInitials, sendMessage } from "@/lib";
 import { useUserStore } from "@/store/z-store";
 import { Seo } from "@/components/shared";
-import { PopoverPortal } from "@radix-ui/react-popover";
+
 
 type FormProps = {
 	content: string;
@@ -1034,7 +1033,7 @@ const Page = () => {
 		setCursorPosition(target.selectionStart || 0);
 	};
 
-	const { handleClick, handleFileChange, inputRef } = useFileHandler({
+	const { handleFileChange, inputRef } = useFileHandler({
 		onFilesChange: (files) => {
 			setFormValues({ ...formValues, media: files });
 		},
@@ -1097,7 +1096,6 @@ const Page = () => {
 			// Define height levels
 			const oneRowHeight = 48; // 3rem
 			const twoRowHeight = 72; // 4.5rem
-			const threeRowHeight = 96; // 6rem
 			
 			if (!content.trim()) {
 				// Empty content - 1 row
@@ -1170,17 +1168,7 @@ const Page = () => {
 		setOpen(false);
 	};
 
-	const [emojiPickerMounted, setEmojiPickerMounted] = React.useState(false);
 
-	React.useEffect(() => {
-		if (isEmojiPickerOpen) {
-			setEmojiPickerMounted(true);
-		} else {
-			// Small delay to prevent flickering
-			const timeout = setTimeout(() => setEmojiPickerMounted(false), 100);
-			return () => clearTimeout(timeout);
-		}
-	}, [isEmojiPickerOpen]);
 
 	return (
 		<>

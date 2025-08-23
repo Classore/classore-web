@@ -91,7 +91,7 @@ export const CourseActions = React.memo(
 
 				<QuizAlertModal
 					open={openQuitQuiz}
-					setOpen={setOpenTakeQuiz}
+					setOpen={setOpenQuitQuiz}
 					setOpenTakeQuiz={setOpenTakeQuiz}
 				/>
 				<TakeQuizModal

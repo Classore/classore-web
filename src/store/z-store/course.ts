@@ -146,7 +146,7 @@ const useCourseStore = createReportableStore<CourseStore>((set, get) => {
 		},
 
 		onNextModule: () => {
-			const { currentModuleId, modules, currentChapterId, chapters, currentModule, currentChapter, canProceed } = get();
+			const { currentModuleId, modules, currentChapterId, chapters, canProceed } = get();
 			if (!currentModuleId || !currentChapterId) return;
 
 			// Check if user can proceed based on 96% completion and quiz requirements

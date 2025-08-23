@@ -1235,17 +1235,7 @@ const Page = () => {
 		}
 	}, [handleScroll]);
 
-	const [emojiPickerMounted, setEmojiPickerMounted] = React.useState(false);
 
-	React.useEffect(() => {
-		if (isEmojiPickerOpen) {
-			setEmojiPickerMounted(true);
-		} else {
-			// Small delay to prevent flickering
-			const timeout = setTimeout(() => setEmojiPickerMounted(false), 100);
-			return () => clearTimeout(timeout);
-		}
-	}, [isEmojiPickerOpen]);
 
 	return (
 		<>
@@ -1530,10 +1520,16 @@ const Page = () => {
 												<div className="text-xs text-neutral-500 sm:text-sm">Loading new messages...</div>
 											</div>
 										)}
+										</div>
+										{/* Typing Indicator */}
+										{isTyping && (
+											<div className="px-3 py-2 text-xs text-gray-500 italic sm:px-4 sm:text-sm">
+												Someone is typing...
+											</div>
+										)}
 									</div>
-								</div>
 
-								{/* Message Input */}
+									{/* Message Input */}
 								<div className="bg-white px-3 py-4 sm:px-4 sm:py-6 lg:px-6 lg:py-8">
 									<form onSubmit={handleSubmit} className="flex items-end gap-2 sm:gap-3">
 										<div className="relative flex-1">
@@ -1563,35 +1559,40 @@ const Page = () => {
 												accept="image/*,video/*"
 											/>
 											<div className="absolute right-2 top-1/2 flex -translate-y-1/2 transform items-center justify-center gap-0.5 sm:right-3 sm:gap-1">
-												<button type="button" className="rounded p-1 text-gray-400 hover:bg-gray-100 sm:p-1.5">
-													<span className="text-lg sm:text-xl">@</span>
-												</button>
-												<label
-													htmlFor="image"
-													className="cursor-pointer rounded p-1 text-gray-400 hover:bg-gray-100 sm:p-1.5">
-													<input
-														type="file"
-														id="image"
-														className="sr-only"
-														onChange={handleFileChange}
-														multiple={false}
-														accept="image/*"
-													/>
-													<RiImageAddLine className="h-4 w-4 sm:h-5 sm:w-5" />
-												</label>
+													<button 
+														type="button" 
+														className="rounded p-2 text-gray-400 hover:bg-gray-100 active:bg-gray-200 transition-colors duration-150 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center sm:p-1.5 sm:min-h-[36px] sm:min-w-[36px]"
+														title="Mention user">
+														<span className="text-lg sm:text-xl">@</span>
+													</button>
+													<label
+														htmlFor="image"
+														className="cursor-pointer rounded p-2 text-gray-400 hover:bg-gray-100 active:bg-gray-200 transition-colors duration-150 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center sm:p-1.5 sm:min-h-[36px] sm:min-w-[36px]"
+														title="Attach image">
+														<input
+															type="file"
+															id="image"
+															className="sr-only"
+															onChange={handleFileChange}
+															multiple={false}
+															accept="image/*"
+														/>
+														<RiImageAddLine className="h-4 w-4 sm:h-5 sm:w-5" />
+													</label>
 												<Popover open={isEmojiPickerOpen} onOpenChange={setIsEmojiPickerOpen}>
 													<PopoverTrigger asChild>
-														<button
-															type="button"
-															className="rounded p-1 text-gray-400 hover:bg-gray-100 sm:p-1.5"
-															onClick={(e) => {
-																e.preventDefault();
-																e.stopPropagation();
-																setIsEmojiPickerOpen(!isEmojiPickerOpen);
-															}}>
-															<RiEmotionHappyLine className="h-4 w-4 sm:h-5 sm:w-5" />
-														</button>
-													</PopoverTrigger>
+															<button
+																type="button"
+																className="rounded p-2 text-gray-400 hover:bg-gray-100 active:bg-gray-200 transition-colors duration-150 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center sm:p-1.5 sm:min-h-[36px] sm:min-w-[36px]"
+																title="Add emoji"
+																onClick={(e) => {
+																	e.preventDefault();
+																	e.stopPropagation();
+																	setIsEmojiPickerOpen(!isEmojiPickerOpen);
+																}}>
+																<RiEmotionHappyLine className="h-4 w-4 sm:h-5 sm:w-5" />
+															</button>
+														</PopoverTrigger>
 													<PopoverContent
 														key="emoji-picker"
 														className="w-72 p-0 sm:w-80"
