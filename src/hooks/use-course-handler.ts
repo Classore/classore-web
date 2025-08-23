@@ -186,11 +186,22 @@ export const useCourseHandler = ({
 
 	const canProceed = useMemo(() => {
 		if (!currentModule) return false;
-		return Boolean(currentModule.is_completed) || Boolean(currentModule.is_passed);
+		const moduleProgress = currentModule?.progress || 0;
+		const meetsVideoRequirement = moduleProgress >= 96;
+		const meetsQuizRequirement = Boolean(currentModule?.is_passed);
+		
+		// Require BOTH 96% video completion AND quiz pass - no bypass for completed modules
+		return meetsVideoRequirement && meetsQuizRequirement;
 	}, [currentModule]);
 
 	const onNextModule = useCallback(() => {
 		if (!hasNextModule) return;
+
+		// Check if user can proceed based on 96% completion and quiz requirements
+		if (!canProceed) {
+			console.warn('Cannot proceed: Module requirements not met (96% completion and quiz pass required)');
+			return;
+		}
 
 		const nextModule = moduleList[currentModuleIndex + 1];
 		if (nextModule?.id) {
@@ -204,6 +215,7 @@ export const useCourseHandler = ({
 		}
 	}, [
 		hasNextModule,
+		canProceed,
 		moduleList,
 		currentModuleIndex,
 		currentChapterId,

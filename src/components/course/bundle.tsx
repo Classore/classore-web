@@ -17,13 +17,13 @@ export const Bundle = ({ bundle }: BundleProps) => {
 	const [selected, setSelected] = React.useState(tabs[0] ?? "");
 	const [open, setOpen] = React.useState(false);
 
-	const [emblaRef, emblaApi] = useEmblaCarousel({ 
-		axis: 'x',
-		align: 'start',
+	const [emblaRef, emblaApi] = useEmblaCarousel({
+		axis: "x",
+		align: "start",
 		dragFree: true,
 		containScroll: false,
 		skipSnaps: true,
-		inViewThreshold: 0.1
+		inViewThreshold: 0.1,
 	});
 
 	const { data: courses, isPending } = useGetMyCourses({
@@ -35,8 +35,8 @@ export const Bundle = ({ bundle }: BundleProps) => {
 		<>
 			<div className="flex w-full flex-col gap-4">
 				<Tabs value={selected} onValueChange={setSelected}>
-					<div className="flex items-center justify-between">
-						<div className="flex flex-col gap-2 md:flex-row md:gap-4 lg:items-center">
+					<div className="relative flex items-center justify-between">
+						<div className="flex flex-col gap-2 md:flex-row md:gap-4 md:items-center">
 							<p className="text-lg font-medium capitalize">
 								{bundle.exam_bundle_details.name} Prep Bundle
 							</p>
@@ -49,7 +49,9 @@ export const Bundle = ({ bundle }: BundleProps) => {
 							</TabsList>
 						</div>
 
-						<NextPrevButtons emblaApi={emblaApi} />
+						<div className="absolute right-6 top-0 md:right-[70px] lg:static">
+							<NextPrevButtons emblaApi={emblaApi} />
+						</div>
 					</div>
 
 					{tabs.map((tab) => (
@@ -59,8 +61,8 @@ export const Bundle = ({ bundle }: BundleProps) => {
 									<Spinner variant="primary" />
 								</div>
 							) : (
-								<div className="overflow-hidden" ref={emblaRef}>
-									<div className="flex touch-pan-x gap-3 md:gap-6">
+								<div className="overflow-x-clip w-full max-w-none" ref={emblaRef}>
+									<div className="flex touch-pan-x gap-3 md:gap-4">
 										{courses?.data.length ? (
 											courses.data.map((course) => (
 												<CourseCard

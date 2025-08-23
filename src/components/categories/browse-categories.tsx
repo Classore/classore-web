@@ -16,7 +16,7 @@ export const BrowseCategories = () => {
 	});
 
 	return (
-		<Tabs defaultValue="all" value={tab} onValueChange={setTab}>
+		<Tabs defaultValue="all" value={tab} onValueChange={setTab} className="w-[96vw] lg:w-[79vw]">
 			<div className="flex w-full flex-col gap-6 pb-10">
 				<div className="flex flex-col gap-4 md:flex-row lg:items-center">
 					<p className="text-xl font-medium">Browse Categories</p>

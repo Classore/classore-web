@@ -67,6 +67,14 @@ const useCourseStore = createReportableStore<CourseStore>((set, get) => {
 		const currentChapter = chapters[chapterIndex] || null;
 		const currentModule = moduleIndex >= 0 ? modules[moduleIndex] : null;
 
+		// Calculate if user can proceed based on new requirements
+		const moduleProgress = currentChapter?.current_module_progress_percentage ?? 0;
+		const meetsVideoRequirement = moduleProgress >= 96;
+		const meetsQuizRequirement = currentModule ? !!currentModule.is_passed : false;
+		
+		// Require BOTH 96% video completion AND quiz pass - no bypass for completed modules
+		const canProceed = meetsVideoRequirement && meetsQuizRequirement;
+
 		set({
 			currentChapter,
 			currentModule,
@@ -74,9 +82,7 @@ const useCourseStore = createReportableStore<CourseStore>((set, get) => {
 			hasNextChapter: chapterIndex < chapters.length - 1,
 			hasPreviousModule: moduleIndex > 0,
 			hasNextModule: moduleIndex < modules.length - 1,
-			canProceed: currentModule
-				? !!currentModule.is_passed
-				: (currentChapter?.current_module_progress_percentage ?? 0) >= 50,
+			canProceed,
 		});
 	};
 
@@ -140,8 +146,14 @@ const useCourseStore = createReportableStore<CourseStore>((set, get) => {
 		},
 
 		onNextModule: () => {
-			const { currentModuleId, modules, currentChapterId, chapters } = get();
+			const { currentModuleId, modules, currentChapterId, chapters, currentModule, currentChapter, canProceed } = get();
 			if (!currentModuleId || !currentChapterId) return;
+
+			// Check if user can proceed based on 96% completion and quiz requirements
+			if (!canProceed) {
+				console.warn('Cannot proceed: Module requirements not met (96% completion and quiz pass required)');
+				return;
+			}
 
 			const currentModuleIndex = modules.findIndex((module) => module.id === currentModuleId);
 			if (currentModuleIndex < modules.length - 1) {
@@ -203,11 +215,12 @@ const useCourseStore = createReportableStore<CourseStore>((set, get) => {
 
 		get canProceed() {
 			const { currentChapter, currentModule } = get();
-			return (
-				((currentChapter?.current_module_progress_percentage ?? 0) >= 50 ||
-					!!currentModule?.is_passed) ??
-				false
-			);
+			const moduleProgress = currentChapter?.current_module_progress_percentage ?? 0;
+			const meetsVideoRequirement = moduleProgress >= 96;
+			const meetsQuizRequirement = currentModule ? !!currentModule.is_passed : false;
+			
+			// Require BOTH 96% video completion AND quiz pass - no bypass for completed modules
+			return meetsVideoRequirement && meetsQuizRequirement;
 		},
 
 		get hasNextChapter() {
