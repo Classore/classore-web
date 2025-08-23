@@ -49,21 +49,53 @@ export const ChapterModules = ({
 		setActiveModuleId(currentModuleId);
 	}, [currentModuleId]);
 
-	const handleSelectModule = (module: ChapterModuleProps) => {
-		const moduleId = module.id;
-		const hasPreviousModule = module.sequence > 1;
-		const previousModule = moduleList[module.sequence - 2];
-		const hasPreviousPassed = previousModule?.is_passed;
-		if (hasPreviousModule && (previousModule?.progress || 0) < 50) {
-			toast.error("Please complete the previous module first", {
-				description: "You can't proceed to the next module until you complete the previous one",
-			});
+	const handleSelectModule = (moduleId: string) => {
+		const targetModule = moduleList.find((module) => module.id === moduleId);
+		if (!targetModule) return;
+
+		// Allow immediate access to completed or passed modules (unrestricted navigation for reviews)
+		if (targetModule.is_completed || targetModule.is_passed) {
+			// Set manual navigation flag to prevent auto-navigation override
+			if (typeof window !== 'undefined') {
+				window.dispatchEvent(new CustomEvent('manual-module-selection'));
+			}
+			onSelectModule(moduleId);
 			return;
 		}
-		if (!hasPreviousPassed && chapterProgress < 50 && moduleId !== moduleList[0].id) {
-			setOpen(true);
+
+		// Allow access to any module that has been unlocked (progress > 0) for review purposes
+		if ((targetModule.progress || 0) > 0) {
+			// Set manual navigation flag to prevent auto-navigation override
+			if (typeof window !== 'undefined') {
+				window.dispatchEvent(new CustomEvent('manual-module-selection'));
+			}
+			onSelectModule(moduleId);
 			return;
 		}
+
+		// For completely new modules, enforce sequential access
+		const moduleIndex = moduleList.findIndex((module) => module.id === moduleId);
+		if (moduleIndex === 0) {
+			// First module is always accessible
+			onSelectModule(moduleId);
+			return;
+		}
+
+		const previousModule = moduleList[moduleIndex - 1];
+		if (!previousModule) return;
+
+		// Check if previous module is completed (progress >= 50%)
+		if ((previousModule.progress || 0) < 50) {
+			toast.error("Please complete the previous module first and take the quiz.");
+			return;
+		}
+
+		// Check chapter progress for modules other than the first
+		if ((chapterProgress || 0) < 50) {
+			toast.error("Please complete the previous module first and take the quiz.");
+			return;
+		}
+
 		onSelectModule(moduleId);
 	};
 
@@ -138,7 +170,7 @@ export const ChapterModules = ({
 							<button
 								type="button"
 								key={module.id}
-								onClick={() => handleSelectModule(module)}
+								onClick={() => handleSelectModule(module.id)}
 								className={`flex w-full items-center gap-4 border-b border-b-neutral-200 px-6 py-4 ${currentModuleId === module.id ? "border-l-4 border-l-primary-300" : ""}`}>
 								<div
 									className={`grid size-8 place-items-center rounded-md ${module.is_completed || currentModuleId === module.id ? "bg-[rgba(241,236,249,0.5)] text-primary-300" : "bg-neutral-100 text-neutral-400"}`}>

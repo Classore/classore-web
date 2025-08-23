@@ -52,7 +52,7 @@ export const QuizResultModal = ({
 			router.replace(`/dashboard/courses/${id}?moduleId=${nextModuleId}`);
 		} else if (!hasNextModule && hasNextChapter) {
 			onNext();
-			router.replace(`/dashboard/courses/${nextChapterId}`);
+			router.replace(`/dashboard/courses/${id}?chapterId=${nextChapterId}`);
 		} else {
 			toast.success("You have completed all the lessons in this course");
 		}

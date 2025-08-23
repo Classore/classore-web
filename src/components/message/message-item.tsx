@@ -1,5 +1,5 @@
-import { RiChat3Line, RiFlagLine, RiForbid2Line, RiMore2Line } from "@remixicon/react";
-import { format, isPast } from "date-fns";
+import { RiChat3Line, RiCheckDoubleLine, RiFlagLine, RiForbid2Line, RiMore2Line } from "@remixicon/react";
+import { format } from "date-fns";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { toast } from "sonner";
@@ -37,6 +37,7 @@ export const MessageItem = ({ isGroup, message }: Props) => {
 
 	const isSender = user?.id === message.sender.id;
 	const initials = getInitials(`${message.sender.first_name} ${message.sender.last_name}`);
+	const timeString = format(new Date(message.updatedOn), "h:mm a");
 
 	const options = (userId: string) => {
 		return [
@@ -54,19 +55,21 @@ export const MessageItem = ({ isGroup, message }: Props) => {
 	return (
 		<div
 			className={cn(
-				"group flex w-1/2 items-start gap-x-2",
+				"group flex max-w-[70%] sm:max-w-[50%] items-start gap-x-2",
 				isSender ? "flex-row-reverse self-end" : "self-start"
 			)}>
 			<Avatar className="size-10 rounded-lg">
 				<AvatarImage src={message.sender.profile_image} />
-				<AvatarFallback className="bg-primary-200 text-sm font-semibold">{initials}</AvatarFallback>
+				<AvatarFallback className="bg-primary-200 text-sm font-semibold uppercase">{initials}</AvatarFallback>
 			</Avatar>
 			<div
 				className={cn(
-					"min-w-40 space-y-2 rounded-lg p-3",
+					"min-w-40 space-y-2 rounded-xl p-3",
 					isSender ? "rounded-tr-none bg-primary-100 text-right" : "rounded-tl-none bg-secondary-100"
 				)}>
-				<p className="text-sm">{message.content}</p>
+				<div className="pr-4 text-left text-sm">
+						<p className="leading-relaxed text-[#525866]">{message.content}</p>
+					</div>
 				{message.media.length > 0 && (
 					<div className="flex w-full items-center gap-x-2">
 						{message.media.map((image, index) => (
@@ -74,15 +77,10 @@ export const MessageItem = ({ isGroup, message }: Props) => {
 						))}
 					</div>
 				)}
-				<div className="flex w-full items-center justify-end">
-					{isPast(message.updatedOn) ? (
-						<p className="text-[10px] text-neutral-500">
-							{format(message.updatedOn, "dd/MM/yyyy hh:mm a")}
-						</p>
-					) : (
-						<p className="text-[10px] text-neutral-500">{format(message.updatedOn, "hh:mm a")}</p>
-					)}
-				</div>
+				<div className="mb-1 flex items-center justify-end gap-2">
+						<span className="text-xs text-[#525866]">{timeString}</span>
+						<RiCheckDoubleLine className="h-3 w-3" style={{ color: "#6F42C1" }} />
+					</div>
 			</div>
 			{isGroup && !isSender && (
 				<Popover>

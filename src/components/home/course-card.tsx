@@ -53,7 +53,7 @@ export const CourseCard = ({ course, onClick }: Props) => {
 			id={course.course_id}
 			bundle={course.course_chosen_bundle}
 			onClick={onClick}
-			className="flex w-[85vw] min-w-[91.5vw] max-w-[360px] flex-col gap-3 rounded-lg border p-2.5 transition-all duration-700 hover:shadow-2xl sm:w-80 sm:min-w-[320px] sm:max-w-[320px] md:w-96 md:min-w-[380px] md:max-w-[380px] md:p-3">
+			className="flex max-w-[360px] flex-col gap-3 rounded-lg border p-2.5 transition-all duration-700 hover:shadow-2xl sm:w-80 sm:min-w-[320px] sm:max-w-[320px] md:w-96 md:min-w-[380px] md:max-w-[380px] md:p-3">
 			<div className="relative w-full rounded-lg">
 				<div className="absolute right-[10px] top-2 !z-[5] flex items-center gap-1 rounded bg-white p-1">
 					<RiTimeLine size={18} />
@@ -77,7 +77,7 @@ export const CourseCard = ({ course, onClick }: Props) => {
 			<div className="flex w-full flex-col text-left">
 				<h5 className="font-medium capitalize">{course.subject_name} Tutorials</h5>
 				<p
-					className="truncate text-sm text-neutral-400 first-letter:capitalize"
+					className="truncate line-clamp-2 text-sm text-neutral-400 first-letter:capitalize"
 					dangerouslySetInnerHTML={{ __html: course.subject_description }}></p>
 			</div>
 

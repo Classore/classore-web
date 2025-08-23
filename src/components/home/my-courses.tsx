@@ -18,8 +18,8 @@ export const MyCourses = () => {
 
 	return (
 		<Tabs defaultValue={tabs[0]} value={selected} onValueChange={setSelected}>
-			<div className="flex w-full flex-col gap-4">
-				<div className="flex items-center justify-between">
+			<div className="flex w-full lg:w-[80vw] flex-col gap-4">
+				<div className="relative flex items-center justify-between">
 					<div className="flex flex-col gap-4 md:flex-row lg:items-center">
 						<p className="text-xl font-medium">My courses</p>
 
@@ -31,8 +31,9 @@ export const MyCourses = () => {
 							))}
 						</TabsList>
 					</div>
-
-					<NextPrevButtons emblaApi={emblaApi} />
+					<div className="hidden md:grid">
+						<NextPrevButtons emblaApi={emblaApi} />
+					</div>
 				</div>
 
 				{tabs.map((tab) => (
