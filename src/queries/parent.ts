@@ -59,6 +59,7 @@ export interface AddWardDto {
 	examination: string;
 	examination_bundle: string;
 	subjects: string[];
+	promo_code?: string;
 }
 
 export interface AddWardResponse {

@@ -1,263 +1,285 @@
-import { RiArrowLeftSLine, RiCalendarEventLine } from "@remixicon/react";
-import { addMonths, format, subMonths } from "date-fns";
+import {
+	RiArrowLeftSLine,
+	RiArrowRightSLine,
+	RiCalendarEventLine,
+	RiCalendarLine,
+} from "@remixicon/react";
+import { addMonths, format, isSameDay, subMonths } from "date-fns";
 import Link from "next/link";
-import React from "react";
+import * as React from "react";
 
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import type { CalendarEventItem } from "@/queries/student";
+import { useGetUpcomingEvents } from "@/queries/student";
 import { DashboardLayout } from "@/components/layouts";
-import { AvatarGroup, Seo } from "@/components/shared";
-import { Button } from "@/components/ui/button";
-import type { EventProps } from "@/types";
+import { Seo } from "@/components/shared";
+import { LiveSessionModal } from "@/components/modals/live-session-modal";
+import { getEventTemporalStatus } from "@/lib/date";
 
-type DayEventProps = EventProps & {
-	status: "past" | "upcoming" | "current";
-};
+// ─── Helpers ─────────────────────────────────────────────────────────────────
 
-type DayProps = {
+const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+type DayCell = {
 	day: number | null;
-	events: DayEventProps[];
+	events: CalendarEventItem[];
 };
 
-const EventStatusColor: Record<DayEventProps["status"], string> = {
-	past: "bg-neutral-200 text-neutral-700 border-neutral-700",
-	upcoming: "bg-blue-100 text-blue-700 border-blue-700",
-	current: "bg-green-100 text-green-700 border-green-700",
-};
-
-const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
-const daysOfWeekS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+// ─── Page ────────────────────────────────────────────────────────────────────
 
 const Page = () => {
 	const [current, setCurrent] = React.useState(new Date());
+	const [selectedEvent, setSelectedEvent] = React.useState<CalendarEventItem | null>(null);
+	const [modalOpen, setModalOpen] = React.useState(false);
 
-	const getEventStatus = React.useCallback((event: EventProps) => {
-		const today = new Date();
-		const firstDate = new Date(event.date[0]);
-		const lastDate = new Date(event.date[event.date.length - 1]);
+	const month = current.getMonth();
+	const year = current.getFullYear();
+	const { data: responseData } = useGetUpcomingEvents({ month, year });
 
-		if (lastDate < today) return "past";
-		if (firstDate > today) return "upcoming";
-		return "current";
-	}, []);
+	const dayGroups = responseData?.events ?? [];
 
-	const getDaysInMonth = (year: number, month: number) => {
-		return new Date(year, month + 1, 0).getDate();
-	};
-
-	const getFirstDayOfMonth = (year: number, month: number) => {
-		return new Date(year, month, 1).getDay();
-	};
-
-	const processedEvents = React.useMemo(() => {
-		const monthEvents: Record<string, EventProps[]> = {};
-		const events: EventProps[] = [];
-		events.forEach((event) => {
-			event.date.forEach((dateItem) => {
-				const eventDate = new Date(dateItem);
+	// Build a lookup: day-of-month → events[]
+	const eventsByDay = React.useMemo(() => {
+		const map: Record<number, CalendarEventItem[]> = {};
+		dayGroups.forEach((dayGroup) => {
+			(dayGroup.events || []).forEach((event) => {
+				const eventDate = new Date(event.date);
 				if (
 					eventDate.getFullYear() === current.getFullYear() &&
 					eventDate.getMonth() === current.getMonth()
 				) {
-					const dateKey = eventDate.getDate().toString();
-					if (!monthEvents[dateKey]) {
-						monthEvents[dateKey] = [];
-					}
-					monthEvents[dateKey].push(event);
+					const dayNum = eventDate.getUTCDate();
+					if (!map[dayNum]) map[dayNum] = [];
+					map[dayNum].push(event);
 				}
 			});
 		});
+		return map;
+	}, [dayGroups, current]);
 
-		return monthEvents;
-	}, [current]);
+	// Build all events list for statistics
+	const allMonthEvents = React.useMemo(() => {
+		return dayGroups.flatMap((g) => g.events || []).filter((e) => e && e.is_active);
+	}, [dayGroups]);
 
-	const goToPreviousMonth = () => setCurrent(subMonths(current, 1));
+	const liveCount = React.useMemo(() => {
+		return allMonthEvents.filter((e) => getEventTemporalStatus(e) === "LIVE").length;
+	}, [allMonthEvents]);
 
-	const goToNextMonth = () => setCurrent(addMonths(current, 1));
+	const upcomingCount = React.useMemo(() => {
+		return allMonthEvents.filter((e) => getEventTemporalStatus(e) === "UPCOMING").length;
+	}, [allMonthEvents]);
 
-	const calendarDays = React.useMemo(() => {
-		const year = current.getFullYear();
-		const month = current.getMonth();
-		const daysInMonth = getDaysInMonth(year, month);
-		const firstDay = getFirstDayOfMonth(year, month);
-		const days: DayProps[] = [];
+	// Build 7-column grid cells
+	const calendarDays = React.useMemo((): DayCell[] => {
+		const yr = current.getFullYear();
+		const mo = current.getMonth();
+		const daysInMonth = new Date(yr, mo + 1, 0).getDate();
+		const firstDay = new Date(yr, mo, 1).getDay();
+		const days: DayCell[] = [];
 
 		for (let i = 0; i < firstDay; i++) {
-			days.push({
-				day: null,
-				events: [],
-			});
+			days.push({ day: null, events: [] });
 		}
-
 		for (let day = 1; day <= daysInMonth; day++) {
-			const eventForDay = processedEvents[day] || [];
-
+			const rawEvents = eventsByDay[day] || [];
 			days.push({
 				day,
-				events: eventForDay.map((event) => ({
-					...event,
-					status: getEventStatus(event),
-				})),
+				events: rawEvents,
 			});
 		}
-
 		return days;
-	}, [current, getEventStatus, processedEvents]);
+	}, [current, eventsByDay]);
 
-	const isFirstDayOfEvent = (event: EventProps, currentDate: number) => {
-		const firstDate = new Date(event.date[0]);
-		return firstDate.getDate() === currentDate;
-	};
+	const goToPreviousMonth = () => setCurrent(subMonths(current, 1));
+	const goToNextMonth = () => setCurrent(addMonths(current, 1));
 
-	const isLastDayOfEvent = (event: EventProps, currentDate: number) => {
-		const lastDate = new Date(event.date[event.date.length - 1]);
-		return lastDate.getDate() === currentDate;
-	};
-
-	const images = (count: number) => {
-		const created = Array(count).map(
-			() =>
-				"https://images.unsplash.com/photo-1479936343636-73cdc5aae0c3?q=80&w=1760&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-		);
-		return created;
+	const openEventModal = (event: CalendarEventItem) => {
+		setSelectedEvent(event);
+		setModalOpen(true);
 	};
 
 	return (
 		<>
-			<Seo title="Calendar" noIndex />
-
+			<Seo title="Live Classes & Calendar" noIndex />
 			<DashboardLayout>
-				<div className="flex h-full w-full flex-col gap-8 px-8 py-4">
-					<div className="flex h-[69px] w-full items-center justify-between">
-						<button
-							onClick={goToPreviousMonth}
-							className="grid size-5 place-items-center rounded bg-neutral-200">
-							<RiArrowLeftSLine className="size-4 rotate-0" />
-						</button>
-						<div className="flex items-center">
-							<h4 className="text-xl font-medium">{format(current, "MMMM yyyy")}</h4>
+				<div className="flex w-full flex-col gap-6 px-4 py-4 md:px-8">
+					{/* ── Header ── */}
+					<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+						<div>
+							<h1 className="text-2xl font-bold tracking-tight text-neutral-900">
+								Academic Calendar & Live Classes
+							</h1>
+							<p className="mt-0.5 text-xs text-neutral-500">
+								Join live tutoring sessions and track upcoming subject lectures.
+							</p>
 						</div>
-						<button
-							onClick={goToNextMonth}
-							className="grid size-5 place-items-center rounded bg-neutral-200">
-							<RiArrowLeftSLine className="size-4 rotate-180" />
-						</button>
+
+						{/* Quick Month Switcher */}
+						<div className="flex items-center gap-2">
+							<button
+								onClick={goToPreviousMonth}
+								className="grid size-9 place-items-center rounded-xl border border-neutral-200 bg-white text-neutral-600 transition hover:bg-neutral-50 active:scale-95">
+								<RiArrowLeftSLine className="size-5" />
+							</button>
+
+							<div className="min-w-[150px] rounded-xl border border-neutral-200 bg-white px-4 py-2 text-center text-sm font-bold text-neutral-900 shadow-2xs">
+								{format(current, "MMMM yyyy")}
+							</div>
+
+							<button
+								onClick={goToNextMonth}
+								className="grid size-9 place-items-center rounded-xl border border-neutral-200 bg-white text-neutral-600 transition hover:bg-neutral-50 active:scale-95">
+								<RiArrowRightSLine className="size-5" />
+							</button>
+						</div>
 					</div>
 
-					<div className="flex w-full flex-col border">
-						<div className="hidden w-full grid-cols-7 border-b lg:grid">
-							{daysOfWeek.map((day, index) => (
-								<div
-									key={index}
-									className="flex h-[49px] w-full items-center justify-center border-r text-sm text-neutral-400 last:border-r-0">
-									{day}
-								</div>
-							))}
+					{/* ── Summary Stats ── */}
+					<div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+						<div className="flex items-center gap-3.5 rounded-2xl border border-neutral-200/80 bg-white p-4 shadow-2xs">
+							<div className="grid size-11 place-items-center rounded-xl bg-primary-50 text-primary-600">
+								<RiCalendarLine className="size-5" />
+							</div>
+							<div>
+								<p className="text-xs font-medium text-neutral-500">Total Classes This Month</p>
+								<p className="text-xl font-bold text-neutral-900 mt-0.5">{allMonthEvents.length}</p>
+							</div>
 						</div>
-						<div className="grid w-full grid-cols-7 border-b lg:hidden">
-							{daysOfWeekS.map((day, index) => (
-								<div
-									key={index}
-									className="flex h-[49px] w-full items-center justify-center border-r text-sm text-neutral-400 last:border-r-0">
-									{day}
+
+						<div className="flex items-center gap-3.5 rounded-2xl border border-red-100 bg-red-50/40 p-4 shadow-2xs">
+							<div className="grid size-11 place-items-center rounded-xl bg-red-100 text-red-600">
+								<span className="size-3 rounded-full bg-red-500 animate-pulse" />
+							</div>
+							<div>
+								<p className="text-xs font-semibold text-red-800">Ongoing Live Classes</p>
+								<p className="text-xl font-bold text-red-900 mt-0.5">{liveCount}</p>
+							</div>
+						</div>
+
+						<div className="flex items-center gap-3.5 rounded-2xl border border-blue-100 bg-blue-50/40 p-4 shadow-2xs">
+							<div className="grid size-11 place-items-center rounded-xl bg-blue-100 text-blue-600">
+								<RiCalendarEventLine className="size-5" />
+							</div>
+							<div>
+								<p className="text-xs font-semibold text-blue-800">Upcoming Scheduled</p>
+								<p className="text-xl font-bold text-blue-900 mt-0.5">{upcomingCount}</p>
+							</div>
+						</div>
+					</div>
+
+					{/* ── Calendar Grid ── */}
+					<div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-xs">
+						{/* Weekday headers */}
+						<div className="grid grid-cols-7 border-b border-neutral-200 bg-neutral-50/80 text-center text-xs font-bold uppercase tracking-wider text-neutral-500">
+							{WEEKDAYS.map((d) => (
+								<div key={d} className="py-3">
+									{d}
 								</div>
 							))}
 						</div>
 
-						<div className="grid w-full grid-cols-7">
-							{calendarDays.map((dayItem, index) => {
+						{/* Days grid */}
+						<div className="grid grid-cols-7 divide-x divide-y divide-neutral-100">
+							{calendarDays.map((cell, idx) => {
 								const isToday =
-									dayItem.day === new Date().getDate() &&
-									current.getMonth() === new Date().getMonth() &&
-									current.getFullYear() === new Date().getFullYear();
+									cell.day !== null &&
+									isSameDay(new Date(year, month, cell.day), new Date());
 
 								return (
 									<div
-										key={index}
-										className={`flex aspect-[1.08/1] w-full flex-col overflow-hidden border-b ${index % 7 === 6 ? "" : "border-r"} ${isToday ? "bg-neutral-100 font-semibold" : "text-neutral-500"}`}>
-										<div
-											className={`flex w-full items-center px-3 pt-3 ${dayItem.events.length < 1 ? "justify-end" : "justify-between"}`}>
-											{dayItem.events.length ? (
+										key={idx}
+										className={`min-h-[115px] p-2 transition hover:bg-neutral-50/40 ${
+											!cell.day ? "bg-neutral-50/20" : ""
+										}`}>
+										{cell.day && (
+											<div className="mb-1.5 flex items-center justify-between">
 												<Link
-													href={`/dashboard/calendar/${dayItem.day}`}
-													className="link flex items-center gap-1 text-xs">
-													{dayItem.events.length < 2 ? "View Event" : "View Events"} ({dayItem.events.length})
+													href={`/dashboard/calendar/${cell.day}?month=${month}&year=${year}`}
+													className={`flex size-6 items-center justify-center rounded-full text-xs font-bold transition hover:bg-primary-100 hover:text-primary-700 ${
+														isToday
+															? "bg-primary-600 text-white shadow-xs"
+															: "text-neutral-700"
+													}`}>
+													{cell.day}
 												</Link>
-											) : null}
 
-											<p
-												className={`rounded px-1.5 py-1 text-sm ${isToday ? "bg-primary-300 text-white" : "bg-transparent text-neutral-400"}`}>
-												{dayItem.day ? (String(dayItem.day).padStart(2, "0") ?? " ") : ""}
-											</p>
-										</div>
+												{cell.events.length > 0 && (
+													<Link
+														href={`/dashboard/calendar/${cell.day}?month=${month}&year=${year}`}
+														className="text-[10px] font-semibold text-neutral-400 hover:text-primary-600">
+														{cell.events.length} {cell.events.length === 1 ? "class" : "classes"}
+													</Link>
+												)}
+											</div>
+										)}
 
-										<div className="mt-1 flex flex-col gap-1 overflow-y-auto">
-											{dayItem.events.map((event, eventIndex) => {
-												const isFirstDay = isFirstDayOfEvent(event, dayItem.day!);
-												const isLastDay = isLastDayOfEvent(event, dayItem.day!);
-												const isMultiDay = event.date.length > 1;
+										{/* Event items in cell */}
+										<div className="flex flex-col gap-1">
+											{cell.events.slice(0, 3).map((event) => {
+												const tempStatus = getEventTemporalStatus(event);
+												const isLiveNow = tempStatus === "LIVE" && event.is_active;
+												const isUpcoming = tempStatus === "UPCOMING" && event.is_active;
 
 												return (
-													<HoverCard key={`${event.id}-${eventIndex}`}>
-														<HoverCardTrigger
-															className={`group relative flex min-h-14 items-center truncate px-1 py-0.5 text-xs ${EventStatusColor[event.status]} ${isMultiDay ? "rounded-none" : "rounded"} ${isFirstDay ? "ml-2 rounded-l border-l-2" : "-ml-1"} ${isLastDay ? "rounded-r" : "pr-0"} ${!isFirstDay && !isLastDay && isMultiDay ? "pl-0" : ""} `}>
-															<div className="flex w-full cursor-pointer items-center gap-2">
-																{isFirstDay && (
-																	<>
-																		<RiCalendarEventLine className="ml-1 size-4 text-inherit" />
-
-																		<div className="absolute left-7 z-50 flex flex-1 flex-col pl-1">
-																			<span className={`truncate font-medium ${!isFirstDay ? "pl-1" : ""}`}>
-																				{event.title}
-																			</span>
-																			<span className="text-[10px] text-neutral-500">
-																				{format(event.date[0], "hh:mm a")} | {format(event.date[0], "EEEE")} -{" "}
-																				{format(event.date[event.date.length - 1], "EEEE")}
-																			</span>
-																		</div>
-																	</>
-																)}
-
-																{event.status === "current" && (
-																	<div className="animate-pulse rounded-full bg-red-500 px-2 py-0.5 text-[10px] font-medium text-red-100">
-																		Live
-																	</div>
-																)}
-															</div>
-														</HoverCardTrigger>
-
-														<HoverCardContent className="flex flex-col gap-2 text-wrap">
-															<p className="text-lg font-medium">{event.title}</p>
-															<div className="flex flex-col gap-1">
-																{event.date.map((dateItem, dateIndex) => (
-																	<div key={dateIndex} className="flex items-center gap-1">
-																		<span className="text-xs text-neutral-500">{format(dateItem, "EEEE")}</span>
-																		<span className="text-xs text-neutral-500">{format(dateItem, "hh:mm a")}</span>
-																	</div>
-																))}
-															</div>
-															<AvatarGroup
-																images={images(event.participants.length)}
-																count={event.participants.length}
-																shape="round"
-																size={20}
-															/>
-															{event.status === "current" && (
-																<Button className="w-fit" size="sm">
-																	Join
-																</Button>
-															)}
-														</HoverCardContent>
-													</HoverCard>
+													<button
+														key={event.id}
+														type="button"
+														onClick={() => openEventModal(event)}
+														className={`flex w-full items-center gap-1.5 truncate rounded-lg border-l-3 px-2 py-1 text-left text-[11px] font-semibold transition hover:shadow-xs active:scale-98 ${
+															isLiveNow
+																? "border-l-red-500 bg-red-50 text-red-900"
+																: isUpcoming
+																	? "border-l-blue-500 bg-blue-50/70 text-blue-900"
+																	: "border-l-neutral-300 bg-neutral-100 text-neutral-700"
+														}`}>
+														{isLiveNow ? (
+															<span className="size-2 shrink-0 animate-pulse rounded-full bg-red-500" />
+														) : (
+															<RiCalendarEventLine className="size-3 shrink-0 opacity-70" />
+														)}
+														<span className="truncate">{event.title || "Live Class"}</span>
+													</button>
 												);
 											})}
+
+											{/* Overflow indicator */}
+											{cell.events.length > 3 && cell.day && (
+												<Link
+													href={`/dashboard/calendar/${cell.day}?month=${month}&year=${year}`}
+													className="px-1 text-[10px] font-bold text-primary-600 hover:underline">
+													+{cell.events.length - 3} more
+												</Link>
+											)}
 										</div>
 									</div>
 								);
 							})}
 						</div>
 					</div>
+
+					{/* ── Legend ── */}
+					<div className="flex flex-wrap items-center gap-6 text-xs text-neutral-600">
+						<span className="flex items-center gap-2 font-medium">
+							<span className="size-2.5 rounded-full bg-red-500 animate-pulse" />
+							Ongoing Live Class
+						</span>
+						<span className="flex items-center gap-2 font-medium">
+							<span className="size-2.5 rounded-full bg-blue-500" />
+							Upcoming Class
+						</span>
+						<span className="flex items-center gap-2 font-medium">
+							<span className="size-2.5 rounded-full bg-neutral-300" />
+							Class Concluded
+						</span>
+					</div>
 				</div>
+
+				{/* ── Interactive Live Session Modal ── */}
+				<LiveSessionModal
+					open={modalOpen}
+					setOpen={setModalOpen}
+					event={selectedEvent}
+				/>
 			</DashboardLayout>
 		</>
 	);

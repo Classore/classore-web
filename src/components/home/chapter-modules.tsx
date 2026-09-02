@@ -2,13 +2,15 @@ import {
 	RiCheckboxCircleFill,
 	RiFileTextLine,
 	RiFolderVideoLine,
+	RiLock2Line,
 	RiPlayCircleLine,
 } from "@remixicon/react";
 import * as React from "react";
 import { toast } from "sonner";
 
 import { convertSecondsToMinSec, sanitizeHtml } from "@/lib";
-import type { ChapterModuleProps, ChapterResp } from "@/types";
+import type { ChapterModuleProps, ChapterResp, SingleCourseResp } from "@/types";
+import { isModuleFree } from "@/lib/free-trial";
 import { QuizAlertModal, TakeQuizModal } from "../modals";
 import { Spinner } from "../shared";
 
@@ -29,6 +31,12 @@ interface Props {
 	onSelectChapter: (chapterId: string) => void;
 	onSelectModule: (moduleId: string) => void;
 	previousModule: ChapterModuleProps | null;
+	/** Whether the student has a paid subscription for this bundle */
+	isPaid?: boolean;
+	/** All chapters in this course — used for free-trial gating */
+	chapters?: SingleCourseResp["chapters"];
+	/** Called when a locked module is clicked — opens the UpgradePlanModal */
+	onClickLocked?: () => void;
 }
 
 export const ChapterModules = ({
@@ -40,6 +48,9 @@ export const ChapterModules = ({
 	isError,
 	isPending,
 	onSelectModule,
+	isPaid = false,
+	chapters = [],
+	onClickLocked,
 }: Props) => {
 	const [activeModuleId, setActiveModuleId] = React.useState(currentModuleId);
 	const [openTakeQuiz, setOpenTakeQuiz] = React.useState(false);
@@ -51,6 +62,16 @@ export const ChapterModules = ({
 
 	const handleSelectModule = (module: ChapterModuleProps) => {
 		const moduleId = module.id;
+
+		// Free-trial gating: if the student is unpaid, only the first module is accessible
+		if (!isPaid && chapters.length > 0) {
+			const free = isModuleFree(currentChapterId, moduleId, chapters);
+			if (!free) {
+				onClickLocked?.();
+				return;
+			}
+		}
+
 		const hasPreviousModule = module.sequence > 1;
 		const previousModule = moduleList[module.sequence - 2];
 		const hasPreviousPassed = previousModule?.is_passed;
@@ -134,33 +155,47 @@ export const ChapterModules = ({
 					</div>
 					{moduleList
 						.sort((a, b) => a.sequence - b.sequence)
-						.map((module) => (
-							<button
-								type="button"
-								key={module.id}
-								onClick={() => handleSelectModule(module)}
-								className={`flex w-full items-center gap-4 border-b border-b-neutral-200 px-6 py-4 ${currentModuleId === module.id ? "border-l-4 border-l-primary-300" : ""}`}>
-								<div
-									className={`grid size-8 place-items-center rounded-md ${module.is_completed || currentModuleId === module.id ? "bg-[rgba(241,236,249,0.5)] text-primary-300" : "bg-neutral-100 text-neutral-400"}`}>
-									<RiPlayCircleLine className="size-4" />
-								</div>
+						.map((module) => {
+							// A module is locked when the student is unpaid AND it's not the free (first) module
+							const isLocked =
+								!isPaid && chapters.length > 0 && !isModuleFree(currentChapterId, module.id, chapters);
 
-								<div className="flex flex-col gap-1">
-									<p className="text-left text-sm capitalize text-neutral-500">{module.title}</p>
-									<p className="w-fit text-xs text-neutral-400">
-										{module.video_array.length
-											? `${convertSecondsToMinSec(module.video_array.at(0)?.duration ?? 0)} min`
-											: "--:--"}
-									</p>
-								</div>
+							return (
+								<button
+									type="button"
+									key={module.id}
+									onClick={() => handleSelectModule(module)}
+									className={`flex w-full items-center gap-4 border-b border-b-neutral-200 px-6 py-4 transition-colors ${currentModuleId === module.id ? "border-l-4 border-l-primary-300" : ""
+										} ${isLocked ? "opacity-60 hover:bg-orange-50" : "hover:bg-neutral-50"}`}>
+									<div
+										className={`grid size-8 place-items-center rounded-md ${module.is_completed || currentModuleId === module.id
+												? "bg-[rgba(241,236,249,0.5)] text-primary-300"
+												: "bg-neutral-100 text-neutral-400"
+											}`}>
+										<RiPlayCircleLine className="size-4" />
+									</div>
 
-								<div className="ml-auto">
-									<RiCheckboxCircleFill
-										className={`size-5 ${module.is_completed ? "text-primary-300" : "text-neutral-200"}`}
-									/>
-								</div>
-							</button>
-						))}
+									<div className="flex flex-col gap-1">
+										<p className="text-left text-sm capitalize text-neutral-500">{module.title}</p>
+										<p className="w-fit text-xs text-neutral-400">
+											{module.video_array.length
+												? `${convertSecondsToMinSec(module.video_array.at(0)?.duration ?? 0)} min`
+												: "--:--"}
+										</p>
+									</div>
+
+									<div className="ml-auto">
+										{isLocked ? (
+											<RiLock2Line className="size-4 text-orange-400" />
+										) : (
+											<RiCheckboxCircleFill
+												className={`size-5 ${module.is_completed ? "text-primary-300" : "text-neutral-200"}`}
+											/>
+										)}
+									</div>
+								</button>
+							);
+						})}
 				</div>
 			</div>
 

@@ -11,6 +11,7 @@ import {
 import { DashboardLayout } from "@/components/layouts";
 import { Seo } from "@/components/shared";
 import { Button } from "@/components/ui/button";
+import { useGetProfile } from "@/queries/student";
 import { useUserStore } from "@/store/z-store";
 import type { ChallengeProps } from "@/types";
 
@@ -35,6 +36,10 @@ function greetUser() {
 
 const Page = () => {
 	const { user } = useUserStore();
+	const { data: profile } = useGetProfile();
+
+	// Use the actual exam type from the student's first timeline entry (fallback to "JAMB")
+	const examType = profile?.time_line?.[0]?.exam?.name ?? "JAMB";
 
 	const [] = useQueries({ queries: [] });
 
@@ -62,7 +67,7 @@ const Page = () => {
 					<div className="flex w-full flex-col gap-4">
 						<p className="text-xl font-medium">Overview</p>
 						<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-							<Learning exam_type="JAMB" />
+							<Learning exam_type={examType} />
 							<Challenge challenges={challenges} />
 							<Leaderboard position={1} />
 						</div>

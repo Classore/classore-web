@@ -67,12 +67,12 @@ const Page = () => {
 							profile?.time_line?.map((bundle) => <Bundle key={bundle.id} bundle={bundle} />)
 						) : (
 							<div className="mx-auto flex flex-col gap-2 py-4">
-								<p className="text-neutral-400">No courses have been purchased</p>
+								<p className="text-neutral-400">You don&apos;t have a study plan yet.</p>
 
 								<Link
-									href="/dashboard/categories"
+									href="/signup/student/studying-for"
 									className="text-center text-sm text-primary-300 underline">
-									Buy Courses
+									Set Up Study Plan
 								</Link>
 							</div>
 						)}

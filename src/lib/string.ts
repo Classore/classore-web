@@ -180,10 +180,11 @@ export const formatEmail = (email: string | undefined) => {
 };
 
 export const getInitials = (value: string) =>
-	value
+	(value || "")
 		.split(" ")
 		.map((word) => word.substring(0, 1))
-		.join("");
+		.join("")
+		.toUpperCase();
 
 export const sanitize = (value: string) => value.toLowerCase().split("_").join(" ");
 

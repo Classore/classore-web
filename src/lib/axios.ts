@@ -26,14 +26,16 @@ api.interceptors.response.use(
 		return response;
 	},
 	(error) => {
-		if (error.status === 401) {
+		const status = error.response?.status;
+		if (status === 401) {
 			localStorage.removeItem("classore-user");
 			localStorage.removeItem("CLASSORE_USER");
 			Cookies.remove("CLASSORE_TOKEN");
 		}
-		if (error.status === 403) {
+		if (status === 403) {
 			toast.error("You are not authorized to access this resource");
 		}
+		return Promise.reject(error);
 	}
 );
 

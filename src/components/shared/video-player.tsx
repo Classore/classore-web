@@ -85,6 +85,12 @@ export const VideoPlayer = React.memo(
 		const lastSentProgressRef = React.useRef(0);
 		const { user } = useUserStore();
 
+		const getSocketLifecycleStatus = () => {
+			const connected = socket.current?.connected;
+			if (!connected) return "disconnected";
+			return isPlaying ? "connected_active" : "connected_inactive";
+		};
+
 		const updateModuleProgress = (socket: Socket, data: ProgressProps) => {
 			socket.emit("update_course_progress", data);
 		};
@@ -98,6 +104,11 @@ export const VideoPlayer = React.memo(
 			);
 			socket.current.on("connect", () => {
 				console.info("Socket connected");
+				console.log(`%c[SOCKET STATUS] CONNECTED_ACTIVE`, "color: #22c55e; font-weight: bold;");
+			});
+			socket.current.on("disconnect", () => {
+				console.warn("Socket disconnected");
+				console.log(`%c[SOCKET STATUS] DISCONNECTED`, "color: #ef4444; font-weight: bold;");
 			});
 			socket.current.on("update_course_progress", (data) => {
 				console.log({ data });
@@ -105,6 +116,7 @@ export const VideoPlayer = React.memo(
 
 			return () => {
 				socket.current?.off("connect");
+				socket.current?.off("disconnect");
 				socket.current?.off("error");
 				socket.current?.off("update_course_progress");
 				socket.current?.disconnect();
@@ -153,6 +165,14 @@ export const VideoPlayer = React.memo(
 		}, [isPlaying]);
 
 		const togglePlay = React.useCallback(() => {
+			// Log socket status when user clicks to play
+		 const status = getSocketLifecycleStatus();
+			console.log(`%c[SOCKET STATUS BEFORE PLAY] ${status.toUpperCase()}`, 
+				status === "connected_active" ? "color: #22c55e; font-weight: bold;" :
+				status === "connected_inactive" ? "color: #eab308; font-weight: bold;" :
+				"color: #ef4444; font-weight: bold;"
+			);
+
 			if (!videoRef.current) return;
 
 			if (isPlaying) {
@@ -563,6 +583,16 @@ export const VideoPlayer = React.memo(
 			};
 			// eslint-disable-next-line react-hooks/exhaustive-deps
 		}, [isPlaying]);
+
+		React.useEffect(() => {
+			// Log socket status on mount
+			const status = getSocketLifecycleStatus();
+			console.log(`%c[SOCKET STATUS] ${status.toUpperCase()}`, 
+				status === "connected_active" ? "color: #22c55e; font-weight: bold;" :
+				status === "connected_inactive" ? "color: #eab308; font-weight: bold;" :
+				"color: #ef4444; font-weight: bold;"
+			);
+		}, []);
 
 		React.useEffect(() => {
 			setProgress(0);

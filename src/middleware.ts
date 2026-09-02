@@ -87,6 +87,14 @@ export async function middleware(req: NextRequest) {
 			const isStudent = (user as UserProps).user_type === "STUDENT";
 
 			if (isOnAuth) {
+				// Allow /signin?switch=1 through so the page can clear the cookie
+				// and show a fresh login form for testing with a different account.
+				const isSwitchRequest =
+					url.pathname === "/signin" && url.searchParams.get("switch") === "1";
+				if (isSwitchRequest) {
+					return NextResponse.next({ request: { headers: requestHeaders } });
+				}
+
 				url.pathname = isStudent ? "/dashboard" : "/parents/dashboard";
 				return redirectResponse(url);
 			}

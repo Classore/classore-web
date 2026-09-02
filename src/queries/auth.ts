@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { endpoints } from "@/config";
 import { axios } from "@/lib";
@@ -28,6 +28,7 @@ export interface SignUpDto {
 	first_name: string;
 	last_name: string;
 	email: string;
+	phone_number?: string;
 	sign_up_channel: "DEFAULT" | "GOOGLE";
 	password: string;
 	user_type: "STUDENT" | "PARENT";
@@ -59,9 +60,24 @@ interface SignupProps {
 	user_details: UserProps;
 }
 const SignUpMutation = async (payload: SignUpDto) => {
-	return axios
-		.post<HttpResponse<SignupProps>>(endpoints().auth.signup, payload)
-		.then((res) => res.data);
+	// Uses native fetch (not the custom axios instance) so the path stays
+	// relative and hits /api/auth/signup (our Next.js proxy) rather than
+	// being prefixed with the backend baseURL.
+	const res = await fetch("/api/auth/signup", {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify(payload),
+	});
+	const data = await res.json();
+	if (!res.ok) {
+		// Throw so react-query's onError handler fires normally
+		const err = new Error(data?.message ?? "Signup failed") as Error & {
+			response: { data: typeof data };
+		};
+		err.response = { data };
+		throw err;
+	}
+	return data as HttpResponse<SignupProps>;
 };
 type VerifyEmailDto = {
 	verification_code: string;
@@ -131,6 +147,7 @@ type UpdateProfilePayload = {
 	phone_number: string;
 	description: string;
 	birthday: string;
+	class: string;
 	profile_image: string | File;
 };
 
@@ -151,6 +168,9 @@ const UpdateProfileMutation = async (payload: Partial<UpdateProfilePayload>) => 
 	}
 	if (payload.description) {
 		formdata.append("description", payload.description);
+	}
+	if (payload.class) {
+		formdata.append("class", payload.class);
 	}
 	if (payload.birthday) {
 		formdata.append("birthday", payload.birthday);
@@ -189,10 +209,31 @@ export const useGoogleCallback = () => {
 	});
 };
 
+export type DeleteAccountParams = {
+	id: string;
+	reason_for_account_delete: string;
+};
+const deleteAccount = async (params: DeleteAccountParams) => {
+	return axios
+		.put<HttpResponse<null>>(endpoints().auth.delete_entity, {
+			type: "USER",
+			id: params.id,
+			reason_for_account_delete: params.reason_for_account_delete,
+		})
+		.then((res) => res.data);
+};
+export const useDeleteAccountMutation = () => {
+	return useMutation({
+		mutationFn: deleteAccount,
+		mutationKey: ["delete-account"],
+	});
+};
+
 export {
 	AddGuardian,
 	AddWardsMutation,
 	ChangePasswordMutation,
+	deleteAccount,
 	ForgotPasswordMutation,
 	GetWaitlistQuery,
 	GoogleSignInQuery,

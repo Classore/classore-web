@@ -1,16 +1,17 @@
 import {
 	RiCalendar2Line,
+	RiCoinLine,
 	RiFacebookBoxLine,
 	RiFacebookCircleLine,
 	RiGraduationCapLine,
-	RiHome8Line,
+	RiHome6Line,
 	RiInstagramLine,
 	RiLayoutGridLine,
 	RiLinkedinBoxLine,
 	RiLinksLine,
 	RiMessage3Line,
-	RiSpeedUpLine,
 	RiTeamLine,
+	RiBook3Line,
 	RiTrophyLine,
 	RiTwitterXLine,
 	RiWhatsappLine,
@@ -59,7 +60,7 @@ export const dashboard_links = [
 			{
 				name: "home",
 				href: "/dashboard",
-				icon: RiHome8Line,
+				icon: RiHome6Line,
 			},
 			{
 				name: "categories",
@@ -87,9 +88,19 @@ export const dashboard_links = [
 				icon: RiTeamLine,
 			},
 			{
+				name: "study guides",
+				href: "/dashboard/study-guides",
+				icon: RiBook3Line,
+			},
+			{
 				name: "leaderboard",
 				href: "/dashboard/leaderboard",
 				icon: RiTrophyLine,
+			},
+			{
+				name: "token wallet",
+				href: "/dashboard/wallet",
+				icon: RiCoinLine,
 			},
 		],
 	},
@@ -100,11 +111,6 @@ export const dashboard_links = [
 				name: "calendar",
 				href: "/dashboard/calendar",
 				icon: RiCalendar2Line,
-			},
-			{
-				name: "test center",
-				href: "/dashboard/test-center",
-				icon: RiSpeedUpLine,
 			},
 		],
 	},
@@ -117,7 +123,7 @@ export const parents_dashboard_links = [
 			{
 				name: "home",
 				href: "/parents/dashboard",
-				icon: RiHome8Line,
+				icon: RiHome6Line,
 			},
 			{
 				name: "messages",

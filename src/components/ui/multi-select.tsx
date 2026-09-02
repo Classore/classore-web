@@ -65,9 +65,9 @@ export const MultiSelect = <T extends FieldValues>({
 
 			const valIdx = values.findIndex((val) => val === value);
 			if (valIdx === -1) {
-				if (maxSelectable && values.length >= maxSelectable) {
+				if (typeof maxSelectable === "number" && values.length >= maxSelectable) {
 					toast.info(
-						`You have selected the maximum number of selection allowed, which is: ${maxSelectable}.`
+						`You have reached the maximum allowed subjects for this selection (${maxSelectable}).`
 					);
 					return;
 				}

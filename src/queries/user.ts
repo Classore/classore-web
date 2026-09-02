@@ -178,9 +178,11 @@ type RenewPlanResp = {
 	reference: string;
 	amount: number;
 };
-const renewPlan = async (id: string) => {
+const renewPlan = async (id: string, promo_code?: string) => {
 	return axios
-		.put<HttpResponse<RenewPlanResp>>(endpoints(id).user.renew_plan)
+		.put<HttpResponse<RenewPlanResp>>(endpoints(id).user.renew_plan, {
+			...(promo_code ? { promo_code } : {}),
+		})
 		.then((res) => res.data);
 };
 

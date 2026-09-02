@@ -44,6 +44,7 @@ const Page = () => {
 
 	const id = router.query.id as string;
 	const module_id = router.query.module_id as string;
+	const chapter_id = (router.query.chapter_id as string) || (router.query.chapter as string);
 
 	const {
 		data: course,
@@ -53,8 +54,11 @@ const Page = () => {
 		course_id: id || "",
 	});
 
+	const effectiveChapterId = chapter_id || course?.current_chapter?.id || "";
+
 	const { data: chapter } = useGetChapter({
-		chapter_id: course?.current_chapter.id || "",
+		chapter_id: effectiveChapterId,
+		enabled: !!effectiveChapterId,
 	});
 
 	const lesson = React.useMemo(() => {

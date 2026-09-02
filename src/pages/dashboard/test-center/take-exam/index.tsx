@@ -16,6 +16,10 @@ const Page = () => {
 	const router = useRouter();
 	const id = router.query.id as string;
 
+	React.useEffect(() => {
+		router.replace("/dashboard");
+	}, [router]);
+
 	usePreventNavigation(true);
 
 	const {} = useGetQuestions(id);

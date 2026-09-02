@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { RiCoinLine } from "@remixicon/react";
 
 import meeting from "@/assets/illustrations/meeting.svg";
 import { CompleteKyc } from "../dashboard/complete-kyc";
@@ -89,6 +90,23 @@ export function DashboardLayout({ children, className }: DashboardLayoutProps) {
 								))}
 							</div>
 						</div>
+					</div>
+
+					<div className="w-full px-4 pb-2">
+						<Link
+							href="/dashboard/wallet"
+							className="flex items-center gap-x-2 rounded-xl border border-primary-100 bg-primary-50 px-3 py-2.5 transition-colors hover:bg-primary-100"
+						>
+							<div className="flex size-7 items-center justify-center rounded-lg bg-primary-600">
+								<RiCoinLine className="size-4 text-white" />
+							</div>
+							<div className="flex-1 min-w-0">
+								<p className="text-xs font-medium text-neutral-700">Token Wallet</p>
+								<p className="text-[10px] text-primary-600 font-semibold">
+									{(user?.wallet?.token_balance ?? 0).toLocaleString()} tokens
+								</p>
+							</div>
+						</Link>
 					</div>
 
 					<div className="w-full p-4">

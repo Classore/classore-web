@@ -61,7 +61,7 @@ const DialogContent = React.forwardRef<
 			{...props}>
 			<div
 				className={cn(dialogVariants({ variant }), "flex flex-col gap-4 rounded-xl p-4", className)}>
-				<div className="absolute -top-80 left-0 z-30">
+				<div className="pointer-events-none absolute -top-80 left-0 z-30">
 					<ModalArt />
 				</div>
 				<DialogPrimitive.Close className="z-50 ml-auto grid size-8 place-items-center rounded-full bg-white transition-colors hover:bg-neutral-100">

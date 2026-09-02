@@ -1,15 +1,14 @@
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 
 import type { HttpError, HttpResponse, PaginatedResponse, PaginationProps } from "@/types";
-import type { MessageProps, RoomProps } from "@/types/message";
+import type { MessageProps, RoomProps, UserItemProps } from "@/types/message";
 import { endpoints } from "@/config";
 import { axios } from "@/lib";
 
+// ── Find or Create Room ────────────────────────────────────────────────────
 const findOrCreateRoom = async (members: string[]) => {
 	return axios
-		.post<HttpResponse<RoomProps>>(endpoints().message.create_room, {
-			members,
-		})
+		.post<HttpResponse<RoomProps>>(endpoints().message.create_room, { members })
 		.then((res) => res.data);
 };
 export const useFindOrCreateRoom = ({
@@ -30,6 +29,7 @@ export const useFindOrCreateRoom = ({
 	});
 };
 
+// ── Get Single Room ────────────────────────────────────────────────────────
 const getRoom = async (roomId: string) => {
 	return axios
 		.get<HttpResponse<RoomProps>>(endpoints(roomId).message.get_room)
@@ -47,6 +47,7 @@ export const useGetRoom = (roomId: string) => {
 	});
 };
 
+// ── Upload Media ───────────────────────────────────────────────────────────
 const uploadMedia = async (media: File[]) => {
 	const formData = new FormData();
 	for (let i = 0; i < media.length; i++) {
@@ -74,11 +75,28 @@ export const useUploadMedia = ({
 	});
 };
 
+// ── Send Message (REST) ────────────────────────────────────────────────────
+// Matches mobile: POST /chat/send-message with { room, content }
+// The backend reads the sender from the JWT token — no userId field needed.
+const sendMessageRest = async (data: { room: string; content: string }) => {
+	return axios
+		.post<HttpResponse<MessageProps>>(endpoints().message.send_message, data)
+		.then((res) => res.data);
+};
+export const useSendMessage = () => {
+	return useMutation({
+		mutationKey: ["send_message"],
+		mutationFn: sendMessageRest,
+	});
+};
+
+// ── Get Messages (infinite) ────────────────────────────────────────────────
+// Response shape: { data: { data: MessageProps[], meta: { page, limit, hasNextPage, ... } } }
 const getMessages = async (params: PaginationProps & { roomId: string; user_id: string }) => {
 	return axios
-		.get<
-			HttpResponse<PaginatedResponse<MessageProps>>
-		>(endpoints().message.fetch_messages, { params })
+		.get<HttpResponse<PaginatedResponse<MessageProps>>>(endpoints().message.fetch_messages, {
+			params,
+		})
 		.then((res) => res.data.data);
 };
 
@@ -115,80 +133,18 @@ export const useGetInfiniteMessages = ({
 		enabled: !!roomId && !!user_id,
 		initialPageParam: 1,
 		getNextPageParam: (lastPage: PaginatedResponse<MessageProps>) => {
-			// For loading older messages (going backwards in time)
 			if (lastPage.meta.hasNextPage) {
 				return lastPage.meta.page + 1;
 			}
 			return undefined;
 		},
-		getPreviousPageParam: (firstPage: PaginatedResponse<MessageProps>) => {
-			// For loading newer messages (going forwards in time)
-			if (firstPage.meta.page > 1) {
-				return firstPage.meta.page - 1;
-			}
-			return undefined;
-		},
-		// Keep data fresh for real-time messaging
-		refetchInterval: 30000, // 30 seconds
-		staleTime: 1000 * 60 * 5, // 5 minutes
-	});
-};
-
-// Alternative implementation for bidirectional infinite scroll
-export const useGetBidirectionalMessages = ({
-	roomId,
-	user_id,
-	limit = 20,
-	initialPage = 1,
-}: {
-	roomId: string;
-	user_id: string;
-	limit?: number;
-	initialPage?: number;
-}) => {
-	return useInfiniteQuery({
-		queryKey: ["bidirectional_messages", roomId],
-		queryFn: ({ pageParam }) => {
-			const page = pageParam as number;
-			return getMessages({ roomId, user_id, page, limit });
-		},
-		enabled: !!roomId,
-		initialPageParam: initialPage,
-		getNextPageParam: (lastPage: PaginatedResponse<MessageProps>) => {
-			if (lastPage.meta.hasNextPage) {
-				return lastPage.meta.page + 1;
-			}
-			return undefined;
-		},
-		getPreviousPageParam: (firstPage: PaginatedResponse<MessageProps>) => {
-			if (firstPage.meta.page > 1) {
-				return firstPage.meta.page - 1;
-			}
-			return undefined;
-		},
-		maxPages: 50, // Limit memory usage
+		// Keep data fresh; socket notifications will also trigger refetches
 		refetchInterval: 30000,
 		staleTime: 1000 * 60 * 5,
 	});
 };
 
-export const useRealtimeMessages = ({
-	roomId,
-	user_id,
-}: {
-	roomId: string;
-	user_id: string;
-	onNewMessage?: (message: MessageProps) => void;
-}) => {
-	return useQuery({
-		queryKey: ["realtime_messages", roomId],
-		queryFn: () => getMessages({ roomId, user_id, page: 1, limit: 1 }),
-		enabled: !!roomId,
-		refetchInterval: 5000,
-		refetchIntervalInBackground: true,
-	});
-};
-
+// ── Get User Rooms ─────────────────────────────────────────────────────────
 const getUserRooms = async (user_id: string) => {
 	return axios
 		.get<HttpResponse<RoomProps[]>>(endpoints().message.get_user_rooms, { params: { user_id } })
@@ -206,19 +162,51 @@ export const useGetUserRooms = (user_id: string) => {
 	});
 };
 
-const getForums = async (user_id: string) => {
+// ── Get Forums ─────────────────────────────────────────────────────────────
+const getForums = async () => {
 	return axios
-		.get<HttpResponse<RoomProps[]>>(endpoints().message.get_forums, { params: { user_id } })
-		.then((res) => res.data);
+		.get<HttpResponse<RoomProps[]>>(endpoints().message.get_forums)
+		.then((res) => res.data.data ?? []);
 };
-export const useGetForums = (user_id: string) => {
+export const useGetForums = () => {
 	return useQuery({
 		queryKey: ["forums"],
-		queryFn: () => getForums(user_id),
-		staleTime: Infinity,
-		gcTime: Infinity,
+		queryFn: getForums,
+		staleTime: 30 * 1000,
 		refetchIntervalInBackground: true,
-		refetchInterval: 1000 * 10,
+		refetchInterval: 1000 * 30,
+	});
+};
+
+// ── Get Room Members ───────────────────────────────────────────────────────
+const getRoomMembers = async (roomId: string) => {
+	return axios
+		.get<HttpResponse<UserItemProps[]>>(endpoints().message.fetch_room_members, {
+			params: { roomId },
+		})
+		.then((res) => res.data.data ?? []);
+};
+export const useGetRoomMembers = (roomId: string | null | undefined) => {
+	return useQuery({
+		queryKey: ["room_members", roomId],
+		queryFn: () => (roomId ? getRoomMembers(roomId) : Promise.resolve([])),
+		enabled: !!roomId,
+		staleTime: 60 * 1000,
+	});
+};
+
+// ── Join Subject Forum ─────────────────────────────────────────────────────
+const joinSubjectForum = async (subject_id: string) => {
+	return axios
+		.post<HttpResponse<{ message: string }>>(endpoints().message.join_subject_forum, {
+			subject_id,
+		})
+		.then((res) => res.data);
+};
+export const useJoinSubjectForum = () => {
+	return useMutation({
+		mutationKey: ["join_subject_forum"],
+		mutationFn: joinSubjectForum,
 	});
 };
 

@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import Link from "next/link";
 import * as z from "zod";
+import type { GetServerSideProps } from "next";
 
 import { AuthGraphic, GoogleIcon } from "@/assets/icons";
 import { AuthLayout } from "@/components/layouts/auth";
@@ -27,6 +28,18 @@ const loginSchema = z.object({
 });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
+
+/**
+ * If the user visits /signin?switch=1 we clear their cookie server-side so
+ * the middleware won't redirect them back to the dashboard.
+ * This is the only way to switch accounts during local testing.
+ */
+export const getServerSideProps: GetServerSideProps = async ({ query, res }) => {
+	if (query.switch === "1") {
+		res.setHeader("Set-Cookie", "CLASSORE_TOKEN=; Path=/; Max-Age=0; SameSite=Lax");
+	}
+	return { props: {} };
+};
 
 const Page = () => {
 	const { signIn } = useUserStore();
@@ -155,6 +168,17 @@ const Page = () => {
 									Sign up
 								</Link>
 							</p>
+
+							{/* DEV HELPER: If you're redirected back to the dashboard, use this link to
+							    clear your session and sign in with a different account. */}
+							<p className="text-center text-xs text-neutral-400">
+								Testing with a different account?{" "}
+								<Link
+									href="/signin?switch=1"
+									className="font-medium text-orange-400 hover:underline">
+									Switch Account
+								</Link>
+							</p>
 						</div>
 					</form>
 
@@ -169,9 +193,8 @@ const Page = () => {
 							className="font-normal"
 							onClick={() =>
 								window.open(
-									`${
-										process.env.NEXT_PUBLIC_API_URL ||
-										"https://classore-be-june-224829194037.europe-west1.run.app/classore/v1"
+									`${process.env.NEXT_PUBLIC_API_URL ||
+									"https://classore-be-june-224829194037.europe-west1.run.app/classore/v1"
 									}/auth/google/callback`,
 									"_self"
 								)

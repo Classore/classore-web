@@ -1,4 +1,4 @@
-import { RiCloseCircleLine, RiThumbDownLine, RiThumbUpLine } from "@remixicon/react";
+import { RiCloseCircleLine, RiLock2Line, RiThumbDownLine, RiThumbUpLine } from "@remixicon/react";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import Image from "next/image";
@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGetChapter, useGetCourse, useGetProfile } from "@/queries/student";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChapterModules, QuizHistory, Resources } from "@/components/home";
-import { JoinCommunityModal, RenewalModal } from "@/components/modals";
+import { JoinCommunityModal, RenewalModal, UpgradePlanModal } from "@/components/modals";
 import { CourseActions } from "@/components/course/course-actions";
 import { type StartCourseDto, startCourse } from "@/queries/user";
 import blockchain from "@/assets/illustrations/blockchain.svg";
@@ -19,6 +19,7 @@ import { DashboardLayout } from "@/components/layouts";
 import trophy from "@/assets/illustrations/trophy.svg";
 import { Button } from "@/components/ui/button";
 import { capitalize, getInitials } from "@/lib";
+import { canAccessModule } from "@/lib/free-trial";
 import { useUserStore } from "@/store/z-store";
 import { useCourse } from "@/hooks";
 import {
@@ -40,6 +41,7 @@ const TABS = ["summary", "resources", "quiz history"] as const;
 
 const Page = () => {
 	const [renewalModalOpen, setRenewalModalOpen] = React.useState(false);
+	const [upgradeModalOpen, setUpgradeModalOpen] = React.useState(false);
 	const { user } = useUserStore();
 	const router = useRouter();
 	const { id, bundle: bundleId } = router.query;
@@ -59,7 +61,6 @@ const Page = () => {
 	});
 
 	const { data: profile } = useGetProfile();
-	const bundle = profile?.time_line.find((item) => item.exam_bundle_details.id === bundleId);
 
 	const {
 		data: course,
@@ -72,6 +73,67 @@ const Page = () => {
 		refetchIntervalInBackground: true,
 		refetchInterval: 1000 * 2,
 	});
+
+	// Robustly match the student timeline for this course (matching mobile logic)
+	const courseTimeline = React.useMemo(() => {
+		if (!profile?.time_line?.length) return null;
+		return (
+			profile.time_line.find((t) => {
+				if (
+					bundleId &&
+					(t.chosen_bundle === bundleId ||
+						t.exam_bundle_details?.id === bundleId ||
+						t.id === bundleId)
+				) {
+					return true;
+				}
+				if (
+					course?.chosen_bundle &&
+					(t.chosen_bundle === course.chosen_bundle ||
+						t.exam_bundle_details?.id === course.chosen_bundle)
+				) {
+					return true;
+				}
+				const subjectName = String(course?.subject_id?.name || "").toLowerCase().trim();
+				if (
+					subjectName &&
+					t.subjects?.some(
+						(s: any) =>
+							String(s.name || s.subject_name || "").toLowerCase().trim() === subjectName ||
+							s.id === id ||
+							s.subject_id === id
+					)
+				) {
+					return true;
+				}
+				return false;
+			}) ||
+			profile.time_line.find((t) => t.status === "ONGOING" || t.status === "ACTIVE") ||
+			profile.time_line[0] ||
+			null
+		);
+	}, [profile?.time_line, bundleId, course, id]);
+
+	const bundle = courseTimeline;
+
+	// Determine whether this course's timeline is paid
+	const isPaid = React.useMemo(() => {
+		if (courseTimeline?.is_paid) return true;
+		if (!profile?.time_line?.length) return false;
+		if (bundleId) {
+			return (
+				profile.time_line.find(
+					(t) =>
+						t.chosen_bundle === bundleId ||
+						t.exam_bundle_details?.id === bundleId ||
+						t.id === bundleId
+				)?.is_paid ?? false
+			);
+		}
+		return profile.time_line.some(
+			(t) => t.is_paid && (t.status === "ONGOING" || t.status === "ACTIVE")
+		);
+	}, [courseTimeline, profile?.time_line, bundleId]);
 
 	const { initialChapterId, initialModuleId } = React.useMemo(() => {
 		if (!course?.chapters?.length) {
@@ -124,7 +186,7 @@ const Page = () => {
 		chapters,
 		courseId: String(id),
 		moduleId: initialModuleId,
-		onProgressUpdate: async () => {},
+		onProgressUpdate: async () => { },
 	});
 
 	const { mutate: startCourseMutation } = useMutation({
@@ -225,6 +287,13 @@ const Page = () => {
 		</div>
 	);
 
+	// Check if the currently selected module is accessible given payment status
+	const isCurrentModuleAccessible = React.useMemo(() => {
+		if (isPaid) return true; // All unlocked for paid users
+		if (!course?.chapters?.length) return false;
+		return canAccessModule(chapterId, moduleId, course.chapters);
+	}, [isPaid, course, chapterId, moduleId]);
+
 	const renderVideoPlayer = () => {
 		if (isChapterPending) {
 			return (
@@ -234,7 +303,29 @@ const Page = () => {
 			);
 		}
 
-		const videoUrl = currentModule?.video_array?.[0]?.secure_url;
+		// Show lock overlay for locked modules (unpaid users beyond the first module)
+		if (!isCurrentModuleAccessible) {
+			return (
+				<button
+					type="button"
+					onClick={() => setUpgradeModalOpen(true)}
+					className="flex aspect-[16/9] w-full cursor-pointer flex-col items-center justify-center gap-4 rounded bg-orange-50 p-10 transition-colors hover:bg-orange-100">
+					<div className="grid size-16 place-items-center rounded-full bg-orange-100">
+						<RiLock2Line className="size-8 text-orange-500" />
+					</div>
+					<div className="text-center">
+						<p className="font-semibold text-neutral-900">Premium Content Locked</p>
+						<p className="mt-1 text-sm text-neutral-500">
+							Tap here to unlock full access and continue your learning journey ✨
+						</p>
+					</div>
+				</button>
+			);
+		}
+
+		const videoUrl =
+			currentModule?.video_array?.[0]?.derived_url ||
+			currentModule?.video_array?.[0]?.secure_url;
 
 		if (videoUrl) {
 			return (
@@ -422,6 +513,9 @@ const Page = () => {
 									onSelectChapter={setCurrentChapterId}
 									onSelectModule={setCurrentModuleId}
 									previousModule={previousModule}
+									isPaid={isPaid}
+									chapters={course?.chapters ?? []}
+									onClickLocked={() => setUpgradeModalOpen(true)}
 								/>
 							</TabsContent>
 							<TabsContent value="resources">
@@ -448,6 +542,13 @@ const Page = () => {
 			{bundle && (
 				<RenewalModal open={renewalModalOpen} setOpen={setRenewalModalOpen} bundle={bundle} />
 			)}
+			<UpgradePlanModal
+				open={upgradeModalOpen}
+				setOpen={setUpgradeModalOpen}
+				courseTitle={course?.subject_id?.name}
+				moduleTitle={currentModule?.title}
+				bundle={bundle ?? null}
+			/>
 		</>
 	);
 };

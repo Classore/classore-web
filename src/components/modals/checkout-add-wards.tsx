@@ -18,6 +18,8 @@ type CheckoutModalProps = {
 
 export const CheckoutAddWardsModal = ({ open, setOpen }: CheckoutModalProps) => {
 	const [visible, setVisible] = React.useState(false);
+	const [promoCode, setPromoCode] = React.useState("");
+	const [appliedCode, setAppliedCode] = React.useState("");
 	const values = useMiscStore((state) => state.payload);
 
 	const chosen_subjects = values.vettings.reduce((acc, item) => acc + item.allowed_subjects, 0);
@@ -45,7 +47,12 @@ export const CheckoutAddWardsModal = ({ open, setOpen }: CheckoutModalProps) => 
 		}
 
 		// @ts-expect-error err
-		mutate(values.wards);
+		const wards = values.wards.map((ward: AddWardsDto) => ({
+			...ward,
+			...(appliedCode ? { promo_code: appliedCode } : {}),
+		}));
+
+		mutate(wards);
 	};
 
 	return (
@@ -87,6 +94,43 @@ export const CheckoutAddWardsModal = ({ open, setOpen }: CheckoutModalProps) => 
 						<p className="font-medium">{formatCurrency(Number(values.summary.grand_total ?? 0))}</p>
 					</li>
 				</ul>
+
+				{/* Promo Code */}
+				<div className="flex flex-col gap-1.5">
+					<label className="text-sm font-medium text-neutral-700">
+						Promo Code <span className="font-normal text-neutral-400">(optional)</span>
+					</label>
+					<div className="flex items-center gap-2">
+						<input
+							type="text"
+							value={promoCode}
+							onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+							placeholder="Enter promo code"
+							disabled={!!appliedCode}
+							className="h-10 flex-1 rounded-md border border-neutral-200 px-3 text-sm uppercase tracking-wider placeholder:normal-case placeholder:tracking-normal disabled:opacity-50"
+						/>
+						{appliedCode ? (
+							<button
+								type="button"
+								onClick={() => { setAppliedCode(""); setPromoCode(""); }}
+								className="h-10 rounded-md border border-red-200 bg-red-50 px-3 text-xs font-medium text-red-600 hover:bg-red-100">
+								Remove
+							</button>
+						) : (
+							<button
+								type="button"
+								onClick={() => { if (promoCode.trim()) setAppliedCode(promoCode.trim()); }}
+								className="h-10 rounded-md bg-primary-300 px-4 text-xs font-medium text-white hover:bg-primary-400">
+								Apply
+							</button>
+						)}
+					</div>
+					{appliedCode && (
+						<p className="text-xs text-green-600">
+							✓ &ldquo;{appliedCode}&rdquo; applied &mdash; discount reflected at payment
+						</p>
+					)}
+				</div>
 
 				<div className="flex flex-col gap-1">
 					<Button onClick={continueToPayment} type="submit" disabled={isPending}>

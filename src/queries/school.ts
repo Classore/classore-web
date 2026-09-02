@@ -46,6 +46,10 @@ export type ExamBundlesResp = PaginatedResponse<{
 	examinationbundle_rating: number;
 	examination_name: string;
 	examinationbundle_banner: string;
+	examinationbundle_token_cost?: number;
+	examinationbundle_token_cost_per_subject?: number;
+	token_cost?: number;
+	token_cost_per_subject?: number;
 	subject_count: number;
 	enrolled: number;
 	raters: number;
@@ -108,6 +112,28 @@ export const useGetSubjects = () => {
 	return useQuery(getSubjectsQueryOptions);
 };
 
+const getBundleSubjects = async (bundle_id: string) => {
+	return axios
+		.get<HttpResponse<SubjectsResp>>(endpoints().school.get_subjects, {
+			params: {
+				page: 1,
+				limit: 50,
+				examination_bundle: bundle_id,
+			},
+		})
+		.then((res) => res.data);
+};
+
+export const useGetBundleSubjects = ({ bundle_id }: { bundle_id?: string }) => {
+	return useQuery({
+		queryKey: ["bundle-subjects", { bundle_id }],
+		queryFn: bundle_id ? () => getBundleSubjects(bundle_id) : skipToken,
+		staleTime: Infinity,
+		gcTime: Infinity,
+		select: (data) => data.data.data,
+	});
+};
+
 // GET A SUBJECT
 type SubjectResp = {
 	subject_id: string;
@@ -152,17 +178,19 @@ export const useGetClasses = () => {
 	});
 };
 
-// <-- CREATE STUDY TIMELINE -->
-type StudyTimelinePayload = {
+// <-- CREATE STUDY TIMELINE (Free / Base) -->
+export type StudyTimelinePayload = {
 	exam_type: string;
 	chosen_bundle: string;
 	subjects: Array<string>;
+	promo_code?: string;
 };
-type StudyTimelineResp = {
+export type StudyTimelineResp = {
 	payment_link: {
 		authorization_url: string;
 		access_code: string;
 		reference: string;
+		link?: string;
 	};
 };
 const createStudyTimeline = async (payload: StudyTimelinePayload) => {
@@ -175,6 +203,45 @@ export const useCreateStudyTimeline = () => {
 		mutationKey: ["create-study-timeline"],
 		mutationFn: createStudyTimeline,
 		onSuccess: () => {},
+	});
+};
+
+// <-- CREATE PAID STUDY TIMELINE (Paystack Fiat) -->
+const createPaidStudyTimeline = async (payload: StudyTimelinePayload) => {
+	return axios
+		.post<HttpResponse<StudyTimelineResp>>(endpoints().school.create_paid_study_timeline, payload)
+		.then((res) => res.data);
+};
+export const useCreatePaidStudyTimeline = () => {
+	return useMutation({
+		mutationKey: ["create-paid-study-timeline"],
+		mutationFn: createPaidStudyTimeline,
+	});
+};
+
+// <-- UPDATE STUDY TIMELINE (Add extra subjects with fiat) -->
+export type UpdateTimelinePayload = {
+	study_timeline_id: string;
+	subjects: string[];
+	promo_code?: string;
+};
+export type UpdateTimelineResp = {
+	payment_link: {
+		authorization_url: string;
+		access_code: string;
+		reference: string;
+		link?: string;
+	};
+};
+const updateStudyTimeline = async (payload: UpdateTimelinePayload) => {
+	return axios
+		.put<HttpResponse<UpdateTimelineResp>>(endpoints().school.update_study_timeline, payload)
+		.then((res) => res.data);
+};
+export const useUpdateStudyTimeline = () => {
+	return useMutation({
+		mutationKey: ["update-study-timeline"],
+		mutationFn: updateStudyTimeline,
 	});
 };
 
@@ -209,7 +276,6 @@ export const useVetStudyPack = () => {
 		mutationKey: ["vet-study-pack"],
 		mutationFn: vetStudyPack,
 		onSuccess: () => {
-			// fake
 			toast.success("Your study timeline has been created!");
 		},
 	});

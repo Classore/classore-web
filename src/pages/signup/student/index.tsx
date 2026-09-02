@@ -26,6 +26,26 @@ const onboardSchema = z.object({
 		.min(1, { message: "Please enter your email address" })
 		.email("Please enter a valid email")
 		.trim(),
+	phone_number: z
+		.string()
+		.min(1, {
+			message: "Please enter your phone number (preferably WhatsApp number)",
+		})
+		.trim()
+		.transform((val) => {
+			if (val.startsWith("0")) return val;
+			return val.startsWith("+") ? val : `+${val}`;
+		})
+		.refine(
+			(val) => {
+				const isLocalNG = /^0\d{10}$/.test(val);
+				const isInternational = /^\+\d{7,15}$/.test(val);
+				return isLocalNG || isInternational;
+			},
+			{
+				message: "Please enter a valid phone number (e.g. 080... or +234...)",
+			}
+		),
 	password: z
 		.string()
 		.min(1, { message: "Please enter your password" })
@@ -71,6 +91,7 @@ const Page = () => {
 			first_name: "",
 			last_name: "",
 			email: "",
+			phone_number: "",
 			password: "",
 			referral_code,
 			accept_terms: undefined,
@@ -153,6 +174,14 @@ const Page = () => {
 								className="col-span-full"
 								control={control}
 								name="email"
+							/>
+							<Input
+								type="tel"
+								label="Phone Number (preferably WhatsApp number)"
+								placeholder="+2348012345678"
+								className="col-span-full"
+								control={control}
+								name="phone_number"
 							/>
 							<Input
 								type="password"

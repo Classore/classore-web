@@ -138,48 +138,68 @@ export const useGetChapter = ({
 type EventParams = Partial<{
 	timeline: "THIS_MONTH" | "THIS_WEEK" | "THIS_YEAR" | "TODAY";
 	month: number;
+	year: number;
 }>;
-export type EventsResp = Array<{
+
+export type CalendarEventItem = {
+	id: string;
+	createdOn: string;
+	category_id?: { id: string; name: string } | string;
+	sub_category?: { id: string; name: string } | string;
+	subject?: { id: string; name: string } | string;
+	event_day?: number;
+	date: string;
+	dayName?: string;
+	start_hour: number;
+	end_hour: number;
+	is_active: boolean;
+	title: string;
+	frequency?: string;
+	meeting_link?: string;
+	platform?: string;
+	note?: string;
+};
+
+export type CalendarDayGroup = {
 	date: string;
 	day: number;
-	events: Array<{
-		id: string;
-		createdOn: string;
-		category_id: {
-			id: string;
-			name: string;
-		};
-		sub_category: {
-			id: string;
-			name: string;
-		};
-		subject: {
-			id: string;
-			name: string;
-		};
-		event_day: number;
-		date: string;
-		start_hour: number;
-		end_hour: number;
-		is_active: boolean;
-		title: string;
-	}>;
-}>;
-const getUpcomingEvents = async (params: EventParams) => {
+	dayName?: string;
+	events: CalendarEventItem[];
+};
+
+export type CalendarStats = {
+	total_events: number;
+	upcoming: number;
+	live: number;
+	ended: number;
+};
+
+export type GetEventsResponse = {
+	calendar?: CalendarStats;
+	events: CalendarDayGroup[];
+};
+
+const getUpcomingEvents = async (params: EventParams): Promise<GetEventsResponse> => {
 	return axios
-		.get<HttpResponse<MyCoursesResp>>(endpoints().student.get_upcoming_events, {
+		.get<HttpResponse<GetEventsResponse | CalendarDayGroup[]>>(endpoints().student.get_upcoming_events, {
 			params: {
-				...(params?.month && { examination_bundle: params.month }),
-				...(params?.timeline && { examination: params.timeline }),
+				...(params?.month !== undefined && { month: params.month }),
+				...(params?.year !== undefined && { year: params.year }),
+				...(params?.timeline && { timeline: params.timeline }),
 			},
 		})
-		.then((res) => res.data);
+		.then((res) => {
+			const resData = res.data?.data;
+			if (Array.isArray(resData)) {
+				return { events: resData };
+			}
+			return (resData as GetEventsResponse) || { events: [] };
+		});
 };
 export const useGetUpcomingEvents = (params: EventParams) => {
 	return useQuery({
 		queryKey: ["upcoming-events", { params }],
 		queryFn: () => getUpcomingEvents(params),
-		select: (data) => data.data,
 	});
 };
 
@@ -207,9 +227,9 @@ const getLeaderboard = async (params: LeaderboardParams) => {
 		.get<HttpResponse<LeaderboardResp>>(endpoints().student.get_leaderboard, {
 			params: {
 				...params,
-				...(params?.examination && { examination_bundle: params.examination }),
+				...(params?.examination && { examination: params.examination }),
 				...(params?.examination_bundle && {
-					examination: params.examination_bundle,
+					examination_bundle: params.examination_bundle,
 				}),
 			},
 		})

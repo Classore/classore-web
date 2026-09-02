@@ -127,6 +127,14 @@ export type UserProps = BaseProps & {
 	}[];
 	user_type: "STUDENT" | "PARENT";
 	wallet_id: string;
+	wallet?: {
+		id: string;
+		user_id: string;
+		admin_id: string;
+		current_balance: number;
+		currency: string;
+		token_balance: number;
+	};
 };
 
 export type AdminProps = BaseProps & {
@@ -569,6 +577,10 @@ export type UserProfileResp = {
 		};
 		renewal_amount: number;
 	}[];
+	wallet?: {
+		token_balance: number;
+		id?: string;
+	};
 };
 
 export type SingleCourseResp = {

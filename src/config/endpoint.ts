@@ -13,14 +13,19 @@ export const endpoints = (id?: string) => {
 		add_wards: "/auth/add-my-wards",
 		update_profile: "/auth/update-profile",
 		change_password: "/auth/change-password",
+		delete_entity: "/auth/delete-entity",
 	} as const;
 
 	const bank = {
 		get_banks: "/admin/payment/get-banks",
+		verify_bank_details: "/transaction/verify-bank-details",
 		add_account_details: "/transaction/add-bank-details",
 		get_account_details: "/transaction/view-my-bank-details",
 		get_withdrawal_history: "/transaction/fetch-withdrawals",
 		request_withdrawal: "/transaction/make-withdrawal-request",
+		get_points: "/transaction/get-classore-points",
+		redeem_points: "/transaction/redeem-points",
+		get_referrals: "/student/my-referrals",
 	} as const;
 
 	const courses = {
@@ -38,6 +43,9 @@ export const endpoints = (id?: string) => {
 		fetch_messages: "/chat/fetch-room-messages",
 		get_user_rooms: "/chat/fetch-user-rooms",
 		get_forums: "/chat/fetch-forums",
+		join_subject_forum: "/chat/join-subject-forum",
+		fetch_room_members: "/chat/fetch-room-members",
+		send_message: "/chat/send-message",
 	} as const;
 
 	const notifications = {
@@ -62,6 +70,9 @@ export const endpoints = (id?: string) => {
 		get_subject: `/school/subject/view-one/${id}`,
 		get_classes: "/school/subject/fetch-classes",
 		create_study_timeline: "/school/exams/create-study-timeline",
+		create_paid_study_timeline: "/school/exams/create-paid-study-timeline",
+		update_study_timeline: "/school/exams/update-study-timeline",
+		renew_plan: "/student/my-plans/renew",
 		vet_study_pack: "/school/exams/vet-study-pack-options",
 		get_my_courses: "/student/my-courses",
 		payment_callback: "/transaction/paystack-callback",
@@ -72,7 +83,7 @@ export const endpoints = (id?: string) => {
 		get_my_courses: "/student/my-courses",
 		get_course: `/student/view-course/${id}`,
 		get_chapter: `student/view-chapter/${id}`,
-		get_upcoming_events: "student/upcoming-events",
+		get_upcoming_events: "/calender/events/get-all",
 		get_leaderboard: "/student/leaderboard/fetch-all",
 	} as const;
 
@@ -89,7 +100,7 @@ export const endpoints = (id?: string) => {
 		start_course: `/student/start-course/${id}`,
 		update_course: `/student/update-course-progress/${id}`,
 		create_courses: "/student/create-courses",
-		upcoming_events: "/student/upcoming-events",
+		upcoming_events: "/calender/events/get-all",
 		leaderboard: "/student/leaderboard/fetch-all",
 		fetch_questions: "/school/subject/fetch-questions",
 		submit_quiz: "/school/subject/submit-quiz",
@@ -97,6 +108,15 @@ export const endpoints = (id?: string) => {
 		get_single_plan: `/student/my-plans/view-one/${id}`,
 		renew_plan: `/student/my-plans/renew/${id}`,
 		update_course_progress: `/student/update-course-progress/${id}`,
+	} as const;
+
+	const blog = {
+		all: "/blog/all-blogs",
+		get_all: "/blog/all-blogs",
+		get_one: `/blog/${id}`,
+		one: `/blog/${id}`,
+		get_categories: "/blog-categories/all-blog-category",
+		categories: "/blog-categories/all-blog-category",
 	} as const;
 
 	const waitlist = {
@@ -115,6 +135,13 @@ export const endpoints = (id?: string) => {
 		student,
 		test_center,
 		user,
+		blog,
 		waitlist,
+		token_payment: {
+			packages: "/token-payment/packages",
+			paystack_init: "/token-payment/paystack/initialize",
+			bundle_purchase: "/token-payment/bundle/purchase",
+			add_subjects: "/token-payment/bundle/add-subjects",
+		},
 	};
 };

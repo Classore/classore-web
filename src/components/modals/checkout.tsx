@@ -1,10 +1,11 @@
 import { Lock02 } from "@untitled-ui/icons-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/router";
 import * as React from "react";
 import { toast } from "sonner";
 
 import { Dialog, DialogContent } from "../ui/dialog";
 import { useMiscStore } from "@/store/z-store/misc";
-import { formatCurrency } from "@/lib";
 import { Button } from "../ui/button";
 import { Spinner } from "../shared";
 import {
@@ -20,7 +21,8 @@ type CheckoutModalProps = {
 };
 
 export const CheckoutModal = ({ open, setOpen }: CheckoutModalProps) => {
-	const [visible, setVisible] = React.useState(false);
+	const router = useRouter();
+	const queryClient = useQueryClient();
 	const values = useMiscStore((state) => state.payload);
 
 	const { data: bundles } = useGetExamBundles({});
@@ -42,10 +44,10 @@ export const CheckoutModal = ({ open, setOpen }: CheckoutModalProps) => {
 			.join(", ") ?? "";
 
 	const chosen_bundle = prep_bundle?.examinationbundle_name ?? "";
-	// const bundle_amount = prep_bundle?.examinationbundle_amount ?? 0;
 
 	const { isPending, mutate } = useCreateStudyTimeline();
-	const continueToPayment = () => {
+
+	const startLearning = () => {
 		if (!values) {
 			toast.error("Something went wrong, please try again");
 			return;
@@ -54,21 +56,26 @@ export const CheckoutModal = ({ open, setOpen }: CheckoutModalProps) => {
 		const subjects =
 			typeof values.subjects === "string"
 				? String(values.subjects)
-						.split(",")
-						.map((s) => s.trim())
+					.split(",")
+					.map((s) => s.trim())
 				: Array.isArray(values.subjects)
 					? values.subjects
 					: [];
+
 		const payload = {
 			...values,
 			subjects,
 		};
-		console.log(payload);
 
 		mutate(payload, {
-			onSuccess: (data) => {
-				setVisible(true);
-				window.open(data?.data?.payment_link?.authorization_url, "_self");
+			onSuccess: () => {
+				// Invalidate profile so dashboard reflects the new study plan
+				queryClient.invalidateQueries({ queryKey: ["profile"] });
+				toast.success("Welcome to Classore! 🎉", {
+					description: "Your study plan is ready. Let's start learning!",
+				});
+				setOpen(false);
+				router.push("/dashboard");
 			},
 			onError: (error) => {
 				const errorMessage = Array.isArray(error?.response?.data.message)
@@ -84,16 +91,8 @@ export const CheckoutModal = ({ open, setOpen }: CheckoutModalProps) => {
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
-			{/* <DialogTrigger asChild>
-				<button
-					type="button"
-					className="flex w-full items-center gap-2 px-2 py-3 text-sm font-medium text-red-600">
-					<span>Log out</span>
-				</button>
-			</DialogTrigger> */}
-
 			<DialogContent className="flex w-96 flex-col gap-6">
-				<h3 className="text-2xl font-bold">Checkout</h3>
+				<h3 className="text-2xl font-bold">Confirm Your Study Plan</h3>
 				<ul className="flex flex-col gap-4">
 					<li>
 						<p className="text-sm text-neutral-400">Exam type:</p>
@@ -102,54 +101,26 @@ export const CheckoutModal = ({ open, setOpen }: CheckoutModalProps) => {
 					<li>
 						<p className="text-sm text-neutral-400">Prep bundle (allowed subjects):</p>
 						<p className="font-medium capitalize">
-							{chosen_bundle} Prep Bundle ({values.vettings[0].allowed_subjects} subjects)
+							{chosen_bundle} Prep Bundle ({values?.vettings?.[0]?.allowed_subjects} subjects)
 						</p>
 					</li>
 					<li>
 						<p className="text-sm text-neutral-400">Chosen Subjects:</p>
 						<p className="font-medium capitalize">{chosen_subjects}</p>
 					</li>
-
-					<li>
-						<p className="text-sm text-neutral-400">Subtotal:</p>
-						<p className="font-medium">{formatCurrency(Number(values.summary.base_amount ?? 0))}</p>
-					</li>
-					<li>
-						<p className="text-sm text-neutral-400">No of extra subjects added:</p>
-						<p className="font-medium">{values.summary.number_of_extra_subjects_added}</p>
-					</li>
-					<li>
-						<p className="text-sm text-neutral-400">Grand total:</p>
-						<p className="font-medium">
-							{values.summary.number_of_extra_subjects_added === 0
-								? formatCurrency(Number(values.summary.base_amount))
-								: formatCurrency(values.summary.grand_total)}
-						</p>
-					</li>
 				</ul>
 
-				<div className="flex flex-col gap-1">
-					<Button onClick={continueToPayment} type="submit" disabled={isPending}>
-						{isPending ? <Spinner /> : `Pay ${formatCurrency(Number(values.summary.base_amount ?? 0))}`}
+				<div className="flex flex-col gap-3">
+					<Button onClick={startLearning} type="submit" disabled={isPending}>
+						{isPending ? <Spinner /> : "Start Learning →"}
 					</Button>
 					<div className="flex items-center gap-1.5 self-center text-neutral-500">
 						<Lock02 width={18} />
-						<p className="text-center text-sm">Payment secured by Paystack</p>
+						<p className="text-center text-sm">
+							You&apos;ll be able to upgrade your plan anytime from the dashboard
+						</p>
 					</div>
 				</div>
-
-				{visible ? (
-					<div className="absolute inset-0 z-50 mx-auto grid place-items-center gap-4 rounded-md bg-white/50 p-10 text-center text-sm text-neutral-600 backdrop-blur-sm backdrop-filter">
-						<div className="grid place-items-center gap-4 rounded-lg p-10">
-							<Spinner variant="primary" size="md" />
-							<p className="leading-tight">Please wait while we redirect you to the payment page...</p>
-							<p className="text-xs font-bold">
-								NB: <br />
-								DO NOT CLOSE THIS WINDOW OR REFRESH THE PAGE
-							</p>
-						</div>
-					</div>
-				) : null}
 			</DialogContent>
 		</Dialog>
 	);
