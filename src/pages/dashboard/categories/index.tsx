@@ -46,7 +46,7 @@ const Page = () => {
 			<Seo title="Categories" />
 			<DashboardLayout>
 				<ScrollArea hideScrollbar>
-				<div className="relative mb-6 lg:mb-8 flex md:min-h-[297px] w-[96vw] md:w-full flex-col items-center justify-between gap-4 overflow-x-hidden overflow-y-hidden rounded-2xl border border-[#E2E4E9] bg-gradient-to-r from-white to-[#F8F5FF] p-6 text-black md:flex-row md:gap-[177px] md:px-10 md:py-[52px]">
+				<div className="relative mb-6 lg:mb-8 flex md:min-h-[297px] w-[96vw] md:w-full flex-col items-center justify-between gap-4 rounded-2xl border border-[#E2E4E9] bg-gradient-to-r from-white to-[#F8F5FF] p-6 text-black md:flex-row md:gap-[177px] md:px-10 md:py-[52px]">
 					<div className="flex max-w-[559px] flex-col gap-4">
 						<h1 className="text-2xl font-bold lg:text-4xl">
 							Let&apos;s get started with your learning journey

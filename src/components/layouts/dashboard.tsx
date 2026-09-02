@@ -60,10 +60,10 @@ export function DashboardLayout({ children, className }: DashboardLayoutProps) {
 	return (
 		<>
 			<KYC onOpenChange={setOpen} open={open} />
-			<main className="hidden w-screen overflow-hidden lg:flex lg:h-screen lg:w-screen lg:items-center lg:bg-white">
+			<main className="hidden w-screen overflow-visible lg:flex lg:h-screen lg:w-screen lg:items-center lg:bg-white">
 				<aside className="flex h-full w-[256px] min-w-[256px] flex-col justify-between border-r border-neutral-300 py-8">
 					<div className="flex w-full flex-col gap-8">
-						<div className="relative h-[30px] w-[135px] px-6">
+						<div className="relative h-[30px] w-[135px] px-6 lg:ml-5">
 							<Image
 								src="/assets/images/classore.png"
 								alt="classore"
@@ -131,11 +131,11 @@ export function DashboardLayout({ children, className }: DashboardLayoutProps) {
 					</div>
 				</aside>
 
-				<section className="flex h-screen w-full flex-col overflow-hidden">
+				<section className="flex h-screen w-full flex-col overflow-visible">
 					<Appbar />
 					<div
 						className={cn(
-							"flex h-[calc(100vh-80px)] w-full flex-col gap-6 overflow-y-auto px-3 pt-6 md:px-8",
+							"flex h-[calc(100vh-80px)] w-full max-w-none flex-col gap-6 overflow-y-auto overflow-x-visible px-3 pt-6 md:px-8",
 							className
 						)}>
 						{children}
@@ -144,11 +144,11 @@ export function DashboardLayout({ children, className }: DashboardLayoutProps) {
 			</main>
 
 			{/* MOBILE NAVBAR */}
-			<main className="h-screen w-full bg-white lg:hidden">
+			<main className="h-full w-full bg-white lg:hidden">
 				<MobileAppbar />
 				<div
 					className={cn(
-						"flex h-[calc(100%-62px)] w-full flex-col gap-6 overflow-y-auto px-2 py-6 md:px-8",
+						"flex h-[calc(100%-62px)] w-full flex-col gap-6 overflow-y-auto px-2 pt-6 md:px-8",
 						className
 					)}>
 					{children}

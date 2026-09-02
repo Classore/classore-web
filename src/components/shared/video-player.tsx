@@ -49,6 +49,8 @@ interface VideoPlayerProps {
 	onReady?: () => void;
 	poster?: string;
 	disableStepControls?: boolean;
+	isModuleCompleted?: boolean;
+	isQuizPassed?: boolean;
 }
 
 export const VideoPlayer = React.memo(
@@ -63,6 +65,8 @@ export const VideoPlayer = React.memo(
 		onError,
 		moduleProgress,
 		disableStepControls = false,
+		isModuleCompleted = false,
+		isQuizPassed = false,
 	}: VideoPlayerProps) => {
 		const [isPlaying, setIsPlaying] = React.useState(false);
 		const [progress, setProgress] = React.useState(0);
@@ -76,6 +80,7 @@ export const VideoPlayer = React.memo(
 		const [bufferProgress, setBufferProgress] = React.useState(0);
 		const [loadingHls, setLoadingHls] = React.useState(false);
 		const [isPiP, setIsPiP] = React.useState(false);
+		const [currentPlaybackRate, setCurrentPlaybackRate] = React.useState(1);
 
 		const controlsTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 		const videoRef = React.useRef<HTMLVideoElement | null>(null);
@@ -83,6 +88,7 @@ export const VideoPlayer = React.memo(
 		const socket = React.useRef<Socket | null>(null);
 		const hlsRef = React.useRef<Hls | null>(null);
 		const lastSentProgressRef = React.useRef(0);
+		const hasAutoCompleted = React.useRef(false);
 		const { user } = useUserStore();
 
 		const getSocketLifecycleStatus = () => {
@@ -197,10 +203,13 @@ export const VideoPlayer = React.memo(
 			if (!videoRef.current) return;
 
 			const newTime = newValue[0];
-			if (moduleId && courseId) {
+			
+			// For incomplete modules (quiz not passed), restrict seeking beyond current progress
+			if (moduleId && courseId && !isModuleCompleted && !isQuizPassed) {
 				const maxScrub = (progress * duration) / 100;
 				if (newTime > maxScrub) return;
 			}
+			
 			setCurrentTime(newTime);
 			videoRef.current.currentTime = newTime;
 			setProgress((newTime / duration) * 100);
@@ -225,6 +234,11 @@ export const VideoPlayer = React.memo(
 
 		const handleSkip = (skipAmount: number) => {
 			if (!videoRef.current) return;
+
+			// For incomplete modules (quiz not passed), disable fast-forwarding
+			if (!isModuleCompleted && !isQuizPassed && skipAmount > 0) {
+				return;
+			}
 
 			const newTime = Math.max(0, Math.min(duration, currentTime + skipAmount));
 			videoRef.current.currentTime = newTime;
@@ -290,7 +304,10 @@ export const VideoPlayer = React.memo(
 
 		const handlePlaybackRateChange = (rate: number) => {
 			if (!videoRef.current) return;
+			
+			// Allow all users to adjust playback speed regardless of module completion status
 			videoRef.current.playbackRate = rate;
+			setCurrentPlaybackRate(rate);
 			hideControlsTimer();
 		};
 
@@ -433,8 +450,23 @@ export const VideoPlayer = React.memo(
 
 			const onTimeUpdate = () => {
 				setCurrentTime(video.currentTime);
-				setProgress((video.currentTime / video.duration) * 100 || 0);
+				const newProgress = (video.currentTime / video.duration) * 100 || 0;
+				setProgress(newProgress);
 				updateBufferProgress();
+				
+				// Auto-complete module at 96% progress (only for first-time attempts)
+				if (newProgress >= 96 && !hasAutoCompleted.current && !isModuleCompleted) {
+					hasAutoCompleted.current = true;
+					// Emit completion event via socket
+					if (socket.current && courseId && moduleId && user?.id) {
+						updateModuleProgress(socket.current, {
+							course_id: courseId,
+							module_id: moduleId,
+							current_progress: 100, // Mark as completed
+							user_id: user.id,
+						});
+					}
+				}
 			};
 			const onLoadedMetadata = () => {
 				setDuration(video.duration);
@@ -571,6 +603,25 @@ export const VideoPlayer = React.memo(
 						e.preventDefault();
 						handleSkip(-10);
 						break;
+					case ">":
+					case ".":
+						e.preventDefault();
+						// Increase playback speed
+						const nextRateIndex = playbackRates.findIndex(rate => rate > currentPlaybackRate);
+						if (nextRateIndex !== -1) {
+							handlePlaybackRateChange(playbackRates[nextRateIndex]);
+						}
+						break;
+					case "<":
+					case ",":
+						e.preventDefault();
+						// Decrease playback speed
+						const prevRateIndex = playbackRates.slice().reverse().findIndex(rate => rate < currentPlaybackRate);
+						if (prevRateIndex !== -1) {
+							const actualIndex = playbackRates.length - 1 - prevRateIndex;
+							handlePlaybackRateChange(playbackRates[actualIndex]);
+						}
+						break;
 					default:
 						break;
 				}
@@ -596,7 +647,20 @@ export const VideoPlayer = React.memo(
 
 		React.useEffect(() => {
 			setProgress(0);
+			hasAutoCompleted.current = false;
+			// Reset playback rate when module changes
+			setCurrentPlaybackRate(1);
+			if (videoRef.current) {
+				videoRef.current.playbackRate = 1;
+			}
 		}, [moduleId]);
+
+		// Sync playback rate state with video element on load
+		React.useEffect(() => {
+			if (videoRef.current) {
+				videoRef.current.playbackRate = currentPlaybackRate;
+			}
+		}, [currentPlaybackRate]);
 
 		return (
 			<div
@@ -717,9 +781,10 @@ export const VideoPlayer = React.memo(
 							<Popover>
 								<PopoverTrigger asChild>
 									<button
-										title="Playback rate"
-										className="rounded-full p-1.5 text-white hover:bg-white/20 focus:bg-white/20">
+										title={`Playback rate (${currentPlaybackRate}x)`}
+										className="flex items-center gap-1 rounded-full px-2 py-1.5 text-white hover:bg-white/20 focus:bg-white/20">
 										<RiSpeedUpLine size={16} />
+										<span className="text-xs font-medium">{currentPlaybackRate}x</span>
 									</button>
 								</PopoverTrigger>
 								<PopoverContent
@@ -731,7 +796,7 @@ export const VideoPlayer = React.memo(
 											key={rate}
 											type="button"
 											onClick={() => handlePlaybackRateChange(rate)}
-											data-active={rate === videoRef.current?.playbackRate}
+											data-active={rate === currentPlaybackRate}
 											className="w-full rounded px-2 py-1.5 text-left text-xs font-medium text-neutral-600 transition-colors hover:bg-neutral-200 data-[active=true]:bg-primary-300 data-[active=true]:font-bold data-[active=true]:text-white">
 											{rate}x
 										</button>

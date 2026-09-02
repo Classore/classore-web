@@ -19,7 +19,7 @@ const Page = () => {
 			<DashboardLayout>
 				<ScrollArea hideScrollbar>
 
-					<div className="relative flex md:min-h-[297px] w-[96vw] md:w-full flex-col items-center justify-between gap-4 overflow-x-hidden overflow-y-hidden rounded-2xl border border-[#E2E4E9] bg-gradient-to-r from-white to-[#F8F5FF] p-6 text-black md:flex-row md:gap-[177px] md:px-10 md:py-[52px]">
+					<div className="relative flex md:min-h-[297px] w-[96vw] md:w-full flex-col items-center justify-between gap-4 rounded-2xl border border-[#E2E4E9] bg-gradient-to-r from-white to-[#F8F5FF] p-6 text-black md:flex-row md:gap-[177px] md:px-10 md:py-[52px]">
 						<div className="flex max-w-[559px] flex-col gap-4">
 							<h1 className="text-2xl font-bold lg:text-4xl">My Courses</h1>
 							<p className="max-w-[30rem] text-sm text-neutral-500 md:text-base">
@@ -32,7 +32,7 @@ const Page = () => {
 							</Button>
 						</div>
 
-						<div className="hidden md:block lg:absolute lg:right-8 lg:top-1/2 lg:aspect-square lg:h-[468px] lg:-translate-y-1/2">
+						<div className="hidden md:block lg:absolute lg:right-4 lg:top-1/2 lg:aspect-square lg:h-[400px] lg:-translate-y-1/2 lg:max-w-[400px]">
 							<Image
 								src={consultation}
 								alt="designer color"
@@ -53,7 +53,7 @@ const Page = () => {
 						</div>
 					</div>
 
-					<div className="flex flex-col gap-10 py-6 pb-10">
+					<div className="flex flex-col gap-10 py-6 pb-10 lg:w-[78vw]">
 						{isPending ? (
 							<div className="mx-auto py-4">
 								<Spinner variant="primary" />

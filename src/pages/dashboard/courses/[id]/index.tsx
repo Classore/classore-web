@@ -208,12 +208,27 @@ const Page = () => {
 				},
 			});
 		}
-	}, [chapter, hasPreviousChapter, id, initialChapterId, startCourseMutation]);
+	}, [chapters, initialChapterId, initialModuleId]);
+
+	// Track manual navigation to prevent auto-navigation override
+	const [hasManualNavigation, setHasManualNavigation] = React.useState(false);
+
+	// Listen for manual module selection events
+	React.useEffect(() => {
+		const handleManualSelection = () => {
+			setHasManualNavigation(true);
+		};
+
+		window.addEventListener('manual-module-selection', handleManualSelection);
+		return () => {
+			window.removeEventListener('manual-module-selection', handleManualSelection);
+		};
+	}, []);
 
 	React.useEffect(() => {
-		if (initialChapterId && initialModuleId && !isCourseLoading) {
+		if (initialChapterId && initialModuleId && !isCourseLoading && !hasManualNavigation) {
 			const storageKey = `course_progress_${id}`;
-			let shouldSetInitialValues = true;
+			let shouldUseAutoNavigation = true;
 
 			try {
 				const storedProgress = localStorage.getItem(storageKey);
@@ -227,19 +242,21 @@ const Page = () => {
 							.find((ch) => ch.id === parsed.chapterId)
 							?.modules.some((m) => m.id === parsed.moduleId);
 
+					// Use stored progress if it's valid (allow access to completed modules)
 					if (chapterExists && moduleExists) {
 						setCurrentChapterId(parsed.chapterId);
 						setCurrentModuleId(parsed.moduleId);
-						shouldSetInitialValues = false;
+						shouldUseAutoNavigation = false;
 					}
 				}
 			} catch (e) {
 				console.error("Error reading stored progress:", e);
 			}
 
-			if (shouldSetInitialValues) {
-				setCurrentChapterId(initialChapterId);
-				setCurrentModuleId(initialModuleId);
+			if (shouldUseAutoNavigation) {
+				// Use auto-navigation to find next uncompleted module only on initial load
+				setCurrentChapterId(nextChapterId || initialChapterId);
+				setCurrentModuleId(nextModuleId || initialModuleId);
 			}
 		}
 	}, [
@@ -250,6 +267,9 @@ const Page = () => {
 		isCourseLoading,
 		setCurrentChapterId,
 		setCurrentModuleId,
+		nextChapterId,
+		nextModuleId,
+		hasManualNavigation,
 	]);
 
 	React.useEffect(() => {
@@ -328,16 +348,18 @@ const Page = () => {
 			currentModule?.video_array?.[0]?.secure_url;
 
 		if (videoUrl) {
-			return (
-				<VideoPlayer
-					courseId={String(id)}
-					moduleId={currentModule?.id}
-					moduleProgress={chapter?.current_module_progress_percentage || 0}
-					src={videoUrl}
-					disableStepControls
-				/>
-			);
-		}
+				return (
+					<VideoPlayer
+						courseId={String(id)}
+						moduleId={currentModule?.id}
+						moduleProgress={chapter?.current_module_progress_percentage || 0}
+						src={videoUrl}
+						disableStepControls
+						isModuleCompleted={currentModule?.is_completed || false}
+						isQuizPassed={currentModule?.is_passed || false}
+					/>
+				);
+			}
 
 		return (
 			<div className="flex aspect-[16/9] w-full flex-col items-center justify-center rounded bg-neutral-200 p-10">
@@ -465,15 +487,17 @@ const Page = () => {
 						onNext={onNext}
 						setChapter={setCurrentChapterId}
 						setModule={setCurrentModuleId}
+						isModuleCompleted={currentModule?.is_completed || false}
 					/>
 				</div>
 			</div>
 
 			<div className="flex w-full flex-col gap-8 lg:grid lg:h-screen lg:grid-cols-3 lg:overflow-hidden">
-				<div className="col-span-2 col-start-1 flex flex-col gap-8 lg:overflow-auto">
-					<div className="absolute left-0 right-0 border md:static">{renderVideoPlayer()}</div>
+				<div className="relative col-span-2 col-start-1 flex flex-col gap-8 lg:overflow-auto">
+					{/* Video Player lives here  */}
+					<div className="fixed left-0 right-0 z-50 border md:static">{renderVideoPlayer()}</div>
 
-					<div className="about-course z-50 mb-5 flex w-full flex-col gap-4">
+					<div className="about-course z-10 mb-5 flex w-full flex-col gap-4">
 						<div className="flex w-full items-center justify-between">
 							<h3 className="text-balance text-xl font-semibold capitalize">{currentChapter?.name}</h3>
 							<div className="flex items-center gap-3">

@@ -259,10 +259,12 @@ export const useCourse = ({
 
 	const canProceed = React.useMemo(() => {
 		if (!currentModule) return false;
-		return (
-			Boolean(currentModule?.is_completed || (currentModule?.progress || 0) >= 50) &&
-			Boolean(currentModule?.is_passed)
-		);
+		const moduleProgress = currentModule?.progress || 0;
+		const meetsVideoRequirement = moduleProgress >= 96;
+		const meetsQuizRequirement = Boolean(currentModule?.is_passed);
+		
+		// Require BOTH 96% video completion AND quiz pass - no bypass for completed modules
+		return meetsVideoRequirement && meetsQuizRequirement;
 	}, [currentModule]);
 
 	const { mutate } = useMutation({
@@ -319,8 +321,8 @@ export const useCourse = ({
 			}
 			const chapter = validChapters.find((ch) => ch.id === chapterId);
 			if (chapter) {
-				// NOTE: We could maybe deduce that the last module is the one that was watched
-				const moduleId = chapter.modules[chapter.modules.length - 1].id || chapter.modules[0].id;
+				// Always start with the first module when navigating to a new chapter
+				const moduleId = chapter.modules[0]?.id || "";
 
 				// Update both states in a single batch
 				React.startTransition(() => {

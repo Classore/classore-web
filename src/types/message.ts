@@ -13,6 +13,13 @@ export type RoomProps = {
 	created_at: Date;
 	members: UserItemProps[];
 	bundle_name: string;
+	last_message?: {
+		content: string;
+		createdOn: Date;
+		is_read: boolean;
+		is_my_message: boolean;
+	};
+	unread_count?: number;
 };
 
 export type MessageProps = BaseProps & {

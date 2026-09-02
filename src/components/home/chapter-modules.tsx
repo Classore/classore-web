@@ -72,19 +72,47 @@ export const ChapterModules = ({
 			}
 		}
 
-		const hasPreviousModule = module.sequence > 1;
-		const previousModule = moduleList[module.sequence - 2];
-		const hasPreviousPassed = previousModule?.is_passed;
-		if (hasPreviousModule && (previousModule?.progress || 0) < 50) {
-			toast.error("Please complete the previous module first", {
-				description: "You can't proceed to the next module until you complete the previous one",
-			});
+		// Allow immediate access to completed or passed modules (unrestricted navigation for reviews)
+		if (module.is_completed || module.is_passed) {
+			if (typeof window !== "undefined") {
+				window.dispatchEvent(new CustomEvent("manual-module-selection"));
+			}
+			onSelectModule(moduleId);
 			return;
 		}
-		if (!hasPreviousPassed && chapterProgress < 50 && moduleId !== moduleList[0].id) {
-			setOpen(true);
+
+		// Allow access to any module that has been unlocked (progress > 0) for review purposes
+		if ((module.progress || 0) > 0) {
+			if (typeof window !== "undefined") {
+				window.dispatchEvent(new CustomEvent("manual-module-selection"));
+			}
+			onSelectModule(moduleId);
 			return;
 		}
+
+		// For completely new modules, enforce sequential access
+		const moduleIndex = moduleList.findIndex((m) => m.id === moduleId);
+		if (moduleIndex === 0) {
+			// First module is always accessible
+			onSelectModule(moduleId);
+			return;
+		}
+
+		const previousModule = moduleList[moduleIndex - 1];
+		if (!previousModule) return;
+
+		// Check if previous module is completed (progress >= 50%)
+		if ((previousModule.progress || 0) < 50) {
+			toast.error("Please complete the previous module first and take the quiz.");
+			return;
+		}
+
+		// Check chapter progress for modules other than the first
+		if ((chapterProgress || 0) < 50) {
+			toast.error("Please complete the previous module first and take the quiz.");
+			return;
+		}
+
 		onSelectModule(moduleId);
 	};
 
@@ -105,44 +133,59 @@ export const ChapterModules = ({
 
 	if (isError) {
 		return (
-			<div className="flex w-full flex-col items-center justify-center gap-2 p-4">
-				<p className="font-semibold">Error fetching chapter</p>
-				<p className="text-sm text-neutral-400">Please refresh the page to try again</p>
+			<div className="flex w-full items-center justify-center p-4">
+				<p className="text-sm text-red-500">Failed to load chapter modules</p>
 			</div>
 		);
 	}
 
 	return (
 		<>
-			<div className="flex flex-col gap-6 pt-4">
-				<div
-					className="prose-sm text-neutral-400 prose-headings:first-letter:uppercase prose-p:my-0 prose-p:first-letter:capitalize prose-a:underline prose-a:hover:text-primary-300 prose-ol:list-decimal prose-ul:list-disc prose-li:first-letter:uppercase prose-hr:my-1"
-					dangerouslySetInnerHTML={{
-						__html: sanitizeHtml(chapter?.content),
-					}}
-				/>
-				<div className="w-full rounded-lg border border-neutral-200">
-					<div className="flex items-center justify-between gap-4 border-b border-b-neutral-200 px-6 py-4">
-						<div className="flex items-center gap-4">
-							<div className="grid size-8 place-items-center rounded-md bg-neutral-100">
-								<RiFolderVideoLine className="size-4 text-neutral-700" />
-							</div>
-							<div className="flex flex-col gap-1">
-								<h3 className="font-semibold capitalize">{chapter?.name}</h3>
-								<div className="flex flex-wrap items-center gap-2 text-sm text-neutral-400">
-									<div className="flex items-center gap-1">
-										<RiFileTextLine size={18} />
-										<span>35 Resources</span>
-									</div>
-									<div className="flex items-center gap-1">
-										<RiFileTextLine size={18} />
-										<span>{chapter?.no_of_quizes} Quizzes</span>
-									</div>
-								</div>
-							</div>
+			<div className="flex w-full flex-col gap-6">
+				<div className="flex flex-col gap-4">
+					<div className="flex items-center gap-2">
+						<div className="flex size-8 items-center justify-center rounded-md bg-[rgba(241,236,249,0.5)] text-primary-300">
+							<RiFolderVideoLine className="size-4" />
 						</div>
+						<p className="text-sm capitalize font-bold text-neutral-800">
+							{chapter?.name ?? (chapter as any)?.title ?? "Loading..."}
+						</p>
+					</div>
+
+					{(chapter?.content || (chapter as any)?.description) && (
+						<p
+							dangerouslySetInnerHTML={{
+								__html: sanitizeHtml(chapter?.content || (chapter as any)?.description || ""),
+							}}
+							className="text-xs text-neutral-400"
+						/>
+					)}
+
+					<div className="flex items-center justify-between gap-4">
 						<div className="flex items-center gap-2">
-							<div className="flex h-[6px] w-16 items-center overflow-hidden rounded-3xl bg-[#efefef]">
+							<RiFileTextLine className="size-4 text-neutral-400" />
+							<p className="text-xs font-bold text-neutral-400">
+								{moduleList.length} Lesson{moduleList.length === 1 ? "" : "s"}
+							</p>
+						</div>
+
+						{(chapter as any)?.quiz_id && (
+							<button
+								type="button"
+								onClick={() => setOpenTakeQuiz(true)}
+								className="flex items-center gap-1 rounded-md border border-neutral-200 px-3 py-1.5 text-xs font-medium text-neutral-600 transition-colors hover:bg-neutral-50 hover:text-neutral-900"
+							>
+								Take Quiz
+							</button>
+						)}
+					</div>
+				</div>
+
+				<div className="flex w-full flex-col">
+					<div className="flex items-center justify-between border-b border-b-neutral-200 p-6">
+						<p className="text-xs text-neutral-400">Lessons</p>
+						<div className="flex items-center gap-2">
+							<div className="h-1.5 w-24 rounded-3xl bg-neutral-200">
 								<div
 									style={{
 										width: `${chapterProgress}%`,
@@ -165,13 +208,17 @@ export const ChapterModules = ({
 									type="button"
 									key={module.id}
 									onClick={() => handleSelectModule(module)}
-									className={`flex w-full items-center gap-4 border-b border-b-neutral-200 px-6 py-4 transition-colors ${currentModuleId === module.id ? "border-l-4 border-l-primary-300" : ""
-										} ${isLocked ? "opacity-60 hover:bg-orange-50" : "hover:bg-neutral-50"}`}>
+									className={`flex w-full items-center gap-4 border-b border-b-neutral-200 px-6 py-4 transition-colors ${
+										currentModuleId === module.id ? "border-l-4 border-l-primary-300" : ""
+									} ${isLocked ? "opacity-60 hover:bg-orange-50" : "hover:bg-neutral-50"}`}
+								>
 									<div
-										className={`grid size-8 place-items-center rounded-md ${module.is_completed || currentModuleId === module.id
+										className={`grid size-8 place-items-center rounded-md ${
+											module.is_completed || currentModuleId === module.id
 												? "bg-[rgba(241,236,249,0.5)] text-primary-300"
 												: "bg-neutral-100 text-neutral-400"
-											}`}>
+										}`}
+									>
 										<RiPlayCircleLine className="size-4" />
 									</div>
 
