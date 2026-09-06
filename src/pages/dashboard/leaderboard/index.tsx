@@ -6,15 +6,18 @@ import {
 } from "@remixicon/react";
 import { Target04, Trophy01 } from "@untitled-ui/icons-react";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import React from "react";
 
-import trophy from "@/assets/illustrations/trophy.svg";
+import trophy from "@/assets/illustrations/Classore_Golden_Trophy.svg";
 import bronze from "@/assets/images/award-bronze.png";
 import gold from "@/assets/images/award-gold.png";
 import silver from "@/assets/images/award-silver.png";
 import { DashboardLayout } from "@/components/layouts";
+import { RenewalModal } from "@/components/modals";
 import { Pagination, Seo } from "@/components/shared";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { getInitials } from "@/lib";
 import { useGetExamBundles, useGetExams } from "@/queries/school";
 import { useGetProfile, useGetLeaderboard } from "@/queries/student";
@@ -58,12 +61,59 @@ export const getPositionIcon = (index: number) => {
 };
 
 const Page = () => {
+	const router = useRouter();
 	const [examination_bundle, setExaminationBundle] = React.useState("");
 	const [screen, setScreen] = React.useState<Screens>("minimize");
 	const [examination, setExamination] = React.useState("");
 	const [page, setPage] = React.useState(1);
+	const [renewalModalOpen, setRenewalModalOpen] = React.useState(false);
 	const { user } = useUserStore();
 	const { data: profile } = useGetProfile();
+
+	const hasActiveSub = React.useMemo(() => {
+		if (!profile?.time_line || !profile.time_line.length) return false;
+		return profile.time_line.some(
+			(t: any) =>
+				t.is_paid &&
+				(t.status === "ACTIVE" || t.status === "ONGOING") &&
+				(!t.end_date || new Date(t.end_date).getTime() > Date.now())
+		);
+	}, [profile?.time_line]);
+
+	const expiredBundle = React.useMemo(() => {
+		if (!profile?.time_line || !profile.time_line.length) return null;
+		return (
+			profile.time_line.find((t: any) => t.status === "EXPIRED") ||
+			profile.time_line.find((t: any) => t.is_paid) ||
+			profile.time_line[0] ||
+			null
+		);
+	}, [profile?.time_line]);
+
+	const isExpiredStudent = React.useMemo(() => {
+		if (hasActiveSub) return false;
+		if (!profile?.time_line || !profile.time_line.length) return false;
+		return profile.time_line.some(
+			(t: any) =>
+				t.status === "EXPIRED" ||
+				t.is_paid ||
+				(t.end_date && new Date(t.end_date).getTime() <= Date.now())
+		);
+	}, [hasActiveSub, profile?.time_line]);
+
+	const isNewStudent = !hasActiveSub && !isExpiredStudent;
+
+	const handleSubscribe = () => {
+		router.push("/dashboard/categories");
+	};
+
+	const handleRenew = () => {
+		if (expiredBundle) {
+			setRenewalModalOpen(true);
+		} else {
+			router.push("/dashboard/categories");
+		}
+	};
 
 	const { data: exams } = useGetExams();
 	const { data: examBundles } = useGetExamBundles({
@@ -132,16 +182,64 @@ const Page = () => {
 								Compete with other students and track your academic ranking. Earn point rewards as you win!
 							</p>
 						</div>
-						<div className="absolute left-1/2 top-[120px] aspect-square w-[402px] -translate-x-1/2">
+						<div className="absolute top-[125px] left-1/2 aspect-[1487/1058] w-[260px] sm:w-[280px] -translate-x-1/2">
 							<Image
 								src={trophy}
 								alt="trophy"
 								fill
+								priority
 								sizes="(max-width:1024px)100%"
-								className="object-top"
+								className="object-contain"
 							/>
 						</div>
 					</div>
+
+					{/* Placement 1: Top Subscription Message Banner */}
+					{!hasActiveSub && (
+						<div className="relative overflow-hidden rounded-3xl border border-primary-200/80 bg-gradient-to-r from-primary-50/90 via-white to-amber-50/50 p-5 sm:p-6 md:p-7 shadow-xs">
+							{/* Soft decorative background glows */}
+							<div className="pointer-events-none absolute -right-12 -top-12 size-48 rounded-full bg-primary-200/30 blur-2xl" />
+							<div className="pointer-events-none absolute -left-12 -bottom-12 size-48 rounded-full bg-amber-200/20 blur-2xl" />
+
+							<div className="relative z-10 flex flex-col items-start justify-between gap-5 md:flex-row md:items-center">
+								<div className="flex items-start gap-4 max-w-2xl">
+									<div className="grid size-12 shrink-0 place-items-center rounded-2xl bg-white shadow-2xs border border-primary-100 text-2xl">
+										{isNewStudent ? "🏆" : "⏸️"}
+									</div>
+									<div className="space-y-1">
+										<h3 className="text-base sm:text-lg font-bold text-neutral-900 tracking-tight">
+											{isNewStudent
+												? "Ready to join the leaderboard? 🏆"
+												: "Your leaderboard journey is paused"}
+										</h3>
+										<p className="text-xs sm:text-sm text-neutral-600 leading-relaxed">
+											{isNewStudent
+												? "Subscribe to a Classore plan, start learning and practicing, and earn your place among our top learners."
+												: "Renew your subscription to continue competing and appear on the leaderboard again."}
+										</p>
+									</div>
+								</div>
+
+								<div className="shrink-0 w-full md:w-auto">
+									{isNewStudent ? (
+										<Button
+											onClick={handleSubscribe}
+											className="w-full md:w-auto px-6 py-3 text-xs sm:text-sm font-semibold shadow-xs"
+											variant="default">
+											Subscribe & Start Competing
+										</Button>
+									) : (
+										<Button
+											onClick={handleRenew}
+											className="w-full md:w-auto px-6 py-3 text-xs sm:text-sm font-semibold shadow-xs"
+											variant="default">
+											Renew Subscription
+										</Button>
+									)}
+								</div>
+							</div>
+						</div>
+					)}
 
 					<div className="flex w-full flex-col gap-y-4">
 						<div className="flex w-full items-center justify-between">
@@ -284,6 +382,33 @@ const Page = () => {
 									</div>
 								</div>
 
+								{/* Placement 2: Contextual Status Card in Right Column */}
+								{!hasActiveSub && (
+									<div className="rounded-2xl border border-primary-200 bg-gradient-to-b from-primary-50/70 via-white to-white p-5 shadow-2xs space-y-3.5 text-center">
+										<div className="mx-auto grid size-12 place-items-center rounded-2xl bg-white shadow-2xs border border-primary-100 text-2xl">
+											{isNewStudent ? "🏆" : "⏸️"}
+										</div>
+										<div className="space-y-1.5">
+											<h4 className="text-sm font-bold text-neutral-900 leading-snug">
+												{isNewStudent
+													? "Ready to join the leaderboard? 🏆"
+													: "Your leaderboard journey is paused"}
+											</h4>
+											<p className="text-xs text-neutral-500 leading-relaxed">
+												{isNewStudent
+													? "Subscribe to a Classore plan, start learning and practicing, and earn your place among our top learners."
+													: "Renew your subscription to continue competing and appear on the leaderboard again."}
+											</p>
+										</div>
+										<Button
+											onClick={isNewStudent ? handleSubscribe : handleRenew}
+											className="w-full text-xs font-semibold shadow-xs"
+											variant="default">
+											{isNewStudent ? "Subscribe & Start Competing" : "Renew Subscription"}
+										</Button>
+									</div>
+								)}
+
 								{/* Remarks */}
 								<div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-2xs space-y-3">
 									<p className="text-xs font-bold text-neutral-700">Performance Summary</p>
@@ -299,6 +424,14 @@ const Page = () => {
 						</div>
 					</div>
 				</div>
+
+				{expiredBundle && (
+					<RenewalModal
+						open={renewalModalOpen}
+						setOpen={setRenewalModalOpen}
+						bundle={expiredBundle as any}
+					/>
+				)}
 			</DashboardLayout>
 		</>
 	);

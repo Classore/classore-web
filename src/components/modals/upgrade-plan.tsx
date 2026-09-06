@@ -83,7 +83,14 @@ export const UpgradePlanModal = ({
 	const enrolledSubjectCount = bundle?.subjects?.length || 4;
 	const allowedSubjects = (bundleData as any)?.allowed_subjects || (bundleData as any)?.max_subjects || 4;
 	const requiredTokens = hasTokenPricing
-		? enrolledSubjectCount <= allowedSubjects
+		? enrolledSubjectCount < allowedSubjects
+			? enrolledSubjectCount *
+			  (extraTokensPerSubject > 0
+					? extraTokensPerSubject
+					: allowedSubjects > 0
+					? Math.round(baseTokens / allowedSubjects)
+					: 0)
+			: enrolledSubjectCount === allowedSubjects
 			? baseTokens
 			: baseTokens + (enrolledSubjectCount - allowedSubjects) * extraTokensPerSubject
 		: 0;

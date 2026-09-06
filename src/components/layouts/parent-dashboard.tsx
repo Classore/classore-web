@@ -126,11 +126,11 @@ export function ParentDashboardLayout({ children, className, title }: DashboardL
 			</main>
 
 			{/* MOBILE NAVBAR */}
-			<main className="w-full bg-[#F6F8FA] lg:hidden">
+			<main className="flex min-h-[100dvh] h-[100dvh] w-full flex-col bg-[#F6F8FA] lg:hidden overflow-hidden">
 				<MobileParentDashboardLayout children={undefined} />
 				<section
 					className={cn(
-						"flex h-full w-full flex-col gap-6 overflow-y-auto bg-[#F6F8FA] px-3 py-6 md:px-8",
+						"flex flex-1 min-h-0 w-full flex-col gap-6 overflow-y-auto bg-[#F6F8FA] px-3 py-6 md:px-8",
 						className
 					)}>
 					{children}

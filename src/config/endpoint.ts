@@ -14,6 +14,7 @@ export const endpoints = (id?: string) => {
 		update_profile: "/auth/update-profile",
 		change_password: "/auth/change-password",
 		delete_entity: "/auth/delete-entity",
+		delete_account: "/auth/delete-account",
 	} as const;
 
 	const bank = {

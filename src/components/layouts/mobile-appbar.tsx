@@ -4,12 +4,11 @@ import { dashboard_links } from "@/config";
 import { getInitials, normalize } from "@/lib";
 import { useUserStore } from "@/store/z-store";
 import { RiMenu3Fill } from "@remixicon/react";
-import { XClose } from "@untitled-ui/icons-react";
+import { User03, XClose } from "@untitled-ui/icons-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { LogoutModal } from "../modals";
-import { AccountSettingsDrawer } from "../settings/account-settings-drawer";
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "../ui/sheet";
 
 /**
@@ -27,7 +26,7 @@ export const MobileAppbar = () => {
 	const { user } = useUserStore();
 
 	return (
-		<nav className="flex w-full items-center justify-between border-b border-b-neutral-200 bg-white/75 px-3 py-4 backdrop-blur-sm">
+		<nav className="flex w-full shrink-0 items-center justify-between border-b border-b-neutral-200 bg-white px-3 py-4 backdrop-blur-sm">
 			<Image
 				src="/assets/images/classore.png"
 				alt="classore"
@@ -93,7 +92,12 @@ export const MobileAppbar = () => {
 							</div>
 						</div>
 
-						<AccountSettingsDrawer />
+						<Link
+							href="/dashboard/settings"
+							className="flex items-center gap-1.5 rounded-lg border border-neutral-200 bg-white px-3 py-2 text-xs font-semibold text-neutral-700 hover:bg-neutral-50 shadow-2xs">
+							<User03 height={15} width={15} />
+							<span>Edit Profile</span>
+						</Link>
 					</div>
 				</SheetContent>
 			</Sheet>

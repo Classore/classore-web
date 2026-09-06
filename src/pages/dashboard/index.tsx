@@ -1,4 +1,3 @@
-import { useQueries } from "@tanstack/react-query";
 import Link from "next/link";
 
 import {
@@ -13,9 +12,6 @@ import { Seo } from "@/components/shared";
 import { Button } from "@/components/ui/button";
 import { useGetProfile } from "@/queries/student";
 import { useUserStore } from "@/store/z-store";
-import type { ChallengeProps } from "@/types";
-
-const challenges: ChallengeProps[] = [];
 
 function greetUser() {
 	let greeting: string;
@@ -40,8 +36,6 @@ const Page = () => {
 
 	// Use the actual exam type from the student's first timeline entry (fallback to "JAMB")
 	const examType = profile?.time_line?.[0]?.exam?.name ?? "JAMB";
-
-	const [] = useQueries({ queries: [] });
 
 	return (
 		<>
@@ -68,8 +62,8 @@ const Page = () => {
 						<p className="text-xl font-medium">Overview</p>
 						<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
 							<Learning exam_type={examType} />
-							<Challenge challenges={challenges} />
-							<Leaderboard position={1} />
+							<Challenge />
+							<Leaderboard />
 						</div>
 					</div>
 

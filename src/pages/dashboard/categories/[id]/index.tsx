@@ -1,6 +1,8 @@
 import { RiShareLine, RiStarFill, RiUserLine } from "@remixicon/react";
 import { Devices } from "iconsax-react";
 import {
+	ArrowRight,
+	BookOpen,
 	FolderArchive,
 	List,
 	NotebookText,
@@ -9,6 +11,7 @@ import {
 	Wifi,
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import * as React from "react";
 import { toast } from "sonner";
@@ -19,7 +22,7 @@ import { AddMoreCourseModal, EnrollModal, RenewalModal, ShareReview, UpgradePlan
 import { BackBtn, EmptyState, ReviewCard, Seo, Spinner } from "@/components/shared";
 import { Button } from "@/components/ui/button";
 import { capitalize, formatCurrency, formatNumber, sanitizeHtml } from "@/lib";
-import { useGetSingleExamBundleQuery } from "@/queries/school";
+import { useGetBundleSubjects, useGetSingleExamBundleQuery } from "@/queries/school";
 import { useGetProfile } from "@/queries/student";
 
 export const Page = () => {
@@ -33,13 +36,57 @@ export const Page = () => {
 	const { data: bundle, isPending, isError } = useGetSingleExamBundleQuery({
 		bundle_id: bundleId,
 	});
+	const { data: bundleSubjectsData, isLoading: isSubjectsLoading } = useGetBundleSubjects({
+		bundle_id: bundleId,
+	});
+
+	// Normalize and merge all subjects from bundle and dedicated fetch-all endpoint
+	const allSubjects = React.useMemo(() => {
+		const map = new Map<string, any>();
+
+		if (bundle?.subjects && Array.isArray(bundle.subjects)) {
+			for (const s of bundle.subjects) {
+				const id = (s.id || (s as any).subject_id || "").trim();
+				if (id) {
+					map.set(id, {
+						id,
+						name: (s.name || (s as any).subject_name || "").trim(),
+						number_of_materials: s.number_of_materials,
+						total_quizes: s.total_quizes,
+						examination_bundle: bundleId,
+						videos: s.videos,
+					});
+				}
+			}
+		}
+
+		if (bundleSubjectsData && Array.isArray(bundleSubjectsData)) {
+			for (const s of bundleSubjectsData) {
+				const id = (s.subject_id || (s as any).id || "").trim();
+				if (id) {
+					const existing = map.get(id) || {};
+					map.set(id, {
+						...existing,
+						id,
+						name: (s.subject_name || (s as any).name || existing.name || "").trim(),
+						number_of_materials: (s as any).number_of_materials || existing.number_of_materials || 0,
+						total_quizes: (s as any).total_quizes || existing.total_quizes || 0,
+						examination_bundle: bundleId,
+					});
+				}
+			}
+		}
+
+		return Array.from(map.values());
+	}, [bundle?.subjects, bundleSubjectsData, bundleId]);
 
 	// Timeline matching (exact mobile parity)
 	const currentBundle = profile?.time_line?.find(
 		(item) =>
 			item.chosen_bundle === bundleId ||
 			item.exam_bundle_details?.id === bundleId ||
-			item.id === bundleId
+			item.id === bundleId ||
+			(item.chosen_bundle as any)?.id === bundleId
 	);
 
 	const isEnrolled = Boolean(currentBundle);
@@ -154,7 +201,7 @@ export const Page = () => {
 
 								{/* Subjects Included Tags */}
 								<div className="space-y-2">
-									<h3 className="text-sm font-bold text-neutral-900">Subjects Included</h3>
+									<h3 className="text-sm font-bold text-neutral-900">Departments Included</h3>
 									<div className="flex flex-wrap items-center gap-2.5">
 										<span className="rounded-xl border border-neutral-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-neutral-700 shadow-2xs">
 											Sciences
@@ -166,6 +213,68 @@ export const Page = () => {
 											Commercial
 										</span>
 									</div>
+								</div>
+
+								{/* Courses in this Bundle with Full Preview Links */}
+								<div className="space-y-3 pt-2">
+									<div className="flex items-center justify-between gap-2">
+										<div>
+											<h3 className="text-lg font-bold text-neutral-900">Courses in this Bundle</h3>
+											<p className="text-xs text-neutral-500">
+												Preview video lessons, syllabus, and study materials across all {allSubjects.length || 10} subjects
+											</p>
+										</div>
+										<span className="rounded-full bg-primary-50 border border-primary-200 px-3 py-1 text-xs font-bold text-primary-700">
+											{allSubjects.length || 10} Subjects
+										</span>
+									</div>
+
+									{isSubjectsLoading && !allSubjects.length ? (
+										<div className="flex items-center justify-center py-8">
+											<Spinner variant="primary" />
+										</div>
+									) : (
+										<div className="grid gap-3 sm:grid-cols-2">
+											{allSubjects.map((subject) => (
+												<div
+													key={subject.id}
+													className="group flex flex-col justify-between rounded-2xl border border-neutral-200 bg-white p-4 transition-all hover:border-primary-300 hover:shadow-sm">
+													<div className="flex items-start justify-between gap-2 mb-3">
+														<div className="flex items-center gap-2.5">
+															<div className="flex size-9 items-center justify-center rounded-xl bg-primary-50 text-primary-600">
+																<BookOpen className="size-4" />
+															</div>
+															<div>
+																<h4 className="font-bold text-sm text-neutral-900 capitalize group-hover:text-primary-600 transition-colors">
+																	{subject.name}
+																</h4>
+																<p className="text-[11px] text-neutral-400">
+																	35hrs Video Lessons
+																</p>
+															</div>
+														</div>
+													</div>
+
+													<div className="flex items-center justify-between border-t border-neutral-100 pt-3 text-xs">
+														<div className="flex items-center gap-3 text-neutral-500 text-[11px]">
+															{Boolean(subject.number_of_materials) && (
+																<span>{subject.number_of_materials} Materials</span>
+															)}
+															{Boolean(subject.total_quizes) && (
+																<span>{subject.total_quizes} Quizzes</span>
+															)}
+														</div>
+														<Link
+															href={`/dashboard/categories/${bundleId}/preview/${subject.id}`}
+															className="inline-flex items-center gap-1 font-bold text-xs text-primary-600 hover:text-primary-700 group-hover:translate-x-0.5 transition-all">
+															<span>Preview Course</span>
+															<ArrowRight className="size-3.5" />
+														</Link>
+													</div>
+												</div>
+											))}
+										</div>
+									)}
 								</div>
 
 								{/* Reviews Section matching mobile */}
@@ -347,10 +456,15 @@ export const Page = () => {
 
 								{/* All Courses in this Bundle */}
 								<div className="space-y-2 pt-2 border-t border-neutral-100">
-									<h4 className="text-xs font-bold uppercase tracking-wider text-neutral-500">
-										Included Courses:
-									</h4>
-									<BundleSubjects subjects={bundle?.subjects ?? []} />
+									<div className="flex items-center justify-between">
+										<h4 className="text-xs font-bold uppercase tracking-wider text-neutral-500">
+											Included Courses:
+										</h4>
+										<span className="text-[11px] font-semibold text-primary-600">
+											{allSubjects.length} subjects
+										</span>
+									</div>
+									<BundleSubjects subjects={allSubjects} bundleId={bundleId} />
 								</div>
 							</div>
 						</section>

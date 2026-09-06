@@ -146,6 +146,28 @@ export const VideoPlayer = React.memo(
 							user_id: user?.id || "",
 						});
 						lastSentProgressRef.current = progressToSend;
+
+						try {
+							const item = localStorage.getItem("last_watched_course");
+							if (item) {
+								const parsed = JSON.parse(item);
+								if (parsed.courseId === courseId) {
+									localStorage.setItem(
+										"last_watched_course",
+										JSON.stringify({
+											...parsed,
+											moduleId,
+											moduleProgress: progressToSend,
+											currentTime: Math.round(videoRef.current?.currentTime || 0),
+											duration: Math.round(videoRef.current?.duration || 0),
+											timestamp: Date.now(),
+										})
+									);
+								}
+							}
+						} catch (e) {
+							// ignore
+						}
 					}
 				}
 			};

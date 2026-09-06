@@ -16,6 +16,20 @@ const nextConfig = {
 	eslint: {
 		dirs: ["."],
 	},
+	async redirects() {
+		return [
+			{
+				source: "/dashboard/study-guides",
+				destination: "/dashboard/education-hub",
+				permanent: true,
+			},
+			{
+				source: "/dashboard/study-guides/:id",
+				destination: "/dashboard/education-hub/:id",
+				permanent: true,
+			},
+		];
+	},
 };
 
 export default nextConfig;

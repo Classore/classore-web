@@ -221,7 +221,8 @@ export const useCreatePaidStudyTimeline = () => {
 
 // <-- UPDATE STUDY TIMELINE (Add extra subjects with fiat) -->
 export type UpdateTimelinePayload = {
-	study_timeline_id: string;
+	study_timeline_id?: string;
+	study_timeline?: string;
 	subjects: string[];
 	promo_code?: string;
 };
@@ -234,8 +235,14 @@ export type UpdateTimelineResp = {
 	};
 };
 const updateStudyTimeline = async (payload: UpdateTimelinePayload) => {
+	const timelineId = payload.study_timeline_id || payload.study_timeline || "";
 	return axios
-		.put<HttpResponse<UpdateTimelineResp>>(endpoints().school.update_study_timeline, payload)
+		.put<HttpResponse<UpdateTimelineResp>>(endpoints().school.update_study_timeline, {
+			study_timeline_id: timelineId,
+			study_timeline: timelineId,
+			subjects: payload.subjects,
+			...(payload.promo_code ? { promo_code: payload.promo_code } : {}),
+		})
 		.then((res) => res.data);
 };
 export const useUpdateStudyTimeline = () => {

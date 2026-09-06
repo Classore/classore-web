@@ -272,6 +272,45 @@ const Page = () => {
 		hasManualNavigation,
 	]);
 
+	// Persist most recently watched course for dashboard "Continue Where You Left Off" card
+	React.useEffect(() => {
+		if (course?.subject_id?.name && id) {
+			try {
+				localStorage.setItem(
+					"last_watched_course",
+					JSON.stringify({
+						courseId: String(id),
+						subjectName: course.subject_id.name,
+						examBundleName: course.chosen_bundle || bundle?.exam_bundle_details?.name || "",
+						chapterId: chapterId || initialChapterId,
+						chapterName: currentChapter?.name || "",
+						moduleId: moduleId || initialModuleId,
+						moduleTitle: currentModule?.title || "",
+						progress: course.current_progress_percentage || courseProgress || 0,
+						moduleProgress: currentModuleProgress || 0,
+						timestamp: Date.now(),
+					})
+				);
+			} catch (e) {
+				// ignore
+			}
+		}
+	}, [
+		course?.subject_id?.name,
+		course?.chosen_bundle,
+		course?.current_progress_percentage,
+		id,
+		bundle?.exam_bundle_details?.name,
+		chapterId,
+		initialChapterId,
+		currentChapter?.name,
+		moduleId,
+		initialModuleId,
+		currentModule?.title,
+		courseProgress,
+		currentModuleProgress,
+	]);
+
 	React.useEffect(() => {
 		if (isError && error?.status === 403) {
 			setRenewalModalOpen(true);
