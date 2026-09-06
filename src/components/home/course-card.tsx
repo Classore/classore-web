@@ -10,46 +10,8 @@ interface Props {
 	onClick?: () => void;
 }
 
-const Component = ({
-	children,
-	onClick,
-	className,
-	id,
-	bundle,
-}: {
-	children: React.ReactNode;
-	onClick?: () => void;
-	className: string;
-	id: string;
-	bundle: string;
-}) => {
-	if (onClick) {
-		return (
-			<button type="button" onClick={onClick} className={className} id={id}>
-				{children}
-			</button>
-		);
-	}
-	return (
-		<Link
-			href={{
-				pathname: `/dashboard/courses/${id}`,
-				query: {
-					bundle,
-				},
-			}}
-			onClick={onClick}
-			className={className}
-			id={id}>
-			{children}
-		</Link>
-	);
-};
-
-// "ONGOING" | "PENDING" | "COMPLETED" | "EXPIRED";
-
 export const CourseCard = ({ course, onClick }: Props) => {
-	const handleClick = () => {
+	const saveLastWatched = () => {
 		try {
 			localStorage.setItem(
 				"last_watched_course",
@@ -63,15 +25,14 @@ export const CourseCard = ({ course, onClick }: Props) => {
 				})
 			);
 		} catch (e) {}
-		onClick?.();
 	};
 
-	return (
-		<Component
-			id={course.course_id}
-			bundle={course.course_chosen_bundle}
-			onClick={onClick ? handleClick : () => handleClick()}
-			className="flex max-w-[360px] flex-col gap-3 rounded-lg border p-2.5 transition-all duration-700 hover:shadow-2xl sm:w-80 sm:min-w-[320px] sm:max-w-[320px] md:w-96 md:min-w-[380px] md:max-w-[380px] md:p-3">
+	const bundle = course.course_chosen_bundle || course.examBundle_id || "";
+	const cardClasses =
+		"flex max-w-[360px] flex-col gap-3 rounded-lg border p-2.5 transition-all duration-700 hover:shadow-2xl sm:w-80 sm:min-w-[320px] sm:max-w-[320px] md:w-96 md:min-w-[380px] md:max-w-[380px] md:p-3 cursor-pointer text-left";
+
+	const cardContent = (
+		<>
 			<div className="relative w-full rounded-lg">
 				<div className="absolute right-[10px] top-2 !z-[5] flex items-center gap-1 rounded bg-white p-1">
 					<RiTimeLine size={18} />
@@ -123,6 +84,34 @@ export const CourseCard = ({ course, onClick }: Props) => {
 						className="h-full rounded-3xl bg-primary-400"></div>
 				</div>
 			</div>
-		</Component>
+		</>
+	);
+
+	if (onClick) {
+		return (
+			<button
+				type="button"
+				id={course.course_id}
+				onClick={() => {
+					saveLastWatched();
+					onClick();
+				}}
+				className={cardClasses}>
+				{cardContent}
+			</button>
+		);
+	}
+
+	return (
+		<Link
+			id={course.course_id}
+			href={{
+				pathname: `/dashboard/courses/${course.course_id}`,
+				query: bundle ? { bundle } : {},
+			}}
+			onClick={saveLastWatched}
+			className={cardClasses}>
+			{cardContent}
+		</Link>
 	);
 };
