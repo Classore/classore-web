@@ -88,8 +88,8 @@ export const dashboard_links = [
 				icon: RiTeamLine,
 			},
 			{
-				name: "study guides",
-				href: "/dashboard/study-guides",
+				name: "Education Hub",
+				href: "/dashboard/education-hub",
 				icon: RiBook3Line,
 			},
 			{

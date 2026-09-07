@@ -1,9 +1,10 @@
 import { RiArrowDropDownLine, RiNotificationLine } from "@remixicon/react";
 import Image from "next/image";
 
+import { User03 } from "@untitled-ui/icons-react";
+import Link from "next/link";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { AccountSettingsDrawer } from "../settings/account-settings-drawer";
 import { AppStore, PlayStore } from "../shared/app-download";
 import MobileAppImg from "@/assets/images/mobile-img.webp";
 import { Separator } from "@/components/ui/separator";
@@ -88,8 +89,14 @@ export const Appbar = () => {
 							</div>
 							<RiArrowDropDownLine size={24} />
 						</PopoverTrigger>
-						<PopoverContent className="w-40 rounded-lg px-2">
-							<AccountSettingsDrawer />
+						<PopoverContent className="w-44 rounded-xl p-2 shadow-lg border border-neutral-200 bg-white">
+							<Link
+								href="/dashboard/settings"
+								className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-50 hover:text-primary-600 transition-colors">
+								<User03 height={18} width={18} className="text-neutral-500" />
+								<span>Edit Profile</span>
+							</Link>
+							<div className="my-1 border-t border-neutral-100" />
 							<LogoutModal />
 						</PopoverContent>
 					</Popover>

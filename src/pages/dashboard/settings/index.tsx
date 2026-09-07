@@ -3,6 +3,8 @@ import {
 	RiCheckLine,
 	RiCoinLine,
 	RiDeleteBinLine,
+	RiEyeLine,
+	RiEyeOffLine,
 	RiFileCopyLine,
 	RiGiftLine,
 	RiLockPasswordLine,
@@ -230,7 +232,7 @@ const Page = () => {
 	const [copiedLink, setCopiedLink] = React.useState(false);
 
 	const referralCode = profile?.referral_code || "";
-	const referralUrl = typeof window !== "undefined" ? `${window.location.origin}/auth/signup?ref=${referralCode}` : "";
+	const referralUrl = typeof window !== "undefined" ? `${window.location.origin}/signup?ref=${referralCode}` : "";
 
 	const totalAvailablePoints = pointsData?.total_available_points ?? 0;
 	const totalConvertedAmount = pointsData?.total_converted_points ?? 0;
@@ -283,27 +285,51 @@ const Page = () => {
 	};
 
 	// ─── Tab 6: Danger Zone ──────────────────────────────────────────────────
+	const DELETE_ACCOUNT_REASONS = [
+		"Too many promotional emails/course recommendations (spam)",
+		"Dissatisfaction with course quality or platform features",
+		"Account security concerns (e.g., suspicious activity, hacking risk)",
+		"Financial reasons (can’t afford courses/subscriptions)",
+		"Accidentally created duplicate accounts and want to merge/remove one",
+		"Temporary account for a one-time course purchase (no need to retain)",
+		"Inactive for years and no plans to return",
+		"Platform lacks courses in my niche/interest area",
+		"Instructor/content moderation issues (e.g., low-quality material)",
+		"Technical issues (e.g., app bugs, poor user experience)",
+		"Other reason",
+	];
+
+	const [deletePassword, setDeletePassword] = React.useState("");
+	const [showDeletePassword, setShowDeletePassword] = React.useState(false);
 	const [deleteReason, setDeleteReason] = React.useState("");
+	const [deleteComments, setDeleteComments] = React.useState("");
 	const [deleteConfirmText, setDeleteConfirmText] = React.useState("");
 	const deleteAccountMutation = useDeleteAccountMutation();
 
 	const handleDeleteAccount = () => {
-		if (!profile?.id) return;
+		if (!deletePassword) {
+			toast.error("Please enter your current password to confirm");
+			return;
+		}
 		if (deleteConfirmText !== "DELETE") {
 			toast.error("Please type DELETE to confirm");
 			return;
 		}
 		deleteAccountMutation.mutate(
-			{ id: profile.id, reason_for_account_delete: deleteReason || "User requested deletion" },
+			{
+				password: deletePassword,
+				reason: deleteReason || undefined,
+				comments: deleteComments || undefined,
+			},
 			{
 				onSuccess: () => {
 					toast.success("Account deleted successfully");
 					Cookies.remove("CLASSORE_TOKEN");
 					localStorage.clear();
-					router.push("/auth/signin");
+					router.push("/signin");
 				},
 				onError: (err: any) => {
-					toast.error(err?.response?.data?.message || "Failed to delete account");
+					toast.error(err?.response?.data?.message || err?.message || "Failed to delete account. Please check your password.");
 				},
 			}
 		);
@@ -827,12 +853,49 @@ const Page = () => {
 
 							<div className="mt-6 flex flex-col gap-4">
 								<div className="flex flex-col gap-1.5">
+									<label className="text-xs font-medium text-neutral-700">
+										Current Password <span className="text-red-500">*</span>
+									</label>
+									<div className="relative flex items-center">
+										<input
+											type={showDeletePassword ? "text" : "password"}
+											value={deletePassword}
+											onChange={(e) => setDeletePassword(e.target.value)}
+											placeholder="Enter your current password"
+											className="h-10 w-full rounded-xl border border-neutral-200 bg-white px-3 pr-10 text-xs"
+											required
+										/>
+										<button
+											type="button"
+											onClick={() => setShowDeletePassword(!showDeletePassword)}
+											className="absolute right-3 text-neutral-400 hover:text-neutral-600">
+											{showDeletePassword ? <RiEyeOffLine size={16} /> : <RiEyeLine size={16} />}
+										</button>
+									</div>
+								</div>
+
+								<div className="flex flex-col gap-1.5">
 									<label className="text-xs font-medium text-neutral-700">Reason for deleting account</label>
-									<textarea
-										rows={3}
+									<select
 										value={deleteReason}
 										onChange={(e) => setDeleteReason(e.target.value)}
-										placeholder="Tell us why you are leaving..."
+										className="h-10 rounded-xl border border-neutral-200 bg-white px-3 text-xs">
+										<option value="">Select a reason (optional)</option>
+										{DELETE_ACCOUNT_REASONS.map((r) => (
+											<option key={r} value={r}>
+												{r}
+											</option>
+										))}
+									</select>
+								</div>
+
+								<div className="flex flex-col gap-1.5">
+									<label className="text-xs font-medium text-neutral-700">Additional Comments (Optional)</label>
+									<textarea
+										rows={3}
+										value={deleteComments}
+										onChange={(e) => setDeleteComments(e.target.value)}
+										placeholder="Tell us more about your experience or why you are leaving..."
 										className="rounded-xl border border-neutral-200 bg-white p-3 text-xs"
 									/>
 								</div>
@@ -845,6 +908,7 @@ const Page = () => {
 										type="text"
 										value={deleteConfirmText}
 										onChange={(e) => setDeleteConfirmText(e.target.value)}
+										placeholder="DELETE"
 										className="h-10 rounded-xl border border-neutral-200 bg-white px-3 text-xs"
 									/>
 								</div>
@@ -852,7 +916,7 @@ const Page = () => {
 								<Button
 									variant="destructive"
 									onClick={handleDeleteAccount}
-									disabled={deleteConfirmText !== "DELETE" || deleteAccountMutation.isPending}
+									disabled={deleteAccountMutation.isPending}
 									className="mt-2 text-xs font-bold">
 									{deleteAccountMutation.isPending ? <Spinner /> : "Permanently Delete My Account"}
 								</Button>

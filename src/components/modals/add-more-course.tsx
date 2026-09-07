@@ -13,10 +13,10 @@ import { formatCurrency } from "@/lib";
 import { Button } from "../ui/button";
 import { Spinner } from "../shared";
 import {
+	useGetBundleSubjects,
 	useGetExamBundles,
 	useGetExams,
 	useGetSingleExamBundleQuery,
-	useGetSubjects,
 	useUpdateStudyTimeline,
 } from "@/queries/school";
 import { useAddSubjectsWithTokens } from "@/queries/token-wallet";
@@ -66,17 +66,26 @@ export const AddMoreCourseModal = ({ disabled, chosenSubjects }: AddCourseModalP
 	const [promoCode, setPromoCode] = React.useState("");
 	const [appliedCode, setAppliedCode] = React.useState("");
 
+	const bundleId = (router.query.id as string) || "";
 	const { data: profile } = useGetProfile();
 	const { data: bundle } = useGetSingleExamBundleQuery({
-		bundle_id: router.query.id as string,
+		bundle_id: bundleId,
 	});
 
 	const { data: bundles } = useGetExamBundles({});
-	const { data: subjects } = useGetSubjects();
+	const { data: bundleSubjectsData } = useGetBundleSubjects({
+		bundle_id: bundleId,
+	});
 	const { data: exams } = useGetExams();
 
 	const timeline = profile?.time_line.find(
-		(t) => t.chosen_bundle === bundle?.id || t.exam_bundle_details?.id === bundle?.id
+		(t) =>
+			t.chosen_bundle === bundle?.id ||
+			t.chosen_bundle === bundleId ||
+			t.exam_bundle_details?.id === bundle?.id ||
+			t.exam_bundle_details?.id === bundleId ||
+			t.id === bundleId ||
+			(t.chosen_bundle as any)?.id === bundleId
 	);
 
 	const { control, handleSubmit } = useForm<FormData>({
@@ -84,7 +93,7 @@ export const AddMoreCourseModal = ({ disabled, chosenSubjects }: AddCourseModalP
 		shouldUnregister: true,
 		defaultValues: {
 			exam_type: bundle?.examination.id ?? "",
-			chosen_bundle: (router.query.id as string) ?? "",
+			chosen_bundle: bundleId,
 			subjects: [],
 		},
 	});
@@ -95,19 +104,50 @@ export const AddMoreCourseModal = ({ disabled, chosenSubjects }: AddCourseModalP
 	const selectedSubjectsArray = selectedSubjects ? splitIntoArray(selectedSubjects) : [];
 
 	const bundleSubjects = React.useMemo(() => {
-		return subjects
-			?.filter((subject) => subject.subject_examination_bundle === router.query.id)
-			?.filter((subject) => !chosenSubjects?.find((s) => s.id === subject.subject_id))
-			.map((sub) => ({
-				label: sub.subject_name,
-				value: sub.subject_id,
-			}));
-	}, [subjects, chosenSubjects, router.query.id]);
+		const enrolledIds = new Set(
+			chosenSubjects?.map((s) => s.id || (s as any).subject_id) || []
+		);
+
+		const list: Array<{ label: string; value: string }> = [];
+
+		if (bundleSubjectsData && Array.isArray(bundleSubjectsData)) {
+			for (const s of bundleSubjectsData) {
+				const id = (s.subject_id || (s as any).id || "").trim();
+				const name = (s.subject_name || (s as any).name || "").trim();
+				if (id && !enrolledIds.has(id)) {
+					list.push({ label: name, value: id });
+				}
+			}
+		}
+
+		if (!list.length && bundle?.subjects && Array.isArray(bundle.subjects)) {
+			for (const s of bundle.subjects) {
+				const id = (s.id || (s as any).subject_id || "").trim();
+				const name = (s.name || (s as any).subject_name || "").trim();
+				if (id && !enrolledIds.has(id)) {
+					list.push({ label: name, value: id });
+				}
+			}
+		}
+
+		return list;
+	}, [bundleSubjectsData, bundle?.subjects, chosenSubjects]);
+
+	const allowExtra =
+		(bundle as any)?.allow_extra_subjects === "YES" ||
+		(bundle as any)?.allow_extra_subjects === true ||
+		(bundle as any)?.examinationbundle_allow_extra_subjects === "YES";
 
 	const numberOfPrevEnrolled = Number(chosenSubjects?.length ?? 0);
 	const maxSubjects = Number(bundle?.max_subjects || (bundle as any)?.allowed_subjects || 0);
-	const remainingSlots = maxSubjects > 0 ? Math.max(0, maxSubjects - numberOfPrevEnrolled) : 0;
-	const isMaxReached = maxSubjects > 0 && numberOfPrevEnrolled >= maxSubjects;
+
+	// If extra subjects are allowed, user can add any available bundle subjects
+	const isMaxReached = !allowExtra && maxSubjects > 0 && numberOfPrevEnrolled >= maxSubjects;
+	const remainingSlots = allowExtra
+		? bundleSubjects.length
+		: maxSubjects > 0
+		? Math.max(0, maxSubjects - numberOfPrevEnrolled)
+		: bundleSubjects.length;
 
 	// Token Pricing
 	const tokenBalance = profile?.wallet?.token_balance ?? 0;
@@ -247,17 +287,21 @@ export const AddMoreCourseModal = ({ disabled, chosenSubjects }: AddCourseModalP
 						<div className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs font-semibold text-amber-800">
 							⚠️ You have already enrolled in the maximum allowed subjects ({maxSubjects}) for this bundle.
 						</div>
+					) : bundleSubjects.length === 0 ? (
+						<div className="rounded-xl border border-neutral-200 bg-neutral-50 p-3 text-xs font-semibold text-neutral-600">
+							All available subjects in this bundle are already included in your study plan.
+						</div>
 					) : null}
 
 					<MultiSelect
 						control={control}
 						name="subjects"
 						label="Select subjects"
-						placeholder="Select subjects..."
+						placeholder={bundleSubjects.length > 0 ? "Select extra subjects..." : "No additional subjects available"}
 						options={bundleSubjects ?? []}
-						disabled={isMaxReached}
-						maxSelectable={remainingSlots}
-						info={maxSubjects > 0 ? `${selectedSubjectsArray.length} / ${remainingSlots} available` : undefined}
+						disabled={isMaxReached || bundleSubjects.length === 0}
+						maxSelectable={remainingSlots > 0 ? remainingSlots : undefined}
+						info={`${selectedSubjectsArray.length} / ${bundleSubjects.length} available to add`}
 					/>
 
 					{/* ── Token Wallet Option ── */}

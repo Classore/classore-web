@@ -17,16 +17,29 @@ export interface DisplayArticle {
 	date: string;
 }
 
+const formatReadingTime = (time?: string | number) => {
+	if (!time) return "5 min read";
+	const str = String(time).trim();
+	if (!str) return "5 min read";
+	return str.includes("min") ? str : `${str} min read`;
+};
+
 export const mapApiToDisplay = (apiArticle: ApiArticle): DisplayArticle => ({
 	id: apiArticle.id,
 	category: (apiArticle.category || "study tips") as GuideCategory,
 	title: apiArticle.title,
 	excerpt: apiArticle.excerpt,
 	content: apiArticle.article_body,
-	readTime: apiArticle.reading_time || "5 min read",
+	readTime: formatReadingTime(apiArticle.reading_time),
 	coverImage: apiArticle.cover_photo || "/placeholder.jpg",
 	author: {
 		name: "Classore Team",
 	},
-	date: apiArticle.createdOn || new Date().toISOString(),
+	date:
+		apiArticle.createdOn ||
+		(apiArticle as any).createdAt ||
+		(apiArticle as any).created_at ||
+		(apiArticle as any).updatedOn ||
+		new Date().toISOString(),
 });
+

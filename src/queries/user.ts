@@ -34,9 +34,9 @@ export const useGetProfile = (enabled?: boolean) => {
 	return useQuery({
 		queryKey: ["profile"],
 		queryFn: () => getProfile(),
-		staleTime: Infinity,
+		staleTime: 30 * 1000,
 		enabled,
-		gcTime: Infinity,
+		gcTime: 5 * 60 * 1000,
 		select: (data) => data.data,
 	});
 };

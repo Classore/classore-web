@@ -875,12 +875,12 @@ const Page = () => {
 		const canSendMessages = Boolean(activeRoom?.isGeneral || activeRoom?.isPaid);
 
 		return (
-			<div className="relative flex h-full flex-col overflow-hidden">
+			<div className="relative flex h-full min-h-0 w-full flex-1 flex-col overflow-hidden bg-white">
 				{/* Header */}
-				<div className="flex h-[76px] shrink-0 items-center justify-between border-b border-neutral-200 px-6 bg-white z-10">
+				<div className="flex h-[60px] sm:h-[76px] shrink-0 items-center justify-between border-b border-neutral-200 px-4 sm:px-6 bg-white z-10">
 					<div className="flex items-center gap-x-3 min-w-0">
-						<button onClick={() => setShowChat(false)} className="text-neutral-500 hover:text-neutral-700">
-							<RiArrowLeftSLine className="size-5" />
+						<button onClick={() => setShowChat(false)} className="text-neutral-500 hover:text-neutral-700 p-1 -ml-1">
+							<RiArrowLeftSLine className="size-6" />
 						</button>
 						<div className={cn(
 							"flex size-9 shrink-0 items-center justify-center rounded-lg",
@@ -931,12 +931,12 @@ const Page = () => {
 				</div>
 
 				{/* Main Chat Body + Slide-out Members Panel */}
-				<div className="relative flex flex-1 overflow-hidden">
+				<div className="relative flex flex-1 min-h-0 overflow-hidden">
 					{/* Messages Area */}
-					<div className="flex flex-1 flex-col overflow-hidden">
+					<div className="flex flex-1 min-h-0 flex-col overflow-hidden">
 						<div
 							ref={ref}
-							className="flex flex-1 flex-col gap-y-4 overflow-y-auto bg-[#F6F8FA] px-6 py-4"
+							className="flex flex-1 min-h-0 flex-col gap-y-4 overflow-y-auto bg-[#F6F8FA] px-4 sm:px-6 py-4"
 						>
 							{isFetchingNextPage && (
 								<p className="py-2 text-center text-xs text-neutral-400">Loading older…</p>
@@ -964,10 +964,10 @@ const Page = () => {
 
 						{/* Bottom Bar: Active Input or Locked Banner */}
 						{canSendMessages ? (
-							<div className="shrink-0 border-t border-neutral-200 bg-white px-6 py-3">
+							<div className="shrink-0 border-t border-neutral-200 bg-white px-3 sm:px-6 py-3">
 								<form
 									onSubmit={handleSubmit}
-									className="flex items-end gap-x-3 rounded-xl bg-neutral-100 px-4 py-2"
+									className="flex items-end gap-x-2 sm:gap-x-3 rounded-xl bg-neutral-100 px-3 sm:px-4 py-2"
 								>
 									<textarea
 										name="content"
@@ -993,7 +993,7 @@ const Page = () => {
 										multiple
 										accept="image/*,video/*"
 									/>
-									<div className="flex shrink-0 items-center gap-x-2 pb-1">
+									<div className="flex shrink-0 items-center gap-x-1.5 sm:gap-x-2 pb-1">
 										<label className="cursor-pointer text-neutral-400 hover:text-neutral-600">
 											<input
 												type="file"
@@ -1215,24 +1215,24 @@ const Page = () => {
 	return (
 		<>
 			<Seo title="Community Forum" />
-			<DashboardLayout className="px-0 py-0 lg:px-0 lg:py-0">
-				<div className="relative flex h-full w-full overflow-hidden">
+			<DashboardLayout className="p-0 gap-0 overflow-hidden h-full">
+				<div className="relative flex h-full w-full flex-1 min-h-0 overflow-hidden bg-white">
 
 					{/* ── Forum list panel (left on desktop, full-screen on mobile when not in chat) ── */}
 					<div
 						className={cn(
-							"flex h-full flex-col overflow-y-auto",
+							"flex h-full flex-1 min-h-0 flex-col overflow-y-auto bg-white",
 							"w-full lg:w-[360px] lg:shrink-0 lg:border-r lg:border-neutral-200",
 							showChat && isMobile ? "hidden" : "flex"
 						)}
 					>
 						{/* Header */}
-						<div className="flex h-[76px] shrink-0 items-center border-b border-neutral-200 px-6">
+						<div className="flex h-[60px] sm:h-[76px] shrink-0 items-center border-b border-neutral-200 px-6 bg-white">
 							<p className="text-xl font-bold text-neutral-900">Community Forum</p>
 						</div>
 
 						{/* Bundle list */}
-						<div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+						<div className="flex-1 min-h-0 overflow-y-auto px-4 py-4 space-y-4 bg-white">
 							{bundleForums.length === 0 ? (
 								<div className="flex flex-col items-center justify-center py-16 gap-3">
 									<RiHashtag className="size-12 text-neutral-200" />
@@ -1258,9 +1258,8 @@ const Page = () => {
 					{/* ── Chat panel (right on desktop, full-screen on mobile when in chat) ── */}
 					<div
 						className={cn(
-							"flex-1 h-full",
-							!showChat && isMobile ? "hidden" : "flex",
-							"flex-col"
+							"flex-1 h-full min-h-0 flex flex-col overflow-hidden bg-white",
+							!showChat && isMobile ? "hidden" : "flex"
 						)}
 					>
 						{activeRoom ? (

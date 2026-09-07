@@ -210,15 +210,16 @@ export const useGoogleCallback = () => {
 };
 
 export type DeleteAccountParams = {
-	id: string;
-	reason_for_account_delete: string;
+	password: string;
+	reason?: string;
+	comments?: string;
 };
 const deleteAccount = async (params: DeleteAccountParams) => {
 	return axios
-		.put<HttpResponse<null>>(endpoints().auth.delete_entity, {
-			type: "USER",
-			id: params.id,
-			reason_for_account_delete: params.reason_for_account_delete,
+		.post<HttpResponse<null>>(endpoints().auth.delete_account, {
+			password: params.password,
+			reason: params.reason,
+			comments: params.comments,
 		})
 		.then((res) => res.data);
 };

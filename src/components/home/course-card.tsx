@@ -38,6 +38,7 @@ const Component = ({
 					bundle,
 				},
 			}}
+			onClick={onClick}
 			className={className}
 			id={id}>
 			{children}
@@ -48,11 +49,28 @@ const Component = ({
 // "ONGOING" | "PENDING" | "COMPLETED" | "EXPIRED";
 
 export const CourseCard = ({ course, onClick }: Props) => {
+	const handleClick = () => {
+		try {
+			localStorage.setItem(
+				"last_watched_course",
+				JSON.stringify({
+					courseId: course.course_id,
+					subjectName: course.subject_name,
+					examBundleName: course.examBundle_name,
+					chapterName: course.chapter_name || "",
+					progress: course.course_current_progress_percentage || 0,
+					timestamp: Date.now(),
+				})
+			);
+		} catch (e) {}
+		onClick?.();
+	};
+
 	return (
 		<Component
 			id={course.course_id}
 			bundle={course.course_chosen_bundle}
-			onClick={onClick}
+			onClick={onClick ? handleClick : () => handleClick()}
 			className="flex max-w-[360px] flex-col gap-3 rounded-lg border p-2.5 transition-all duration-700 hover:shadow-2xl sm:w-80 sm:min-w-[320px] sm:max-w-[320px] md:w-96 md:min-w-[380px] md:max-w-[380px] md:p-3">
 			<div className="relative w-full rounded-lg">
 				<div className="absolute right-[10px] top-2 !z-[5] flex items-center gap-1 rounded bg-white p-1">

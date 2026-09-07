@@ -332,16 +332,16 @@ const Page = () => {
 	return (
 		<>
 			<Seo title="Messages" />
-			<DashboardLayout className="p-0 md:px-0">
-				<div className="relative flex h-full w-full items-start overflow-hidden">
+			<DashboardLayout className="p-0 gap-0 overflow-hidden h-full">
+				<div className="relative flex h-full w-full flex-1 min-h-0 items-start overflow-hidden bg-white">
 					{/* ── Sidebar: Room list ── */}
 					<aside
 						className={cn(
-							"h-full w-full lg:w-[325px] lg:shrink-0 border-r border-neutral-200 bg-white flex flex-col",
+							"h-full flex-1 min-h-0 w-full lg:w-[325px] lg:shrink-0 lg:flex-none border-r border-neutral-200 bg-white flex flex-col",
 							!open && isMobile ? "hidden" : "flex"
 						)}
 					>
-						<div className="flex h-[76px] shrink-0 items-center border-b border-neutral-200 px-6">
+						<div className="flex h-[60px] sm:h-[76px] shrink-0 items-center border-b border-neutral-200 px-6 bg-white">
 							<p className="text-xl font-bold text-neutral-900">Messages</p>
 						</div>
 
@@ -374,20 +374,20 @@ const Page = () => {
 					{/* ── Chat area ── */}
 					<div
 						className={cn(
-							"flex-1 h-full flex flex-col overflow-hidden bg-white",
+							"flex-1 h-full min-h-0 flex flex-col overflow-hidden bg-white",
 							open && isMobile ? "hidden" : "flex"
 						)}
 					>
 						{roomId || selected ? (
 							<>
 								{/* Header */}
-								<div className="flex h-[76px] shrink-0 items-center justify-between border-b border-neutral-200 px-6 bg-white z-10">
+								<div className="flex h-[60px] sm:h-[76px] shrink-0 items-center justify-between border-b border-neutral-200 px-4 sm:px-6 bg-white z-10">
 									<div className="flex items-center gap-x-3 min-w-0">
 										<button
-											className="block lg:hidden text-neutral-500 hover:text-neutral-700 p-1"
+											className="block lg:hidden text-neutral-500 hover:text-neutral-700 p-1 -ml-1"
 											onClick={() => setOpen(true)}
 										>
-											<RiArrowLeftSLine className="size-5" />
+											<RiArrowLeftSLine className="size-6" />
 										</button>
 										<Avatar className="size-10 rounded-xl border border-neutral-200 bg-primary-100 shrink-0">
 											<AvatarImage src={selected?.profile_picture || ""} />
@@ -435,7 +435,7 @@ const Page = () => {
 								{/* Messages Body */}
 								<div
 									ref={ref}
-									className="flex flex-1 flex-col gap-y-4 overflow-y-auto bg-[#F6F8FA] px-6 py-4"
+									className="flex flex-1 min-h-0 flex-col gap-y-4 overflow-y-auto bg-[#F6F8FA] px-4 sm:px-6 py-4"
 								>
 									{isFetchingNextPage && (
 										<p className="py-2 text-center text-xs text-neutral-400">
@@ -465,7 +465,7 @@ const Page = () => {
 								</div>
 
 								{/* Input Area */}
-								<div className="shrink-0 border-t border-neutral-200 bg-white px-6 py-3">
+								<div className="shrink-0 border-t border-neutral-200 bg-white px-3 sm:px-6 py-3">
 									<form
 										onSubmit={handleSubmit}
 										className="flex items-end gap-x-3 rounded-xl bg-neutral-100 px-4 py-2"

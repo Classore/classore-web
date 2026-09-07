@@ -1,6 +1,7 @@
 import {
 	RiCheckLine,
 	RiCoinLine,
+	RiInformationLine,
 	RiShieldCheckLine,
 	RiSparklingLine,
 } from "@remixicon/react";
@@ -19,6 +20,7 @@ import {
 	useCreateStudyTimeline,
 	useGetBundleSubjects,
 	useGetSingleExamBundleQuery,
+	useUpdateStudyTimeline,
 } from "@/queries/school";
 import { renewPlan } from "@/queries/user";
 import { useGetProfile } from "@/queries/student";
@@ -35,9 +37,38 @@ type EnrollModalProps = {
 };
 
 /**
+ * Calculates fiat cost for chosen subjects:
+ * If selectedCount === 0: return 0
+ * If selectedCount < allowedSubjects: selectedCount * amountPerSubject
+ * If selectedCount === allowedSubjects: baseAmount (discounted bundle)
+ * If selectedCount > allowedSubjects: baseAmount + (extras * amountPerSubject)
+ */
+function calcFiatCost(
+	selectedCount: number,
+	allowedSubjects: number,
+	baseAmount: number,
+	amountPerSubject: number
+): number {
+	if (selectedCount === 0) return 0;
+	if (selectedCount < allowedSubjects) {
+		const perSubject =
+			amountPerSubject > 0
+				? amountPerSubject
+				: allowedSubjects > 0
+				? Math.round(baseAmount / allowedSubjects)
+				: 0;
+		return selectedCount * perSubject;
+	}
+	const extras = selectedCount - allowedSubjects;
+	return baseAmount + extras * (amountPerSubject > 0 ? amountPerSubject : 0);
+}
+
+/**
  * Calculates token cost for chosen subjects:
- * If subjects <= allowedSubjects: cost = baseTokenCost
- * If subjects > allowedSubjects: cost = baseTokenCost + (extras * tokenCostPerSubject)
+ * If selectedCount === 0: return 0
+ * If selectedCount < allowedSubjects: selectedCount * tokenCostPerSubject
+ * If selectedCount === allowedSubjects: tokenCost (discounted bundle)
+ * If selectedCount > allowedSubjects: tokenCost + (extras * tokenCostPerSubject)
  */
 function calcTokenCost(
 	selectedCount: number,
@@ -45,9 +76,18 @@ function calcTokenCost(
 	tokenCost: number,
 	tokenCostPerSubject: number
 ): number {
-	if (selectedCount <= allowedSubjects) return tokenCost;
+	if (selectedCount === 0) return 0;
+	if (selectedCount < allowedSubjects) {
+		const perSubject =
+			tokenCostPerSubject > 0
+				? tokenCostPerSubject
+				: allowedSubjects > 0
+				? Math.round(tokenCost / allowedSubjects)
+				: 0;
+		return selectedCount * perSubject;
+	}
 	const extras = selectedCount - allowedSubjects;
-	return tokenCost + extras * tokenCostPerSubject;
+	return tokenCost + extras * (tokenCostPerSubject > 0 ? tokenCostPerSubject : 0);
 }
 
 export const EnrollModal = ({
@@ -73,14 +113,15 @@ export const EnrollModal = ({
 	const [isEnrollingFree, setIsEnrollingFree] = React.useState(false);
 	const [isPayingWithTokens, setIsPayingWithTokens] = React.useState(false);
 
-	// Reset state whenever the modal is opened
+	// Reset state and revalidate profile whenever the modal is opened
 	React.useEffect(() => {
 		if (isOpen) {
+			queryClient.invalidateQueries({ queryKey: ["profile"] });
 			setSelectedSubjectIds([]);
 			setPromoCode("");
 			setAppliedCode("");
 		}
-	}, [isOpen]);
+	}, [isOpen, queryClient]);
 
 	const { data: profile } = useGetProfile();
 	const { data: bundle, isLoading: isBundleLoading } = useGetSingleExamBundleQuery({
@@ -93,6 +134,7 @@ export const EnrollModal = ({
 	// Mutations
 	const createStudyTimeline = useCreateStudyTimeline();
 	const createPaidStudyTimeline = useCreatePaidStudyTimeline();
+	const updateStudyTimeline = useUpdateStudyTimeline();
 	const renewPlanMutation = useMutation({
 		mutationFn: ({ id, promo_code }: { id: string; promo_code?: string }) =>
 			renewPlan(id, promo_code),
@@ -100,7 +142,11 @@ export const EnrollModal = ({
 	const purchaseBundleWithTokens = usePurchaseBundleWithTokens();
 
 	const existingTimeline = profile?.time_line?.find(
-		(t) => t.chosen_bundle === bundleId || t.exam_bundle_details?.id === bundleId
+		(t) =>
+			t.chosen_bundle === bundleId ||
+			t.exam_bundle_details?.id === bundleId ||
+			t.id === bundleId ||
+			(t.chosen_bundle as any)?.id === bundleId
 	);
 
 	// Subjects for this bundle: prioritize dedicated bundle subjects endpoint (matches mobile)
@@ -127,12 +173,41 @@ export const EnrollModal = ({
 	}, [bundleSubjectsData, bundle?.subjects]);
 
 
+	const allowedSubjects =
+		Number((bundle as any)?.allowed_subjects) > 0
+			? Number((bundle as any)?.allowed_subjects)
+			: Number(bundle?.max_subjects) > 0
+			? Number(bundle?.max_subjects)
+			: bundle?.number_of_subjects || 4;
+
 	const maxSubjects =
 		Number(bundle?.max_subjects) > 0
 			? Number(bundle?.max_subjects)
-			: Number((bundle as any)?.allowed_subjects) > 0
-			? Number((bundle as any)?.allowed_subjects)
-			: bundle?.number_of_subjects || 4;
+			: allowedSubjects;
+
+	const allowExtra =
+		(bundle as any)?.allow_extra_subjects === "YES" ||
+		(bundle as any)?.allow_extra_subjects === true ||
+		(bundle as any)?.examinationbundle_allow_extra_subjects === "YES";
+
+	const selectionLimit = allowExtra
+		? bundleSubjects.length || 20
+		: maxSubjects > 0
+		? maxSubjects
+		: allowedSubjects;
+
+	// Fiat pricing calculation
+	const rawAmount =
+		bundle?.amount ??
+		(bundle as any)?.examinationbundle_amount ??
+		0;
+	const rawAmountPerSubject =
+		bundle?.amount_per_subject ??
+		(bundle as any)?.examinationbundle_amount_per_subject ??
+		bundle?.extra_charge ??
+		0;
+	const baseFiat = Number(rawAmount) > 0 ? Number(rawAmount) : 0;
+	const fiatPerSubject = Number(rawAmountPerSubject) > 0 ? Number(rawAmountPerSubject) : 0;
 
 	// Token Pricing calculation
 	const tokenBalance = profile?.wallet?.token_balance ?? 0;
@@ -155,11 +230,18 @@ export const EnrollModal = ({
 	const requiredTokens = hasTokenPricing
 		? calcTokenCost(
 				selectedSubjectIds.length,
-				maxSubjects,
+				allowedSubjects,
 				baseTokens,
 				extraTokensPerSubject
-			)
+		  )
 		: 0;
+
+	const requiredFiat = calcFiatCost(
+		selectedSubjectIds.length,
+		allowedSubjects,
+		baseFiat,
+		fiatPerSubject
+	);
 
 	const hasEnoughTokens = tokenBalance >= requiredTokens && requiredTokens > 0;
 
@@ -170,8 +252,8 @@ export const EnrollModal = ({
 			if (prev.includes(subjectId)) {
 				return prev.filter((id) => id !== subjectId);
 			}
-			if (maxSubjects > 0 && prev.length >= maxSubjects) {
-				toast.info(`You have reached the maximum allowed subjects (${maxSubjects}) for this bundle.`);
+			if (selectionLimit > 0 && prev.length >= selectionLimit) {
+				toast.info(`You have reached the maximum allowed subjects (${selectionLimit}) for this bundle.`);
 				return prev;
 			}
 			return [...prev, subjectId];
@@ -218,16 +300,17 @@ export const EnrollModal = ({
 					setIsOpen(false);
 					router.push("/dashboard/courses");
 				},
-				onError: (err: any) => {
+				onError: async (err: any) => {
 					setIsEnrollingFree(false);
-					const msg = err?.response?.data?.message || err?.message || "Failed to enroll in free preview.";
-					if (typeof msg === "string" && msg.toLowerCase().includes("already")) {
-						toast.info("You are already enrolled in this bundle.");
+					const msg = err?.response?.data?.message || err?.message || "";
+					if (typeof msg === "string" && (msg.toLowerCase().includes("already") || msg.toLowerCase().includes("update"))) {
+						await queryClient.invalidateQueries({ queryKey: ["profile"] });
+						toast.info("You already have a study timeline for this bundle.");
 						setIsOpen(false);
 						router.push("/dashboard/courses");
 						return;
 					}
-					toast.error(typeof msg === "string" ? msg : "Failed to enroll in free preview.");
+					toast.error(typeof msg === "string" && msg ? msg : "Failed to enroll in free preview.");
 				},
 			}
 		);
@@ -239,7 +322,7 @@ export const EnrollModal = ({
 			toast.error("Please select at least one subject.");
 			return;
 		}
-		if (maxSubjects > 0 && selectedSubjectIds.length > maxSubjects) {
+		if (maxSubjects > 0 && selectedSubjectIds.length > maxSubjects && !allowExtra) {
 			toast.error(`You can only select up to ${maxSubjects} subjects.`);
 			return;
 		}
@@ -252,11 +335,19 @@ export const EnrollModal = ({
 				{
 					onSuccess: async () => {
 						setIsPayingWithTokens(false);
+						toast.success("Plan unlocked successfully with tokens!");
+						await queryClient.invalidateQueries({ queryKey: ["profile"] });
+						await queryClient.invalidateQueries({ queryKey: ["my-courses"] });
 						setIsOpen(false);
 						router.push("/dashboard/courses");
 					},
-					onError: () => {
+					onError: (err: any) => {
 						setIsPayingWithTokens(false);
+						const msg =
+							err?.response?.data?.message ||
+							err?.message ||
+							"Failed to unlock plan with tokens.";
+						toast.error(typeof msg === "string" ? msg : "Failed to unlock plan with tokens.");
 					},
 				}
 			);
@@ -284,29 +375,49 @@ export const EnrollModal = ({
 					}
 					executeTokenUnlock(timelineId);
 				},
-				onError: (err: any) => {
+				onError: async (err: any) => {
+					const msg = err?.response?.data?.message || err?.message || "";
+					// If backend says timeline already exists, fetch latest profile and unlock with tokens
+					if (typeof msg === "string" && (msg.toLowerCase().includes("already") || msg.toLowerCase().includes("update"))) {
+						try {
+							const freshProfile = (await queryClient.fetchQuery({ queryKey: ["profile"] })) as any;
+							const found = freshProfile?.time_line?.find(
+								(t: any) =>
+									t.chosen_bundle === bundleId ||
+									t.exam_bundle_details?.id === bundleId ||
+									t.id === bundleId ||
+									t.chosen_bundle?.id === bundleId
+							);
+							if (found?.id) {
+								executeTokenUnlock(found.id);
+								return;
+							}
+						} catch {
+							// fallback
+						}
+					}
 					setIsPayingWithTokens(false);
-					const msg = err?.response?.data?.message || err?.message || "Failed to initialize study plan.";
-					toast.error(typeof msg === "string" ? msg : "Failed to initialize study plan.");
+					toast.error(typeof msg === "string" && msg ? msg : "Failed to initialize study plan.");
 				},
 			}
 		);
 	};
 
 	// ── Option 3: Pay with Paystack (Fiat) ──────────────────────────────────────
-	const handlePayWithPaystack = () => {
+	const handlePayWithPaystack = async () => {
 		if (!selectedSubjectIds.length) {
 			toast.error("Please select at least one subject.");
 			return;
 		}
-		if (maxSubjects > 0 && selectedSubjectIds.length > maxSubjects) {
+		if (maxSubjects > 0 && selectedSubjectIds.length > maxSubjects && !allowExtra) {
 			toast.error(`You can only select up to ${maxSubjects} subjects.`);
 			return;
 		}
 
-		if (existingTimeline?.id) {
+		const proceedWithRenew = (timelineId: string) => {
+			toast.info("Preparing your checkout link...");
 			renewPlanMutation.mutate(
-				{ id: existingTimeline.id, promo_code: appliedCode || undefined },
+				{ id: timelineId, promo_code: appliedCode || undefined },
 				{
 					onSuccess: (res: any) => {
 						const rawData = res?.data;
@@ -329,6 +440,27 @@ export const EnrollModal = ({
 					},
 				}
 			);
+		};
+
+		if (existingTimeline?.id) {
+			// If user changed or selected subjects, update timeline before renewing
+			try {
+				const updateRes = await updateStudyTimeline.mutateAsync({
+					study_timeline: existingTimeline.id,
+					subjects: selectedSubjectIds,
+				});
+				const updatePayUrl =
+					(updateRes as any)?.data?.payment_link?.authorization_url ||
+					(updateRes as any)?.data?.payment_link?.link ||
+					(updateRes as any)?.data?.authorization_url;
+				if (updatePayUrl) {
+					window.location.href = updatePayUrl;
+					return;
+				}
+			} catch {
+				// Continue to renew directly
+			}
+			proceedWithRenew(existingTimeline.id);
 			return;
 		}
 
@@ -354,9 +486,28 @@ export const EnrollModal = ({
 						toast.error("Could not get payment link. Please try again.");
 					}
 				},
-				onError: (err: any) => {
-					const msg = err?.response?.data?.message || err?.message || "Payment initialization failed.";
-					toast.error(typeof msg === "string" ? msg : "Payment initialization failed.");
+				onError: async (err: any) => {
+					const msg = err?.response?.data?.message || err?.message || "";
+					// If backend says timeline already exists, refetch profile & proceed with renew
+					if (typeof msg === "string" && (msg.toLowerCase().includes("already") || msg.toLowerCase().includes("update"))) {
+						try {
+							const freshProfile = (await queryClient.fetchQuery({ queryKey: ["profile"] })) as any;
+							const found = freshProfile?.time_line?.find(
+								(t: any) =>
+									t.chosen_bundle === bundleId ||
+									t.exam_bundle_details?.id === bundleId ||
+									t.id === bundleId ||
+									t.chosen_bundle?.id === bundleId
+							);
+							if (found?.id) {
+								proceedWithRenew(found.id);
+								return;
+							}
+						} catch {
+							// fallback
+						}
+					}
+					toast.error(typeof msg === "string" && msg ? msg : "Payment initialization failed.");
 				},
 			}
 		);
@@ -387,9 +538,60 @@ export const EnrollModal = ({
 					<div className="flex items-center justify-between text-xs font-semibold">
 						<span className="text-neutral-700">Select Subjects</span>
 						<span className="rounded-full bg-neutral-100 px-2.5 py-0.5 text-neutral-600">
-							{selectedSubjectIds.length} / {maxSubjects} included
+							{selectedSubjectIds.length} / {allowedSubjects} for bundle discount
 						</span>
 					</div>
+
+					{/* ── Dynamic Pricing Guide Banner ── */}
+					{selectedSubjectIds.length === 0 ? (
+						<div className="rounded-xl border border-blue-100 bg-blue-50/70 p-3 text-xs text-blue-900 flex items-start gap-2.5">
+							<RiInformationLine className="size-4 shrink-0 text-blue-600 mt-0.5" />
+							<div className="flex-1">
+								<p className="font-semibold text-blue-950">
+									Select {allowedSubjects} subjects to get the full bundle discount
+								</p>
+								<p className="text-[11px] text-blue-700 mt-0.5">
+									Full bundle: {hasTokenPricing ? `${baseTokens} tokens / ` : ""}{formatCurrency(baseFiat)}. Selecting fewer than {allowedSubjects} charges per subject ({hasTokenPricing ? `${extraTokensPerSubject} tokens / ` : ""}{formatCurrency(fiatPerSubject)} each).
+								</p>
+							</div>
+						</div>
+					) : selectedSubjectIds.length < allowedSubjects ? (
+						<div className="rounded-xl border border-amber-200 bg-amber-50/80 p-3 text-xs text-amber-950 flex items-start gap-2.5">
+							<RiInformationLine className="size-4 shrink-0 text-amber-600 mt-0.5" />
+							<div className="flex-1">
+								<p className="font-semibold">
+									Paying per subject ({selectedSubjectIds.length} of {allowedSubjects} selected)
+								</p>
+								<p className="text-[11px] text-amber-800 mt-0.5">
+									Currently paying individual rates: <span className="font-bold">{hasTokenPricing ? `${requiredTokens} tokens / ` : ""}{formatCurrency(requiredFiat)}</span>. Select <span className="font-bold underline">{allowedSubjects - selectedSubjectIds.length} more</span> to unlock the full bundle discount ({hasTokenPricing ? `${baseTokens} tokens / ` : ""}{formatCurrency(baseFiat)})!
+								</p>
+							</div>
+						</div>
+					) : selectedSubjectIds.length === allowedSubjects ? (
+						<div className="rounded-xl border border-emerald-200 bg-emerald-50/80 p-3 text-xs text-emerald-950 flex items-start gap-2.5">
+							<RiSparklingLine className="size-4 shrink-0 text-emerald-600 mt-0.5" />
+							<div className="flex-1">
+								<p className="font-semibold text-emerald-900">
+									🎉 Bundle discount unlocked!
+								</p>
+								<p className="text-[11px] text-emerald-700 mt-0.5">
+									You are getting all {allowedSubjects} subjects for the discounted bundle price of <span className="font-bold">{hasTokenPricing ? `${baseTokens} tokens / ` : ""}{formatCurrency(baseFiat)}</span>.
+								</p>
+							</div>
+						</div>
+					) : (
+						<div className="rounded-xl border border-primary-200 bg-primary-50/80 p-3 text-xs text-primary-950 flex items-start gap-2.5">
+							<RiSparklingLine className="size-4 shrink-0 text-primary-600 mt-0.5" />
+							<div className="flex-1">
+								<p className="font-semibold text-primary-900">
+									Full bundle discount + {selectedSubjectIds.length - allowedSubjects} extra subject(s)
+								</p>
+								<p className="text-[11px] text-primary-700 mt-0.5">
+									Base {allowedSubjects} subjects at discount + extras at {hasTokenPricing ? `${extraTokensPerSubject} tokens / ` : ""}{formatCurrency(fiatPerSubject)} each.
+								</p>
+							</div>
+						</div>
+					)}
 
 					{isSubjectsLoading || isBundleLoading ? (
 						<div className="grid place-items-center py-8">
@@ -403,7 +605,7 @@ export const EnrollModal = ({
 						<div className="flex flex-wrap gap-2 pt-1 max-h-48 overflow-y-auto">
 							{bundleSubjects.map((subject) => {
 								const checked = selectedSubjectIds.includes(subject.subject_id);
-								const isMaxReached = maxSubjects > 0 && selectedSubjectIds.length >= maxSubjects;
+								const isMaxReached = selectionLimit > 0 && selectedSubjectIds.length >= selectionLimit;
 								const disabled = isMaxReached && !checked;
 
 								return (
@@ -449,7 +651,7 @@ export const EnrollModal = ({
 						{hasEnoughTokens ? (
 							<Button
 								onClick={handlePayWithTokens}
-								disabled={isPayingWithTokens || purchaseBundleWithTokens.isPending}
+								disabled={isPayingWithTokens || purchaseBundleWithTokens.isPending || selectedSubjectIds.length === 0}
 								className="mt-1 w-full bg-primary-600 text-xs font-bold text-white hover:bg-primary-700">
 								{isPayingWithTokens || purchaseBundleWithTokens.isPending ? (
 									<Spinner />
@@ -479,7 +681,7 @@ export const EnrollModal = ({
 					<div className="flex items-center justify-between">
 						<p className="text-xs font-bold text-neutral-900">Pay with Card or Bank</p>
 						<span className="font-bold text-sm text-primary-700">
-							{formatCurrency(Number(bundle?.amount || 0))}
+							{formatCurrency(requiredFiat)}
 						</span>
 					</div>
 
@@ -519,12 +721,12 @@ export const EnrollModal = ({
 
 					<Button
 						onClick={handlePayWithPaystack}
-						disabled={createPaidStudyTimeline.isPending || renewPlanMutation.isPending}
+						disabled={createPaidStudyTimeline.isPending || renewPlanMutation.isPending || selectedSubjectIds.length === 0}
 						className="w-full text-xs font-bold">
 						{createPaidStudyTimeline.isPending || renewPlanMutation.isPending ? (
 							<Spinner />
 						) : (
-							`Pay ${formatCurrency(Number(bundle?.amount || 0))} with Paystack`
+							`Pay ${formatCurrency(requiredFiat)} with Paystack`
 						)}
 					</Button>
 				</div>

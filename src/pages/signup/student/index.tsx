@@ -28,24 +28,26 @@ const onboardSchema = z.object({
 		.trim(),
 	phone_number: z
 		.string()
-		.min(1, {
-			message: "Please enter your phone number (preferably WhatsApp number)",
-		})
 		.trim()
-		.transform((val) => {
-			if (val.startsWith("0")) return val;
-			return val.startsWith("+") ? val : `+${val}`;
-		})
+		.optional()
 		.refine(
 			(val) => {
-				const isLocalNG = /^0\d{10}$/.test(val);
-				const isInternational = /^\+\d{7,15}$/.test(val);
+				if (!val || val === "") return true;
+				const formatted = val.startsWith("0") ? val : val.startsWith("+") ? val : `+${val}`;
+				const isLocalNG = /^0\d{10}$/.test(formatted);
+				const isInternational = /^\+\d{7,15}$/.test(formatted);
 				return isLocalNG || isInternational;
 			},
 			{
 				message: "Please enter a valid phone number (e.g. 080... or +234...)",
 			}
-		),
+		)
+		.transform((val) => {
+			if (!val || val.trim() === "") return undefined;
+			const trimmed = val.trim();
+			if (trimmed.startsWith("0")) return trimmed;
+			return trimmed.startsWith("+") ? trimmed : `+${trimmed}`;
+		}),
 	password: z
 		.string()
 		.min(1, { message: "Please enter your password" })
@@ -106,6 +108,7 @@ const Page = () => {
 
 			return SignUpMutation({
 				...rest,
+				phone_number: rest.phone_number || undefined,
 				sign_up_channel: "DEFAULT",
 				user_type: "STUDENT",
 				referral_code: rest.referral_code ?? "",
@@ -177,11 +180,12 @@ const Page = () => {
 							/>
 							<Input
 								type="tel"
-								label="Phone Number (preferably WhatsApp number)"
-								placeholder="+2348012345678"
+								label="Phone Number (Optional)"
+								placeholder="+2348012345678 (optional)"
 								className="col-span-full"
 								control={control}
 								name="phone_number"
+								desc="Optional: preferably WhatsApp number for class and schedule updates"
 							/>
 							<Input
 								type="password"

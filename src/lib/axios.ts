@@ -27,7 +27,7 @@ api.interceptors.response.use(
 	},
 	(error) => {
 		const status = error.response?.status;
-		if (status === 401) {
+		if (status === 401 && !error.config?.url?.includes("delete-account")) {
 			localStorage.removeItem("classore-user");
 			localStorage.removeItem("CLASSORE_USER");
 			Cookies.remove("CLASSORE_TOKEN");

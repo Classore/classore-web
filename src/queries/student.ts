@@ -18,8 +18,8 @@ export const useGetProfile = (enabled?: boolean) => {
 		queryKey: ["profile"],
 		queryFn: getProfile,
 		enabled,
-		staleTime: Infinity,
-		gcTime: Infinity,
+		staleTime: 30 * 1000,
+		gcTime: 5 * 60 * 1000,
 		select: (data) => data.data,
 	});
 };

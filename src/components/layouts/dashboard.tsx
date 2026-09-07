@@ -144,11 +144,11 @@ export function DashboardLayout({ children, className }: DashboardLayoutProps) {
 			</main>
 
 			{/* MOBILE NAVBAR */}
-			<main className="h-full w-full bg-white lg:hidden">
+			<main className="flex h-[100dvh] min-h-[100dvh] w-full flex-col bg-white lg:hidden overflow-hidden">
 				<MobileAppbar />
 				<div
 					className={cn(
-						"flex h-[calc(100%-62px)] w-full flex-col gap-6 overflow-y-auto px-2 pt-6 md:px-8",
+						"flex flex-1 min-h-0 w-full flex-col gap-6 overflow-y-auto px-2 pt-6 md:px-8",
 						className
 					)}>
 					{children}
