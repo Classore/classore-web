@@ -1,0 +1,15 @@
+export { default as Navbar } from "./Navbar";
+export { default as Hero } from "./Hero";
+export { default as FeatureHighlights } from "./FeatureHighlights";
+export { default as TestCenter } from "./TestCenter";
+export { default as LiveContest } from "./LiveContest";
+export { default as LiveActivity } from "./LiveActivity";
+export { default as HowItWorks } from "./HowItWorks";
+export { default as CTABanner } from "./CTABanner";
+export { default as Pricing } from "./Pricing";
+export { default as Partners } from "./Partners";
+export { default as Testimonials } from "./Testimonials";
+export { default as BlogSection } from "./BlogSection";
+export { default as Footer } from "./Footer";
+export { default as MobileBottomNav } from "./MobileBottomNav";
+export { default as PhoneMockup } from "./PhoneMockup";

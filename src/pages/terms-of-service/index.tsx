@@ -1,12 +1,12 @@
 import React from "react";
 
-import { Appbar, Footer, Seo } from "@/components/shared";
+import { Footer, Navbar, Seo } from "@/components/shared";
 
 const Page = () => {
 	return (
 		<>
 			<Seo title="Terms of Service" />
-			<Appbar />
+			<Navbar />
 			<div className="w-full">
 				<div className=""></div>
 			</div>

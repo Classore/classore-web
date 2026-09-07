@@ -8,6 +8,8 @@ const nextConfig = {
 			{ protocol: "https", hostname: "images.unsplash.com" },
 			{ protocol: "https", hostname: "res.cloudinary.com" },
 			{ protocol: "https", hostname: "storage.googleapis.com" },
+			{ protocol: "https", hostname: "i.pravatar.cc" },
+			{ protocol: "https", hostname: "picsum.photos" },
 			{ protocol: "http", hostname: "dummyimage.com" },
 			{ protocol: "http", hostname: "classore.com" },
 			{ protocol: "http", hostname: "storage.googleapis.com" },

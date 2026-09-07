@@ -28,11 +28,40 @@ const getTokenPackages = async () => {
 		.then((res) => res.data);
 };
 
-export const useGetTokenPackages = () => {
+export const findPaymentUrl = (obj: any): string | null => {
+	if (!obj) return null;
+	if (typeof obj === "string") {
+		if (obj.startsWith("http://") || obj.startsWith("https://")) {
+			return obj;
+		}
+		return null;
+	}
+	if (typeof obj !== "object") return null;
+
+	const preferred =
+		obj.checkout_url ||
+		obj.authorization_url ||
+		obj.payment_link ||
+		obj.link ||
+		obj.url;
+	if (preferred) {
+		const found = findPaymentUrl(preferred);
+		if (found) return found;
+	}
+
+	for (const key of Object.keys(obj)) {
+		const found = findPaymentUrl(obj[key]);
+		if (found) return found;
+	}
+	return null;
+};
+
+export const useGetTokenPackages = (options?: { enabled?: boolean }) => {
 	return useQuery({
 		queryKey: ["token_packages"],
 		queryFn: getTokenPackages,
 		staleTime: 5 * 60 * 1000,
+		enabled: options?.enabled ?? true,
 		select: (res: any) => {
 			const list: TokenPackage[] =
 				Array.isArray(res) ? res :

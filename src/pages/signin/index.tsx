@@ -98,7 +98,8 @@ const Page = () => {
 			}
 
 			toast.success("Login successful!");
-			router.replace("/dashboard");
+			const redirect = router.query.redirect as string;
+			router.replace(redirect || "/dashboard");
 		},
 		onError: (error: HttpError) => {
 			const errorMessage = Array.isArray(error.response.data.message)

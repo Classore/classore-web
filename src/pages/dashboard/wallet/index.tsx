@@ -10,6 +10,7 @@ import {
 	type TokenPackage,
 	useGetTokenPackages,
 	usePurchaseTokensPaystack,
+	findPaymentUrl,
 } from "@/queries/token-wallet";
 import { toast } from "sonner";
 
@@ -68,34 +69,6 @@ const PackageCard = ({
 };
 
 import { useGetProfile } from "@/queries/student";
-
-const findPaymentUrl = (obj: any): string | null => {
-	if (!obj) return null;
-	if (typeof obj === "string") {
-		if (obj.startsWith("http://") || obj.startsWith("https://")) {
-			return obj;
-		}
-		return null;
-	}
-	if (typeof obj !== "object") return null;
-
-	const preferred =
-		obj.checkout_url ||
-		obj.authorization_url ||
-		obj.payment_link ||
-		obj.link ||
-		obj.url;
-	if (preferred) {
-		const found = findPaymentUrl(preferred);
-		if (found) return found;
-	}
-
-	for (const key of Object.keys(obj)) {
-		const found = findPaymentUrl(obj[key]);
-		if (found) return found;
-	}
-	return null;
-};
 
 const Page = () => {
 	const queryClient = useQueryClient();
