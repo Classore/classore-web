@@ -80,6 +80,9 @@ const normalize = (str?: string | null) =>
 
 const getMemberCount = (forum?: RoomProps | null) => {
 	if (!forum) return 0;
+	if (typeof (forum as any).members_count === "number") return (forum as any).members_count;
+	if (typeof (forum as any).membersCount === "number") return (forum as any).membersCount;
+	if (typeof (forum as any).total_members === "number") return (forum as any).total_members;
 	if (Array.isArray(forum.members)) return forum.members.length;
 	return 0;
 };
@@ -155,10 +158,74 @@ const Page = () => {
 	// ── Forums ───────────────────────────────────────────────────────────────
 	const { data: forums } = useGetForums();
 
+	// DIAGNOSTIC: log every forum entity the server returned for this user
+	React.useEffect(() => {
+		if (!forums) return;
+		console.group("🏛️ [WEB FORUM DIAGNOSTIC] Forums from /chat/fetch-forums");
+		console.log("Total forums returned:", forums.length);
+		forums.forEach((f, i) => {
+			console.log(`  [${i}] id=${f.id}  name=${f.name}  bundle=${f.bundle_name}  is_group=${f.is_group}  members=${(f.members ?? []).length}`);
+		});
+		console.groupEnd();
+	}, [forums]);
+
+	// ── Resolve real forum entity ID for the active room ─────────────────────
+	// When subject.forumId is a subject UUID (findMatchingForum fallback), activeRoom.id
+	// is that UUID — not the real forum entity ID. Queries using the raw ID get 404/empty.
+	// We resolve it the same way mobile does: exact match → name match → fallback.
+	const resolvedRoomId = React.useMemo(() => {
+		if (!activeRoom?.id || !forums) return activeRoom?.id ?? "";
+		// 1. Exact match — activeRoom.id is already the real entity ID
+		if (forums.some((f) => f.id === activeRoom.id)) {
+			console.log(`📍 [WEB FORUM] resolvedRoomId step-1 EXACT MATCH: ${activeRoom.id} (channel: ${activeRoom.name})`);
+			return activeRoom.id;
+		}
+		// 2. Name match — the room's name field is the subject UUID (backend convention)
+		const byName = forums.find((f) => f.name === activeRoom.id);
+		if (byName) {
+			console.log(`📍 [WEB FORUM] resolvedRoomId step-2 NAME MATCH: ${activeRoom.id} → ${byName.id} (channel: ${activeRoom.name})`);
+			return byName.id;
+		}
+		// 3. Human-readable name + bundle fallback
+		if (activeRoom.name && activeRoom.bundle_name) {
+			const found = forums.find(
+				(f) =>
+					f.bundle_name === activeRoom.bundle_name &&
+					f.name?.toLowerCase().trim() === (activeRoom.name ?? "").toLowerCase().trim()
+			);
+			if (found) {
+				console.log(`📍 [WEB FORUM] resolvedRoomId step-3 NAME+BUNDLE MATCH: ${activeRoom.id} → ${found.id} (channel: ${activeRoom.name})`);
+				return found.id;
+			}
+		}
+		console.warn(`⚠️ [WEB FORUM] resolvedRoomId step-4 FALLBACK (unresolved): ${activeRoom.id} (channel: ${activeRoom.name}) — forum NOT in list, will auto-join`);
+		return activeRoom.id;
+	}, [activeRoom?.id, activeRoom?.name, activeRoom?.bundle_name, forums]);
+
+	// isRoomConfirmed: true only when resolvedRoomId is a real entity ID in the forums list.
+	// Gates the messages query to prevent fetching with a subject UUID (wrong ID).
+	const isRoomConfirmed = React.useMemo(
+		() => !!resolvedRoomId && (forums?.some((f) => f.id === resolvedRoomId) ?? false),
+		[resolvedRoomId, forums]
+	);
+
+	// DIAGNOSTIC: log the final room ID state used for messages + members queries
+	React.useEffect(() => {
+		if (!activeRoom) return;
+		console.log(
+			`🔍 [WEB FORUM] Room state — channel: "${activeRoom.name}"`,
+			`\n  activeRoom.id: ${activeRoom.id}`,
+			`\n  resolvedRoomId: ${resolvedRoomId}`,
+			`\n  isRoomConfirmed: ${isRoomConfirmed}`,
+			`\n  MESSAGES QUERY USES: ${(activeRoom.isGeneral || isRoomConfirmed) ? resolvedRoomId : "(blocked — waiting for join)"}`
+		);
+	}, [resolvedRoomId, isRoomConfirmed, activeRoom?.name]);
+
 	// ── Room Members ──────────────────────────────────────────────────────────
 	const { data: roomMembers, isLoading: isLoadingMembers } = useGetRoomMembers(
-		activeRoom?.id
+		resolvedRoomId || null
 	);
+
 
 	// ── User Rooms (for fast DM check) ────────────────────────────────────────
 	const { data: userRooms } = useGetUserRooms(String(user?.id ?? ""));
@@ -166,29 +233,39 @@ const Page = () => {
 	// ── Join Subject Forum Mutation ───────────────────────────────────────────
 	const joinSubjectForumMutation = useJoinSubjectForum();
 
-	// Auto-join background call when student opens a subscribed subject channel
+	// Auto-join background call when student opens a subscribed subject channel.
+	// Only fires when the room is NOT yet confirmed server-side (isRoomConfirmed=false).
+	// This prevents redundant API calls every time the user switches channels.
+	// The backend join is idempotent, so calling it is always safe.
 	React.useEffect(() => {
 		if (
 			!activeRoom ||
 			activeRoom.isGeneral ||
 			!activeRoom.isPaid ||
-			!activeRoom.subject_id
+			!activeRoom.subject_id ||
+			isRoomConfirmed
 		)
 			return;
 
 		if (isJoiningForumRef.current) return;
 		isJoiningForumRef.current = true;
 
+		console.log(`🔑 [WEB FORUM] Auto-joining: subject_id=${activeRoom.subject_id}  activeRoom.id=${activeRoom.id}  channel=${activeRoom.name}`);
+
 		joinSubjectForumMutation.mutate(activeRoom.subject_id, {
-			onSuccess: () => {
+			onSuccess: (data) => {
+				console.log(`✅ [WEB FORUM] join-subject-forum SUCCESS for subject_id=${activeRoom.subject_id}`, data);
 				queryClient.invalidateQueries({ queryKey: ["forums"] });
-				queryClient.invalidateQueries({ queryKey: ["room_members", activeRoom.id] });
+				queryClient.invalidateQueries({ queryKey: ["room_members", resolvedRoomId] });
+			},
+			onError: (err) => {
+				console.error(`❌ [WEB FORUM] join-subject-forum FAILED for subject_id=${activeRoom.subject_id}`, err);
 			},
 			onSettled: () => {
 				isJoiningForumRef.current = false;
 			},
 		});
-	}, [activeRoom?.id, activeRoom?.subject_id, activeRoom?.isPaid, activeRoom?.isGeneral]);
+	}, [activeRoom?.id, activeRoom?.subject_id, activeRoom?.isPaid, activeRoom?.isGeneral, isRoomConfirmed]);
 
 	// ── Find or Create Room Mutation ──────────────────────────────────────────
 	const findOrCreateRoomMutation = useFindOrCreateRoom({
@@ -316,7 +393,20 @@ const Page = () => {
 			if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
 			typingTimeoutRef.current = setTimeout(() => setIsTyping(false), 3000);
 		});
+
+		// Disconnect when tab is hidden, reconnect when visible — prevents the
+		// Cloud Run 301s reconnect loop that keeps the server alive 24/7
+		const handleVisibilityChange = () => {
+			if (document.hidden) {
+				socket.current?.disconnect();
+			} else if (socket.current && !socket.current.connected) {
+				socket.current.connect();
+			}
+		};
+		document.addEventListener("visibilitychange", handleVisibilityChange);
+
 		return () => {
+			document.removeEventListener("visibilitychange", handleVisibilityChange);
 			if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
 			socket.current?.disconnect();
 		};
@@ -514,7 +604,10 @@ const Page = () => {
 		isLoading: isLoadingMessages,
 		refetch,
 	} = useGetInfiniteMessages({
-		roomId: activeRoom?.id || "",
+		// Use resolvedRoomId so the query never fires with a subject UUID.
+		// General channels bypass the confirmation gate — their IDs are always real
+		// entity IDs. Only non-general subject channels need the join→confirm flow.
+		roomId: (activeRoom?.isGeneral || isRoomConfirmed) ? resolvedRoomId : "",
 		user_id: user?.id || "",
 		limit: 100,
 	});
@@ -654,12 +747,23 @@ const Page = () => {
 		}
 	};
 
-	// ── Navigate to a channel ─────────────────────────────────────────────
 	const openChannel = (
 		room: RoomProps,
 		name: string,
 		options?: { subject_id?: string; isPaid?: boolean; isGeneral?: boolean }
 	) => {
+		console.group(`📢 [WEB FORUM] openChannel: "${name}"`);
+		console.log("  room.id (raw, set as activeRoom.id):", room.id);
+		console.log("  subject_id (for join-subject-forum):", options?.subject_id);
+		console.log("  isPaid:", options?.isPaid, " isGeneral:", options?.isGeneral);
+		console.log("  bundle_name:", room.bundle_name);
+		const matched = forums?.find((f) => f.id === room.id);
+		console.log(
+			"  Forum found by exact ID match in cache:",
+			matched ? `✅ id=${matched.id} name=${matched.name} members=${(matched.members ?? []).length}` : `❌ NOT FOUND — will resolve via name-match or auto-join`
+		);
+		console.groupEnd();
+
 		setActiveRoom({
 			...room,
 			name,
@@ -672,6 +776,7 @@ const Page = () => {
 			socket.current.emit("join_room", { roomId: room.id });
 		}
 	};
+
 
 	// Filter room members by search query
 	const filteredMembers = React.useMemo(() => {
@@ -717,7 +822,19 @@ const Page = () => {
 					>
 						<RiShareForwardLine className="size-5 text-white" />
 					</div>
-					<span className="flex-1 text-base font-bold text-neutral-900 capitalize">{cardTitle}</span>
+					<div className="flex-1 flex items-center justify-between">
+						<span className="text-base font-bold text-neutral-900 capitalize">{cardTitle}</span>
+						{bundle.isSubscribed ? (
+							<span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-700">
+								<span className="size-1.5 rounded-full bg-emerald-500" />
+								Active
+							</span>
+						) : (
+							<span className="inline-flex items-center gap-1 rounded-full bg-amber-50 border border-amber-200 px-2.5 py-0.5 text-[11px] font-semibold text-amber-700">
+								Free Preview
+							</span>
+						)}
+					</div>
 					{isExpanded ? (
 						<RiArrowUpSLine className="size-5 text-neutral-400" />
 					) : (
@@ -756,10 +873,13 @@ const Page = () => {
 											}
 											className="flex w-full items-center justify-between rounded-lg px-1 py-2.5 transition-colors hover:bg-neutral-50 active:bg-neutral-100"
 										>
-											<div className="flex items-center gap-2.5 min-w-0">
-												<RiShareForwardLine className="size-5 shrink-0 text-neutral-400" />
+											<div className="flex items-center gap-2 min-w-0">
+												<RiShareForwardLine className="size-5 shrink-0 text-blue-500" />
 												<span className="text-sm font-medium text-neutral-800 capitalize">
 													General Channel
+												</span>
+												<span className="rounded bg-blue-50 border border-blue-200 px-1.5 py-0.2 text-[10px] font-semibold text-blue-600">
+													Open
 												</span>
 											</div>
 											<span className="shrink-0 rounded-md bg-neutral-100 px-2.5 py-0.5 text-xs font-medium text-neutral-600">
@@ -780,27 +900,41 @@ const Page = () => {
 											members: [],
 											bundle_name: bundle.bundleName,
 										};
+									const isSubjectPaid = bundle.isSubscribed;
 									return (
 										<button
 											key={subject.id}
 											onClick={() =>
 												openChannel(sRoom, `${subject.name} Channel`, {
 													subject_id: subject.id,
-													isPaid: true,
+													isPaid: isSubjectPaid,
 													isGeneral: false,
 												})
 											}
 											className="flex w-full items-center justify-between rounded-lg px-1 py-2.5 transition-colors hover:bg-neutral-50 active:bg-neutral-100"
 										>
 											<div className="flex items-center gap-2.5 min-w-0">
-												<RiHashtag className="size-5 shrink-0 text-neutral-400" />
-												<span className="truncate text-sm font-medium text-neutral-800 capitalize">
+												{isSubjectPaid ? (
+													<RiHashtag className="size-5 shrink-0 text-neutral-400" />
+												) : (
+													<RiLockLine className="size-5 shrink-0 text-amber-500" />
+												)}
+												<span className={cn(
+													"truncate text-sm font-medium capitalize",
+													isSubjectPaid ? "text-neutral-800" : "text-neutral-600"
+												)}>
 													{subject.name} Channel
 												</span>
 											</div>
-											<span className="shrink-0 rounded-md bg-neutral-100 px-2.5 py-0.5 text-xs font-medium text-neutral-600">
-												{subject.memberCount}
-											</span>
+											{isSubjectPaid ? (
+												<span className="shrink-0 rounded-md bg-neutral-100 px-2.5 py-0.5 text-xs font-medium text-neutral-600">
+													{subject.memberCount}
+												</span>
+											) : (
+												<span className="shrink-0 inline-flex items-center gap-1 rounded-md bg-amber-50 border border-amber-200 px-2 py-0.5 text-[10px] font-semibold text-amber-700">
+													Subscribe
+												</span>
+											)}
 										</button>
 									);
 								})}
@@ -884,7 +1018,7 @@ const Page = () => {
 						</button>
 						<div className={cn(
 							"flex size-9 shrink-0 items-center justify-center rounded-lg",
-							activeRoom?.isGeneral ? "bg-emerald-100 text-emerald-600" : activeRoom?.isPaid ? "bg-primary-100 text-primary-600" : "bg-neutral-100 text-neutral-500"
+							activeRoom?.isGeneral ? "bg-blue-100 text-blue-600" : activeRoom?.isPaid ? "bg-emerald-100 text-emerald-600" : "bg-amber-100 text-amber-600"
 						)}>
 							{activeRoom?.isGeneral ? (
 								<RiShareForwardLine className="size-5" />
@@ -901,13 +1035,31 @@ const Page = () => {
 							{isTyping ? (
 								<p className="text-xs text-primary-500 font-medium">Someone is typing…</p>
 							) : (
-								<button
-									onClick={() => setShowMembers((v) => !v)}
-									className="text-xs text-neutral-400 hover:text-primary-600 transition-colors flex items-center gap-1"
-								>
-									<span>{totalMembersCount} {totalMembersCount === 1 ? "member" : "members"}</span>
-									<span className="text-[10px] text-primary-500 underline font-medium">View all</span>
-								</button>
+								<div className="flex items-center gap-2 text-xs">
+									{activeRoom?.isGeneral ? (
+										<span className="inline-flex items-center gap-1 text-blue-600 font-medium">
+											<span className="size-1.5 rounded-full bg-blue-500" />
+											Open Channel
+										</span>
+									) : activeRoom?.isPaid ? (
+										<span className="inline-flex items-center gap-1 text-emerald-600 font-medium">
+											<span className="size-1.5 rounded-full bg-emerald-500" />
+											Subscribed
+										</span>
+									) : (
+										<span className="inline-flex items-center gap-1 text-amber-600 font-medium">
+											<RiLockLine className="size-3" />
+											Subscription Required
+										</span>
+									)}
+									<span className="text-neutral-300">•</span>
+									<button
+										onClick={() => setShowMembers((v) => !v)}
+										className="text-neutral-400 hover:text-primary-600 transition-colors flex items-center gap-1"
+									>
+										<span>{totalMembersCount} {totalMembersCount === 1 ? "member" : "members"}</span>
+									</button>
+								</div>
 							)}
 						</div>
 					</div>
@@ -1032,10 +1184,10 @@ const Page = () => {
 										</div>
 										<div>
 											<p className="text-xs sm:text-sm font-bold text-amber-900">
-												Locked Subject Channel
+												Subscribe to unlock {activeRoom?.name || "this subject"}
 											</p>
 											<p className="text-[11px] sm:text-xs text-amber-700">
-												Subscribe to this subject to join the discussion and send messages.
+												You selected this subject during enrollment. Activate your bundle subscription to participate in discussions and get teacher support.
 											</p>
 										</div>
 									</div>
@@ -1043,7 +1195,7 @@ const Page = () => {
 										href="/dashboard/categories"
 										className="shrink-0 rounded-lg bg-primary-600 px-4 py-2 text-xs font-bold text-white hover:bg-primary-700 transition-colors shadow-sm"
 									>
-										Enroll in Subject
+										Subscribe to Unlock
 									</Link>
 								</div>
 							</div>

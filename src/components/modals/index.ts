@@ -11,3 +11,4 @@ export * from "./renewal";
 export * from "./share-review";
 export * from "./take-quiz";
 export * from "./upgrade-plan";
+export * from "./streak-progress-modal";

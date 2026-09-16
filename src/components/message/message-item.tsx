@@ -138,7 +138,7 @@ export const MessageItem = ({ isGroup, message }: Props) => {
 			<Avatar
 				onClick={() => !isSender && senderId && handleOpenDM(senderId)}
 				className={cn(
-					"size-9 shrink-0 rounded-lg",
+					"size-9 shrink-0 rounded-full",
 					!isSender ? "cursor-pointer transition-transform hover:scale-105" : ""
 				)}
 				title={!isSender ? `Message ${senderFullName}` : undefined}

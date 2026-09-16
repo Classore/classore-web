@@ -49,32 +49,145 @@ export const generateCalendarDays = (date: Date) => {
 };
 export type EventTemporalStatus = "LIVE" | "UPCOMING" | "ENDED";
 
-export const getEventTemporalStatus = (event: any): EventTemporalStatus => {
+export type ParsedDateParts = {
+	year: number;
+	month: number;
+	day: number;
+};
+
+export const parseEventDate = (rawDate: any): ParsedDateParts | null => {
+	if (!rawDate) return null;
+
+	if (rawDate instanceof Date) {
+		if (isNaN(rawDate.getTime())) return null;
+		return {
+			year: rawDate.getFullYear(),
+			month: rawDate.getMonth(),
+			day: rawDate.getDate(),
+		};
+	}
+
+	if (typeof rawDate !== "string") {
+		const d = new Date(rawDate);
+		if (isNaN(d.getTime())) return null;
+		return {
+			year: d.getFullYear(),
+			month: d.getMonth(),
+			day: d.getDate(),
+		};
+	}
+
+	const str = rawDate.trim();
+	if (!str) return null;
+
+	// 1. ISO format: YYYY-MM-DD or YYYY-MM-DDTHH:mm:ss
+	if (/^\d{4}-\d{1,2}-\d{1,2}/.test(str)) {
+		const parts = str.split("T")[0].split("-").map(Number);
+		return {
+			year: parts[0],
+			month: parts[1] - 1,
+			day: parts[2],
+		};
+	}
+
+	// 2. YYYY/MM/DD
+	if (/^\d{4}\/\d{1,2}\/\d{1,2}/.test(str)) {
+		const parts = str.split("T")[0].split("/").map(Number);
+		return {
+			year: parts[0],
+			month: parts[1] - 1,
+			day: parts[2],
+		};
+	}
+
+	// 3. Slash format: MM/DD/YYYY or DD/MM/YYYY
+	if (/^\d{1,2}\/\d{1,2}\/\d{4}/.test(str)) {
+		const parts = str.split("T")[0].split("/").map(Number);
+		const p0 = parts[0];
+		const p1 = parts[1];
+		const p2 = parts[2];
+
+		if (p0 > 12 && p1 <= 12) {
+			return {
+				year: p2,
+				month: p1 - 1,
+				day: p0,
+			};
+		}
+		return {
+			year: p2,
+			month: p0 - 1,
+			day: p1,
+		};
+	}
+
+	// 4. Dash format: DD-MM-YYYY
+	if (/^\d{1,2}-\d{1,2}-\d{4}/.test(str)) {
+		const parts = str.split("T")[0].split("-").map(Number);
+		const p0 = parts[0];
+		const p1 = parts[1];
+		const p2 = parts[2];
+
+		if (p0 > 12 && p1 <= 12) {
+			return {
+				year: p2,
+				month: p1 - 1,
+				day: p0,
+			};
+		}
+		return {
+			year: p2,
+			month: p0 - 1,
+			day: p1,
+		};
+	}
+
+	const d = new Date(str);
+	if (!isNaN(d.getTime())) {
+		return {
+			year: d.getFullYear(),
+			month: d.getMonth(),
+			day: d.getDate(),
+		};
+	}
+
+	return null;
+};
+
+export const getEventDateTime = (rawDate: any, hour?: number): number => {
+	const parsed = parseEventDate(rawDate);
+	if (!parsed) return 0;
+	return new Date(parsed.year, parsed.month, parsed.day, hour ?? 0, 0, 0).getTime();
+};
+
+export const getEventTemporalStatus = (
+	event: any,
+	fallbackDate?: string
+): EventTemporalStatus => {
 	if (!event) return "ENDED";
+	if (event.is_active === false) return "ENDED";
+
 	try {
 		const now = new Date();
-		const rawDate = event.date;
+		const rawDate = event.date || fallbackDate;
 		if (!rawDate) return "ENDED";
 
-		let year: number;
-		let month: number;
-		let day: number;
+		const parsed = parseEventDate(rawDate);
+		if (!parsed) return "ENDED";
 
-		if (typeof rawDate === "string" && /^\d{4}-\d{2}-\d{2}/.test(rawDate)) {
-			const parts = rawDate.split("T")[0].split("-").map(Number);
-			year = parts[0];
-			month = parts[1] - 1;
-			day = parts[2];
-		} else {
-			const d = new Date(rawDate);
-			if (isNaN(d.getTime())) return "ENDED";
-			year = d.getFullYear();
-			month = d.getMonth();
-			day = d.getDate();
-		}
+		const { year, month, day } = parsed;
 
-		const startHour = Number(event.start_hour) || 0;
-		const endHour = Number(event.end_hour) || 0;
+		const parseHour = (val: any): number => {
+			if (typeof val === "number") return val;
+			if (typeof val === "string") {
+				const num = parseInt(val, 10);
+				return isNaN(num) ? 0 : num;
+			}
+			return 0;
+		};
+
+		const startHour = parseHour(event.start_hour);
+		const endHour = parseHour(event.end_hour);
 
 		const startTime = new Date(year, month, day, startHour, 0, 0, 0);
 		const effectiveEndHour = endHour > startHour ? endHour : startHour + 1;

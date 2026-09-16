@@ -125,6 +125,11 @@ export const endpoints = (id?: string) => {
 		get: `/mail/fetch-waitlist`,
 	};
 
+	const activity_log = {
+		streak_count: "/activity-log/streak-count",
+		streak: "/activity-log/streak",
+	} as const;
+
 	return {
 		auth,
 		bank,
@@ -138,6 +143,7 @@ export const endpoints = (id?: string) => {
 		user,
 		blog,
 		waitlist,
+		activity_log,
 		token_payment: {
 			packages: "/token-payment/packages",
 			paystack_init: "/token-payment/paystack/initialize",

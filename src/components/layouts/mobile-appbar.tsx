@@ -8,8 +8,10 @@ import { User03, XClose } from "@untitled-ui/icons-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { LogoutModal } from "../modals";
+import React from "react";
+import { LogoutModal, StreakProgressModal } from "../modals";
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "../ui/sheet";
+import { useGetProfile } from "@/queries/student";
 
 /**
  * MobileAppbar component renders a responsive app bar for mobile devices.
@@ -24,23 +26,36 @@ export const MobileAppbar = () => {
 	const isOnRoute = (href: string) => normalize(router.pathname) === href;
 
 	const { user } = useUserStore();
+	const { data: profile } = useGetProfile();
+	const [streakModalOpen, setStreakModalOpen] = React.useState(false);
+	const streakCount = profile?.current_streak ?? profile?.streak ?? 0;
 
 	return (
-		<nav className="flex w-full shrink-0 items-center justify-between border-b border-b-neutral-200 bg-white px-3 py-4 backdrop-blur-sm">
-			<Image
-				src="/assets/images/classore.png"
-				alt="classore"
-				width={141.375}
-				height={30}
-				className="w-32"
-			/>
+		<>
+			<nav className="flex w-full shrink-0 items-center justify-between border-b border-b-neutral-200 bg-white px-3 py-3 backdrop-blur-sm">
+				<Image
+					src="/assets/images/classore.png"
+					alt="classore"
+					width={141.375}
+					height={30}
+					className="w-28 sm:w-32"
+				/>
 
-			<Sheet>
-				<SheetTrigger asChild>
-					<button type="button">
-						<RiMenu3Fill size={20} />
+				<div className="flex items-center gap-2">
+					<button
+						type="button"
+						onClick={() => setStreakModalOpen(true)}
+						className="flex h-8 items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2.5 text-xs font-bold text-amber-900 transition-all active:scale-95 cursor-pointer shadow-2xs">
+						<span>🔥</span>
+						<span>{streakCount}d</span>
 					</button>
-				</SheetTrigger>
+
+					<Sheet>
+						<SheetTrigger asChild>
+							<button type="button" className="p-1.5 rounded-lg hover:bg-neutral-100">
+								<RiMenu3Fill size={20} />
+							</button>
+						</SheetTrigger>
 
 				<SheetContent className="modal-primary flex w-[90%] flex-col gap-4 overflow-x-hidden px-0 py-4">
 					<div className="absolute -top-80 left-0 z-30">
@@ -101,6 +116,9 @@ export const MobileAppbar = () => {
 					</div>
 				</SheetContent>
 			</Sheet>
+				</div>
 		</nav>
+		<StreakProgressModal open={streakModalOpen} setOpen={setStreakModalOpen} />
+	</>
 	);
 };

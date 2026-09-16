@@ -204,24 +204,43 @@ export const useGetUpcomingEvents = (params: EventParams) => {
 };
 
 // <-- LEADER BOARD -->
-type LeaderboardResp = PaginatedResponse<{
+export type LeaderboardItem = {
 	leaderboard_id: string;
 	leaderboard_user: string;
 	leaderboard_points: number;
 	leaderboard_examination: string;
 	leaderboard_examination_bundle: string;
+	examination_bundle_name?: string;
+	examination_name?: string;
 	user_id: string;
 	user_first_name: string;
 	user_last_name: string;
 	user_email: string;
-	user_profile_image: null;
-}>;
-type LeaderboardParams = Partial<
+	user_profile_image: string | null;
+	position: string;
+};
+
+export type LeaderboardResp = {
+	my_leader_board: LeaderboardItem[];
+	data: LeaderboardItem[];
+	meta: {
+		page: number;
+		take: number;
+		itemCount: number;
+		pageCount: number;
+		hasPreviousPage: boolean;
+		hasNextPage: boolean;
+	};
+};
+
+export type LeaderboardParams = Partial<
 	PaginationProps & {
 		examination: string;
 		examination_bundle: string;
+		search: string;
 	}
 >;
+
 const getLeaderboard = async (params: LeaderboardParams) => {
 	return axios
 		.get<HttpResponse<LeaderboardResp>>(endpoints().student.get_leaderboard, {
@@ -231,14 +250,71 @@ const getLeaderboard = async (params: LeaderboardParams) => {
 				...(params?.examination_bundle && {
 					examination_bundle: params.examination_bundle,
 				}),
+				...(params?.search && { search: params.search }),
 			},
 		})
 		.then((res) => res.data);
 };
+
 export const useGetLeaderboard = (params: LeaderboardParams) => {
 	return useQuery({
 		queryKey: ["leaderboard", { params }],
-		queryFn: () => getLeaderboard(params),
+		queryFn:
+			params.examination_bundle || params.examination
+				? () => getLeaderboard(params)
+				: skipToken,
+		select: (data) => data.data,
+	});
+};
+
+// <-- STREAKS & ACTIVITY LOG -->
+const getStreakCount = async (userId: string) => {
+	return axios
+		.get<HttpResponse<import("@/types").StreakCountItem[]>>(endpoints().activity_log.streak_count, {
+			params: { user_id: userId },
+		})
+		.then((res) => res.data);
+};
+
+export const useGetStreakCount = (userId?: string) => {
+	return useQuery({
+		queryKey: ["streak-count", userId],
+		queryFn: userId ? () => getStreakCount(userId) : skipToken,
+		select: (data) => data.data?.[0],
+	});
+};
+
+export type StreakTimelineParams = {
+	user_id: string;
+	timeline?:
+		| "TODAY"
+		| "YESTERDAY"
+		| "THIS_WEEK"
+		| "LAST_WEEK"
+		| "THIS_MONTH"
+		| "LAST_MONTH"
+		| "THIS_YEAR"
+		| "LAST_YEAR"
+		| "ALL_TIME";
+};
+
+const getStreakTimeline = async (params: StreakTimelineParams) => {
+	return axios
+		.get<HttpResponse<import("@/types").StreakTimelineResp>>(endpoints().activity_log.streak, {
+			params: {
+				user_id: params.user_id,
+				...(params.timeline ? { timeline: params.timeline } : {}),
+			},
+		})
+		.then((res) => res.data);
+};
+
+export const useGetStreakTimeline = (params?: Partial<StreakTimelineParams>) => {
+	return useQuery({
+		queryKey: ["streak-timeline", params],
+		queryFn: params?.user_id
+			? () => getStreakTimeline(params as StreakTimelineParams)
+			: skipToken,
 		select: (data) => data.data,
 	});
 };

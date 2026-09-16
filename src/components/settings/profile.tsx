@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import React from "react";
 import { z } from "zod";
 
-import { Avatar, AvatarImage } from "../ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { UpdateProfileMutation } from "@/queries";
 import { useGetProfile } from "@/queries/student";
 import { useUserStore } from "@/store/z-store";
@@ -25,22 +25,36 @@ const schema = z.object({
 		.string()
 		.min(1, { message: "Please enter your email address" })
 		.email("Please enter a valid email"),
-	phone_number: z
-		.string()
-		.min(1, { message: "Please enter your phone number" })
-		.min(11, { message: "Phone number must be at least 11 characters" })
-		.max(11, { message: "Phone number must be at most 11 characters" }),
-	description: z.string().min(1, { message: "Please enter your description" }).or(z.literal("")),
+	phone_number: z.string().optional().or(z.literal("")),
+	description: z.string().optional().or(z.literal("")),
 	birthday: z
-		.string({ required_error: "Please enter your date of birth" })
-		.min(1, { message: "Please enter your date of birth" })
-		.transform((d) => format(d, "MM/dd/yyyy")),
-	profile_image: typeof window !== "undefined" ? z.instanceof(File).or(z.string()) : z.string(),
+		.string()
+		.optional()
+		.or(z.literal(""))
+		.transform((d) => {
+			if (!d) return "";
+			try {
+				return format(new Date(d), "MM/dd/yyyy");
+			} catch {
+				return "";
+			}
+		}),
+	profile_image: typeof window !== "undefined" ? z.instanceof(File).or(z.string()).optional() : z.string().optional(),
 });
+
+type FormValues = z.infer<typeof schema>;
+
+const formatBirthdayForInput = (dateString?: string) => {
+	if (!dateString) return "";
+	try {
+		return format(new Date(dateString), "yyyy-MM-dd");
+	} catch {
+		return "";
+	}
+};
 
 const Profile = () => {
 	const { data: user, isPending } = useGetProfile();
-	type FormValues = z.infer<typeof schema>;
 	const queryClient = useQueryClient();
 	const { setUser } = useUserStore();
 
@@ -58,7 +72,7 @@ const Profile = () => {
 			email: user?.email ?? "",
 			phone_number: user?.phone_number ?? "",
 			description: user?.description ?? "",
-			birthday: user?.birthday ?? "",
+			birthday: formatBirthdayForInput(user?.birthday),
 			profile_image: user?.profile_image ?? "",
 		},
 	});
@@ -67,12 +81,26 @@ const Profile = () => {
 		name: "profile_image",
 	});
 
-	const src = typeof avatar === "string" ? avatar : URL.createObjectURL(avatar);
+	const src = React.useMemo(() => {
+		if (typeof avatar === "string") return avatar;
+		if (avatar instanceof File) return URL.createObjectURL(avatar);
+		return "";
+	}, [avatar]);
+
+	React.useEffect(() => {
+		return () => {
+			if (avatar instanceof File && src) {
+				URL.revokeObjectURL(src);
+			}
+		};
+	}, [avatar, src]);
 
 	const { handleClick, handleFileChange, inputRef } = useFileHandler({
 		onFilesChange: (files) => {
 			const file = files[0];
-			setValue("profile_image", file);
+			if (file) {
+				setValue("profile_image", file);
+			}
 		},
 	});
 
@@ -85,9 +113,9 @@ const Profile = () => {
 			});
 		},
 		onError: (error: HttpError) => {
-			const errorMessage = Array.isArray(error.response.data.message)
+			const errorMessage = Array.isArray(error.response?.data?.message)
 				? error.response.data.message[0]
-				: error.response.data.message;
+				: error.response?.data?.message;
 			const message = errorMessage || "Something went wrong!";
 			toast.error(message);
 		},
@@ -109,31 +137,30 @@ const Profile = () => {
 					<div className="flex w-full items-center justify-between border-b border-b-neutral-200 py-5">
 						<Avatar className="size-16 border">
 							<AvatarImage src={src} className="bg-neutral-100 object-cover" />
+							<AvatarFallback className="bg-neutral-200 text-neutral-600 font-medium">
+								{user?.first_name?.[0]?.toUpperCase() ?? "U"}
+							</AvatarFallback>
 						</Avatar>
 						<div className="flex items-center gap-2">
-							<label htmlFor="image">
-								<input
-									type="file"
-									name="image"
-									ref={inputRef}
-									onChange={handleFileChange}
-									className="hidden"
-								/>
-								<Button
-									type="button"
-									onClick={() => {
-										URL.revokeObjectURL(src);
-										handleClick();
-									}}
-									variant="outline"
-									className="w-fit px-4 py-1.5 !text-sm font-normal text-neutral-400">
-									<RiImageLine size={20} />
-									Change Image
-								</Button>
-							</label>
+							<input
+								type="file"
+								name="image"
+								accept="image/*"
+								ref={inputRef}
+								onChange={handleFileChange}
+								className="hidden"
+							/>
 							<Button
 								type="button"
-								onClick={() => setValue("profile_image", user?.profile_image ?? "")}
+								onClick={handleClick}
+								variant="outline"
+								className="w-fit px-4 py-1.5 !text-sm font-normal text-neutral-400">
+								<RiImageLine size={20} />
+								Change Image
+							</Button>
+							<Button
+								type="button"
+								onClick={() => setValue("profile_image", "")}
 								variant="outline"
 								className="size-9 text-red-600">
 								<RiDeleteBin6Line size={20} />
@@ -157,15 +184,13 @@ const Profile = () => {
 							control={control}
 						/>
 					</div>
-					<Input type="email" name="email" label="Email address" control={control} />
+					<Input type="email" name="email" label="Email address" control={control} disabled />
 					<Input type="date" name="birthday" label="Date of Birth" control={control} />
 					<Input
 						type="tel"
 						name="phone_number"
 						label="Phone Number"
-						pattern="[0-9]*"
-						maxLength={11}
-						minLength={11}
+						maxLength={15}
 						control={control}
 					/>
 					<Textarea control={control} name="description" label="Describe Yourself" />

@@ -70,7 +70,7 @@ const Page = () => {
 	} = useGetCourse({
 		course_id: String(id),
 		enabled: !!id,
-		refetchIntervalInBackground: true,
+		refetchIntervalInBackground: false,
 		refetchInterval: 1000 * 2,
 	});
 
@@ -151,7 +151,7 @@ const Page = () => {
 	} = useGetChapter({
 		chapter_id: initialChapterId || "",
 		enabled: !!initialChapterId,
-		refetchIntervalInBackground: true,
+		refetchIntervalInBackground: false,
 		refetchInterval: 1000 * 15,
 	});
 

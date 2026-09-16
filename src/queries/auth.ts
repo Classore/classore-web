@@ -180,11 +180,7 @@ const UpdateProfileMutation = async (payload: Partial<UpdateProfilePayload>) => 
 	}
 
 	return axios
-		.put<HttpResponse<null>>(endpoints().auth.update_profile, formdata, {
-			headers: {
-				"Content-Type": "multipart/form-data",
-			},
-		})
+		.put<HttpResponse<null>>(endpoints().auth.update_profile, formdata)
 		.then((res) => res.data);
 };
 

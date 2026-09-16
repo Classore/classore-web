@@ -42,8 +42,7 @@ export const useGetRoom = (roomId: string) => {
 		enabled: !!roomId,
 		staleTime: Infinity,
 		gcTime: Infinity,
-		refetchIntervalInBackground: true,
-		refetchInterval: 1000 * 10,
+		// Socket events drive real-time updates; no background polling needed
 	});
 };
 
@@ -107,8 +106,7 @@ export const useGetMessages = (params: PaginationProps & { roomId: string; user_
 		enabled: !!params.roomId && !!params.user_id,
 		staleTime: Infinity,
 		gcTime: Infinity,
-		refetchIntervalInBackground: true,
-		refetchInterval: 1000 * 10,
+		// Socket events drive real-time updates; no background polling needed
 	});
 };
 
@@ -138,8 +136,9 @@ export const useGetInfiniteMessages = ({
 			}
 			return undefined;
 		},
-		// Keep data fresh; socket notifications will also trigger refetches
-		refetchInterval: 30000,
+		// 60s fallback safety-net poll (tab must be visible); socket drives real-time updates
+		refetchInterval: 1000 * 60,
+		refetchIntervalInBackground: false,
 		staleTime: 1000 * 60 * 5,
 	});
 };
@@ -157,8 +156,7 @@ export const useGetUserRooms = (user_id: string) => {
 		enabled: !!user_id,
 		staleTime: Infinity,
 		gcTime: Infinity,
-		refetchIntervalInBackground: true,
-		refetchInterval: 1000 * 10,
+		// Socket events drive real-time updates; no background polling needed
 	});
 };
 
@@ -173,8 +171,9 @@ export const useGetForums = () => {
 		queryKey: ["forums"],
 		queryFn: getForums,
 		staleTime: 30 * 1000,
-		refetchIntervalInBackground: true,
-		refetchInterval: 1000 * 30,
+		// Forums list rarely changes; mutations invalidate this key on success
+		refetchInterval: 1000 * 60 * 5,
+		refetchIntervalInBackground: false,
 	});
 };
 

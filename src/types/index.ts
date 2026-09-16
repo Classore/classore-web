@@ -95,6 +95,10 @@ export type UserProps = BaseProps & {
 	ranking: number;
 	quiz_points: number;
 	streak: number;
+	current_streak?: number;
+	longest_streak?: number;
+	active_days_this_month?: number;
+	hours_studied?: number;
 	timeline: {
 		amount_paid: number;
 		chosen_bundle: string;
@@ -476,6 +480,10 @@ export type UserProfileResp = {
 	ranking: number;
 	referrals: number;
 	streak: number;
+	current_streak?: number;
+	longest_streak?: number;
+	active_days_this_month?: number;
+	hours_studied?: number;
 	quiz_points: number;
 	createdOn: Date;
 	updatedOn: Date;
@@ -869,4 +877,29 @@ export type WithdrawalHistoryProps = {
 	withdrawal_bank_detail_id: string;
 	withdrawal_bank_id: string;
 	withdrawal_status: string;
+};
+
+export type StreakCountItem = {
+	user_id: string;
+	current_streak: number;
+	longest_streak: number;
+	active_days_this_month: number;
+	hours_studied: number;
+	streak_days: number;
+};
+
+export type StreakTimelineItem = {
+	start: string;
+	end: string;
+	day: string;
+	raw_date: string;
+	streak: {
+		gap: number;
+		type: string;
+	};
+};
+
+export type StreakTimelineResp = {
+	streaks: StreakTimelineItem[];
+	hour_summary: number;
 };

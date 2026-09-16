@@ -1,5 +1,6 @@
-import { RiArrowDropDownLine, RiNotificationLine } from "@remixicon/react";
+import { RiArrowDropDownLine } from "@remixicon/react";
 import Image from "next/image";
+import * as React from "react";
 
 import { User03 } from "@untitled-ui/icons-react";
 import Link from "next/link";
@@ -9,11 +10,12 @@ import { AppStore, PlayStore } from "../shared/app-download";
 import MobileAppImg from "@/assets/images/mobile-img.webp";
 import { Separator } from "@/components/ui/separator";
 import { ClaimPoints } from "../home/claim-points";
-import { Button } from "@/components/ui/button";
+import { NotificationPopover } from "../notifications";
 import { useUserStore } from "@/store/z-store";
 import { Search } from "@/components/shared";
-import { LogoutModal } from "../modals";
+import { LogoutModal, StreakProgressModal } from "../modals";
 import { getInitials } from "@/lib";
+import { useGetProfile } from "@/queries/student";
 import {
 	Dialog,
 	DialogContent,
@@ -25,12 +27,23 @@ import {
 
 export const Appbar = () => {
 	const { user } = useUserStore();
+	const { data: profile } = useGetProfile();
+	const [streakModalOpen, setStreakModalOpen] = React.useState(false);
+	const streakCount = profile?.current_streak ?? profile?.streak ?? 0;
 
 	return (
 		<>
 			<nav className="flex h-20 w-full items-center justify-between border-b border-b-neutral-200 bg-white/75 px-8 py-6 backdrop-blur-sm">
 				<Search />
 				<div className="flex w-fit items-center gap-x-3">
+					<button
+						type="button"
+						onClick={() => setStreakModalOpen(true)}
+						className="flex h-10 w-fit items-center gap-x-1.5 rounded-md border border-amber-200 bg-amber-50/70 px-3 text-sm font-bold text-amber-900 transition-all duration-300 hover:bg-amber-100 active:scale-95 cursor-pointer shadow-2xs">
+						<span>🔥</span>
+						<span>{streakCount}d</span>
+					</button>
+
 					<Dialog>
 						<DialogTrigger asChild>
 							<button className="flex h-10 w-fit items-center gap-x-2 rounded-md border border-neutral-200 px-3 text-sm text-primary-700 font-medium transition-all duration-300 hover:bg-primary-50 active:scale-95">
@@ -65,14 +78,7 @@ export const Appbar = () => {
 					</Dialog>
 					<ClaimPoints />
 					<Separator orientation="vertical" className="h-11 bg-neutral-300" />
-					<Popover>
-						<PopoverTrigger asChild>
-							<Button className="size-10 rounded-full" size="icon" variant="outline">
-								<RiNotificationLine size={24} />
-							</Button>
-						</PopoverTrigger>
-						<PopoverContent className="mr-32 w-[400px] p-4"></PopoverContent>
-					</Popover>
+					<NotificationPopover />
 					<Popover>
 						<PopoverTrigger className="flex items-center gap-2">
 							<Avatar className="size-10 bg-black">
@@ -102,6 +108,7 @@ export const Appbar = () => {
 					</Popover>
 				</div>
 			</nav>
+			<StreakProgressModal open={streakModalOpen} setOpen={setStreakModalOpen} />
 		</>
 	);
 };

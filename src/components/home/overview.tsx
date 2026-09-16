@@ -6,6 +6,7 @@ import listening from "@/assets/illustrations/listening.svg";
 import solarsystem from "@/assets/illustrations/solar-system.svg";
 import trophy from "@/assets/illustrations/trophy.svg";
 import { Button } from "@/components/ui/button";
+import { StreakProgressModal } from "@/components/modals";
 import { useGetMyCourses, useGetProfile } from "@/queries/student";
 import type { ChallengeProps } from "@/types";
 
@@ -86,8 +87,8 @@ const Learning = ({ exam_type }: { exam_type?: string }) => {
 		);
 
 		return (
-			<div className="relative flex aspect-[1.81/1] min-h-[210px] w-full flex-col justify-between overflow-hidden rounded-2xl border border-neutral-200/80 bg-[#e2e4e9] p-5 shadow-sm transition-all hover:shadow-md">
-				<div className="pointer-events-none absolute -bottom-5 right-0 aspect-square w-[205px] opacity-80 lg:opacity-100">
+			<div className="relative flex h-full min-h-[190px] w-full flex-col justify-between overflow-hidden rounded-2xl border border-neutral-200/80 bg-[#e2e4e9] p-5 shadow-sm transition-all hover:shadow-md">
+				<div className="pointer-events-none absolute -bottom-2 -right-1 aspect-square w-[175px] opacity-85 sm:opacity-95 lg:opacity-100">
 					<Image
 						src={listening}
 						alt="listening"
@@ -98,40 +99,42 @@ const Learning = ({ exam_type }: { exam_type?: string }) => {
 				</div>
 
 				<div className="relative z-10 flex w-full max-w-[65%] flex-col gap-1">
-					<p className="text-xs font-semibold text-primary-600">
+					<p className="text-sm font-bold text-primary-700">
 						📚 Continue Where You Left Off
 					</p>
 					<h3
-						className="text-base font-bold capitalize text-neutral-800 truncate"
+						className="text-lg sm:text-xl font-bold capitalize text-neutral-900 truncate"
 						title={continueCourse.subject_name}>
 						{continueCourse.subject_name}
 					</h3>
-					<p className="text-xs text-neutral-600 truncate">
+					<p className="text-sm text-neutral-700 font-medium truncate">
 						{continueCourse.chapter_name
 							? `Chapter: ${continueCourse.chapter_name}`
 							: continueCourse.examBundle_name}
 					</p>
 
 					{/* Progress bar */}
-					<div className="flex w-full flex-col gap-1 mt-1.5">
-						<div className="flex items-center justify-between text-xs font-medium text-neutral-600">
-							<span className="text-primary-700 font-semibold">{progress}% completed</span>
+					<div className="flex w-full flex-col gap-1 mt-1">
+						<div className="flex items-center justify-between text-sm font-bold text-primary-700">
+							<span>{progress}% completed</span>
 						</div>
-						<div className="h-2 w-full max-w-[200px] rounded-full bg-neutral-300/80 overflow-hidden">
+						<div className="h-2.5 w-full max-w-[200px] rounded-full bg-neutral-300/80 overflow-hidden">
 							<div
-								className="h-full rounded-full bg-primary-500 transition-all duration-500"
+								className="h-full rounded-full bg-primary-600 transition-all duration-500"
 								style={{ width: `${progress}%` }}
 							/>
 						</div>
 					</div>
 				</div>
 
-				<Button asChild className="relative z-10 w-fit px-5 py-2 text-sm shadow-sm" variant="dark">
-					<Link
-						href={`/dashboard/courses/${continueCourse.course_id}?bundle=${continueCourse.course_chosen_bundle}`}>
-						Continue Learning
-					</Link>
-				</Button>
+				<div className="relative z-10 mt-3">
+					<Button asChild className="w-fit px-5 py-2 text-sm font-bold shadow-sm" variant="dark">
+						<Link
+							href={`/dashboard/courses/${continueCourse.course_id}?bundle=${continueCourse.course_chosen_bundle}`}>
+							Continue Learning
+						</Link>
+					</Button>
+				</div>
 			</div>
 		);
 	}
@@ -139,8 +142,8 @@ const Learning = ({ exam_type }: { exam_type?: string }) => {
 	// Case 2: Subscribed user but no ongoing courses yet
 	if (hasActiveSubscription && (!courses || courses.length === 0)) {
 		return (
-			<div className="relative flex aspect-[1.81/1] min-h-[210px] w-full flex-col justify-between overflow-hidden rounded-2xl border border-neutral-200/80 bg-[#e2e4e9] p-5 shadow-sm transition-all hover:shadow-md">
-				<div className="pointer-events-none absolute -bottom-5 right-0 aspect-square w-[205px] opacity-80 lg:opacity-100">
+			<div className="relative flex h-full min-h-[190px] w-full flex-col justify-between overflow-hidden rounded-2xl border border-neutral-200/80 bg-[#e2e4e9] p-5 shadow-sm transition-all hover:shadow-md">
+				<div className="pointer-events-none absolute -bottom-2 -right-1 aspect-square w-[175px] opacity-85 sm:opacity-95 lg:opacity-100">
 					<Image
 						src={listening}
 						alt="listening"
@@ -149,24 +152,26 @@ const Learning = ({ exam_type }: { exam_type?: string }) => {
 						className="object-contain"
 					/>
 				</div>
-				<div className="relative z-10 flex w-full max-w-[65%] flex-col gap-2">
-					<p className="font-semibold text-neutral-800">My Learning</p>
-					<p className="text-sm text-neutral-600">
+				<div className="relative z-10 flex w-full max-w-[65%] flex-col gap-1.5">
+					<p className="text-lg font-bold text-neutral-900">My Learning</p>
+					<p className="text-sm text-neutral-700 leading-relaxed font-medium">
 						You haven&apos;t started your learning yet. Let&apos;s get started with your{" "}
 						{exam_type || "exam"} courses!
 					</p>
 				</div>
-				<Button asChild className="relative z-10 w-fit px-5 py-2 text-sm shadow-sm" variant="dark">
-					<Link href="/dashboard/courses">Start Learning</Link>
-				</Button>
+				<div className="relative z-10 mt-3">
+					<Button asChild className="w-fit px-5 py-2 text-sm font-bold shadow-sm" variant="dark">
+						<Link href="/dashboard/courses">Start Learning</Link>
+					</Button>
+				</div>
 			</div>
 		);
 	}
 
 	// Case 3: Free / Unsubscribed user
 	return (
-		<div className="relative flex aspect-[1.81/1] min-h-[210px] w-full flex-col justify-between overflow-hidden rounded-2xl border border-neutral-200/80 bg-[#e2e4e9] p-5 shadow-sm transition-all hover:shadow-md">
-			<div className="pointer-events-none absolute -bottom-5 right-0 aspect-square w-[205px] opacity-80 lg:opacity-100">
+		<div className="relative flex h-full min-h-[190px] w-full flex-col justify-between overflow-hidden rounded-2xl border border-neutral-200/80 bg-[#e2e4e9] p-5 shadow-sm transition-all hover:shadow-md">
+			<div className="pointer-events-none absolute -bottom-2 -right-1 aspect-square w-[175px] opacity-85 sm:opacity-95 lg:opacity-100">
 				<Image
 					src={listening}
 					alt="listening"
@@ -175,17 +180,19 @@ const Learning = ({ exam_type }: { exam_type?: string }) => {
 					className="object-contain"
 				/>
 			</div>
-			<div className="relative z-10 flex w-full max-w-[65%] flex-col gap-2">
-				<p className="font-semibold text-neutral-800 flex items-center gap-1.5">
+			<div className="relative z-10 flex w-full max-w-[65%] flex-col gap-1.5">
+				<p className="text-lg font-bold text-neutral-900 flex items-center gap-2">
 					🚀 Unlock Premium Learning
 				</p>
-				<p className="text-sm text-neutral-600">
+				<p className="text-sm text-neutral-700 leading-relaxed font-medium">
 					Access full exam prep bundles, interactive quizzes, video lessons, and leaderboard rewards.
 				</p>
 			</div>
-			<Button asChild className="relative z-10 w-fit px-5 py-2 text-sm shadow-sm" variant="dark">
-				<Link href="/dashboard/categories">Get Premium</Link>
-			</Button>
+			<div className="relative z-10 mt-3">
+				<Button asChild className="w-fit px-5 py-2 text-sm font-bold shadow-sm" variant="dark">
+					<Link href="/dashboard/categories">Get Premium</Link>
+				</Button>
+			</div>
 		</div>
 	);
 };
@@ -195,8 +202,8 @@ const Challenge = ({ challenges: _challenges }: { challenges?: ChallengeProps[] 
 	const points = profile?.classore_points ?? 0;
 
 	return (
-		<div className="relative flex aspect-[1.81/1] min-h-[210px] w-full flex-col justify-between overflow-hidden rounded-2xl border border-neutral-200/80 bg-[#e2e4e9] p-5 shadow-sm transition-all hover:shadow-md">
-			<div className="pointer-events-none absolute -top-4 -right-2 aspect-square w-[135px] opacity-75 lg:opacity-90">
+		<div className="relative flex h-full min-h-[190px] w-full flex-col justify-between overflow-hidden rounded-2xl border border-neutral-200/80 bg-[#e2e4e9] p-5 shadow-sm transition-all hover:shadow-md">
+			<div className="pointer-events-none absolute -top-2 -right-1 aspect-square w-[135px] opacity-85 sm:opacity-95 lg:opacity-100">
 				<Image
 					src={solarsystem}
 					alt="solarsystem"
@@ -206,33 +213,33 @@ const Challenge = ({ challenges: _challenges }: { challenges?: ChallengeProps[] 
 				/>
 			</div>
 
-			<div className="relative z-10 flex w-full flex-col gap-2.5">
-				<div className="flex items-center gap-1.5">
-					<span className="text-base">🎯</span>
-					<p className="font-semibold text-neutral-800">Today&apos;s Mission</p>
+			<div className="relative z-10 flex w-full flex-col gap-2">
+				<div className="flex items-center gap-2">
+					<span className="text-lg">🎯</span>
+					<p className="text-lg font-bold text-neutral-900">Today&apos;s Mission</p>
 				</div>
 
-				<div className="flex w-full max-w-[62%] flex-col gap-2">
+				<div className="flex w-full max-w-[65%] flex-col gap-1.5">
 					<div className="flex items-start gap-2">
-						<span className="text-sm shrink-0">🎁</span>
-						<p className="text-xs leading-snug text-neutral-700">
-							Complete a module & quiz to gain <span className="font-semibold text-neutral-900">+5 XP</span>
+						<span className="text-base shrink-0 mt-0.5">🎁</span>
+						<p className="text-sm font-medium leading-snug text-neutral-800">
+							Complete a module & quiz to gain <span className="font-bold text-neutral-900">+5 XP</span>
 						</p>
 					</div>
 
 					<div className="flex items-start gap-2">
-						<span className="text-sm shrink-0">💰</span>
-						<p className="text-xs leading-snug text-neutral-700">
+						<span className="text-base shrink-0 mt-0.5">💰</span>
+						<p className="text-sm font-medium leading-snug text-neutral-800">
 							Invite friends to earn points & token rewards
 						</p>
 					</div>
 				</div>
 			</div>
 
-			<div className="relative z-10 flex items-center justify-between pt-1">
+			<div className="relative z-10 mt-3">
 				<Link
 					href="/dashboard/wallet"
-					className="text-xs font-semibold text-secondary-600 underline hover:text-secondary-700 transition-colors">
+					className="text-sm font-bold text-secondary-700 underline hover:text-secondary-800 transition-colors">
 					{points > 0 ? `Claim / View ${points} Points →` : "View Wallet & Token Rewards →"}
 				</Link>
 			</div>
@@ -242,50 +249,78 @@ const Challenge = ({ challenges: _challenges }: { challenges?: ChallengeProps[] 
 
 const Leaderboard = ({ position }: { position?: number } = {}) => {
 	const { data: profile } = useGetProfile();
+	const [streakModalOpen, setStreakModalOpen] = React.useState(false);
 
-	// Use real ranking from profile or position prop
-	const rank = profile?.ranking ?? position ?? 0;
+	// A student is only ranked if they have accumulated quiz points > 0
+	const hasPoints = (profile?.quiz_points ?? 0) > 0;
+	const rank = hasPoints ? (profile?.ranking ?? position ?? 0) : 0;
 	const rankText = rank > 0 ? getOrdinal(rank) : "Unranked";
+	const streak = profile?.current_streak ?? profile?.streak ?? 0;
+	const points = profile?.quiz_points ?? 0;
 
 	return (
-		<div className="relative flex aspect-[1.81/1] min-h-[210px] w-full flex-col justify-between overflow-hidden rounded-2xl border border-neutral-200/80 bg-[#e2e4e9] p-5 shadow-sm transition-all hover:shadow-md">
-			<div className="pointer-events-none absolute -bottom-5 right-0 aspect-square w-[170px] opacity-70 lg:opacity-100">
-				<Image
-					src={trophy}
-					alt="trophy"
-					fill
-					sizes="(max-width:1024px)100%"
-					className="object-contain"
-				/>
-			</div>
-
-			<div className="relative z-10 flex w-full max-w-[65%] flex-col gap-1.5">
-				<p className="font-semibold text-neutral-800">Leaderboard</p>
-				<p className="text-xs text-neutral-600">
-					🏆 Boost your leaderboard ranking by completing quizzes and chapters to stay on top!
-				</p>
-			</div>
-
-			<div className="relative z-10 flex flex-col gap-1">
-				<div className="flex items-center gap-1.5 text-sm text-neutral-700">
-					Position:{" "}
-					<span className="text-base font-bold text-primary-600">
-						{rankText}
-					</span>
-					{profile?.classore_points ? (
-						<span className="text-xs text-neutral-500 font-normal">
-							({profile.classore_points} pts)
-						</span>
-					) : null}
+		<>
+			<div className="relative flex h-full min-h-[190px] w-full flex-col justify-between overflow-hidden rounded-2xl border border-neutral-200/80 bg-[#e2e4e9] p-5 shadow-sm transition-all hover:shadow-md">
+				<div className="pointer-events-none absolute -bottom-2 -right-1 aspect-square w-[155px] opacity-85 sm:opacity-95 lg:opacity-100">
+					<Image
+						src={trophy}
+						alt="trophy"
+						fill
+						sizes="(max-width:1024px)100%"
+						className="object-contain"
+					/>
 				</div>
 
-				<Link
-					href="/dashboard/leaderboard"
-					className="text-xs font-semibold text-primary-600 underline hover:text-primary-700 transition-colors">
-					View Full Leaderboard →
-				</Link>
+				<div className="relative z-10 flex w-full max-w-[65%] flex-col gap-1.5">
+					<div className="flex items-center gap-2">
+						<p className="text-lg font-bold text-neutral-900">Leaderboard</p>
+						{streak > 0 && (
+							<button
+								type="button"
+								onClick={() => setStreakModalOpen(true)}
+								className="cursor-pointer rounded-full bg-amber-100 border border-amber-200 px-2.5 py-0.5 text-xs font-bold text-amber-800 transition-all hover:bg-amber-200 hover:scale-105 active:scale-95">
+								🔥 {streak}d streak
+							</button>
+						)}
+					</div>
+					<p className="text-sm font-medium text-neutral-700 leading-snug">
+						🏆 Boost your leaderboard ranking by completing quizzes and chapters to stay on top!
+					</p>
+				</div>
+
+				<div className="relative z-10 flex flex-col gap-1 mt-3">
+					<div className="flex items-center gap-1.5 text-sm font-semibold text-neutral-800">
+						Position:{" "}
+						<span className="text-lg font-black text-primary-700">
+							{rankText}
+						</span>
+						{points > 0 ? (
+							<span className="text-sm text-neutral-600 font-normal">
+								({points} pts)
+							</span>
+						) : null}
+					</div>
+
+					<div className="flex items-center gap-3">
+						<Link
+							href="/dashboard/leaderboard"
+							className="text-sm font-bold text-primary-700 underline hover:text-primary-800 transition-colors">
+							View Full Leaderboard →
+						</Link>
+						{streak > 0 && (
+							<button
+								type="button"
+								onClick={() => setStreakModalOpen(true)}
+								className="text-xs font-bold text-amber-700 hover:text-amber-800 underline transition-colors">
+								Streak Details
+							</button>
+						)}
+					</div>
+				</div>
 			</div>
-		</div>
+
+			<StreakProgressModal open={streakModalOpen} setOpen={setStreakModalOpen} />
+		</>
 	);
 };
 

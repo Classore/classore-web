@@ -139,7 +139,19 @@ const Page = () => {
 			typingTimeoutRef.current = setTimeout(() => setIsTyping(false), 3000);
 		});
 
+		// Disconnect when tab is hidden, reconnect when visible — prevents the
+		// Cloud Run 301s reconnect loop that keeps the server alive 24/7
+		const handleVisibilityChange = () => {
+			if (document.hidden) {
+				socket.current?.disconnect();
+			} else if (socket.current && !socket.current.connected) {
+				socket.current.connect();
+			}
+		};
+		document.addEventListener("visibilitychange", handleVisibilityChange);
+
 		return () => {
+			document.removeEventListener("visibilitychange", handleVisibilityChange);
 			if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
 			socket.current?.off("connect");
 			socket.current?.off("receive_chat_message");
