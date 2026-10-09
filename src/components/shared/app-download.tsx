@@ -4,9 +4,9 @@ import React from "react";
 import { appStore, playStore } from "@/assets/images";
 
 export const AppStore = () => {
-	// https://apps.apple.com/us/app/classore/id1165103905
+	// https://apps.apple.com/app/classore/id6747850881
 	return (
-		<a href="https://apps.apple.com/us/app" target="_blank" className="">
+		<a href="https://apps.apple.com/app/classore/id6747850881" target="_blank" className="">
 			<Image src={appStore} alt="App Store" />
 		</a>
 	);

@@ -14,7 +14,14 @@ import { toast } from "sonner";
 
 import { DashboardLayout } from "@/components/layouts";
 import { Seo, Spinner } from "@/components/shared";
-import { useGetAllBlogs, useGetBlogBySlug } from "@/queries/blog";
+import {
+	useGetAllBlogs,
+	useGetAllCategories,
+	useGetBlogBySlug,
+	resolveCategoryTitle,
+	formatReadingTime,
+	type BlogCategory,
+} from "@/queries/blog";
 
 const Page = () => {
 	const router = useRouter();
@@ -22,13 +29,33 @@ const Page = () => {
 
 	const { data: blogResponse, isLoading } = useGetBlogBySlug(slug);
 	const { data: allBlogsResponse } = useGetAllBlogs();
+	const { data: categoriesData } = useGetAllCategories();
+
+	const categories = React.useMemo<BlogCategory[]>(() => {
+		if (!categoriesData) return [];
+		if (Array.isArray(categoriesData)) return categoriesData;
+		if (Array.isArray((categoriesData as any)?.data)) return (categoriesData as any).data as BlogCategory[];
+		return [];
+	}, [categoriesData]);
 
 	const article = blogResponse?.data;
 	const relatedArticles = React.useMemo(() => {
-		return (allBlogsResponse?.data || [])
-			.filter((a) => a.id !== article?.id && a.slug !== slug)
+		if (!article || !article.category) return [];
+		const list = allBlogsResponse?.data || [];
+		const currentCatTitle = resolveCategoryTitle(article.category, categories).toLowerCase();
+
+		return list
+			.filter((a) => {
+				if (a.id === article.id || (article.slug && a.slug === article.slug)) {
+					return false;
+				}
+				const aCatTitle = resolveCategoryTitle(a.category, categories).toLowerCase();
+				const isSameId = a.category && a.category.toLowerCase() === article.category.toLowerCase();
+				const isSameTitle = Boolean(currentCatTitle && aCatTitle && aCatTitle === currentCatTitle);
+				return isSameId || isSameTitle;
+			})
 			.slice(0, 3);
-	}, [allBlogsResponse, article, slug]);
+	}, [allBlogsResponse, article, categories]);
 
 	const handleShare = () => {
 		if (typeof window !== "undefined") {
@@ -83,14 +110,17 @@ const Page = () => {
 							{/* Header metadata */}
 							<div className="flex flex-col gap-3">
 								<div className="flex items-center gap-2 text-xs text-neutral-500">
-									{article.category && (
-										<span className="rounded-full bg-primary-50 border border-primary-100 px-3 py-1 text-xs font-bold text-primary-700 uppercase tracking-wider">
-											{article.category}
-										</span>
-									)}
-									<span className="flex items-center gap-1">
-										<RiTimeLine className="size-3.5" />
-										{article.reading_time || "4 min read"}
+									{(() => {
+										const catLabel = resolveCategoryTitle(article.category, categories);
+										return catLabel ? (
+											<span className="rounded-full bg-primary-50 border border-primary-100 px-3 py-1 text-xs font-bold text-primary-700 uppercase tracking-wider">
+												{catLabel}
+											</span>
+										) : null;
+									})()}
+									<span className="flex items-center gap-1.5 font-medium text-neutral-600">
+										<RiTimeLine className="size-3.5 text-neutral-400" />
+										<span>{formatReadingTime(article.reading_time)}</span>
 									</span>
 									<span>•</span>
 									<span className="flex items-center gap-1">
@@ -136,22 +166,69 @@ const Page = () => {
 								<div className="mt-10 border-t border-neutral-200 pt-8">
 									<h3 className="text-lg font-bold text-neutral-900 mb-4">Related Insights</h3>
 									<div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-										{relatedArticles.map((rel) => (
-											<Link
-												key={rel.id}
-												href={`/dashboard/blog/${rel.slug || rel.id}`}
-												className="group flex flex-col rounded-2xl border border-neutral-200 bg-white p-4 shadow-2xs hover:shadow-md transition">
-												<p className="text-[10px] font-bold text-primary-600 uppercase tracking-wider">
-													{rel.category || "Article"}
-												</p>
-												<h4 className="font-bold text-neutral-900 group-hover:text-primary-600 transition text-xs mt-1 line-clamp-2">
-													{rel.title}
-												</h4>
-												<p className="text-[11px] text-neutral-500 line-clamp-2 mt-1">
-													{rel.excerpt}
-												</p>
-											</Link>
-										))}
+										{relatedArticles.map((rel) => {
+											const relCat = resolveCategoryTitle(rel.category, categories);
+											const relDate = rel.createdOn
+												? format(new Date(rel.createdOn), "MMM d, yyyy")
+												: "";
+
+											return (
+												<Link
+													key={rel.id}
+													href={`/dashboard/blog/${rel.slug || rel.id}`}
+													className="group flex flex-col justify-between rounded-2xl border border-neutral-200 bg-white p-3.5 shadow-2xs hover:shadow-md transition">
+													<div>
+														<div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl bg-neutral-100 mb-3">
+															{rel.cover_photo ? (
+																<Image
+																	src={rel.cover_photo}
+																	alt={rel.title}
+																	fill
+																	sizes="(max-width: 640px) 100vw, 260px"
+																	className="object-cover transition duration-300 group-hover:scale-105"
+																/>
+															) : (
+																<div className="grid size-full place-items-center bg-primary-50 text-primary-600">
+																	<RiArticleLine className="size-8 opacity-40" />
+																</div>
+															)}
+															{relCat && (
+																<span className="absolute left-2.5 top-2.5 rounded-lg bg-white/90 px-2 py-0.5 text-[9px] font-bold text-neutral-800 backdrop-blur-xs shadow-2xs">
+																	{relCat}
+																</span>
+															)}
+														</div>
+
+														<div className="flex items-center gap-2 text-[10px] text-neutral-400 mb-1.5">
+															<span className="flex items-center gap-1">
+																<RiTimeLine className="size-3 text-neutral-400" />
+																<span>{formatReadingTime(rel.reading_time)}</span>
+															</span>
+															{relDate && (
+																<>
+																	<span>•</span>
+																	<span>{relDate}</span>
+																</>
+															)}
+														</div>
+
+														<h4 className="font-bold text-neutral-900 group-hover:text-primary-600 transition text-xs line-clamp-2 leading-snug">
+															{rel.title}
+														</h4>
+
+														{rel.excerpt && (
+															<p className="text-[11px] text-neutral-500 line-clamp-2 mt-1">
+																{rel.excerpt}
+															</p>
+														)}
+													</div>
+
+													<div className="pt-3 mt-3 border-t border-neutral-100 text-[11px] font-semibold text-primary-600 group-hover:underline">
+														Read article →
+													</div>
+												</Link>
+											);
+										})}
 									</div>
 								</div>
 							)}

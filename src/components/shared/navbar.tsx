@@ -19,9 +19,10 @@ import { AppStore, PlayStore } from "./app-download";
 import MobileAppImg from "@/assets/images/mobile-img.webp";
 
 const links = [
-	{ name: "What We Offer", href: "what-we-offer" },
-	{ name: "Testimonials", href: "testimonials" },
-	{ name: "FAQS", href: "frequently-asked-questions" },
+	{ name: "What We Offer", href: "/#what-we-offer" },
+	{ name: "Testimonials", href: "/#testimonials" },
+	{ name: "FAQS", href: "/#frequently-asked-questions" },
+	{ name: "Blog", href: "/blog" },
 ];
 
 export const Navbar = () => {
@@ -44,12 +45,12 @@ export const Navbar = () => {
 				</Link>
 				<div className="flex items-center gap-x-4">
 					{links.map(({ name, href }) => (
-						<a
-							href={`#${href}`}
+						<Link
+							href={href}
 							key={name}
 							className="link text-sm font-medium transition-colors duration-500 hover:text-primary-400">
 							{name}
-						</a>
+						</Link>
 					))}
 				</div>
 				<div className="flex items-center gap-x-4">
@@ -121,7 +122,7 @@ export const Navbar = () => {
 							{links.map(({ name, href }) => (
 								<li key={name}>
 									<Link
-										href={`#${href}`}
+										href={href}
 										className="link p-2 text-sm font-medium transition-colors duration-500 hover:text-primary-400">
 										{name}
 									</Link>

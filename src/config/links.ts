@@ -149,6 +149,7 @@ export const footer_links = [
 			{ name: "What We Offer", href: "/#what-we-offer" },
 			{ name: "Testimonials", href: "/#testimonials" },
 			{ name: "FAQs", href: "/#frequently-asked-questions" },
+			{ name: "Blog", href: "/blog" },
 			{ name: "Support", href: "/support" },
 			{ name: "Privacy Policy", href: "/privacy-policy" },
 		],

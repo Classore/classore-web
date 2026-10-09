@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import React from "react";
 import { toast } from "sonner";
 
-import { PersonalizedPlanCard } from "@/components/home";
+import { BlogSection, PersonalizedPlanCard } from "@/components/home";
 import { MasonryLayout } from "@/components/layouts";
 import { AvatarGroup, Footer, Navbar, ReviewCard, Seo } from "@/components/shared";
 import {
@@ -221,12 +221,15 @@ const Page = () => {
 
 				<section className="w-full bg-neutral-100 py-10 lg:py-20" id="testimonials">
 					<div className="container flex flex-col items-center gap-y-20">
-						<div className="flex max-w-[450px] flex-col items-center gap-y-2 text-center">
+						<div className="flex max-w-[550px] flex-col items-center gap-y-2 text-center">
 							<p className="text-xs font-medium text-secondary-400 lg:text-sm">TESTIMONIALS</p>
 							<h4 className="text-2xl font-medium lg:text-4xl">
 								<span className="text-neutral-400">Real</span> Stories.{" "}
 								<span className="text-neutral-400">Real</span> Impact
 							</h4>
+							<p className="text-xs text-neutral-400 lg:text-sm">
+								See how students and parents across Nigeria achieve top exam scores and straight A&apos;s with Classore.
+							</p>
 						</div>
 						<MasonryLayout breakpointCols={isMobile ? 1 : 3}>
 							{TESTIMONIALS.map((review) => (
@@ -291,6 +294,7 @@ const Page = () => {
 						</div>
 					</div>
 				</section>
+				<BlogSection />
 				<section className="w-full bg-primary-100">
 					<div className="container flex flex-col gap-8 md:grid md:grid-cols-2">
 						<div className="flex flex-1 flex-col items-start justify-center px-4 py-10 lg:px-0 lg:py-0">

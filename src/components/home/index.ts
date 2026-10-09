@@ -1,3 +1,4 @@
+export * from "./blog-section";
 export * from "./card";
 export * from "./chapter-modules";
 export * from "./course-card";

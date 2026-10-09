@@ -11,28 +11,45 @@ import * as React from "react";
 
 import { DashboardLayout } from "@/components/layouts";
 import { Seo, Spinner } from "@/components/shared";
-import { useGetAllBlogs, useGetAllCategories } from "@/queries/blog";
+import {
+	useGetAllBlogs,
+	useGetAllCategories,
+	resolveCategoryTitle,
+	formatReadingTime,
+	type BlogCategory,
+} from "@/queries/blog";
 
 const Page = () => {
 	const [search, setSearch] = React.useState("");
 	const [selectedCategory, setSelectedCategory] = React.useState<string>("all");
 
 	const { data: blogsResponse, isLoading } = useGetAllBlogs();
-	const { data: categories } = useGetAllCategories();
+	const { data: categoriesData } = useGetAllCategories();
+
+	const categories = React.useMemo<BlogCategory[]>(() => {
+		if (!categoriesData) return [];
+		if (Array.isArray(categoriesData)) return categoriesData;
+		if (Array.isArray((categoriesData as any)?.data)) return (categoriesData as any).data as BlogCategory[];
+		return [];
+	}, [categoriesData]);
 
 	const articles = React.useMemo(() => {
 		const list = blogsResponse?.data || [];
 		return list.filter((article) => {
+			const categoryLabel = resolveCategoryTitle(article.category, categories);
 			const matchesCat =
 				selectedCategory === "all" ||
-				article.category?.toLowerCase() === selectedCategory.toLowerCase();
+				(article.category && article.category.toLowerCase() === selectedCategory.toLowerCase()) ||
+				(categoryLabel && categoryLabel.toLowerCase() === selectedCategory.toLowerCase());
+			const query = search.trim().toLowerCase();
 			const matchesSearch =
-				!search.trim() ||
-				article.title.toLowerCase().includes(search.toLowerCase()) ||
-				article.excerpt?.toLowerCase().includes(search.toLowerCase());
+				!query ||
+				article.title.toLowerCase().includes(query) ||
+				categoryLabel.toLowerCase().includes(query) ||
+				article.excerpt?.toLowerCase().includes(query);
 			return matchesCat && matchesSearch;
 		});
-	}, [blogsResponse, selectedCategory, search]);
+	}, [blogsResponse, selectedCategory, search, categories]);
 
 	const featuredArticle = articles[0];
 	const restArticles = articles.slice(1);
@@ -131,15 +148,18 @@ const Page = () => {
 									<div className="flex flex-col justify-between p-6 md:p-8">
 										<div className="flex flex-col gap-2">
 											<div className="flex items-center gap-3 text-xs text-neutral-400">
-												{featuredArticle.category && (
-													<span className="font-bold text-primary-600 uppercase tracking-wider">
-														{featuredArticle.category}
-													</span>
-												)}
+												{(() => {
+													const catLabel = resolveCategoryTitle(featuredArticle.category, categories);
+													return catLabel ? (
+														<span className="font-bold text-primary-600 uppercase tracking-wider">
+															{catLabel}
+														</span>
+													) : null;
+												})()}
 												<span>•</span>
-												<span className="flex items-center gap-1">
-													<RiTimeLine className="size-3.5" />
-													{featuredArticle.reading_time || "4 min read"}
+												<span className="flex items-center gap-1.5 text-neutral-500">
+													<RiTimeLine className="size-3.5 text-neutral-400" />
+													<span>{formatReadingTime(featuredArticle.reading_time)}</span>
 												</span>
 											</div>
 
@@ -187,18 +207,23 @@ const Page = () => {
 													<RiArticleLine className="size-8 opacity-40" />
 												</div>
 											)}
-											{article.category && (
-												<span className="absolute left-3 top-3 rounded-lg bg-white/90 px-2.5 py-0.5 text-[10px] font-bold text-neutral-800 backdrop-blur-xs shadow-2xs">
-													{article.category}
-												</span>
-											)}
+											{(() => {
+												const catLabel = resolveCategoryTitle(article.category, categories);
+												return catLabel ? (
+													<span className="absolute left-3 top-3 rounded-lg bg-white/90 px-2.5 py-0.5 text-[10px] font-bold text-neutral-800 backdrop-blur-xs shadow-2xs">
+														{catLabel}
+													</span>
+												) : null;
+											})()}
 										</div>
 
 										<div className="flex flex-1 flex-col justify-between p-5">
 											<div className="flex flex-col gap-2">
 												<div className="flex items-center gap-2 text-[11px] text-neutral-400">
-													<RiTimeLine className="size-3" />
-													<span>{article.reading_time || "3 min read"}</span>
+													<span className="flex items-center gap-1">
+														<RiTimeLine className="size-3 text-neutral-400" />
+														<span>{formatReadingTime(article.reading_time)}</span>
+													</span>
 													<span>•</span>
 													<span>
 														{article.createdOn
