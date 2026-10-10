@@ -2,7 +2,6 @@ import {
 	RiCheckLine,
 	RiCoinLine,
 	RiInformationLine,
-	RiShieldCheckLine,
 	RiSparklingLine,
 } from "@remixicon/react";
 import { Lock02 } from "@untitled-ui/icons-react";
@@ -11,7 +10,7 @@ import { useRouter } from "next/router";
 import * as React from "react";
 import { toast } from "sonner";
 
-import { Spinner } from "../shared";
+import { PromoCodeField, Spinner } from "../shared";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTrigger } from "../ui/dialog";
 import { formatCurrency } from "@/lib";
@@ -23,6 +22,16 @@ import {
 	useUpdateStudyTimeline,
 } from "@/queries/school";
 import { renewPlan } from "@/queries/user";
+import {
+	applyPromoToAmount,
+	extractPaymentUrl,
+	extractTimelineId,
+	getApiErrorMessage,
+	getTrialDuration,
+	isTrialActivation,
+	useGeneratePaymentLink,
+	type PromoValidation,
+} from "@/queries/promo";
 import { useGetProfile } from "@/queries/student";
 import { usePurchaseBundleWithTokens } from "@/queries/token-wallet";
 import { useMutation } from "@tanstack/react-query";
@@ -108,8 +117,7 @@ export const EnrollModal = ({
 
 	const bundleId = propBundleId || (router.query.id as string) || "";
 	const [selectedSubjectIds, setSelectedSubjectIds] = React.useState<string[]>([]);
-	const [promoCode, setPromoCode] = React.useState("");
-	const [appliedCode, setAppliedCode] = React.useState("");
+	const [promo, setPromo] = React.useState<PromoValidation | null>(null);
 	const [isEnrollingFree, setIsEnrollingFree] = React.useState(false);
 	const [isPayingWithTokens, setIsPayingWithTokens] = React.useState(false);
 
@@ -118,8 +126,7 @@ export const EnrollModal = ({
 		if (isOpen) {
 			queryClient.invalidateQueries({ queryKey: ["profile"] });
 			setSelectedSubjectIds([]);
-			setPromoCode("");
-			setAppliedCode("");
+			setPromo(null);
 		}
 	}, [isOpen, queryClient]);
 
@@ -140,6 +147,7 @@ export const EnrollModal = ({
 			renewPlan(id, promo_code),
 	});
 	const purchaseBundleWithTokens = usePurchaseBundleWithTokens();
+	const generatePaymentLink = useGeneratePaymentLink();
 
 	const existingTimeline = profile?.time_line?.find(
 		(t) =>
@@ -242,6 +250,9 @@ export const EnrollModal = ({
 		baseFiat,
 		fiatPerSubject
 	);
+
+	// Fiat price after any validated promo (trial codes are free)
+	const discountedFiat = applyPromoToAmount(requiredFiat, promo);
 
 	const hasEnoughTokens = tokenBalance >= requiredTokens && requiredTokens > 0;
 
@@ -404,6 +415,25 @@ export const EnrollModal = ({
 	};
 
 	// ── Option 3: Pay with Paystack (Fiat) ──────────────────────────────────────
+	// Looks up the study timeline for this bundle from the freshly refetched profile
+	const findTimelineIdFromProfile = async (): Promise<string | undefined> => {
+		try {
+			await queryClient.refetchQueries({ queryKey: ["profile"] });
+			const cached: any = queryClient.getQueryData(["profile"]);
+			const timelines: any[] = cached?.data?.time_line ?? cached?.time_line ?? [];
+			const found = timelines.find(
+				(t: any) =>
+					t?.chosen_bundle === bundleId ||
+					t?.exam_bundle_details?.id === bundleId ||
+					t?.chosen_bundle?.id === bundleId ||
+					t?.id === bundleId
+			);
+			return found?.id;
+		} catch {
+			return undefined;
+		}
+	};
+
 	const handlePayWithPaystack = async () => {
 		if (!selectedSubjectIds.length) {
 			toast.error("Please select at least one subject.");
@@ -414,10 +444,89 @@ export const EnrollModal = ({
 			return;
 		}
 
+		// ── Promo checkout (discount or 14-day free trial) via generate-link ──
+		if (promo) {
+			const finishPromoCheckout = async (res: any) => {
+				const raw = res?.data;
+				if (isTrialActivation(raw)) {
+					toast.success(`🎉 ${getTrialDuration(raw, promo.durationInDays || 14)}-day access unlocked!`, {
+						description: "Your study pack is now active. Happy learning!",
+					});
+					await queryClient.invalidateQueries({ queryKey: ["profile"] });
+					await queryClient.invalidateQueries({ queryKey: ["my-courses"] });
+					setIsOpen(false);
+					router.push("/dashboard/courses");
+					return;
+				}
+				const paymentUrl = extractPaymentUrl(raw);
+				if (paymentUrl) {
+					window.location.href = paymentUrl;
+				} else {
+					toast.error("Could not get payment link. Please try again.");
+				}
+			};
+
+			const startPromoCheckout = (timelineId: string) => {
+				generatePaymentLink.mutate(
+					{
+						narration: "STUDY_PACK",
+						narration_id: timelineId,
+						amount: requiredFiat,
+						promoCode: promo.code,
+					},
+					{
+						onSuccess: finishPromoCheckout,
+						onError: (err: any) => {
+							toast.error(getApiErrorMessage(err, "Could not apply promo code. Please try again."));
+						},
+					}
+				);
+			};
+
+			if (existingTimeline?.id) {
+				startPromoCheckout(existingTimeline.id);
+				return;
+			}
+
+			// Create the base timeline first, then attach the promo to it
+			createStudyTimeline.mutate(
+				{
+					chosen_bundle: bundleId,
+					exam_type: bundle?.examination?.id || "",
+					subjects: selectedSubjectIds,
+				},
+				{
+					onSuccess: async (timelineData) => {
+						let timelineId = extractTimelineId(timelineData);
+						if (!timelineId) {
+							timelineId = await findTimelineIdFromProfile();
+						}
+						if (!timelineId) {
+							toast.error("Could not create study timeline. Please try again.");
+							return;
+						}
+						startPromoCheckout(timelineId);
+					},
+					onError: async (err: any) => {
+						const msg = getApiErrorMessage(err, "");
+						if (msg.toLowerCase().includes("already") || msg.toLowerCase().includes("update")) {
+							const found = await findTimelineIdFromProfile();
+							if (found) {
+								startPromoCheckout(found);
+								return;
+							}
+						}
+						toast.error(msg || "Failed to initialize study plan.");
+					},
+				}
+			);
+			return;
+		}
+
 		const proceedWithRenew = (timelineId: string) => {
 			toast.info("Preparing your checkout link...");
 			renewPlanMutation.mutate(
-				{ id: timelineId, promo_code: appliedCode || undefined },
+				{ id: timelineId },
 				{
 					onSuccess: (res: any) => {
 						const rawData = res?.data;
@@ -469,7 +578,6 @@ export const EnrollModal = ({
 				chosen_bundle: bundleId,
 				exam_type: bundle?.examination?.id || "",
 				subjects: selectedSubjectIds,
-				...(appliedCode ? { promo_code: appliedCode } : {}),
 			},
 			{
 				onSuccess: (res) => {
@@ -680,53 +788,42 @@ export const EnrollModal = ({
 				<div className="space-y-3 rounded-2xl border border-neutral-200 bg-neutral-50/50 p-3.5">
 					<div className="flex items-center justify-between">
 						<p className="text-xs font-bold text-neutral-900">Pay with Card or Bank</p>
-						<span className="font-bold text-sm text-primary-700">
-							{formatCurrency(requiredFiat)}
+						<span className="flex items-center gap-1.5 font-bold text-sm text-primary-700">
+							{promo ? (
+								<>
+									<span className="text-xs font-medium text-neutral-400 line-through">
+										{formatCurrency(requiredFiat)}
+									</span>
+									{promo.isFreeTrial ? "FREE" : formatCurrency(discountedFiat)}
+								</>
+							) : (
+								formatCurrency(requiredFiat)
+							)}
 						</span>
 					</div>
 
 					{/* Promo code */}
-					<div className="flex items-center gap-2">
-						<input
-							type="text"
-							value={promoCode}
-							onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
-							placeholder="Promo Code"
-							disabled={!!appliedCode}
-							className="h-8.5 flex-1 rounded-lg border border-neutral-200 bg-white px-2.5 text-xs font-mono uppercase tracking-wider"
-						/>
-						{appliedCode ? (
-							<button
-								type="button"
-								onClick={() => { setAppliedCode(""); setPromoCode(""); }}
-								className="h-8.5 rounded-lg border border-red-200 bg-red-50 px-2.5 text-xs font-bold text-red-600 hover:bg-red-100">
-								Remove
-							</button>
-						) : (
-							<button
-								type="button"
-								onClick={() => { if (promoCode.trim()) { setAppliedCode(promoCode.trim()); toast.success("Code applied"); } }}
-								className="h-8.5 rounded-lg bg-neutral-900 px-3 text-xs font-bold text-white hover:bg-neutral-800">
-								Apply
-							</button>
-						)}
-					</div>
-
-					{appliedCode ? (
-						<p className="text-[11px] font-semibold text-green-700 flex items-center gap-1">
-							<RiShieldCheckLine className="size-3.5" />
-							✓ &ldquo;{appliedCode}&rdquo; applied
-						</p>
-					) : null}
+					<PromoCodeField promo={promo} onApply={setPromo} onRemove={() => setPromo(null)} />
 
 					<Button
 						onClick={handlePayWithPaystack}
-						disabled={createPaidStudyTimeline.isPending || renewPlanMutation.isPending || selectedSubjectIds.length === 0}
+						disabled={
+							createPaidStudyTimeline.isPending ||
+							createStudyTimeline.isPending ||
+							generatePaymentLink.isPending ||
+							renewPlanMutation.isPending ||
+							selectedSubjectIds.length === 0
+						}
 						className="w-full text-xs font-bold">
-						{createPaidStudyTimeline.isPending || renewPlanMutation.isPending ? (
+						{createPaidStudyTimeline.isPending ||
+						createStudyTimeline.isPending ||
+						generatePaymentLink.isPending ||
+						renewPlanMutation.isPending ? (
 							<Spinner />
+						) : promo?.isFreeTrial ? (
+							`Activate ${promo.durationInDays || 14}-Day Free Access`
 						) : (
-							`Pay ${formatCurrency(requiredFiat)} with Paystack`
+							`Pay ${formatCurrency(discountedFiat)} with Paystack`
 						)}
 					</Button>
 				</div>

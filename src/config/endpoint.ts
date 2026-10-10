@@ -130,6 +130,11 @@ export const endpoints = (id?: string) => {
 		streak: "/activity-log/streak",
 	} as const;
 
+	const transaction = {
+		validate_promo: (code: string) => `/transaction/validate-promo/${encodeURIComponent(code)}`,
+		generate_link: "/transaction/generate-link",
+	} as const;
+
 	return {
 		auth,
 		bank,
@@ -144,6 +149,7 @@ export const endpoints = (id?: string) => {
 		blog,
 		waitlist,
 		activity_log,
+		transaction,
 		token_payment: {
 			packages: "/token-payment/packages",
 			paystack_init: "/token-payment/paystack/initialize",

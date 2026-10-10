@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Lock02 } from "@untitled-ui/icons-react";
 import { useRouter } from "next/router";
 import * as React from "react";
@@ -12,7 +12,16 @@ import { useGetSingleExamBundleQuery } from "@/queries/school";
 import { useGetProfile } from "@/queries/student";
 import { formatCurrency } from "@/lib";
 import { Button } from "../ui/button";
-import { Spinner } from "../shared";
+import { PromoCodeField, Spinner } from "../shared";
+import type { PromoValidation } from "@/queries/promo";
+import {
+	useGeneratePaymentLink,
+	getApiErrorMessage,
+	getTrialDuration,
+	isTrialActivation,
+	extractPaymentUrl,
+	applyPromoToAmount,
+} from "@/queries/promo";
 import { RiCoinLine, RiSparklingLine } from "@remixicon/react";
 
 interface RenewalProps {
@@ -23,9 +32,9 @@ interface RenewalProps {
 
 export const RenewalModal = ({ open, setOpen, bundle }: RenewalProps) => {
 	const router = useRouter();
+	const queryClient = useQueryClient();
 	const [visible, setVisible] = React.useState(false);
-	const [promoCode, setPromoCode] = React.useState("");
-	const [appliedCode, setAppliedCode] = React.useState("");
+	const [promo, setPromo] = React.useState<PromoValidation | null>(null);
 
 	const { data: profile } = useGetProfile();
 	const bundleId = bundle?.exam_bundle_details?.id || bundle?.chosen_bundle;
@@ -44,12 +53,17 @@ export const RenewalModal = ({ open, setOpen, bundle }: RenewalProps) => {
 	const hasTokenPricing = requiredTokens > 0;
 	const hasEnoughTokens = hasTokenPricing && tokenBalance >= requiredTokens;
 
-	// Paystack Mutation
+	const renewalAmount = Number(bundle?.renewal_amount ?? 0);
+	const discountedAmount = applyPromoToAmount(renewalAmount, promo);
+
+	const generatePaymentLink = useGeneratePaymentLink();
+
+	// Paystack Mutation (no-promo path)
 	const { mutate: renewWithPaystack, isPending: isPaystackPending } = useMutation({
 		mutationKey: ["renew", bundle?.id],
 		mutationFn: () => {
 			if (!bundle?.id) throw new Error("No active bundle found");
-			return renewPlan(bundle.id, appliedCode || undefined);
+			return renewPlan(bundle.id, undefined);
 		},
 		onSuccess: (data) => {
 			const rawData = (data as any)?.data;
@@ -90,6 +104,44 @@ export const RenewalModal = ({ open, setOpen, bundle }: RenewalProps) => {
 			return;
 		}
 		renewWithTokens.mutate({ studentTimelineId: bundle.id });
+	};
+
+	// Renew via generate-link (handles promo discounts + free trial)
+	const handleRenewWithPromo = () => {
+		if (!bundle?.id || !promo) return;
+		generatePaymentLink.mutate(
+			{
+				narration: "STUDY_PACK_UPDATE",
+				narration_id: bundle.id,
+				amount: renewalAmount,
+				promoCode: promo.code,
+			},
+			{
+				onSuccess: async (res) => {
+					const raw = (res as any)?.data;
+					if (isTrialActivation(raw)) {
+						toast.success(
+							`🎉 ${getTrialDuration(raw, promo.durationInDays || 14)}-day access unlocked!`,
+							{ description: "Your plan is now active. Happy learning!" }
+						);
+						await queryClient.invalidateQueries({ queryKey: ["profile"] });
+						setOpen(false);
+						router.push("/dashboard/courses");
+						return;
+					}
+					const paymentUrl = extractPaymentUrl(raw);
+					if (paymentUrl) {
+						setVisible(true);
+						window.location.href = paymentUrl;
+					} else {
+						toast.error("Could not get payment link. Please try again.");
+					}
+				},
+				onError: (err: any) => {
+					toast.error(getApiErrorMessage(err, "Could not apply promo code. Please try again."));
+				},
+			}
+		);
 	};
 
 	if (!bundle) return null;
@@ -182,47 +234,25 @@ export const RenewalModal = ({ open, setOpen, bundle }: RenewalProps) => {
 					)}
 
 					{/* Promo Code */}
-					<div className="flex flex-col gap-1.5">
-						<label className="text-xs font-semibold text-neutral-700">
-							Promo Code <span className="font-normal text-neutral-400">(optional)</span>
-						</label>
-						<div className="flex items-center gap-2">
-							<input
-								type="text"
-								value={promoCode}
-								onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
-								placeholder="Enter code"
-								disabled={!!appliedCode}
-								className="h-9 flex-1 rounded-lg border border-neutral-200 px-3 text-xs uppercase tracking-wider placeholder:normal-case placeholder:tracking-normal disabled:opacity-50"
-							/>
-							{appliedCode ? (
-								<button
-									type="button"
-									onClick={() => { setAppliedCode(""); setPromoCode(""); }}
-									className="h-9 rounded-lg border border-red-200 bg-red-50 px-3 text-xs font-medium text-red-600 hover:bg-red-100">
-									Remove
-								</button>
-							) : (
-								<button
-									type="button"
-									onClick={() => { if (promoCode.trim()) setAppliedCode(promoCode.trim()); }}
-									className="h-9 rounded-lg bg-neutral-800 px-3.5 text-xs font-medium text-white hover:bg-neutral-900">
-									Apply
-								</button>
-							)}
-						</div>
-						{appliedCode && (
-							<p className="text-xs text-green-600">
-								✓ &ldquo;{appliedCode}&rdquo; applied &mdash; discount reflected at payment
-							</p>
-						)}
-					</div>
+					<PromoCodeField promo={promo} onApply={setPromo} onRemove={() => setPromo(null)} />
 
-					<Button onClick={() => renewWithPaystack()} disabled={isPaystackPending}>
-						{isPaystackPending ? (
+					{promo && (
+						<p className="-mt-1 text-xs font-semibold text-primary-700">
+							{promo.isFreeTrial
+								? `${promo.durationInDays || 14}-day free access will be activated`
+								: `Total: ${formatCurrency(discountedAmount)}`}
+						</p>
+					)}
+
+					<Button
+						onClick={promo ? handleRenewWithPromo : () => renewWithPaystack()}
+						disabled={isPaystackPending || generatePaymentLink.isPending}>
+						{isPaystackPending || generatePaymentLink.isPending ? (
 							<Spinner />
+						) : promo?.isFreeTrial ? (
+							`Activate ${promo.durationInDays || 14}-Day Free Access`
 						) : (
-							`Pay ${formatCurrency(Number(bundle.renewal_amount ?? 0))} with Paystack`
+							`Pay ${formatCurrency(promo ? discountedAmount : renewalAmount)} with Paystack`
 						)}
 					</Button>
 					<div className="flex items-center gap-1.5 self-center text-neutral-500">

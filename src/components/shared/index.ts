@@ -17,6 +17,7 @@ export * from "./loader";
 export * from "./navbar";
 export * from "./pagination";
 export * from "./progress";
+export * from "./promo-code-field";
 export * from "./rating-input";
 export * from "./review-card";
 export * from "./search";
